@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Sluggable\Fixture\Document\Handler;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\TreeSlugHandler;
 
 /**
  * @ODM\Document
@@ -48,6 +49,8 @@ class TreeSlug
      * }, separator="-", updatable=true, fields={"title"})
      * @ODM\Field(type="string")
      */
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
+    #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ODM\Field(type: Type::STRING)]
     private $alias;
 

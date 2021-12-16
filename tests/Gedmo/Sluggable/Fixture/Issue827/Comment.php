@@ -61,6 +61,7 @@ class Comment
      * @Gedmo\Slug(updatable=true, unique=true, unique_base="post", fields={"title"})
      * @ORM\Column(length=64, nullable=true)
      */
+    #[Gedmo\Slug(updatable: true, unique: true, unique_base: 'post', fields: ['title'])]
     #[ORM\Column(length: 64, nullable: true)]
     private $slug;
 

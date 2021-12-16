@@ -48,6 +48,7 @@ class Category
      * @Gedmo\Slug(updatable=true, unique=true, fields={"title"})
      * @ORM\Column(length=64, nullable=true)
      */
+    #[Gedmo\Slug(updatable: true, unique: true, fields: ['title'])]
     #[ORM\Column(name: 'slug', length: 64)]
     private $slug;
 

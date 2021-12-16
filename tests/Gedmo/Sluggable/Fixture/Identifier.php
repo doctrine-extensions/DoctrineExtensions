@@ -29,6 +29,7 @@ class Identifier
      */
     #[ORM\Id]
     #[ORM\Column(length: 32, unique: true)]
+    #[Gedmo\Slug(separator: '_', updatable: false, fields: ['title'])]
     private $id;
 
     /**

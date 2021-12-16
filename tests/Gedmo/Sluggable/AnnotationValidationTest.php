@@ -28,10 +28,9 @@ final class AnnotationValidationTest extends BaseTestCaseORM
 
     public function testShouldFailValidationOnInvalidAnnotation(): void
     {
-        $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
-        $this->getDefaultMockSqliteEntityManager($evm);
+        $this->getMockSqliteEntityManager($evm);
 
         $slug = new Validate();
         $slug->setTitle('My Slug');
@@ -41,9 +40,10 @@ final class AnnotationValidationTest extends BaseTestCaseORM
 
         $this->em->persist($slug);
         $this->em->persist($slug2);
-        $this->em->flush();
 
-        static::assertSame('my-slug', $slug2->getSlug());
+        $this->expectException(InvalidMappingException::class);
+
+        $this->em->flush();
     }
 
     protected function getUsedEntityFixtures(): array
