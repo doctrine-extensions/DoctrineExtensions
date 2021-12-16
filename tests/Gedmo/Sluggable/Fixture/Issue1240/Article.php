@@ -48,6 +48,7 @@ class Article implements Sluggable
      * @Gedmo\Slug(separator="+", updatable=true, fields={"title"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
+    #[Gedmo\Slug(separator: '+', updatable: true, fields: ['title'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 

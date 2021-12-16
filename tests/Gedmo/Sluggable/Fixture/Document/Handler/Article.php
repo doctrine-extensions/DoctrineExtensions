@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Sluggable\Fixture\Document\Handler;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\InversedRelativeSlugHandler;
 
 /**
  * @ODM\Document(collection="articles")
@@ -57,6 +58,8 @@ class Article
      * }, separator="-", updatable=true, fields={"title", "code"})
      * @ODM\Field(type="string")
      */
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
+    #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => RelativeSlug::class, 'mappedBy' => 'article', 'inverseSlugField' => 'alias'])]
     #[ODM\Field(type: Type::STRING)]
     private $slug;
 

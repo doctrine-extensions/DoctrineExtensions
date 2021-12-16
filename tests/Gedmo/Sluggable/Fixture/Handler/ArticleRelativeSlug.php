@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Sluggable\Fixture\Handler;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 
 /**
  * @ORM\Entity
@@ -53,6 +54,8 @@ class ArticleRelativeSlug
      * }, separator="-", updatable=true, fields={"title"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
+    #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'article', 'relationSlugField' => 'slug', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 

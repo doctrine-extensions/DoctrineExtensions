@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
@@ -56,6 +57,8 @@ class TreeSlug
      * }, separator="-", updatable=true)
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
+    #[Gedmo\Slug(fields: ['title'], separator: '-', updatable: true)]
+    #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 

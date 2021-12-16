@@ -51,6 +51,7 @@ class Article
      * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "code"})
      * @ODM\Field(type="string")
      */
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
     #[ODM\Field(type: Type::STRING)]
     private $slug;
 

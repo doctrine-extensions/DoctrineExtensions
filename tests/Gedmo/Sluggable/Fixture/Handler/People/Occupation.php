@@ -16,6 +16,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\InversedRelativeSlugHandler;
+use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
@@ -61,6 +63,9 @@ class Occupation
      * }, fields={"title"})
      * @ORM\Column(length=64, unique=true)
      */
+    #[Gedmo\Slug(fields: ['title'])]
+    #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
+    #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => Person::class, 'mappedBy' => 'occupation', 'inverseSlugField' => 'slug'])]
     #[ORM\Column(length: 64, unique: true)]
     private $slug;
 
