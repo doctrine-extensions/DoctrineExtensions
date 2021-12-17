@@ -26,6 +26,11 @@ class CarbonTest extends BaseTestCaseORM
     public const COMMENT_CLASS = Comment::class;
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
+    /**
+     * @var SoftDeleteableListener
+     */
+    private $softDeleteableListener;
+
     protected function setUp(): void
     {
         parent::setUp();
