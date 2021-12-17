@@ -1,7 +1,17 @@
 <?php
 
-namespace Timestampable\Fixture;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Timestampable\Fixture;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
@@ -9,40 +19,55 @@ use Gedmo\Timestampable\Timestampable;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Comment implements Timestampable
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="message", type="text")
      */
+    #[ORM\Column(name: 'message', type: Types::TEXT)]
     private $message;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Timestampable\Fixture\Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Timestampable\Fixture\Article", inversedBy="comments")
      */
+    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
     private $article;
 
     /**
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: Types::INTEGER)]
     private $status;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="status", value=1)
      */
+    #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'status', value: 1)]
     private $closed;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="modified", type="time")
      * @Gedmo\Timestampable(on="update")
      */
+    #[ORM\Column(name: 'modified', type: Types::TIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'update')]
     private $modified;
 
     public function setArticle($article)

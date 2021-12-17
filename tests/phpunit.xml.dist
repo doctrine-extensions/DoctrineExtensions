@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         bootstrap="./bootstrap.php"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    bootstrap="./bootstrap.php"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
+    <coverage>
+        <include>
+            <directory>../src</directory>
+        </include>
+    </coverage>
     <testsuites>
         <testsuite name="Translatable Extension">
             <directory suffix="Test.php">./Gedmo/Translatable/</directory>
@@ -59,14 +66,7 @@
             <directory suffix="Test.php">./Gedmo/References/</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>../lib</directory>
-        </whitelist>
-    </filter>
-
     <php>
-        <env name="MONGODB_SERVER" value="mongodb://mongodb:27017" />
+        <env name="MONGODB_SERVER" value="mongodb://mongodb:27017"/>
     </php>
 </phpunit>

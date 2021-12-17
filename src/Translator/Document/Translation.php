@@ -1,25 +1,32 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translator\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Translator\Translation as BaseTranslation;
 
 /**
  * Document translation class.
  *
- * @author  Konstantin Kudryashov <ever.zet@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @author Konstantin Kudryashov <ever.zet@gmail.com>
  *
- * @MappedSuperclass
+ * @ODM\MappedSuperclass
  */
+#[ODM\MappedSuperclass]
 abstract class Translation extends BaseTranslation
 {
     /**
-     * @Id
+     * @ODM\Id
      */
+    #[ODM\Id]
     protected $id;
 
     /**
@@ -27,6 +34,7 @@ abstract class Translation extends BaseTranslation
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
@@ -34,6 +42,7 @@ abstract class Translation extends BaseTranslation
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $property;
 
     /**
@@ -41,6 +50,7 @@ abstract class Translation extends BaseTranslation
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $value;
 
     /**

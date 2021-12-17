@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
@@ -11,7 +18,6 @@ use Gedmo\Mapping\MappedEventSubscriber;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SoftDeleteableListener extends MappedEventSubscriber
 {
@@ -20,17 +26,17 @@ class SoftDeleteableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    const PRE_SOFT_DELETE = 'preSoftDelete';
+    public const PRE_SOFT_DELETE = 'preSoftDelete';
 
     /**
      * Post soft-delete event
      *
      * @var string
      */
-    const POST_SOFT_DELETE = 'postSoftDelete';
+    public const POST_SOFT_DELETE = 'postSoftDelete';
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
@@ -49,6 +55,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public function onFlush(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
+        /** @var \Doctrine\ORM\EntityManagerInterface|\Doctrine\ODM\MongoDB\DocumentManager $om */
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
@@ -56,7 +63,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
         //getScheduledDocumentDeletions
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
+            $config = $this->getConfiguration($om, $meta->getName());
 
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);

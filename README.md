@@ -1,6 +1,8 @@
 # Doctrine Behavioral Extensions
 
-[![Build Status](https://travis-ci.org/Atlantic18/DoctrineExtensions.svg?branch=main)](https://travis-ci.org/Atlantic18/DoctrineExtensions)
+[![Continuous Integration](https://github.com/doctrine-extensions/DoctrineExtensions/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/doctrine-extensions/DoctrineExtensions/actions/workflows/continuous-integration.yml)
+[![Quality Assurance](https://github.com/doctrine-extensions/DoctrineExtensions/actions/workflows/qa.yml/badge.svg)](https://github.com/doctrine-extensions/DoctrineExtensions/actions/workflows/qa.yml)
+[![Coding Standards](https://github.com/doctrine-extensions/DoctrineExtensions/actions/workflows/coding-standards.yml/badge.svg)](https://github.com/doctrine-extensions/DoctrineExtensions/actions/workflows/coding-standards.yml)
 [![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
 This package contains extensions for Doctrine ORM and MongoDB ODM that offer new functionality or tools to use Doctrine
@@ -109,9 +111,9 @@ To set up and run example, follow these steps:
 - download composer: `wget https://getcomposer.org/composer.phar`
 - install dev libraries: `php composer.phar install`
 - edit `example/em.php` and configure your database on top of the file
-- run: `./example/bin/console` or `php example/bin/console` for console commands
-- run: `./example/bin/console orm:schema-tool:create` to create schema
-- run: `php example/run.php` to run example
+- run: `php example/bin/console` or `php example/bin/console` for console commands
+- run: `php example/bin/console orm:schema-tool:create` to create the schema
+- run: `php example/bin/console app:print-category-translation-tree` to run the example to print the category translation tree
 
 ### Contributors
 

@@ -1,19 +1,31 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue922\Post;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue922\Post;
+use Gedmo\Translatable\TranslatableListener;
 
-class Issue922Test extends BaseTestCaseORM
+final class Issue922Test extends BaseTestCaseORM
 {
-    const POST = 'Translatable\Fixture\Issue922\Post';
-    const TRANSLATION = 'Gedmo\Translatable\Entity\Translation';
+    public const POST = Post::class;
+    public const TRANSLATION = Translation::class;
 
-    const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     private $translatableListener;
 
@@ -28,7 +40,7 @@ class Issue922Test extends BaseTestCaseORM
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
@@ -55,16 +67,16 @@ class Issue922Test extends BaseTestCaseORM
         $this->em->clear();
 
         $p1 = $this->em->find(self::POST, $p1->getId());
-        $this->assertInstanceOf('DateTime', $p1->getPublishedAt());
-        $this->assertInstanceOf('DateTime', $p1->getTimestampAt());
-        $this->assertInstanceOf('DateTime', $p1->getDateAt());
-        $this->assertSame(false, $p1->getBoolean());
+        static::assertInstanceOf('DateTime', $p1->getPublishedAt());
+        static::assertInstanceOf('DateTime', $p1->getTimestampAt());
+        static::assertInstanceOf('DateTime', $p1->getDateAt());
+        static::assertFalse($p1->getBoolean());
 
         // clear and test query hint hydration
         $this->em->clear();
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $q = $this->em->createQuery('SELECT p FROM '.self::POST.' p');
@@ -72,10 +84,10 @@ class Issue922Test extends BaseTestCaseORM
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'de');
 
         $p1 = $q->getSingleResult();
-        $this->assertInstanceOf('DateTime', $p1->getPublishedAt());
-        $this->assertInstanceOf('DateTime', $p1->getTimestampAt());
-        $this->assertInstanceOf('DateTime', $p1->getDateAt());
-        $this->assertSame(false, $p1->getBoolean());
+        static::assertInstanceOf('DateTime', $p1->getPublishedAt());
+        static::assertInstanceOf('DateTime', $p1->getTimestampAt());
+        static::assertInstanceOf('DateTime', $p1->getDateAt());
+        static::assertFalse($p1->getBoolean());
     }
 
     protected function getUsedEntityFixtures()

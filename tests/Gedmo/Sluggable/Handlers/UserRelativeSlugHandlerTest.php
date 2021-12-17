@@ -1,25 +1,31 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Handler\Company;
-use Sluggable\Fixture\Handler\User;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\Company;
+use Gedmo\Tests\Sluggable\Fixture\Handler\User;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class UserRelativeSlugHandlerTest extends BaseTestCaseORM
+final class UserRelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    const USER = 'Sluggable\\Fixture\\Handler\\User';
-    const COMPANY = 'Sluggable\\Fixture\\Handler\\Company';
+    public const USER = User::class;
+    public const COMPANY = Company::class;
 
     protected function setUp(): void
     {
@@ -44,13 +50,13 @@ class UserRelativeSlugHandlerTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals('knplabs/gedi', $gedi->getSlug(), 'relative slug is invalid');
+        static::assertSame('knplabs/gedi', $gedi->getSlug(), 'relative slug is invalid');
 
         $company->setTitle('KnpLabs Nantes');
         $this->em->persist($company);
         $this->em->flush();
 
-        $this->assertEquals('knplabs-nantes/gedi', $gedi->getSlug(), 'relative slug is invalid');
+        static::assertSame('knplabs-nantes/gedi', $gedi->getSlug(), 'relative slug is invalid');
     }
 
     protected function getUsedEntityFixtures()

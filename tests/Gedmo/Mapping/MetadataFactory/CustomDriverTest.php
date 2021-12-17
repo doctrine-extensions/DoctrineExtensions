@@ -1,21 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping\MetadataFactory;
+
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
-use Mapping\Fixture\Unmapped\Timestampable;
+use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are mapping tests for tree extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class CustomDriverTest extends \PHPUnit\Framework\TestCase
+final class CustomDriverTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp(): void
+    /**
+     * @var TimestampableListener
+     */
+    private $timestampable;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
@@ -28,7 +47,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         ];
 
         $evm = new \Doctrine\Common\EventManager();
-        $this->timestampable = new \Gedmo\Timestampable\TimestampableListener();
+        $this->timestampable = new TimestampableListener();
         $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
         $evm->addEventSubscriber($this->timestampable);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
@@ -36,7 +55,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
-            $this->em->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable'),
+            $this->em->getClassMetadata(Timestampable::class),
         ]);
     }
 
@@ -48,20 +67,20 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(
             $this->em,
-            'Mapping\Fixture\Unmapped\Timestampable'
+            Timestampable::class
         );
-        $this->assertTrue(isset($conf['create']));
+        static::assertTrue(isset($conf['create']));
 
         $test = new Timestampable();
         $this->em->persist($test);
         $this->em->flush();
 
         $id = $this->em
-            ->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable')
+            ->getClassMetadata(Timestampable::class)
             ->getReflectionProperty('id')
             ->getValue($test)
         ;
-        $this->assertFalse(empty($id));
+        static::assertNotEmpty($id);
     }
 }
 
@@ -69,12 +88,12 @@ class CustomDriver implements MappingDriver
 {
     public function getAllClassNames()
     {
-        return ['Mapping\Fixture\Unmapped\Timestampable'];
+        return [Timestampable::class];
     }
 
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        if ('Mapping\Fixture\Unmapped\Timestampable' === $className) {
+        if ('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable' === $className) {
             $id = [];
             $id['fieldName'] = 'id';
             $id['type'] = 'integer';
@@ -100,6 +119,6 @@ class CustomDriver implements MappingDriver
 
     public function isTransient($className)
     {
-        return !in_array($className, $this->getAllClassNames());
+        return !in_array($className, $this->getAllClassNames(), true);
     }
 }

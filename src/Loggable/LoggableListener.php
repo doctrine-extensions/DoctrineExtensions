@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventArgs;
@@ -12,24 +19,23 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  *
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LoggableListener extends MappedEventSubscriber
 {
     /**
      * Create action
      */
-    const ACTION_CREATE = 'create';
+    public const ACTION_CREATE = 'create';
 
     /**
      * Update action
      */
-    const ACTION_UPDATE = 'update';
+    public const ACTION_UPDATE = 'update';
 
     /**
      * Remove action
      */
-    const ACTION_REMOVE = 'remove';
+    public const ACTION_REMOVE = 'remove';
 
     /**
      * Username for identification
@@ -78,7 +84,7 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
@@ -87,20 +93,6 @@ class LoggableListener extends MappedEventSubscriber
             'loadClassMetadata',
             'postPersist',
         ];
-    }
-
-    /**
-     * Get the LogEntry class
-     *
-     * @param string $class
-     *
-     * @return string
-     */
-    protected function getLogEntryClass(LoggableAdapter $ea, $class)
-    {
-        return isset(self::$configurations[$this->name][$class]['logEntryClass']) ?
-            self::$configurations[$this->name][$class]['logEntryClass'] :
-            $ea->getDefaultLogEntryClass();
     }
 
     /**
@@ -125,7 +117,7 @@ class LoggableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $object = $ea->getObject();
         $om = $ea->getObjectManager();
-        $oid = spl_object_hash($object);
+        $oid = spl_object_id($object);
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
             $wrapped = AbstractWrapper::wrap($object, $om);
@@ -138,7 +130,7 @@ class LoggableListener extends MappedEventSubscriber
             $uow->scheduleExtraUpdate($logEntry, [
                 'objectId' => [null, $id],
             ]);
-            $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'objectId', $id);
+            $ea->setOriginalObjectProperty($uow, $logEntry, 'objectId', $id);
             unset($this->pendingLogEntryInserts[$oid]);
         }
         if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
@@ -155,21 +147,10 @@ class LoggableListener extends MappedEventSubscriber
                 $uow->scheduleExtraUpdate($logEntry, [
                     'data' => [$oldData, $data],
                 ]);
-                $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'data', $data);
+                $ea->setOriginalObjectProperty($uow, $logEntry, 'data', $data);
             }
             unset($this->pendingRelatedObjects[$oid]);
         }
-    }
-
-    /**
-     * Handle any custom LogEntry functionality that needs to be performed
-     * before persisting it
-     *
-     * @param object $logEntry The LogEntry being persisted
-     * @param object $object   The object being Logged
-     */
-    protected function prePersistLogEntry($logEntry, $object)
-    {
     }
 
     /**
@@ -196,6 +177,29 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
+     * Get the LogEntry class
+     *
+     * @param string $class
+     *
+     * @return string
+     */
+    protected function getLogEntryClass(LoggableAdapter $ea, $class)
+    {
+        return self::$configurations[$this->name][$class]['logEntryClass'] ?? $ea->getDefaultLogEntryClass();
+    }
+
+    /**
+     * Handle any custom LogEntry functionality that needs to be performed
+     * before persisting it
+     *
+     * @param object $logEntry The LogEntry being persisted
+     * @param object $object   The object being Logged
+     */
+    protected function prePersistLogEntry($logEntry, $object)
+    {
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getNamespace()
@@ -217,12 +221,12 @@ class LoggableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
         $meta = $wrapped->getMetadata();
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $newValues = [];
 
         foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
-            if (empty($config['versioned']) || !in_array($field, $config['versioned'])) {
+            if (empty($config['versioned']) || !in_array($field, $config['versioned'], true)) {
                 continue;
             }
             $value = $changes[1];
@@ -230,7 +234,7 @@ class LoggableListener extends MappedEventSubscriber
                 if ($wrapped->isEmbeddedAssociation($field)) {
                     $value = $this->getObjectChangeSetData($ea, $value, $logEntry);
                 } else {
-                    $oid = spl_object_hash($value);
+                    $oid = spl_object_id($value);
                     $wrappedAssoc = AbstractWrapper::wrap($value, $om);
                     $value = $wrappedAssoc->getIdentifier(false);
                     if (!is_array($value) && !$value) {
@@ -263,24 +267,24 @@ class LoggableListener extends MappedEventSubscriber
 
         // Filter embedded documents
         if (isset($meta->isEmbeddedDocument) && $meta->isEmbeddedDocument) {
-            return;
+            return null;
         }
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
+        if ($config = $this->getConfiguration($om, $meta->getName())) {
+            $logEntryClass = $this->getLogEntryClass($ea, $meta->getName());
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
             /** @var \Gedmo\Loggable\Entity\LogEntry $logEntry */
             $logEntry = $logEntryMeta->newInstance();
 
             $logEntry->setAction($action);
             $logEntry->setUsername($this->username);
-            $logEntry->setObjectClass($meta->name);
+            $logEntry->setObjectClass($meta->getName());
             $logEntry->setLoggedAt();
 
             // check for the availability of the primary key
             $uow = $om->getUnitOfWork();
             if (self::ACTION_CREATE === $action && $ea->isPostInsertGenerator($meta)) {
-                $this->pendingLogEntryInserts[spl_object_hash($object)] = $logEntry;
+                $this->pendingLogEntryInserts[spl_object_id($object)] = $logEntry;
             } else {
                 $logEntry->setObjectId($wrapped->getIdentifier());
             }

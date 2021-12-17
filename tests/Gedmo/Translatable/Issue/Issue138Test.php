@@ -1,26 +1,34 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue138\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue138\Article;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue138Test extends BaseTestCaseORM
+final class Issue138Test extends BaseTestCaseORM
 {
-    const ARTICLE = 'Translatable\\Fixture\\Issue138\\Article';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-    const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const ARTICLE = Article::class;
+    public const TRANSLATION = Translation::class;
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     private $translatableListener;
 
@@ -35,7 +43,7 @@ class Issue138Test extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testIssue138()
@@ -50,8 +58,8 @@ class Issue138Test extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         //die($q->getSQL());
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
-        $this->assertEquals('Food', $result[0]['title']);
+        static::assertCount(1, $result);
+        static::assertSame('Food', $result[0]['title']);
     }
 
     protected function getUsedEntityFixtures()
@@ -62,7 +70,7 @@ class Issue138Test extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
 

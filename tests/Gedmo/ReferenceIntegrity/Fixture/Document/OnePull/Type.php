@@ -1,6 +1,15 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\OnePull;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -10,6 +19,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Type
 {
+    /**
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article", mappedBy="types")
+     * @Gedmo\ReferenceIntegrity("pull")
+     *
+     * @var Article
+     */
+    protected $article;
     /**
      * @ODM\Id
      */
@@ -24,14 +40,6 @@ class Type
      * @ODM\Field(type="string")
      */
     private $identifier;
-
-    /**
-     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\OnePull\Article", mappedBy="types")
-     * @Gedmo\ReferenceIntegrity("pull")
-     *
-     * @var Article
-     */
-    protected $article;
 
     /**
      * @return mixed

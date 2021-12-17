@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Blameable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Blameable;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -12,14 +20,13 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation field is blameable
      */
-    const BLAMEABLE = 'Gedmo\\Mapping\\Annotation\\Blameable';
+    public const BLAMEABLE = Blameable::class;
 
     /**
      * List of types which are valid for blame
@@ -50,24 +57,24 @@ class Annotation extends AbstractAnnotationDriver
                 $field = $property->getName();
 
                 if (!$meta->hasField($field) && !$meta->hasAssociation($field)) {
-                    throw new InvalidMappingException("Unable to find blameable [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find blameable [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 if ($meta->hasField($field)) {
                     if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a one-to-many relation in class - {$meta->name}");
+                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a one-to-many relation in class - {$meta->getName()}");
                     }
                 } else {
                     // association
                     if (!$meta->isSingleValuedAssociation($field)) {
-                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
+                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->getName()}");
                     }
                 }
-                if (!in_array($blameable->on, ['update', 'create', 'change'])) {
-                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
+                if (!in_array($blameable->on, ['update', 'create', 'change'], true)) {
+                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
-                if ('change' == $blameable->on) {
+                if ('change' === $blameable->on) {
                     if (!isset($blameable->field)) {
-                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->getName()}");
                     }
                     if (is_array($blameable->field) && isset($blameable->value)) {
                         throw new InvalidMappingException('Blameable extension does not support multiple value changeset detection yet.');

@@ -1,30 +1,40 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Article;
+use Gedmo\Tests\Translatable\Fixture\Comment;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
+use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Article;
-use Translatable\Fixture\Comment;
+use Gedmo\Translatable\TranslatableListener;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * These are tests for translation query walker
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslationQueryWalkerTest extends BaseTestCaseORM
+final class TranslationQueryWalkerTest extends BaseTestCaseORM
 {
-    const ARTICLE = 'Translatable\\Fixture\\Article';
-    const COMMENT = 'Translatable\\Fixture\\Comment';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TRANSLATION = Translation::class;
 
-    const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener
@@ -41,7 +51,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
@@ -50,8 +60,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     public function shouldHandleQueryCache()
     {
-        $cache = new \Doctrine\Common\Cache\ArrayCache();
-        $this->em->getConfiguration()->setQueryCacheImpl($cache);
+        $this->em->getConfiguration()->setQueryCache(new ArrayAdapter());
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -59,12 +68,12 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
 
         $q2 = clone $q;
         $q2->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
     }
 
     /**
@@ -84,9 +93,9 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(2, $result);
-        $this->assertEquals('Alfabet', $result[0]['title']);
-        $this->assertEquals('Cabbages', $result[1]['title']);
+        static::assertCount(2, $result);
+        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Cabbages', $result[1]['title']);
     }
 
     /**
@@ -106,9 +115,9 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(2, $result);
-        $this->assertEquals('Alfabet', $result[0]['title']);
-        $this->assertEquals('Cabbages', $result[1]['title']);
+        static::assertCount(2, $result);
+        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Cabbages', $result[1]['title']);
     }
 
     /**
@@ -130,11 +139,11 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $q->setParameter('filter', 'Foo%');
         $result = $q->getArrayResult();
 
-        $this->assertCount(1, $result);
-        $this->assertEquals('Food', $result[0]['title']);
+        static::assertCount(1, $result);
+        static::assertSame('Food', $result[0]['title']);
         $comments = $result[0]['comments'];
-        $this->assertCount(1, $comments);
-        $this->assertEquals('good', $comments[0]['subject']);
+        static::assertCount(1, $comments);
+        static::assertSame('good', $comments[0]['subject']);
     }
 
     /**
@@ -144,7 +153,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+            SimpleObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -157,17 +166,17 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // simple object hydration
         $this->startQueryLog();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        $this->assertEquals('', $result[0]->getTitle());
-        $this->assertEquals('', $result[0]->getContent());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]->getTitle());
+        static::assertNull($result[0]->getContent());
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        $this->assertEquals('Food', $result[0]->getTitle());
-        $this->assertEquals('about food', $result[0]->getContent());
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('about food', $result[0]->getContent());
     }
 
     /**
@@ -186,17 +195,17 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->startQueryLog();
         $result = $q->getArrayResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        $this->assertEquals('', $result[0]['title']);
-        $this->assertEquals('', $result[0]['content']);
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]['title']);
+        static::assertNull($result[0]['content']);
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getArrayResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        $this->assertEquals('Food', $result[0]['title']);
-        $this->assertEquals('about food', $result[0]['content']);
+        static::assertSame('Food', $result[0]['title']);
+        static::assertSame('about food', $result[0]['content']);
     }
 
     /**
@@ -206,7 +215,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+            SimpleObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -219,19 +228,19 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // simple object hydration
         $this->startQueryLog();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        $this->assertEquals('', $result[0]->getTitle());
-        $this->assertEquals('John Doe', $result[0]->getAuthor()); // optional fallback is true,  force fallback
-        $this->assertEquals(0, $result[0]->getViews());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]->getTitle());
+        static::assertSame('John Doe', $result[0]->getAuthor()); // optional fallback is true,  force fallback
+        static::assertNull($result[0]->getViews());
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        $this->assertEquals('Food', $result[0]->getTitle());
-        $this->assertEquals('John Doe', $result[0]->getAuthor());
-        $this->assertEquals(0, $result[0]->getViews()); // optional fallback is false,  thus no translation required
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('John Doe', $result[0]->getAuthor());
+        static::assertNull($result[0]->getViews()); // optional fallback is false,  thus no translation required
     }
 
     /**
@@ -249,7 +258,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // array hydration
         $result = $q->getArrayResult();
-        $this->assertCount(0, $result);
+        static::assertCount(0, $result);
     }
 
     /**
@@ -270,16 +279,16 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // array hydration
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
-        $this->assertEquals('Food', $result[0]['title']);
+        static::assertCount(1, $result);
+        static::assertSame('Food', $result[0]['title']);
 
         // fallback false hint
         $q->setHint(TranslatableListener::HINT_FALLBACK, false);
 
         // array hydration
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
-        $this->assertEquals(null, $result[0]['title']);
+        static::assertCount(1, $result);
+        static::assertNull($result[0]['title']);
     }
 
     /**
@@ -297,8 +306,8 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // array hydration
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
-        $this->assertEquals('Maistas', $result[0]['title']);
+        static::assertCount(1, $result);
+        static::assertSame('Maistas', $result[0]['title']);
     }
 
     /**
@@ -308,7 +317,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -321,17 +330,17 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // object hydration
         $this->startQueryLog();
         $result = $q->getResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        $this->assertEquals('', $result[0]->getTitle());
-        $this->assertEquals('', $result[0]->getContent());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]->getTitle());
+        static::assertNull($result[0]->getContent());
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        $this->assertEquals('Food', $result[0]->getTitle());
-        $this->assertEquals('about food', $result[0]->getContent());
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('about food', $result[0]->getContent());
 
         // test fallback hint
         $this->translatableListener->setTranslationFallback(false);
@@ -339,8 +348,8 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $result = $q->getResult();
         //Default translation is en_us, so we expect the results in that locale
-        $this->assertEquals('Food', $result[0]->getTitle());
-        $this->assertEquals('about food', $result[0]->getContent());
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('about food', $result[0]->getContent());
 
         // test fallback hint
         $this->translatableListener->setTranslationFallback(true);
@@ -348,8 +357,8 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $result = $q->getResult();
         //Default translation is en_us, so we expect the results in that locale
-        $this->assertEquals('', $result[0]->getTitle());
-        $this->assertEquals('', $result[0]->getContent());
+        static::assertNull($result[0]->getTitle());
+        static::assertNull($result[0]->getContent());
     }
 
     /**
@@ -365,17 +374,17 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $q->setParameter('title', 'Foo%');
         $result = $q->getSingleScalarResult();
-        $this->assertEquals(1, $result);
+        static::assertSame(1, (int) $result);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $q->setParameter('title', 'Mai%');
         $result = $q->getSingleScalarResult();
-        $this->assertEquals(1, $result);
+        static::assertSame(1, (int) $result);
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $q->setParameter('title', 'Mai%');
         $result = $q->getSingleScalarResult();
-        $this->assertEquals(0, $result);
+        static::assertSame(0, (int) $result);
     }
 
     /**
@@ -385,7 +394,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $this->populateMore();
@@ -398,36 +407,36 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(4, $result);
-        $this->assertEquals('Alfabet', $result[0]['title']);
-        $this->assertEquals('Cabbages', $result[1]['title']);
-        $this->assertEquals('Food', $result[2]['title']);
-        $this->assertEquals('Woman', $result[3]['title']);
+        static::assertCount(4, $result);
+        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Cabbages', $result[1]['title']);
+        static::assertSame('Food', $result[2]['title']);
+        static::assertSame('Woman', $result[3]['title']);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertCount(4, $result);
-        $this->assertEquals('Alfabetas', $result[0]['title']);
-        $this->assertEquals('Kopustai', $result[1]['title']);
-        $this->assertEquals('Maistas', $result[2]['title']);
-        $this->assertEquals('Moteris', $result[3]['title']);
+        static::assertCount(4, $result);
+        static::assertSame('Alfabetas', $result[0]['title']);
+        static::assertSame('Kopustai', $result[1]['title']);
+        static::assertSame('Maistas', $result[2]['title']);
+        static::assertSame('Moteris', $result[3]['title']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertCount(4, $result);
-        $this->assertEquals('Alfabet', $result[0]->getTitle());
-        $this->assertEquals('Cabbages', $result[1]->getTitle());
-        $this->assertEquals('Food', $result[2]->getTitle());
-        $this->assertEquals('Woman', $result[3]->getTitle());
+        static::assertCount(4, $result);
+        static::assertSame('Alfabet', $result[0]->getTitle());
+        static::assertSame('Cabbages', $result[1]->getTitle());
+        static::assertSame('Food', $result[2]->getTitle());
+        static::assertSame('Woman', $result[3]->getTitle());
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertCount(4, $result);
-        $this->assertEquals('Alfabetas', $result[0]->getTitle());
-        $this->assertEquals('Kopustai', $result[1]->getTitle());
-        $this->assertEquals('Maistas', $result[2]->getTitle());
-        $this->assertEquals('Moteris', $result[3]->getTitle());
+        static::assertCount(4, $result);
+        static::assertSame('Alfabetas', $result[0]->getTitle());
+        static::assertSame('Kopustai', $result[1]->getTitle());
+        static::assertSame('Maistas', $result[2]->getTitle());
+        static::assertSame('Moteris', $result[3]->getTitle());
     }
 
     /**
@@ -445,22 +454,22 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // Test original
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        array_walk($result, function ($value, $key) use (&$result) {
+        array_walk($result, static function ($value, $key) use (&$result) {
             // Make each record be a "Title - Views" string
             $result[$key] = implode(' - ', $value);
         });
-        $this->assertEquals(
+        static::assertSame(
             ['Alfabet - 1', 'Food - 99', 'Cabbages - 2222', 'Woman - 3333'], $result,
             'Original of localizible integers should be sorted numerically'
         );
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        array_walk($result, function ($value, $key) use (&$result) {
+        array_walk($result, static function ($value, $key) use (&$result) {
             // Make each record be a "Title - Views" string
             $result[$key] = implode(' - ', $value);
         });
-        $this->assertEquals(
+        static::assertSame(
             ['Moteris - 33', 'Alfabetas - 111', 'Maistas - 999', 'Kopustai - 22222'], $result,
             'Localized integers should be sorted numerically'
         );
@@ -473,7 +482,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
@@ -484,71 +493,71 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(6, $food);
-        $this->assertEquals('Food', $food['title']);
-        $this->assertEquals('about food', $food['content']);
+        static::assertCount(6, $food);
+        static::assertSame('Food', $food['title']);
+        static::assertSame('about food', $food['content']);
         $comments = $food['comments'];
-        $this->assertCount(2, $comments);
+        static::assertCount(2, $comments);
         $good = $comments[0];
-        $this->assertCount(3, $good);
-        $this->assertEquals('good', $good['subject']);
-        $this->assertEquals('food is good', $good['message']);
+        static::assertCount(3, $good);
+        static::assertSame('good', $good['subject']);
+        static::assertSame('food is good', $good['message']);
         $bad = $comments[1];
-        $this->assertCount(3, $bad);
-        $this->assertEquals('bad', $bad['subject']);
-        $this->assertEquals('food is bad', $bad['message']);
+        static::assertCount(3, $bad);
+        static::assertSame('bad', $bad['subject']);
+        static::assertSame('food is bad', $bad['message']);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(6, $food);
-        $this->assertEquals('Maistas', $food['title']);
-        $this->assertEquals('apie maista', $food['content']);
+        static::assertCount(6, $food);
+        static::assertSame('Maistas', $food['title']);
+        static::assertSame('apie maista', $food['content']);
         $comments = $food['comments'];
-        $this->assertCount(2, $comments);
+        static::assertCount(2, $comments);
         $good = $comments[0];
-        $this->assertCount(3, $good);
-        $this->assertEquals('geras', $good['subject']);
-        $this->assertEquals('maistas yra geras', $good['message']);
+        static::assertCount(3, $good);
+        static::assertSame('geras', $good['subject']);
+        static::assertSame('maistas yra geras', $good['message']);
         $bad = $comments[1];
-        $this->assertCount(3, $bad);
-        $this->assertEquals('blogas', $bad['subject']);
-        $this->assertEquals('maistas yra blogas', $bad['message']);
+        static::assertCount(3, $bad);
+        static::assertSame('blogas', $bad['subject']);
+        static::assertSame('maistas yra blogas', $bad['message']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals('Food', $food->getTitle());
-        $this->assertEquals('about food', $food->getContent());
+        static::assertSame('Food', $food->getTitle());
+        static::assertSame('about food', $food->getContent());
         $comments = $food->getComments();
-        $this->assertCount(2, $comments);
+        static::assertCount(2, $comments);
         $good = $comments[0];
-        $this->assertEquals('good', $good->getSubject());
-        $this->assertEquals('food is good', $good->getMessage());
+        static::assertSame('good', $good->getSubject());
+        static::assertSame('food is good', $good->getMessage());
         $bad = $comments[1];
-        $this->assertEquals('bad', $bad->getSubject());
-        $this->assertEquals('food is bad', $bad->getMessage());
+        static::assertSame('bad', $bad->getSubject());
+        static::assertSame('food is bad', $bad->getMessage());
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals('Maistas', $food->getTitle());
-        $this->assertEquals('apie maista', $food->getContent());
+        static::assertSame('Maistas', $food->getTitle());
+        static::assertSame('apie maista', $food->getContent());
         $comments = $food->getComments();
-        $this->assertCount(2, $comments);
+        static::assertCount(2, $comments);
         $good = $comments[0];
-        $this->assertInstanceOf(self::COMMENT, $good);
-        $this->assertEquals('geras', $good->getSubject());
-        $this->assertEquals('maistas yra geras', $good->getMessage());
+        static::assertInstanceOf(self::COMMENT, $good);
+        static::assertSame('geras', $good->getSubject());
+        static::assertSame('maistas yra geras', $good->getMessage());
         $bad = $comments[1];
-        $this->assertEquals('blogas', $bad->getSubject());
-        $this->assertEquals('maistas yra blogas', $bad->getMessage());
+        static::assertSame('blogas', $bad->getSubject());
+        static::assertSame('maistas yra blogas', $bad->getMessage());
     }
 
     /**
@@ -558,7 +567,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a.title FROM '.self::ARTICLE.' a';
@@ -568,30 +577,30 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(1, $food);
-        $this->assertEquals('Food', $food['title']);
+        static::assertCount(1, $food);
+        static::assertSame('Food', $food['title']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(1, $food);
-        $this->assertEquals('Maistas', $food['title']);
+        static::assertCount(1, $food);
+        static::assertSame('Maistas', $food['title']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(1, $food);
-        $this->assertEquals('Food', $food['title']);
+        static::assertCount(1, $food);
+        static::assertSame('Food', $food['title']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(1, $food);
-        $this->assertEquals('Maistas', $food['title']);
+        static::assertCount(1, $food);
+        static::assertSame('Maistas', $food['title']);
     }
 
     /**
@@ -601,7 +610,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -611,34 +620,34 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(5, $food);
-        $this->assertEquals('Food', $food['title']);
-        $this->assertEquals('about food', $food['content']);
+        static::assertCount(5, $food);
+        static::assertSame('Food', $food['title']);
+        static::assertSame('about food', $food['content']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertCount(5, $food);
-        $this->assertEquals('Maistas', $food['title']);
-        $this->assertEquals('apie maista', $food['content']);
+        static::assertCount(5, $food);
+        static::assertSame('Maistas', $food['title']);
+        static::assertSame('apie maista', $food['content']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertInstanceOf(self::ARTICLE, $food);
-        $this->assertEquals('Food', $food->getTitle());
-        $this->assertEquals('about food', $food->getContent());
+        static::assertInstanceOf(self::ARTICLE, $food);
+        static::assertSame('Food', $food->getTitle());
+        static::assertSame('about food', $food->getContent());
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertCount(1, $result);
+        static::assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals('Maistas', $food->getTitle());
-        $this->assertEquals('apie maista', $food->getContent());
+        static::assertSame('Maistas', $food->getTitle());
+        static::assertSame('apie maista', $food->getContent());
     }
 
     /**
@@ -655,9 +664,9 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
-        $this->assertEquals('Food', $result[0]['title']);
-        $this->assertEquals(1, $result[0]['num']);
+        static::assertCount(1, $result);
+        static::assertSame('Food', $result[0]['title']);
+        static::assertSame(1, $result[0]['num']);
     }
 
     /**
@@ -667,7 +676,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+            SimpleObjectHydrator::class
         );
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
@@ -679,7 +688,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setSkipOnLoad(true);
         $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
 
-        $this->assertTrue($this->translatableListener->isSkipOnLoad());
+        static::assertTrue($this->translatableListener->isSkipOnLoad());
     }
 
     /**
@@ -689,7 +698,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
@@ -701,7 +710,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setSkipOnLoad(true);
         $q->getResult(Query::HYDRATE_OBJECT);
 
-        $this->assertTrue($this->translatableListener->isSkipOnLoad());
+        static::assertTrue($this->translatableListener->isSkipOnLoad());
     }
 
     protected function getUsedEntityFixtures()
@@ -713,7 +722,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         ];
     }
 
-    private function populateMore()
+    private function populateMore(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
         $commentRepo = $this->em->getRepository(self::COMMENT);
@@ -763,7 +772,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
         $commentRepo = $this->em->getRepository(self::COMMENT);

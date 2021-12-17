@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\Translatable" table="translatables">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="title" type="string" length="128">
+            <gedmo:translatable/>
+        </field>
+        <field name="content" type="text">
+            <gedmo:translatable/>
+        </field>
+        <field name="author" type="text">
+            <gedmo:translatable fallback="true"/>
+        </field>
+        <field name="views" type="text">
+            <gedmo:translatable fallback="false"/>
+        </field>
+        <gedmo:translation entity="Gedmo\Translatable\Entity\Translation" locale="locale"/>
+    </entity>
+</doctrine-mapping>

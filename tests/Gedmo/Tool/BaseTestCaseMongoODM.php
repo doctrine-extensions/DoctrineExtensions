@@ -1,14 +1,25 @@
 <?php
 
-namespace Tool;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
@@ -20,10 +31,6 @@ use MongoDB\Client;
  * ORM object manager
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 {
@@ -37,8 +44,8 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
      */
     protected function setUp(): void
     {
-        if (!class_exists('Mongo')) {
-            $this->markTestSkipped('Missing Mongo extension.');
+        if (!extension_loaded('mongodb')) {
+            static::markTestSkipped('Missing Mongo extension.');
         }
     }
 
@@ -55,7 +62,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
             $documentDatabase->drop();
         }
 
-        unset($this->dm);
+        $this->dm = null;
     }
 
     /**
@@ -71,6 +78,11 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $evm = $evm ?: $this->getEventManager();
 
         return $this->dm = DocumentManager::create($client, $config, $evm);
+    }
+
+    protected function getDefaultDocumentManager(EventManager $evm = null): DocumentManager
+    {
+        return $this->getMockDocumentManager($evm, $this->getDefaultConfiguration());
     }
 
     /**
@@ -101,11 +113,53 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Build event manager
-     *
-     * @return EventManager
+     * Get annotation mapping configuration
      */
-    private function getEventManager()
+    protected function getMockAnnotatedConfig(): Configuration
+    {
+        $config = new Configuration();
+        $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setHydratorDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setHydratorNamespace('Hydrator');
+        $config->setDefaultDB('gedmo_extensions_test');
+        $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
+        $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
+        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+
+        return $config;
+    }
+
+    protected function getDefaultConfiguration(): Configuration
+    {
+        $config = new Configuration();
+        $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setHydratorDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setHydratorNamespace('Hydrator');
+        $config->setDefaultDB('gedmo_extensions_test');
+        $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
+        $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
+        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
+
+        return $config;
+    }
+
+    private function getMetadataDefaultDriverImplementation(): MappingDriver
+    {
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            return new AttributeDriver([]);
+        }
+
+        return new AnnotationDriver($_ENV['annotation_reader']);
+    }
+
+    /**
+     * Build event manager
+     */
+    private function getEventManager(): EventManager
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
@@ -115,24 +169,5 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $evm->addEventSubscriber(new SoftDeleteableListener());
 
         return $evm;
-    }
-
-    /**
-     * Get annotation mapping configuration
-     */
-    protected function getMockAnnotatedConfig(): Configuration
-    {
-        $config = new Configuration();
-        $config->addFilter('softdeleteable', 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
-        $config->setProxyDir(__DIR__.'/../../temp');
-        $config->setHydratorDir(__DIR__.'/../../temp');
-        $config->setProxyNamespace('Proxy');
-        $config->setHydratorNamespace('Hydrator');
-        $config->setDefaultDB('gedmo_extensions_test');
-        $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
-        $config->setAutoGenerateHydratorClasses(true);
-        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
-
-        return $config;
     }
 }

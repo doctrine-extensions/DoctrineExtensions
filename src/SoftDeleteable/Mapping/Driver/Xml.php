@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
@@ -15,7 +22,6 @@ use Gedmo\SoftDeleteable\Mapping\Validator;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Xml extends BaseXml
 {
@@ -27,11 +33,11 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (in_array($xmlDoctrine->getName(), ['mapped-superclass', 'entity', 'document', 'embedded-document'])) {
+        if (in_array($xmlDoctrine->getName(), ['mapped-superclass', 'entity', 'document', 'embedded-document'], true)) {
             if (isset($xml->{'soft-deleteable'})) {
                 $field = $this->_getAttribute($xml->{'soft-deleteable'}, 'field-name');
 

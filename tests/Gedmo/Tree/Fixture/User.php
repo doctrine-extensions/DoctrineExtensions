@@ -1,6 +1,15 @@
 <?php
 
-namespace Tree\Fixture;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User extends Role
 {
-    const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
+    public const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
 
     /**
      * @ORM\Column(name="email", type="string", unique=true)
@@ -67,7 +76,7 @@ class User extends Role
         $num = strlen($set);
         $ret = '';
         for ($i = 0; $i < $length; ++$i) {
-            $ret .= $set[rand(0, $num - 1)];
+            $ret .= $set[mt_rand(0, $num - 1)];
         }
 
         return $ret;

@@ -1,21 +1,31 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Prefix;
+use Gedmo\Tests\Sluggable\Fixture\PrefixWithTreeHandler;
+use Gedmo\Tests\Sluggable\Fixture\Suffix;
+use Gedmo\Tests\Sluggable\Fixture\SuffixWithTreeHandler;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Prefix;
-use Sluggable\Fixture\PrefixWithTreeHandler;
-use Sluggable\Fixture\Suffix;
-use Sluggable\Fixture\SuffixWithTreeHandler;
-use Tool\BaseTestCaseORM;
 
-class SluggablePrefixSuffixTest extends BaseTestCaseORM
+final class SluggablePrefixSuffixTest extends BaseTestCaseORM
 {
-    const PREFIX = 'Sluggable\\Fixture\\Prefix';
-    const SUFFIX = 'Sluggable\\Fixture\\Suffix';
-    const SUFFIX_TREE = 'Sluggable\\Fixture\\SuffixWithTreeHandler';
-    const PREFIX_TREE = 'Sluggable\\Fixture\\PrefixWithTreeHandler';
+    public const PREFIX = Prefix::class;
+    public const SUFFIX = Suffix::class;
+    public const SUFFIX_TREE = SuffixWithTreeHandler::class;
+    public const PREFIX_TREE = PrefixWithTreeHandler::class;
 
     protected function setUp(): void
     {
@@ -25,39 +35,30 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function testPrefix()
+    public function testPrefix(): void
     {
         $foo = new Prefix();
         $foo->setTitle('Foo');
         $this->em->persist($foo);
         $this->em->flush();
 
-        $this->assertEquals('test-foo', $foo->getSlug());
+        static::assertSame('test-foo', $foo->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function testSuffix()
+    public function testSuffix(): void
     {
         $foo = new Suffix();
         $foo->setTitle('Foo');
         $this->em->persist($foo);
         $this->em->flush();
 
-        $this->assertEquals('foo.test', $foo->getSlug());
+        static::assertSame('foo.test', $foo->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function testNoDuplicateSuffixes()
+    public function testNoDuplicateSuffixes(): void
     {
         $foo = new SuffixWithTreeHandler();
         $foo->setTitle('Foo');
@@ -75,13 +76,10 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->em->persist($baz);
         $this->em->flush();
 
-        $this->assertEquals('foo.test/bar.test/baz.test', $baz->getSlug());
+        static::assertSame('foo.test/bar.test/baz.test', $baz->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function testNoDuplicatePrefixes()
+    public function testNoDuplicatePrefixes(): void
     {
         $foo = new PrefixWithTreeHandler();
         $foo->setTitle('Foo');
@@ -99,15 +97,13 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->em->persist($baz);
         $this->em->flush();
 
-        $this->assertEquals('test.foo/test.bar/test.baz', $baz->getSlug());
+        static::assertSame('test.foo/test.bar/test.baz', $baz->getSlug());
     }
 
     /**
      * Get a list of used fixture classes
-     *
-     * @return array
      */
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::SUFFIX,

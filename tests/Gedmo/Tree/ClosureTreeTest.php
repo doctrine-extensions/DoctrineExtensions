@@ -1,33 +1,46 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Closure\Category;
-use Tree\Fixture\Closure\CategoryWithoutLevel;
-use Tree\Fixture\Closure\News;
+use Gedmo\Exception\UnexpectedValueException;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Closure\Category;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevelClosure;
+use Gedmo\Tests\Tree\Fixture\Closure\News;
+use Gedmo\Tests\Tree\Fixture\Closure\Person;
+use Gedmo\Tests\Tree\Fixture\Closure\PersonClosure;
+use Gedmo\Tests\Tree\Fixture\Closure\User;
+use Gedmo\Tree\Strategy\ORM\Closure;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ClosureTreeTest extends BaseTestCaseORM
+final class ClosureTreeTest extends BaseTestCaseORM
 {
-    const CATEGORY = 'Tree\\Fixture\\Closure\\Category';
-    const CLOSURE = 'Tree\\Fixture\\Closure\\CategoryClosure';
-    const PERSON = 'Tree\\Fixture\\Closure\\Person';
-    const USER = 'Tree\\Fixture\\Closure\\User';
-    const PERSON_CLOSURE = 'Tree\\Fixture\\Closure\\PersonClosure';
-    const NEWS = 'Tree\\Fixture\\Closure\\News';
-    const CATEGORY_WITHOUT_LEVEL = 'Tree\\Fixture\\Closure\\CategoryWithoutLevel';
-    const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
+    public const CATEGORY = Category::class;
+    public const CLOSURE = CategoryClosure::class;
+    public const PERSON = Person::class;
+    public const USER = User::class;
+    public const PERSON_CLOSURE = PersonClosure::class;
+    public const NEWS = News::class;
+    public const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
+    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
 
     protected $listener;
 
@@ -99,11 +112,12 @@ class ClosureTreeTest extends BaseTestCaseORM
         $query->setParameter('ancestor', $food);
 
         $foodClosures = $query->getResult();
-        $this->assertCount(12, $foodClosures);
+        static::assertCount(12, $foodClosures);
         foreach ($foodClosures as $closure) {
             $descendant = $closure->getDescendant();
             if ($descendant === $food) {
-                $this->assertEquals(0, $closure->getDepth());
+                static::assertSame(0, $closure->getDepth());
+
                 continue;
             }
             $descendantTitle = $descendant->getTitle();
@@ -111,32 +125,39 @@ class ClosureTreeTest extends BaseTestCaseORM
             $descendantClosures = $query->getResult();
             switch ($descendantTitle) {
                 case 'Fruits':
-                    $this->assertCount(5, $descendantClosures);
-                    $this->assertEquals(1, $closure->getDepth());
+                    static::assertCount(5, $descendantClosures);
+                    static::assertSame(1, $closure->getDepth());
+
                     break;
                 case 'Oranges':
-                    $this->assertCount(1, $descendantClosures);
-                    $this->assertEquals(2, $closure->getDepth());
+                    static::assertCount(1, $descendantClosures);
+                    static::assertSame(2, $closure->getDepth());
+
                     break;
                 case 'Berries':
-                    $this->assertCount(2, $descendantClosures);
-                    $this->assertEquals(2, $closure->getDepth());
+                    static::assertCount(2, $descendantClosures);
+                    static::assertSame(2, $closure->getDepth());
+
                     break;
                 case 'Vegitables':
-                    $this->assertCount(3, $descendantClosures);
-                    $this->assertEquals(1, $closure->getDepth());
+                    static::assertCount(3, $descendantClosures);
+                    static::assertSame(1, $closure->getDepth());
+
                     break;
                 case 'Milk':
-                    $this->assertCount(3, $descendantClosures);
-                    $this->assertEquals(1, $closure->getDepth());
+                    static::assertCount(3, $descendantClosures);
+                    static::assertSame(1, $closure->getDepth());
+
                     break;
                 case 'Cheese':
-                    $this->assertCount(2, $descendantClosures);
-                    $this->assertEquals(2, $closure->getDepth());
+                    static::assertCount(2, $descendantClosures);
+                    static::assertSame(2, $closure->getDepth());
+
                     break;
                 case 'Strawberries':
-                    $this->assertCount(1, $descendantClosures);
-                    $this->assertEquals(3, $closure->getDepth());
+                    static::assertCount(1, $descendantClosures);
+                    static::assertSame(3, $closure->getDepth());
+
                     break;
             }
         }
@@ -158,11 +179,11 @@ class ClosureTreeTest extends BaseTestCaseORM
         $query->setParameter('descendant', $strawberries);
 
         $closures = $query->getResult();
-        $this->assertTrue($this->hasAncestor($closures, 'Cheese'));
-        $this->assertTrue($this->hasAncestor($closures, 'Milk'));
-        $this->assertTrue($this->hasAncestor($closures, 'Food'));
-        $this->assertFalse($this->hasAncestor($closures, 'Berries'));
-        $this->assertFalse($this->hasAncestor($closures, 'Fruits'));
+        static::assertTrue($this->hasAncestor($closures, 'Cheese'));
+        static::assertTrue($this->hasAncestor($closures, 'Milk'));
+        static::assertTrue($this->hasAncestor($closures, 'Food'));
+        static::assertFalse($this->hasAncestor($closures, 'Berries'));
+        static::assertFalse($this->hasAncestor($closures, 'Fruits'));
     }
 
     public function testAnotherUpdateOfParent()
@@ -180,8 +201,8 @@ class ClosureTreeTest extends BaseTestCaseORM
         $query->setParameter('descendant', $strawberries);
 
         $closures = $query->getResult();
-        $this->assertCount(1, $closures);
-        $this->assertTrue($this->hasAncestor($closures, 'Strawberries'));
+        static::assertCount(1, $closures);
+        static::assertTrue($this->hasAncestor($closures, 'Strawberries'));
     }
 
     public function testBranchRemoval()
@@ -200,13 +221,13 @@ class ClosureTreeTest extends BaseTestCaseORM
         $query = $this->em->createQuery($dql);
         $query->setParameter('id', $id);
 
-        $this->assertEquals(0, $query->getSingleScalarResult());
+        static::assertSame(0, (int) $query->getSingleScalarResult());
         // pdo_sqlite will not cascade
     }
 
     public function testSettingParentToChild()
     {
-        $this->expectException('Gedmo\Exception\UnexpectedValueException');
+        $this->expectException(UnexpectedValueException::class);
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
@@ -217,17 +238,17 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     public function testIfEntityHasNotIncludedTreeLevelFieldThenDontProcessIt()
     {
-        $listener = $this->getMockBuilder('Gedmo\Tree\TreeListener')->getMock();
-        $strategy = $this->getMockBuilder('Gedmo\Tree\Strategy\ORM\Closure')
+        $listener = $this->getMockBuilder(TreeListener::class)->getMock();
+        $strategy = $this->getMockBuilder(Closure::class)
             ->setMethods(['setLevelFieldOnPendingNodes'])
             ->setConstructorArgs([$listener])
             ->getMock();
 
-        $listener->expects($this->any())
+        $listener
             ->method('getStrategy')
-            ->will($this->returnValue($strategy));
+            ->willReturn($strategy);
 
-        $strategy->expects($this->never())
+        $strategy->expects(static::never())
             ->method('setLevelFieldOnPendingNodes');
 
         $evm = $this->em->getEventManager();
@@ -242,18 +263,50 @@ class ClosureTreeTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    private function hasAncestor($closures, $name)
+    public function testCascadePersistTree()
     {
-        $result = false;
-        foreach ($closures as $closure) {
-            $ancestor = $closure->getAncestor();
-            if ($ancestor->getTitle() === $name) {
-                $result = true;
-                break;
-            }
-        }
+        $politics = new Category();
+        $politics->setTitle('Politics');
 
-        return $result;
+        $news = new News('Lorem ipsum', $politics);
+        $this->em->persist($news);
+        $this->em->flush();
+
+        $closure = $this->em->createQueryBuilder()
+                    ->select('c')
+                    ->from(self::CLOSURE, 'c')
+                    ->where('c.ancestor = :ancestor')
+                    ->setParameter('ancestor', $politics->getId())
+                    ->getQuery()
+                    ->getResult();
+
+        static::assertCount(1, $closure);
+    }
+
+    public function testPersistOnRightEmInstance()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
+
+        $emOne = $this->getMockSqliteEntityManager($evm);
+        $emTwo = $this->getMockSqliteEntityManager($evm);
+
+        $categoryOne = new Category();
+        $categoryOne->setTitle('Politics');
+
+        $categoryTwo = new Category();
+        $categoryTwo->setTitle('Politics');
+
+        // Persist and Flush on different times !
+        $emOne->persist($categoryOne);
+
+        $emTwo->persist($categoryTwo);
+        $emTwo->flush();
+
+        $emOne->flush();
+
+        static::assertNotNull($categoryOne->getId());
+        static::assertNotNull($categoryTwo->getId());
     }
 
     protected function getUsedEntityFixtures()
@@ -270,7 +323,19 @@ class ClosureTreeTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function hasAncestor(iterable $closures, string $name): bool
+    {
+        foreach ($closures as $closure) {
+            $ancestor = $closure->getAncestor();
+            if ($ancestor->getTitle() === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function populate(): void
     {
         $food = new Category();
         $food->setTitle('Food');
@@ -332,51 +397,5 @@ class ClosureTreeTest extends BaseTestCaseORM
         $this->em->persist($mouldCheese);
 
         $this->em->flush();
-    }
-
-    public function testCascadePersistTree()
-    {
-        $politics = new Category();
-        $politics->setTitle('Politics');
-
-        $news = new News('Lorem ipsum', $politics);
-        $this->em->persist($news);
-        $this->em->flush();
-
-        $closure = $this->em->createQueryBuilder()
-                    ->select('c')
-                    ->from(self::CLOSURE, 'c')
-                    ->where('c.ancestor = :ancestor')
-                    ->setParameter('ancestor', $politics->getId())
-                    ->getQuery()
-                    ->getResult();
-
-        $this->assertCount(1, $closure);
-    }
-
-    public function testPersistOnRightEmInstance()
-    {
-        $evm = new EventManager();
-        $evm->addEventSubscriber(new TreeListener());
-
-        $emOne = $this->getMockSqliteEntityManager($evm);
-        $emTwo = $this->getMockSqliteEntityManager($evm);
-
-        $categoryOne = new Category();
-        $categoryOne->setTitle('Politics');
-
-        $categoryTwo = new Category();
-        $categoryTwo->setTitle('Politics');
-
-        // Persist and Flush on different times !
-        $emOne->persist($categoryOne);
-
-        $emTwo->persist($categoryTwo);
-        $emTwo->flush();
-
-        $emOne->flush();
-
-        $this->assertNotNull($categoryOne->getId());
-        $this->assertNotNull($categoryTwo->getId());
     }
 }

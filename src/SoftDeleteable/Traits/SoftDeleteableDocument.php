@@ -1,16 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable\Traits;
 
 use DateTime;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * A soft deletable trait you can apply to your MongoDB entities.
  * Includes default annotation mapping.
  *
  * @author Wesley van Opdorp <wesley.van.opdorp@freshheads.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 trait SoftDeleteableDocument
 {
@@ -19,6 +26,7 @@ trait SoftDeleteableDocument
      *
      * @var DateTime|null
      */
+    #[ODM\Field(type: Type::DATE)]
     protected $deletedAt;
 
     /**

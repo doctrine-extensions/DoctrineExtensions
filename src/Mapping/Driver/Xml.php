@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
@@ -13,12 +20,11 @@ use SimpleXMLElement;
  *
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class Xml extends File
 {
-    const GEDMO_NAMESPACE_URI = 'http://gediminasm.org/schemas/orm/doctrine-extensions-mapping';
-    const DOCTRINE_NAMESPACE_URI = 'http://doctrine-project.org/schemas/orm/doctrine-mapping';
+    public const GEDMO_NAMESPACE_URI = 'http://gediminasm.org/schemas/orm/doctrine-extensions-mapping';
+    public const DOCTRINE_NAMESPACE_URI = 'http://doctrine-project.org/schemas/orm/doctrine-mapping';
 
     /**
      * File extension
@@ -59,6 +65,7 @@ abstract class Xml extends File
         if ('0' === $rawValue || 'false' === $rawValue) {
             return false;
         }
+
         throw new InvalidMappingException(sprintf("Attribute %s must have a valid boolean value, '%s' found", $attributeName, $this->_getAttribute($node, $attributeName)));
     }
 
@@ -68,7 +75,7 @@ abstract class Xml extends File
      *
      * @param string $attributeName
      *
-     * @return string
+     * @return bool
      */
     protected function _isAttributeSet(SimpleXmlElement $node, $attributeName)
     {
@@ -83,7 +90,11 @@ abstract class Xml extends File
     protected function _loadMappingFile($file)
     {
         $result = [];
-        $xmlElement = simplexml_load_file($file);
+        // We avoid calling `simplexml_load_file()` in order to prevent file operations in libXML.
+        // If `libxml_disable_entity_loader(true)` is called before, `simplexml_load_file()` fails,
+        // that's why we use `simplexml_load_string()` instead.
+        // @see https://bugs.php.net/bug.php?id=62577.
+        $xmlElement = simplexml_load_string(file_get_contents($file));
         $xmlElement = $xmlElement->children(self::DOCTRINE_NAMESPACE_URI);
 
         if (isset($xmlElement->entity)) {

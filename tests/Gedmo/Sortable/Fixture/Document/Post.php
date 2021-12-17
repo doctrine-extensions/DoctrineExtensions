@@ -1,6 +1,15 @@
 <?php
 
-namespace Sortable\Fixture\Document;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -10,14 +19,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Post
 {
-    /** @ODM\Id */
-    private $id;
-
-    /**
-     * @ODM\Field(type="string")
-     */
-    private $title;
-
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
@@ -26,9 +27,16 @@ class Post
 
     /**
      * @Gedmo\SortableGroup
-     * @ODM\ReferenceOne(targetDocument="Sortable\Fixture\Document\Category")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sortable\Fixture\Document\Category")
      */
     protected $category;
+    /** @ODM\Id */
+    private $id;
+
+    /**
+     * @ODM\Field(type="string")
+     */
+    private $title;
 
     public function getId()
     {

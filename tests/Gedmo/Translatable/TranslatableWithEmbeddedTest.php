@@ -1,19 +1,31 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Company;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Company;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\TranslatableListener;
 
-class TranslatableWithEmbeddedTest extends BaseTestCaseORM
+final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 {
-    const FIXTURE = 'Translatable\\Fixture\\Company';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const FIXTURE = Company::class;
+    public const TRANSLATION = Translation::class;
 
-    const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener
@@ -30,7 +42,7 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
@@ -54,9 +66,6 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    /**
-     * @test
-     */
     public function testTranslate()
     {
         /** @var EntityRepository $repo */
@@ -69,15 +78,15 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($entity);
 
-        $this->assertArrayHasKey('de', $translations);
-        $this->assertSame('test-de', $translations['de']['title']);
-        $this->assertSame('test', $entity->getTitle());
+        static::assertArrayHasKey('de', $translations);
+        static::assertSame('test-de', $translations['de']['title']);
+        static::assertSame('test', $entity->getTitle());
 
-        $this->assertSame('website-de', $translations['de']['link.website']);
-        $this->assertSame('website', $entity->getLink()->getWebsite());
+        static::assertSame('website-de', $translations['de']['link.website']);
+        static::assertSame('website', $entity->getLink()->getWebsite());
 
-        $this->assertSame('facebook-de', $translations['de']['link.facebook']);
-        $this->assertSame('facebook', $entity->getLink()->getFacebook());
+        static::assertSame('facebook-de', $translations['de']['link.facebook']);
+        static::assertSame('facebook', $entity->getLink()->getFacebook());
 
         $this->em->clear();
 
@@ -85,13 +94,10 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::FIXTURE);
         $entity = $repo->findOneBy(['id' => $entity->getId()]);
 
-        $this->assertSame('website-de', $entity->getLink()->getWebsite());
-        $this->assertSame('facebook-de', $entity->getLink()->getFacebook());
+        static::assertSame('website-de', $entity->getLink()->getWebsite());
+        static::assertSame('facebook-de', $entity->getLink()->getFacebook());
     }
 
-    /**
-     * @test
-     */
     public function testQueryWalker()
     {
         $dql = 'SELECT f FROM '.self::FIXTURE.' f';
@@ -103,10 +109,10 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
         $result = $q->getArrayResult();
 
-        $this->assertCount(1, $result);
-        $this->assertSame('test-de', $result[0]['title']);
-        $this->assertSame('website-de', $result[0]['link.website']);
-        $this->assertSame('facebook-de', $result[0]['link.facebook']);
+        static::assertCount(1, $result);
+        static::assertSame('test-de', $result[0]['title']);
+        static::assertSame('website-de', $result[0]['link.website']);
+        static::assertSame('facebook-de', $result[0]['link.facebook']);
     }
 
     protected function getUsedEntityFixtures()

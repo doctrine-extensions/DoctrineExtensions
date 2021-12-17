@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
@@ -11,7 +18,6 @@ use Doctrine\Common\Annotations\Annotation;
  * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class Slug extends Annotation
 {
@@ -24,14 +30,14 @@ final class Slug extends Annotation
     /** @var bool */
     public $unique = true;
     /** @var string */
-    public $unique_base = null;
+    public $unique_base;
     /** @var string */
     public $separator = '-';
     /** @var string */
     public $prefix = '';
     /** @var string */
     public $suffix = '';
-    /** @var array<Gedmo\Mapping\Annotation\SlugHandler> */
+    /** @var SlugHandler[] */
     public $handlers = [];
     /** @var string */
     public $dateFormat = 'Y-m-d-H:i';

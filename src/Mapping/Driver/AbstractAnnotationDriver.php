@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -8,8 +15,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
  * This is an abstract class to implement common functionality
  * for extension annotation mapping drivers.
  *
- * @author     Derek J. Lambert <dlambert@dereklambert.com>
- * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @author Derek J. Lambert <dlambert@dereklambert.com>
  */
 abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
 {
@@ -23,7 +29,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Original driver if it is available
      */
-    protected $_originalDriver = null;
+    protected $_originalDriver;
 
     /**
      * List of types which are valid for extension
@@ -62,10 +68,14 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
             // based on recent doctrine 2.3.0-DEV maybe will be fixed in some way
             // this happens when running annotation driver in combination with
             // static reflection services. This is not the nicest fix
-            $class = new \ReflectionClass($meta->name);
+            $class = new \ReflectionClass($meta->getName());
         }
 
         return $class;
+    }
+
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    {
     }
 
     /**
@@ -80,20 +90,16 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
-    }
-
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
     }
 
     /**
      * Try to find out related class name out of mapping
      *
-     * @param ClassMetadata $metadata - the mapped class metadata
-     * @param $name - the related object class name
+     * @param ClassMetadata $metadata the mapped class metadata
+     * @param string        $name     the related object class name
      *
-     * @return string - related class name or empty string if does not exist
+     * @return string related class name or empty string if does not exist
      */
     protected function getRelatedClassName($metadata, $name)
     {

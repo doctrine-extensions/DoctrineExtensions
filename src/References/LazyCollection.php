@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\References;
 
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +17,6 @@ use Doctrine\Common\Collections\Collection;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LazyCollection implements Collection
 {
@@ -33,7 +39,7 @@ class LazyCollection implements Collection
     {
         $this->initialize();
 
-        return $this->results->clear();
+        $this->results->clear();
     }
 
     public function contains($element)
@@ -173,7 +179,7 @@ class LazyCollection implements Collection
     {
         $this->initialize();
 
-        return $this->results->set($key, $value);
+        $this->results->set($key, $value);
     }
 
     public function slice($offset, $length = null)
@@ -208,14 +214,14 @@ class LazyCollection implements Collection
     {
         $this->initialize();
 
-        return $this->results->offsetSet($offset, $value);
+        $this->results->offsetSet($offset, $value);
     }
 
     public function offsetUnset($offset)
     {
         $this->initialize();
 
-        return $this->results->offsetUnset($offset);
+        $this->results->offsetUnset($offset);
     }
 
     public function getIterator()
@@ -232,7 +238,7 @@ class LazyCollection implements Collection
         return $this->results->count();
     }
 
-    private function initialize()
+    private function initialize(): void
     {
         if (null === $this->results) {
             $this->results = call_user_func($this->callback);

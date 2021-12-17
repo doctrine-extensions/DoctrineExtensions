@@ -1,6 +1,15 @@
 <?php
 
-namespace Mapping\Fixture\Compatibility;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping\Fixture\Compatibility;
 
 /**
  * @Entity
@@ -16,7 +25,7 @@ class Article
     private $title;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @gedmo:Timestampable(on="create")
      * @Column(name="created", type="date")
@@ -24,7 +33,7 @@ class Article
     private $created;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @Column(name="updated", type="datetime")
      * @gedmo:Timestampable
@@ -49,7 +58,7 @@ class Article
     /**
      * Get created
      *
-     * @return datetime $created
+     * @return \DateTime $created
      */
     public function getCreated()
     {
@@ -64,7 +73,7 @@ class Article
     /**
      * Get updated
      *
-     * @return datetime $updated
+     * @return \DateTime $updated
      */
     public function getUpdated()
     {

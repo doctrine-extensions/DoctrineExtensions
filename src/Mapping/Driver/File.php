@@ -1,8 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Driver;
 
-use Doctrine\ORM\Mapping\Driver\AbstractFileDriver;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\FileDriver;
 use Doctrine\Persistence\Mapping\Driver\FileLocator;
 use Gedmo\Mapping\Driver;
@@ -14,7 +21,6 @@ use Gedmo\Mapping\Driver;
  * drivers.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class File implements Driver
 {
@@ -33,7 +39,14 @@ abstract class File implements Driver
     /**
      * original driver if it is available
      */
-    protected $_originalDriver = null;
+    protected $_originalDriver;
+
+    /**
+     * @deprecated since gedmo/doctrine-extensions 3.3, will be removed in version 4.0.
+     *
+     * @var string[]
+     */
+    protected $_paths = [];
 
     public function setLocator(FileLocator $locator)
     {
@@ -43,7 +56,9 @@ abstract class File implements Driver
     /**
      * Set the paths for file lookup
      *
-     * @param array $paths
+     * @deprecated since gedmo/doctrine-extensions 3.3, will be removed in version 4.0.
+     *
+     * @param string[] $paths
      *
      * @return void
      */
@@ -62,6 +77,18 @@ abstract class File implements Driver
     public function setExtension($extension)
     {
         $this->_extension = $extension;
+    }
+
+    /**
+     * Passes in the mapping read by original driver
+     *
+     * @param object $driver
+     *
+     * @return void
+     */
+    public function setOriginalDriver($driver)
+    {
+        $this->_originalDriver = $driver;
     }
 
     /**
@@ -85,14 +112,14 @@ abstract class File implements Driver
     {
         //try loading mapping from original driver first
         $mapping = null;
-        if (!is_null($this->_originalDriver)) {
-            if ($this->_originalDriver instanceof FileDriver || $this->_originalDriver instanceof AbstractFileDriver) {
+        if (null !== $this->_originalDriver) {
+            if ($this->_originalDriver instanceof FileDriver) {
                 $mapping = $this->_originalDriver->getElement($className);
             }
         }
 
         //if no mapping found try to load mapping file again
-        if (is_null($mapping)) {
+        if (null === $mapping) {
             $yaml = $this->_loadMappingFile($this->locator->findMappingFile($className));
             $mapping = $yaml[$className];
         }
@@ -101,24 +128,12 @@ abstract class File implements Driver
     }
 
     /**
-     * Passes in the mapping read by original driver
-     *
-     * @param object $driver
-     *
-     * @return void
-     */
-    public function setOriginalDriver($driver)
-    {
-        $this->_originalDriver = $driver;
-    }
-
-    /**
      * Try to find out related class name out of mapping
      *
-     * @param $metadata - the mapped class metadata
-     * @param $name - the related object class name
+     * @param ClassMetadata $metadata the mapped class metadata
+     * @param string        $name     the related object class name
      *
-     * @return string - related class name or empty string if does not exist
+     * @return string related class name or empty string if does not exist
      */
     protected function getRelatedClassName($metadata, $name)
     {

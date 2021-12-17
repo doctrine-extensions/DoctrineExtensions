@@ -1,27 +1,32 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Event;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\ORM\UnitOfWork;
+use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 
 /**
- * Doctrine event adapter interface is used
- * to retrieve common functionality for Doctrine
- * events
+ * Doctrine event adapter for Doctrine extensions.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @method LifecycleEventArgs createLifecycleEventArgsInstance(object $object, ObjectManager $manager)
  */
 interface AdapterInterface
 {
     /**
-     * Set the eventargs
-     */
-    public function setEventArgs(EventArgs $args);
-
-    /**
-     * Call specific method on event args
+     * Calls a method on the event args object.
      *
      * @param string $method
      * @param array  $args
@@ -31,15 +36,19 @@ interface AdapterInterface
     public function __call($method, $args);
 
     /**
-     * Get the name of domain object
+     * Set the event args object.
+     */
+    public function setEventArgs(EventArgs $args);
+
+    /**
+     * Get the name of the domain object.
      *
      * @return string
      */
     public function getDomainObjectName();
 
     /**
-     * Get the name of used manager for this
-     * event adapter
+     * Get the name of the manager used by this adapter.
      *
      * @return string
      */
@@ -48,103 +57,106 @@ interface AdapterInterface
     /**
      * Get the root object class, handles inheritance
      *
-     * @param \Doctrine\Persistence\Mapping\ClassMetadata $meta
+     * @param ClassMetadata $meta
      *
      * @return string
+     * @phpstan-return class-string
      */
     public function getRootObjectClass($meta);
 
     /**
-     * Get used object manager
+     * Get the object manager.
      *
-     * @return \Doctrine\Persistence\ObjectManager
+     * @return ObjectManager
      */
     public function getObjectManager();
 
     /**
-     * Get object state
+     * Gets the state of an object from the unit of work.
      *
-     * @param UnitOfWork $uow
-     * @param object     $object
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow    The UnitOfWork as provided by the object manager
+     * @param object                          $object
      *
-     * @return int the document state
+     * @return int The object state as reported by the unit of work
      */
     public function getObjectState($uow, $object);
 
     /**
-     * Get the object changeset from a UnitOfWork
+     * Gets the changeset for an object from the unit of work.
      *
-     * @param UnitOfWork $uow
-     * @param object     $object
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow    The UnitOfWork as provided by the object manager
+     * @param object                          $object
      *
      * @return array
      */
     public function getObjectChangeSet($uow, $object);
 
     /**
-     * Get the single identifier field name
+     * Get the single identifier field name.
      *
-     * @param \Doctrine\Persistence\Mapping\ClassMetadata $meta
+     * @param ClassMetadata $meta
      *
      * @return string
      */
     public function getSingleIdentifierFieldName($meta);
 
     /**
-     * Recompute the single object changeset from a UnitOfWork
+     * Computes the changeset of an individual object, independently of the
+     * computeChangeSets() routine that is used at the beginning of a unit
+     * of work's commit.
      *
-     * @param UnitOfWork                                         $uow
-     * @param \Doctrine\Persistence\Mapping\ClassMetadata $meta
-     * @param object                                             $object
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow    The UnitOfWork as provided by the object manager
+     * @param ClassMetadata                   $meta
+     * @param object                          $object
      *
      * @return void
      */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object);
 
     /**
-     * Get the scheduled object updates from a UnitOfWork
+     * Gets the currently scheduled object updates from the unit of work.
      *
-     * @param UnitOfWork $uow
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
      * @return array
      */
     public function getScheduledObjectUpdates($uow);
 
     /**
-     * Get the scheduled object insertions from a UnitOfWork
+     * Gets the currently scheduled object insertions in the unit of work.
      *
-     * @param UnitOfWork $uow
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
      * @return array
      */
     public function getScheduledObjectInsertions($uow);
 
     /**
-     * Get the scheduled object deletions from a UnitOfWork
+     * Gets the currently scheduled object deletions in the unit of work.
      *
-     * @param UnitOfWork $uow
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
      * @return array
      */
     public function getScheduledObjectDeletions($uow);
 
     /**
-     * Sets a property value of the original data array of an object
+     * Sets a property value of the original data array of an object.
      *
-     * @param UnitOfWork $uow
-     * @param string     $oid
-     * @param string     $property
-     * @param mixed      $value
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow
+     * @param object                          $object
+     * @param string                          $property
+     * @param mixed                           $value
      *
      * @return void
      */
-    public function setOriginalObjectProperty($uow, $oid, $property, $value);
+    public function setOriginalObjectProperty($uow, $object, $property, $value);
 
     /**
      * Clears the property changeset of the object with the given OID.
      *
-     * @param UnitOfWork $uow
-     * @param string     $oid the object's OID
+     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow
+     * @param object                          $object
      */
-    public function clearObjectChangeSet($uow, $oid);
+    public function clearObjectChangeSet($uow, $object);
 }

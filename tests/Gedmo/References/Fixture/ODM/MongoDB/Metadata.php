@@ -1,10 +1,19 @@
 <?php
 
-namespace References\Fixture\ODM\MongoDB;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\References\Fixture\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use References\Fixture\ORM\Category;
+use Gedmo\Tests\References\Fixture\ORM\Category;
 
 /**
  * @ODM\EmbeddedDocument
@@ -16,7 +25,7 @@ class Metadata
     private $name;
 
     /**
-     * @Gedmo\ReferenceOne(type="entity", class="References\Fixture\ORM\Category", identifier="categoryId")
+     * @Gedmo\ReferenceOne(type="entity", class="Gedmo\Tests\References\Fixture\ORM\Category", identifier="categoryId")
      */
     private $category;
 

@@ -1,7 +1,19 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Uploadable\Mapping\Driver;
 
+use Gedmo\Mapping\Annotation\Uploadable;
+use Gedmo\Mapping\Annotation\UploadableFileMimeType;
+use Gedmo\Mapping\Annotation\UploadableFileName;
+use Gedmo\Mapping\Annotation\UploadableFilePath;
+use Gedmo\Mapping\Annotation\UploadableFileSize;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Uploadable\Mapping\Validator;
 
@@ -13,18 +25,17 @@ use Gedmo\Uploadable\Mapping\Validator;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation to define that this object is loggable
      */
-    const UPLOADABLE = 'Gedmo\\Mapping\\Annotation\\Uploadable';
-    const UPLOADABLE_FILE_MIME_TYPE = 'Gedmo\\Mapping\\Annotation\\UploadableFileMimeType';
-    const UPLOADABLE_FILE_NAME = 'Gedmo\\Mapping\\Annotation\\UploadableFileName';
-    const UPLOADABLE_FILE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadableFilePath';
-    const UPLOADABLE_FILE_SIZE = 'Gedmo\\Mapping\\Annotation\\UploadableFileSize';
+    public const UPLOADABLE = Uploadable::class;
+    public const UPLOADABLE_FILE_MIME_TYPE = UploadableFileMimeType::class;
+    public const UPLOADABLE_FILE_NAME = UploadableFileName::class;
+    public const UPLOADABLE_FILE_PATH = UploadableFilePath::class;
+    public const UPLOADABLE_FILE_SIZE = UploadableFileSize::class;
 
     /**
      * {@inheritdoc}

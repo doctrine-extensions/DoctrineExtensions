@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable\Filter\ODM;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
@@ -9,6 +16,9 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 class SoftDeleteableFilter extends BsonFilter
 {
     protected $listener;
+    /**
+     * @deprecated `BsonFilter::$dm` is a protected property, thus this property is not required
+     */
     protected $documentManager;
     protected $disabled = [];
 
@@ -20,9 +30,10 @@ class SoftDeleteableFilter extends BsonFilter
     public function addFilterCriteria(ClassMetadata $targetEntity): array
     {
         $class = $targetEntity->getName();
-        if (array_key_exists($class, $this->disabled) && true === $this->disabled[$class]) {
+        if (true === ($this->disabled[$class] ?? false)) {
             return [];
-        } elseif (array_key_exists($targetEntity->rootDocumentName, $this->disabled) && true === $this->disabled[$targetEntity->rootDocumentName]) {
+        }
+        if (true === ($this->disabled[$targetEntity->rootDocumentName] ?? false)) {
             return [];
         }
 
@@ -46,6 +57,16 @@ class SoftDeleteableFilter extends BsonFilter
         return [
             $column['fieldName'] => null,
         ];
+    }
+
+    public function disableForDocument($class)
+    {
+        $this->disabled[$class] = true;
+    }
+
+    public function enableForDocument($class)
+    {
+        $this->disabled[$class] = false;
     }
 
     protected function getListener()
@@ -74,22 +95,9 @@ class SoftDeleteableFilter extends BsonFilter
 
     protected function getDocumentManager()
     {
-        if (null === $this->documentManager) {
-            $refl = new \ReflectionProperty('Doctrine\ODM\MongoDB\Query\Filter\BsonFilter', 'dm');
-            $refl->setAccessible(true);
-            $this->documentManager = $refl->getValue($this);
-        }
+        // Remove the following assignment on the next major release.
+        $this->documentManager = $this->dm;
 
-        return $this->documentManager;
-    }
-
-    public function disableForDocument($class)
-    {
-        $this->disabled[$class] = true;
-    }
-
-    public function enableForDocument($class)
-    {
-        $this->disabled[$class] = false;
+        return $this->dm;
     }
 }

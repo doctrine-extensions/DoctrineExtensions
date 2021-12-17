@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translator\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
@@ -11,11 +19,11 @@ use Gedmo\Translator\Translation as BaseTranslation;
 /**
  * Entity translation class.
  *
- * @author  Konstantin Kudryashov <ever.zet@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @author Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * @MappedSuperclass
  */
+#[MappedSuperclass]
 abstract class Translation extends BaseTranslation
 {
     /**
@@ -25,6 +33,9 @@ abstract class Translation extends BaseTranslation
      * @Id
      * @GeneratedValue
      */
+    #[Column(type: Types::INTEGER)]
+    #[Id]
+    #[GeneratedValue]
     protected $id;
 
     /**
@@ -32,6 +43,7 @@ abstract class Translation extends BaseTranslation
      *
      * @Column(type="string", length=8)
      */
+    #[Column(type: Types::STRING, length: 8)]
     protected $locale;
 
     /**
@@ -39,6 +51,7 @@ abstract class Translation extends BaseTranslation
      *
      * @Column(type="string", length=32)
      */
+    #[Column(type: Types::STRING, length: 32)]
     protected $property;
 
     /**
@@ -46,6 +59,7 @@ abstract class Translation extends BaseTranslation
      *
      * @Column(type="text", nullable=true)
      */
+    #[Column(type: Types::TEXT, nullable: true)]
     protected $value;
 
     /**

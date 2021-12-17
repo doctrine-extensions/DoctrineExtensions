@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Entity\MappedSuperclass;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 abstract class AbstractClosure
 {
     /**
@@ -14,6 +23,9 @@ abstract class AbstractClosure
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     protected $id;
 
     /**
@@ -31,6 +43,7 @@ abstract class AbstractClosure
     /**
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: Types::INTEGER)]
     protected $depth;
 
     /**

@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sortable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
@@ -12,7 +19,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  * extension.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Xml extends BaseXml
 {
@@ -36,7 +42,7 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
 
         if (isset($xml->field)) {
             foreach ($xml->field as $mappingDoctrine) {
@@ -45,7 +51,7 @@ class Xml extends BaseXml
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
                 if (isset($mapping->{'sortable-position'})) {
                     if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->getName()}");
                     }
                     $config['position'] = $field;
                 }
@@ -65,26 +71,7 @@ class Xml extends BaseXml
 
         if (!$meta->isMappedSuperclass && $config) {
             if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
-            }
-        }
-    }
-
-    /**
-     * @param \SimpleXMLElement[] $mapping
-     * @param string              $fieldAttr
-     */
-    private function readSortableGroups($mapping, array &$config, $fieldAttr = 'field')
-    {
-        foreach ($mapping as $mappingDoctrine) {
-            $map = $mappingDoctrine->children(self::GEDMO_NAMESPACE_URI);
-
-            $field = $this->_getAttribute($mappingDoctrine, $fieldAttr);
-            if (isset($map->{'sortable-group'})) {
-                if (!isset($config['groups'])) {
-                    $config['groups'] = [];
-                }
-                $config['groups'][] = $field;
+                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->getName()}");
             }
         }
     }
@@ -101,6 +88,21 @@ class Xml extends BaseXml
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+    }
+
+    private function readSortableGroups(\SimpleXMLElement $mapping, array &$config, string $fieldAttr = 'field'): void
+    {
+        foreach ($mapping as $mappingDoctrine) {
+            $map = $mappingDoctrine->children(self::GEDMO_NAMESPACE_URI);
+
+            $field = $this->_getAttribute($mappingDoctrine, $fieldAttr);
+            if (isset($map->{'sortable-group'})) {
+                if (!isset($config['groups'])) {
+                    $config['groups'] = [];
+                }
+                $config['groups'][] = $field;
+            }
+        }
     }
 }

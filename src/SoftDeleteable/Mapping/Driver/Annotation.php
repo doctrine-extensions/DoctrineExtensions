@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\SoftDeleteable;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\SoftDeleteable\Mapping\Validator;
 
@@ -14,14 +22,13 @@ use Gedmo\SoftDeleteable\Mapping\Validator;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation to define that this object is loggable
      */
-    const SOFT_DELETEABLE = 'Gedmo\\Mapping\\Annotation\\SoftDeleteable';
+    public const SOFT_DELETEABLE = SoftDeleteable::class;
 
     /**
      * {@inheritdoc}

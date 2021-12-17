@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\Sortable" table="sortables">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="title" type="string" length="128"/>
+        <field name="position" type="integer">
+            <gedmo:sortable-position/>
+        </field>
+        <field name="grouping" type="string" length="128">
+            <gedmo:sortable-group/>
+        </field>
+        <many-to-one field="sortable_group" target-entity="Gedmo\Tests\Mapping\Fixture\SortableGroup">
+            <join-columns>
+                <join-column name="sortable_group_id" referenced-column-name="id" nullable="false"/>
+            </join-columns>
+            <gedmo:sortable-group/>
+        </many-to-one>
+        <many-to-many field="sortable_groups" target-entity="Gedmo\Tests\Mapping\Fixture\SortableGroup">
+            <join-table name="sortable_sortable_groups">
+                <join-columns>
+                    <join-column name="sortable_id" referenced-column-name="id"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="group_id" referenced-column-name="id"/>
+                </inverse-join-columns>
+            </join-table>
+            <gedmo:sortable-group/>
+        </many-to-many>
+    </entity>
+</doctrine-mapping>

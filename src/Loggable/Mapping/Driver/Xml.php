@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
@@ -14,7 +22,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Xml extends BaseXml
 {
@@ -26,12 +33,12 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
         $xmlDoctrine = $xml;
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ('entity' == $xmlDoctrine->getName() || 'document' == $xmlDoctrine->getName() || 'mapped-superclass' == $xmlDoctrine->getName()) {
+        if ('entity' === $xmlDoctrine->getName() || 'document' === $xmlDoctrine->getName() || 'mapped-superclass' === $xmlDoctrine->getName()) {
             if (isset($xml->loggable)) {
                 /**
                  * @var \SimpleXMLElement;
@@ -51,6 +58,9 @@ class Xml extends BaseXml
         if (isset($xmlDoctrine->field)) {
             $this->inspectElementForVersioned($xmlDoctrine->field, $config, $meta);
         }
+        foreach ($xmlDoctrine->{'attribute-overrides'}->{'attribute-override'} ?? [] as $overrideMapping) {
+            $this->inspectElementForVersioned($overrideMapping, $config, $meta);
+        }
         if (isset($xmlDoctrine->{'many-to-one'})) {
             $this->inspectElementForVersioned($xmlDoctrine->{'many-to-one'}, $config, $meta);
         }
@@ -65,21 +75,19 @@ class Xml extends BaseXml
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
+            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {
-                throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+                throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->getName()}");
             }
         }
     }
 
     /**
      * Searches mappings on element for versioned fields
-     *
-     * @param object $meta
      */
-    private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, $meta)
+    private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, ClassMetadata $meta): void
     {
         foreach ($element as $mapping) {
             $mappingDoctrine = $mapping;
@@ -93,7 +101,7 @@ class Xml extends BaseXml
 
             if (isset($mapping->versioned)) {
                 if ($isAssoc && !$meta->associationMappings[$field]['isOwningSide']) {
-                    throw new InvalidMappingException("Cannot version [{$field}] as it is not the owning side in object - {$meta->name}");
+                    throw new InvalidMappingException("Cannot version [{$field}] as it is not the owning side in object - {$meta->getName()}");
                 }
                 $config['versioned'][] = $field;
             }

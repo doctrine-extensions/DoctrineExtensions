@@ -1,24 +1,31 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Translatable\Fixture\Issue165\SimpleArticle;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Translatable\Fixture\Issue165\SimpleArticle;
+use Gedmo\Translatable\Document\Translation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for Translatable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue165Test extends BaseTestCaseMongoODM
+final class Issue165Test extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Translatable\Fixture\Issue165\SimpleArticle';
-    const TRANSLATION = 'Gedmo\\Translatable\\Document\\Translation';
+    public const ARTICLE = SimpleArticle::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
     private $articleId;
@@ -32,7 +39,7 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
     /**
@@ -48,7 +55,7 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->persist($article);
         $this->dm->flush();
 
-        $this->assertEquals('en', $article->getUntranslated());
+        static::assertSame('en', $article->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('ru');
 
@@ -59,7 +66,7 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->persist($article);
         $this->dm->flush();
 
-        $this->assertEquals('ru', $article->getUntranslated());
+        static::assertSame('ru', $article->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('de');
 
@@ -72,12 +79,12 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->refresh($article);
 
-        $this->assertEquals('de', $newarticle->getUntranslated());
+        static::assertSame('de', $newarticle->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('en');
 
         $id = $newarticle->getId();
-        $newarticle = $this->dm->getRepository('Translatable\Fixture\Issue165\SimpleArticle')->find($id);
+        $newarticle = $this->dm->getRepository(SimpleArticle::class)->find($id);
 
         $newarticle->setTitle('en');
         $newarticle->setContent('en');
@@ -87,7 +94,7 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->refresh($newarticle);
 
-        $this->assertEquals('en', $newarticle->getUntranslated());
+        static::assertSame('en', $newarticle->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('de');
         $newarticle->setTitle('de2');
@@ -98,8 +105,8 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $id = $newarticle->getId();
-        $newarticle = $this->dm->getRepository('Translatable\Fixture\Issue165\SimpleArticle')->find($id);
+        $newarticle = $this->dm->getRepository(SimpleArticle::class)->find($id);
 
-        $this->assertEquals('de2', $newarticle->getUntranslated());
+        static::assertSame('de2', $newarticle->getUntranslated());
     }
 }

@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Blameable;
+declare(strict_types=1);
 
-use Blameable\Fixture\Entity\UsingTrait;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Blameable;
+
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Entity\UsingTrait;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TraitUsageTest extends BaseTestCaseORM
+final class TraitUsageTest extends BaseTestCaseORM
 {
-    const TARGET = 'Blameable\\Fixture\\Entity\\UsingTrait';
+    public const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {
@@ -28,13 +34,13 @@ class TraitUsageTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
      * @test
      */
-    public function shouldTimestampUsingTrait()
+    public function shouldTimestampUsingTrait(): void
     {
         $sport = new UsingTrait();
         $sport->setTitle('Sport');
@@ -42,21 +48,21 @@ class TraitUsageTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertNotNull($sport->getCreatedBy());
-        $this->assertNotNull($sport->getUpdatedBy());
+        static::assertNotNull($sport->getCreatedBy());
+        static::assertNotNull($sport->getUpdatedBy());
     }
 
     /**
      * @test
      */
-    public function traitMethodthShouldReturnObject()
+    public function traitMethodthShouldReturnObject(): void
     {
         $sport = new UsingTrait();
-        $this->assertInstanceOf(self::TARGET, $sport->setCreatedBy('myuser'));
-        $this->assertInstanceOf(self::TARGET, $sport->setUpdatedBy('myuser'));
+        static::assertInstanceOf(self::TARGET, $sport->setCreatedBy('myuser'));
+        static::assertInstanceOf(self::TARGET, $sport->setUpdatedBy('myuser'));
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

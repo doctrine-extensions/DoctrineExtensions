@@ -2,8 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Translatable\Fixture\Issue2152;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Gedmo\Tests\Translatable\Fixture\Issue2152;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -11,6 +19,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\Table("entity")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'entity')]
 class EntityWithTranslatableBoolean
 {
     /**
@@ -20,6 +30,9 @@ class EntityWithTranslatableBoolean
      *
      * @var int
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
@@ -28,6 +41,8 @@ class EntityWithTranslatableBoolean
      *
      * @var string|null
      */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\Translatable]
     private $title;
 
     /**
@@ -36,6 +51,8 @@ class EntityWithTranslatableBoolean
      *
      * @var string|null
      */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\Translatable]
     private $isOperating;
 
     /**
@@ -43,6 +60,7 @@ class EntityWithTranslatableBoolean
      *
      * @Gedmo\Locale()
      */
+    #[Gedmo\Locale]
     private $locale;
 
     public function __construct(string $title, string $isOperating = '0')

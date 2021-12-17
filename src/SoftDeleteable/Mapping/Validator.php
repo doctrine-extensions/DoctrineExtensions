@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable\Mapping;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -10,7 +17,6 @@ use Gedmo\Exception\InvalidMappingException;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Validator
 {
@@ -39,8 +45,8 @@ class Validator
 
         $fieldMapping = $meta->getFieldMapping($field);
 
-        if (!in_array($fieldMapping['type'], self::$validTypes)) {
-            throw new InvalidMappingException(sprintf('Field "%s" (type "%s") must be of one of the following types: "%s" in entity %s', $field, $fieldMapping['type'], implode(', ', self::$validTypes), $meta->name));
+        if (!in_array($fieldMapping['type'], self::$validTypes, true)) {
+            throw new InvalidMappingException(sprintf('Field "%s" (type "%s") must be of one of the following types: "%s" in entity %s', $field, $fieldMapping['type'], implode(', ', self::$validTypes), $meta->getName()));
         }
     }
 }

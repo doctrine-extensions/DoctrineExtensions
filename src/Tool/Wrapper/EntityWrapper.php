@@ -1,23 +1,30 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tool\Wrapper;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Persistence\Proxy as PersistenceProxy;
 
 /**
  * Wraps entity or proxy for more convenient
  * manipulation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class EntityWrapper extends AbstractWrapper
 {
     /**
      * Entity identifier
      *
-     * @var array
+     * @var array|null
      */
     private $identifier;
 
@@ -113,25 +120,25 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isEmbeddedAssociation($field)
+    {
+        return false;
+    }
+
+    /**
      * Initialize the entity if it is proxy
      * required when is detached or not initialized
      */
     protected function initialize()
     {
         if (!$this->initialized) {
-            if ($this->object instanceof Proxy) {
-                if (!$this->object->__isInitialized__) {
+            if ($this->object instanceof PersistenceProxy) {
+                if (!$this->object->__isInitialized()) {
                     $this->object->__load();
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEmbeddedAssociation($field)
-    {
-        return false;
     }
 }

@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translator;
 
 use Doctrine\Common\Collections\Collection;
@@ -7,30 +14,45 @@ use Doctrine\Common\Collections\Collection;
 /**
  * Proxy class for Entity/Document translations.
  *
- * @author  Konstantin Kudryashov <ever.zet@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @author Konstantin Kudryashov <ever.zet@gmail.com>
  */
 class TranslationProxy
 {
+    /**
+     * @var string
+     */
     protected $locale;
+    /**
+     * @var object
+     */
     protected $translatable;
+    /**
+     * @var string[]
+     */
     protected $properties = [];
+    /**
+     * @var string
+     *
+     * @phpstan-var class-string<TranslationInterface>
+     */
     protected $class;
     /**
-     * @var Collection|TranslationInterface[]
+     * @var Collection<int, TranslationInterface>
      */
     protected $coll;
 
     /**
      * Initializes translations collection
      *
-     * @param object     $translatable object to translate
-     * @param string     $locale       translation name
-     * @param array      $properties   object properties to translate
-     * @param string     $class        translation entity|document class
-     * @param Collection $coll         translations collection
+     * @param object $translatable object to translate
+     * @param string $locale       translation name
+     * @param array  $properties   object properties to translate
+     * @param string $class        translation entity|document class
      *
      * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
+     *
+     * @phpstan-param class-string<TranslationInterface> $class
+     * @phpstan-param Collection<int, TranslationInterface> $coll
      */
     public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
     {
@@ -40,9 +62,8 @@ class TranslationProxy
         $this->class = $class;
         $this->coll = $coll;
 
-        $translationClass = new \ReflectionClass($class);
-        if (!$translationClass->implementsInterface('Gedmo\Translator\TranslationInterface')) {
-            throw new \InvalidArgumentException(sprintf('Translation class should implement Gedmo\Translator\TranslationInterface, "%s" given', $class));
+        if (!is_subclass_of($class, TranslationInterface::class)) {
+            throw new \InvalidArgumentException(sprintf('Translation class should implement %s, "%s" given', TranslationInterface::class, $class));
         }
     }
 
@@ -52,7 +73,7 @@ class TranslationProxy
         if (preg_match('/^(set|get)(.*)$/', $method, $matches)) {
             $property = lcfirst($matches[2]);
 
-            if (in_array($property, $this->properties)) {
+            if (in_array($property, $this->properties, true)) {
                 switch ($matches[1]) {
                     case 'get':
                         return $this->getTranslatedValue($property);
@@ -77,7 +98,7 @@ class TranslationProxy
 
     public function __get($property)
     {
-        if (in_array($property, $this->properties)) {
+        if (in_array($property, $this->properties, true)) {
             if (method_exists($this, $getter = 'get'.ucfirst($property))) {
                 return $this->$getter;
             }
@@ -90,7 +111,7 @@ class TranslationProxy
 
     public function __set($property, $value)
     {
-        if (in_array($property, $this->properties)) {
+        if (in_array($property, $this->properties, true)) {
             if (method_exists($this, $setter = 'set'.ucfirst($property))) {
                 return $this->$setter($value);
             }
@@ -103,7 +124,7 @@ class TranslationProxy
 
     public function __isset($property)
     {
-        return in_array($property, $this->properties);
+        return in_array($property, $this->properties, true);
     }
 
     /**
@@ -145,13 +166,8 @@ class TranslationProxy
 
     /**
      * Finds existing or creates new translation for specified property
-     *
-     * @param string $property object property name
-     * @param string $locale   locale name
-     *
-     * @return Translation
      */
-    private function findOrCreateTranslationForProperty($property, $locale)
+    private function findOrCreateTranslationForProperty(string $property, string $locale): TranslationInterface
     {
         foreach ($this->coll as $translation) {
             if ($locale === $translation->getLocale() && $property === $translation->getProperty()) {

@@ -11,7 +11,7 @@ If you map the blame onto a association field, this extension will try to assign
 object to it.
 
 Note that you need to set the user on the BlameableListener (unless you use the
-Symfony2 extension which does automatically assign the current security context
+Symfony extension which does automatically assign the current security context
 user).
 
 
@@ -19,16 +19,16 @@ Features:
 
 - Automatic predefined user field update on creation, update, property subset update, and even on record property changes
 - ORM and ODM support using same listener
-- Specific annotations for properties, and no interface required
+- Specific attributes and annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation, Yaml and Xml mapping support for extensions
 
 
 **Symfony:**
 
-- **Blameable** is available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony2**, together with all other extensions
+- **Blameable** is available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
+for **Symfony**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Blameable** behavior
 
@@ -46,8 +46,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -56,6 +56,11 @@ on how to setup and use the extensions in most optimized way.
 
 ### Blameable annotations:
 - **@Gedmo\Mapping\Annotation\Blameable** this annotation tells that this column is blameable
+by default it updates this column on update. If column is not a string field or an association
+it will trigger an exception.
+
+### Blameable attributes:
+- **\#[Gedmo\Mapping\Annotation\Blameable]** this attribute tells that this column is blameable
 by default it updates this column on update. If column is not a string field or an association
 it will trigger an exception.
 
@@ -71,6 +76,9 @@ then it updates the blame
 you need to identify entity as being Blameable. The metadata is loaded only once then
 cache is activated
 
+**Note:** these examples are using annotations and attributes for mapping, you should use
+one of them, not both.
+
 Column is a string field:
 
 ``` php
@@ -78,48 +86,61 @@ Column is a string field:
 namespace Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+ #[ORM\Entity]
 class Article
 {
     /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
      */
+    #[ORM\Column(type: Types::STRING, length: 128)]
     private $title;
 
     /**
      * @ORM\Column(name="body", type="string")
      */
+    #[ORM\Column(name: 'body', type: Types::STRING)]
     private $body;
 
     /**
-     * @var string $createdBy
+     * @var string|null
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\Blameable(on: 'create')]
     private $createdBy;
 
     /**
-     * @var string $updatedBy
+     * @var string|null
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\Blameable(on: 'update')]
     private $updatedBy;
 
     /**
-     * @var string $contentChangedBy
+     * @var string|null
      *
      * @ORM\Column(name="content_changed_by", type="string", nullable=true)
      * @Gedmo\Blameable(on="change", field={"title", "body"})
      */
+    #[ORM\Column(name: 'content_changed_by', type: Types::STRING, nullable: true)]
+    #[Gedmo\Blameable(on: 'change', 'field: ['title', 'body'])]
     private $contentChangedBy;
 
     public function getId()
@@ -171,42 +192,55 @@ Column is an association:
 namespace Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+ #[ORM\Entity]
 class Article
 {
     /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
      */
+    #[ORM\Column(type: Types::STRING, length: 128)]
     private $title;
 
     /**
-     * @ODM\String
+     * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: Types::STRING)]
     private $body;
 
     /**
-     * @var User $createdBy
+     * @var User|null
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'created_at', referencedColumnName: 'id')]
+    #[Gedmo\Blameable(on: 'create')]
     private $createdBy;
 
     /**
-     * @var User $updatedBy
+     * @var User|null
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
      * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'updated_by', referencedColumnName: 'id')]
+    #[Gedmo\Blameable(on: 'update')]
     private $updatedBy;
 
     /**
@@ -216,6 +250,9 @@ class Article
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
      * @ORM\JoinColumn(name="content_changed_by", referencedColumnName="id")
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'content_changed_by', referencedColumnName: 'id')]
+    #[Gedmo\Blameable(on: 'change', field: ['title', 'body'])]
     private $contentChangedBy;
 
     public function getId()
@@ -264,40 +301,51 @@ class Article
 
 ## Blameable Document example:
 
+**Note:** these examples are using annotations and attributes for mapping, you should use
+one of them, not both.
+
 ``` php
 <?php
 namespace Document;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
     /** @ODM\Id */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private $title;
 
     /**
-     * @var string $createdBy
+     * @var string|null
      *
      * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="create")
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\Blameable(on: 'create')]
     private $createdBy;
 
     /**
-     * @var string $updatedBy
+     * @var string|null
      *
      * @ODM\Field(type="string")
      * @Gedmo\Blameable
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\Blameable]
     private $updatedBy;
 
     public function getId()

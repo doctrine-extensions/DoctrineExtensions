@@ -1,28 +1,35 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Transport\Bus;
-use Tree\Fixture\Transport\Car;
-use Tree\Fixture\Transport\Engine;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Transport\Bus;
+use Gedmo\Tests\Tree\Fixture\Transport\Car;
+use Gedmo\Tests\Tree\Fixture\Transport\Engine;
+use Gedmo\Tests\Tree\Fixture\Transport\Vehicle;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
+final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 {
-    const CAR = "Tree\Fixture\Transport\Car";
-    const BUS = "Tree\Fixture\Transport\Bus";
-    const VEHICLE = "Tree\Fixture\Transport\Vehicle";
-    const ENGINE = "Tree\Fixture\Transport\Engine";
+    public const CAR = Car::class;
+    public const BUS = Bus::class;
+    public const VEHICLE = Vehicle::class;
+    public const ENGINE = Engine::class;
 
     protected function setUp(): void
     {
@@ -41,21 +48,21 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 
         $carRepo = $this->em->getRepository(self::CAR);
         $audi = $carRepo->findOneBy(['title' => 'Audi-80']);
-        $this->assertEquals(2, $carRepo->childCount($audi));
-        $this->assertEquals(1, $audi->getLeft());
-        $this->assertEquals(6, $audi->getRight());
+        static::assertSame(2, $carRepo->childCount($audi));
+        static::assertSame(1, $audi->getLeft());
+        static::assertSame(6, $audi->getRight());
 
         $children = $carRepo->children($audi);
-        $this->assertCount(2, $children);
+        static::assertCount(2, $children);
 
         $path = $carRepo->getPath($children[0]);
-        $this->assertCount(2, $path);
+        static::assertCount(2, $path);
 
         $carRepo->moveDown($children[0]);
-        $this->assertEquals(4, $children[0]->getLeft());
-        $this->assertEquals(5, $children[0]->getRight());
+        static::assertSame(4, $children[0]->getLeft());
+        static::assertSame(5, $children[0]->getRight());
 
-        $this->assertTrue($carRepo->verify());
+        static::assertTrue($carRepo->verify());
     }
 
     /*public function testHeavyLoad()
@@ -106,7 +113,7 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         // engines
         $v8 = new Engine();

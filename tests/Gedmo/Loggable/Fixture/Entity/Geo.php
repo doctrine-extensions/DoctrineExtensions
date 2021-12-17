@@ -1,7 +1,17 @@
 <?php
 
-namespace Loggable\Fixture\Entity;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Loggable\Fixture\Entity;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -12,87 +22,80 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Embeddable()
  */
+#[ORM\Embeddable]
 class Geo
 {
     /**
-     * @var string
+     * @var string|null
+     * @phpstan-var numeric-string|null
      * @ORM\Column(type="decimal", precision=9, scale=6)
      * @Gedmo\Versioned()
      */
+    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
+    #[Gedmo\Versioned]
     protected $latitude;
 
     /**
-     * @var string
+     * @var string|null
+     * @var phpstan-var numeric-string|null
      * @ORM\Column(type="decimal", precision=9, scale=6)
      * @Gedmo\Versioned()
      */
+    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
+    #[Gedmo\Versioned]
     protected $longitude;
 
     /**
      * @var GeoLocation
-     * @ORM\Embedded(class="Loggable\Fixture\Entity\GeoLocation")
+     * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation")
      * @Gedmo\Versioned()
      */
+    #[ORM\Embedded(class: GeoLocation::class)]
+    #[Gedmo\Versioned]
     protected $geoLocation;
 
-    /**
-     * Geo constructor.
-     *
-     * @param string $latitude
-     * @param string $longitude
-     */
-    public function __construct($latitude, $longitude, GeoLocation $geoLocation)
+    public function __construct(float $latitude, float $longitude, GeoLocation $geoLocation)
     {
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
+        $this->latitude = $this->parseFloatToString($latitude);
+        $this->longitude = $this->parseFloatToString($longitude);
         $this->geoLocation = $geoLocation;
     }
 
-    /**
-     * @return string
-     */
-    public function getLatitude()
+    public function getLatitude(): float
     {
-        return $this->latitude;
+        return (float) $this->latitude;
     }
 
-    /**
-     * @param string $latitude
-     */
-    public function setLatitude($latitude)
+    public function setLatitude(float $latitude): void
     {
-        $this->latitude = $latitude;
+        $this->latitude = $this->parseFloatToString($latitude);
     }
 
-    /**
-     * @return string
-     */
-    public function getLongitude()
+    public function getLongitude(): float
     {
-        return $this->longitude;
+        return (float) $this->longitude;
     }
 
-    /**
-     * @param string $longitude
-     */
-    public function setLongitude($longitude)
+    public function setLongitude(float $longitude): void
     {
-        $this->longitude = $longitude;
+        $this->longitude = $this->parseFloatToString($longitude);
     }
 
-    /**
-     * @return GeoLocation
-     */
-    public function getGeoLocation()
+    public function getGeoLocation(): GeoLocation
     {
         return $this->geoLocation;
     }
 
-    /**
-     * @param GeoLocation $geoLocation
-     */
-    public function setGeoLocation($geoLocation)
+    public function setGeoLocation(GeoLocation $geoLocation): void
     {
         $this->geoLocation = $geoLocation;
+    }
+
+    /**
+     * @phpstan-return numeric-string
+     */
+    private function parseFloatToString(float $number): string
+    {
+        return sprintf('%.6f', $number);
     }
 }

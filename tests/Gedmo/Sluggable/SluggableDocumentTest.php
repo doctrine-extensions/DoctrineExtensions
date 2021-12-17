@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Document\Article;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Document\Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableDocumentTest extends BaseTestCaseMongoODM
+final class SluggableDocumentTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Document\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {
@@ -25,17 +31,17 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         // test insert
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'My Title']);
 
-        $this->assertEquals('my-title-the-code', $article->getSlug());
+        static::assertSame('my-title-the-code', $article->getSlug());
 
         // test update
         $article->setTitle('New Title');
@@ -45,10 +51,10 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $article = $repo->findOneBy(['title' => 'New Title']);
-        $this->assertEquals('new-title-the-code', $article->getSlug());
+        static::assertSame('new-title-the-code', $article->getSlug());
     }
 
-    public function testUniqueSlugGeneration()
+    public function testUniqueSlugGeneration(): void
     {
         for ($i = 0; $i < 12; ++$i) {
             $article = new Article();
@@ -58,11 +64,11 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
             $this->dm->persist($article);
             $this->dm->flush();
             $this->dm->clear();
-            $this->assertEquals('my-title-the-code-'.($i + 1), $article->getSlug());
+            static::assertSame('my-title-the-code-'.($i + 1), $article->getSlug());
         }
     }
 
-    public function testGithubIssue57()
+    public function testGithubIssue57(): void
     {
         // slug matched by prefix
         $article = new Article();
@@ -76,10 +82,10 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($article2);
 
         $this->dm->flush();
-        $this->assertEquals('my-s', $article2->getSlug());
+        static::assertSame('my-s', $article2->getSlug());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $art0 = new Article();
         $art0->setTitle('My Title');

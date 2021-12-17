@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Event\Adapter;
 
 use Doctrine\Common\EventArgs;
@@ -13,7 +20,6 @@ use Gedmo\Mapping\Event\AdapterInterface;
  * event arguments
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ORM implements AdapterInterface
 {
@@ -26,6 +32,19 @@ class ORM implements AdapterInterface
      * @var \Doctrine\ORM\EntityManagerInterface
      */
     private $em;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __call($method, $args)
+    {
+        if (null === $this->args) {
+            throw new RuntimeException('Event args must be set before calling its methods');
+        }
+        $method = str_replace('Object', $this->getDomainObjectName(), $method);
+
+        return call_user_func_array([$this->args, $method], $args);
+    }
 
     /**
      * {@inheritdoc}
@@ -60,19 +79,6 @@ class ORM implements AdapterInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $args)
-    {
-        if (is_null($this->args)) {
-            throw new RuntimeException('Event args must be set before calling its methods');
-        }
-        $method = str_replace('Object', $this->getDomainObjectName(), $method);
-
-        return call_user_func_array([$this->args, $method], $args);
-    }
-
-    /**
      * Set the entity manager
      */
     public function setEntityManager(EntityManagerInterface $em)
@@ -81,11 +87,11 @@ class ORM implements AdapterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return EntityManagerInterface
      */
     public function getObjectManager()
     {
-        if (!is_null($this->em)) {
+        if (null !== $this->em) {
             return $this->em;
         }
 
@@ -151,29 +157,29 @@ class ORM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function setOriginalObjectProperty($uow, $oid, $property, $value)
+    public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
-        $uow->setOriginalEntityProperty($oid, $property, $value);
+        $uow->setOriginalEntityProperty(spl_object_id($object), $property, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function clearObjectChangeSet($uow, $oid)
+    public function clearObjectChangeSet($uow, $object)
     {
-        $uow->clearEntityChangeSet($oid);
+        $uow->clearEntityChangeSet(spl_object_id($object));
     }
 
     /**
      * Creates a ORM specific LifecycleEventArgs.
      *
-     * @param object                                $document
-     * @param \Doctrine\ODM\MongoDB\DocumentManager $documentManager
+     * @param object                               $document
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      *
-     * @return \Doctrine\ODM\MongoDB\Event\LifecycleEventArgs
+     * @return \Doctrine\ORM\Event\LifecycleEventArgs
      */
-    public function createLifecycleEventArgsInstance($document, $documentManager)
+    public function createLifecycleEventArgsInstance($document, $entityManager)
     {
-        return new LifecycleEventArgs($document, $documentManager);
+        return new LifecycleEventArgs($document, $entityManager);
     }
 }

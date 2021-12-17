@@ -1,27 +1,33 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Article;
-use Tree\Fixture\Category;
-use Tree\Fixture\Comment;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Article;
+use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tests\Tree\Fixture\Comment;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ConcurrencyTest extends BaseTestCaseORM
+final class ConcurrencyTest extends BaseTestCaseORM
 {
-    const CATEGORY = 'Tree\\Fixture\\Category';
-    const ARTICLE = 'Tree\\Fixture\\Article';
-    const COMMENT = 'Tree\\Fixture\\Comment';
+    public const CATEGORY = Category::class;
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
 
     protected function setUp(): void
     {
@@ -79,15 +85,15 @@ class ConcurrencyTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
 
-        $this->assertEquals(9, $left);
-        $this->assertEquals(16, $right);
+        static::assertSame(9, $left);
+        static::assertSame(16, $right);
 
         $skiing = $repo->findOneBy(['title' => 'Skiing']);
         $left = $meta->getReflectionProperty('lft')->getValue($skiing);
         $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
 
-        $this->assertEquals(10, $left);
-        $this->assertEquals(13, $right);
+        static::assertSame(10, $left);
+        static::assertSame(13, $right);
     }
 
     public function testConcurrentTree()
@@ -97,23 +103,23 @@ class ConcurrencyTest extends BaseTestCaseORM
 
         $root = $repo->findOneBy(['title' => 'Root']);
 
-        $this->assertEquals(1, $root->getLeft());
-        $this->assertEquals(8, $root->getRight());
+        static::assertSame(1, $root->getLeft());
+        static::assertSame(8, $root->getRight());
 
         $root2 = $repo->findOneBy(['title' => 'Root2']);
 
-        $this->assertEquals(9, $root2->getLeft());
-        $this->assertEquals(10, $root2->getRight());
+        static::assertSame(9, $root2->getLeft());
+        static::assertSame(10, $root2->getRight());
 
         $child2Child = $repo->findOneBy(['title' => 'childs2_child']);
 
-        $this->assertEquals(5, $child2Child->getLeft());
-        $this->assertEquals(6, $child2Child->getRight());
+        static::assertSame(5, $child2Child->getLeft());
+        static::assertSame(6, $child2Child->getRight());
 
         $child2Parent = $child2Child->getParent();
 
-        $this->assertEquals(4, $child2Parent->getLeft());
-        $this->assertEquals(7, $child2Parent->getRight());
+        static::assertSame(4, $child2Parent->getLeft());
+        static::assertSame(7, $child2Parent->getRight());
     }
 
     protected function getUsedEntityFixtures()
@@ -125,7 +131,7 @@ class ConcurrencyTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new Category();
         $root->setTitle('Root');

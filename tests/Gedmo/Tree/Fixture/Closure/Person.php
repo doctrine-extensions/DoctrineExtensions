@@ -1,19 +1,28 @@
 <?php
 
-namespace Tree\Fixture\Closure;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree\Fixture\Closure;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\Tree(type="closure")
- * @Gedmo\TreeClosure(class="Tree\Fixture\Closure\PersonClosure")
+ * @Gedmo\TreeClosure(class="Gedmo\Tests\Tree\Fixture\Closure\PersonClosure")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
  * @ORM\DiscriminatorMap({
-    "user" = "User"
-    })
+ *   "user" = "User"
+ *   })
  */
 abstract class Person
 {
@@ -41,6 +50,16 @@ abstract class Person
      * @Gedmo\TreeLevel
      */
     private $level;
+
+    /**
+     * @var string|null
+     */
+    private $name;
+
+    /**
+     * @var CategoryClosure[]
+     */
+    private $closures = [];
 
     public function getId()
     {

@@ -2,15 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Gedmo\Translatable\Issue;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
 use Gedmo\Translatable\Entity\Translation;
-use Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
+use Gedmo\Translatable\TranslatableListener;
 
-class Issue2152Test extends BaseTestCaseORM
+final class Issue2152Test extends BaseTestCaseORM
 {
     private const TRANSLATION = Translation::class;
     private const ENTITY = EntityWithTranslatableBoolean::class;
@@ -32,7 +39,7 @@ class Issue2152Test extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
@@ -73,11 +80,11 @@ class Issue2152Test extends BaseTestCaseORM
 
         //Assert
 
-        $this->assertSame($deTitle, $entityInDe->getTitle());
-        $this->assertEquals($isOperatingInGermany, $entityInDe->isOperating());
+        static::assertSame($deTitle, $entityInDe->getTitle());
+        static::assertSame($isOperatingInGermany, $entityInDe->isOperating());
 
-        $this->assertSame($title, $entityInUa->getTitle(), 'should fallback to default title if null');
-        $this->assertEquals($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
+        static::assertSame($title, $entityInUa->getTitle(), 'should fallback to default title if null');
+        static::assertSame($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
     }
 
     protected function getUsedEntityFixtures()

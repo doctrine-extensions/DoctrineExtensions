@@ -1,6 +1,15 @@
 <?php
 
-namespace Gedmo\Uploadable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Uploadable;
 
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
 
@@ -9,12 +18,8 @@ use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCase
+final class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCase
 {
     public function testGenerator()
     {
@@ -23,6 +28,6 @@ class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCase
         $filename = 'MegaName_For_A_###$$$File$$$###';
         $extension = '.exe';
 
-        $this->assertEquals('meganame-for-a-file-.exe', $generator->generate($filename, $extension));
+        static::assertSame('meganame-for-a-file-.exe', $generator->generate($filename, $extension));
     }
 }

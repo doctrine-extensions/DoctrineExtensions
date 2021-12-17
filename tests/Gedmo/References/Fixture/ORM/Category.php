@@ -1,6 +1,15 @@
 <?php
 
-namespace References\Fixture\ORM;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\References\Fixture\ORM;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -23,7 +32,7 @@ class Category
     private $name;
 
     /**
-     * @Gedmo\ReferenceManyEmbed(class="References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
+     * @Gedmo\ReferenceManyEmbed(class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
      */
     private $products;
 

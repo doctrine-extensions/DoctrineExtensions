@@ -1,33 +1,40 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Validate;
-use Tool\BaseTestCaseORM;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Validate;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class AnnotationValidationTest extends BaseTestCaseORM
+final class AnnotationValidationTest extends BaseTestCaseORM
 {
-    const TARGET = 'Sluggable\\Fixture\\Validate';
+    public const TARGET = Validate::class;
 
     /**
      * @test
      */
-    public function shouldFailValidationOnInvalidAnnotation()
+    public function shouldFailValidationOnInvalidAnnotation(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
+        $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $slug = new Validate();
         $slug->setTitle('My Slug');
@@ -39,10 +46,10 @@ class AnnotationValidationTest extends BaseTestCaseORM
         $this->em->persist($slug2);
         $this->em->flush();
 
-        $this->assertEquals('my-slug', $slug2->getSlug());
+        static::assertSame('my-slug', $slug2->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

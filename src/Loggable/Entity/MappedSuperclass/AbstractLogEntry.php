@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Entity\MappedSuperclass;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 abstract class AbstractLogEntry
 {
     /**
@@ -18,6 +27,9 @@ abstract class AbstractLogEntry
      * @ORM\Id
      * @ORM\GeneratedValue
      */
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     protected $id;
 
     /**
@@ -25,6 +37,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(type="string", length=8)
      */
+    #[ORM\Column(type: Types::STRING, length: 8)]
     protected $action;
 
     /**
@@ -32,6 +45,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(name="logged_at", type="datetime")
      */
+    #[ORM\Column(name: 'logged_at', type: Types::DATETIME_MUTABLE)]
     protected $loggedAt;
 
     /**
@@ -39,6 +53,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(name="object_id", length=64, nullable=true)
      */
+    #[ORM\Column(name: 'object_id', length: 64, nullable: true)]
     protected $objectId;
 
     /**
@@ -46,6 +61,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(name="object_class", type="string", length=191)
      */
+    #[ORM\Column(name: 'object_class', type: Types::STRING, length: 191)]
     protected $objectClass;
 
     /**
@@ -53,6 +69,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: Types::INTEGER)]
     protected $version;
 
     /**
@@ -60,6 +77,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(type="array", nullable=true)
      */
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
     protected $data;
 
     /**
@@ -67,6 +85,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(length=191, nullable=true)
      */
+    #[ORM\Column(length: 191, nullable: true)]
     protected $username;
 
     /**

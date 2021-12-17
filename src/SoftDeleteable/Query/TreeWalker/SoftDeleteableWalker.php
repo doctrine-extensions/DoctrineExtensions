@@ -1,7 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable\Query\TreeWalker;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\QuoteStrategy;
 use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
@@ -16,17 +27,52 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SoftDeleteableWalker extends SqlWalker
 {
+    /**
+     * @var Connection
+     *
+     * @deprecated to be removed in 4.0, use the `getConnection()` method instead.
+     */
     protected $conn;
+
+    /**
+     * @var AbstractPlatform
+     *
+     * @deprecated to be removed in 4.0, fetch the platform from the connection instead
+     */
     protected $platform;
+
+    /**
+     * @var SoftDeleteableListener
+     */
     protected $listener;
+
+    /**
+     * @var array
+     */
     protected $configuration;
+
+    /**
+     * @deprecated to be removed in 4.0, unused
+     */
     protected $alias;
+
+    /**
+     * @var string
+     */
     protected $deletedAtField;
+
+    /**
+     * @var ClassMetadata
+     */
     protected $meta;
+
+    /**
+     * @var QuoteStrategy
+     */
+    private $quoteStrategy;
 
     /**
      * {@inheritdoc}
@@ -36,9 +82,11 @@ class SoftDeleteableWalker extends SqlWalker
         parent::__construct($query, $parserResult, $queryComponents);
 
         $this->conn = $this->getConnection();
-        $this->platform = $this->conn->getDatabasePlatform();
+        $this->platform = $this->getConnection()->getDatabasePlatform();
         $this->listener = $this->getSoftDeleteableListener();
-        $this->extractComponents($queryComponents);
+        $this->quoteStrategy = $this->getEntityManager()->getConfiguration()->getQuoteStrategy();
+
+        $this->extractComponents($this->getQueryComponents());
     }
 
     /**
@@ -50,8 +98,8 @@ class SoftDeleteableWalker extends SqlWalker
             case $AST instanceof DeleteStatement:
                 $primaryClass = $this->getEntityManager()->getClassMetadata($AST->deleteClause->abstractSchemaName);
 
-                return ($primaryClass->isInheritanceTypeJoined())
-                    ? new MultiTableDeleteExecutor($AST, $this, $this->meta, $this->platform, $this->configuration)
+                return $primaryClass->isInheritanceTypeJoined()
+                    ? new MultiTableDeleteExecutor($AST, $this, $this->meta, $this->getConnection()->getDatabasePlatform(), $this->configuration)
                     : new SingleTableDeleteUpdateExecutor($AST, $this);
             default:
                 throw new \Gedmo\Exception\UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
@@ -69,39 +117,36 @@ class SoftDeleteableWalker extends SqlWalker
         $class = $em->getClassMetadata($deleteClause->abstractSchemaName);
         $tableName = $class->getTableName();
         $this->setSQLTableAlias($tableName, $tableName, $deleteClause->aliasIdentificationVariable);
-        $quotedTableName = $class->getQuotedTableName($this->platform);
-        $quotedColumnName = $class->getQuotedColumnName($this->deletedAtField, $this->platform);
 
-        $sql = 'UPDATE '.$quotedTableName.' SET '.$quotedColumnName.' = '.$this->platform->getCurrentTimestampSQL();
+        $platform = $this->getConnection()->getDatabasePlatform();
 
-        return $sql;
+        $quotedTableName = $this->quoteStrategy->getTableName($class, $platform);
+        $quotedColumnName = $this->quoteStrategy->getColumnName($this->deletedAtField, $class, $platform);
+
+        return 'UPDATE '.$quotedTableName.' SET '.$quotedColumnName.' = '.$platform->getCurrentTimestampSQL();
     }
 
     /**
      * Get the currently used SoftDeleteableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
-     *
-     * @return SoftDeleteableListener
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      */
-    private function getSoftDeleteableListener()
+    private function getSoftDeleteableListener(): SoftDeleteableListener
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             $em = $this->getEntityManager();
 
-            foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
-                foreach ($listeners as $hash => $listener) {
+            foreach ($em->getEventManager()->getListeners() as $listeners) {
+                foreach ($listeners as $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;
-                        break;
+
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The SoftDeleteable listener could not be found.');
             }
         }
@@ -111,19 +156,14 @@ class SoftDeleteableWalker extends SqlWalker
 
     /**
      * Search for components in the delete clause
-     *
-     * @return void
      */
-    private function extractComponents(array $queryComponents)
+    private function extractComponents(array $queryComponents): void
     {
         $em = $this->getEntityManager();
 
-        foreach ($queryComponents as $alias => $comp) {
-            if (!isset($comp['metadata'])) {
-                continue;
-            }
+        foreach ($queryComponents as $comp) {
             $meta = $comp['metadata'];
-            $config = $this->listener->getConfiguration($em, $meta->name);
+            $config = $this->listener->getConfiguration($em, $meta->getName());
             if ($config && isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $this->configuration = $config;
                 $this->deletedAtField = $config['fieldName'];

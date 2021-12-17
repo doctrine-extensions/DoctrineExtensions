@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
@@ -13,7 +20,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Xml extends BaseXml
 {
@@ -25,12 +31,12 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
         $xmlDoctrine = $xml;
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (('entity' == $xmlDoctrine->getName() || 'mapped-superclass' == $xmlDoctrine->getName())) {
+        if (('entity' === $xmlDoctrine->getName() || 'mapped-superclass' === $xmlDoctrine->getName())) {
             if ($xml->count() && isset($xml->translation)) {
                 /**
                  * @var \SimpleXmlElement
@@ -70,13 +76,13 @@ class Xml extends BaseXml
         $this->inspectElementsForTranslatableFields($xmlDoctrine, $config);
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->getName()}");
             }
         }
     }
 
-    private function inspectElementsForTranslatableFields(\SimpleXMLElement $xml, array &$config, $prefix = null)
+    private function inspectElementsForTranslatableFields(\SimpleXMLElement $xml, array &$config, ?string $prefix = null): void
     {
         if (!isset($xml->field)) {
             return;
@@ -93,7 +99,7 @@ class Xml extends BaseXml
         }
     }
 
-    private function buildFieldConfiguration($fieldName, \SimpleXMLElement $mapping, array &$config)
+    private function buildFieldConfiguration(string $fieldName, \SimpleXMLElement $mapping, array &$config): void
     {
         $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
         if ($mapping->count() > 0 && isset($mapping->translatable)) {
@@ -101,7 +107,7 @@ class Xml extends BaseXml
             /** @var \SimpleXmlElement $data */
             $data = $mapping->translatable;
             if ($this->_isAttributeSet($data, 'fallback')) {
-                $config['fallback'][$fieldName] = 'true' == $this->_getAttribute($data, 'fallback') ? true : false;
+                $config['fallback'][$fieldName] = $this->_getBooleanAttribute($data, 'fallback');
             }
         }
     }

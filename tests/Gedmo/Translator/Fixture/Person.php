@@ -1,6 +1,15 @@
 <?php
 
-namespace Translator\Fixture;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translator\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,13 +19,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Person
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
     /**
      * @ORM\Column(name="name", type="string", length=128)
      */
@@ -31,6 +33,31 @@ class Person
      * @ORM\Column(name="last_name", type="string", length=128, nullable=true)
      */
     public $lastName;
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    //
+    // TRANSLATIONS DEFINITION:
+    //
+
+    /**
+     * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
+     */
+    private $translations;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Person")
+     */
+    private $parent;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -67,21 +94,7 @@ class Person
         $this->lastName = $name;
     }
 
-    //
-    // TRANSLATIONS DEFINITION:
-    //
-
-    /**
-     * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
-     */
-    private $translations;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Person")
-     */
-    private $parent;
-
-    public function setParent(Person $parent)
+    public function setParent(self $parent)
     {
         $this->parent = $parent;
     }
@@ -89,11 +102,6 @@ class Person
     public function getParent()
     {
         return $this->parent;
-    }
-
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
     }
 
     public function translate($locale = 'en')
@@ -105,7 +113,7 @@ class Person
         return new \Gedmo\Translator\TranslationProxy($this,
         /* Locale                            */ $locale,
         /* List of translatable properties:  */ ['name', 'lastName'],
-        /* Translation entity class:         */ 'Translator\Fixture\PersonTranslation',
+        /* Translation entity class:         */ PersonTranslation::class,
         /* Translations collection property: */ $this->translations
         );
     }

@@ -1,9 +1,19 @@
 <?php
 
-namespace Sortable\Fixture;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sortable\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Driver\PDOException;
+use Doctrine\DBAL\Driver\PDO\Exception as PDODriverException;
+use Doctrine\DBAL\Driver\PDOException as LegacyPDOException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -88,10 +98,17 @@ class CustomerType
     public function postRemove()
     {
         if ($this->getCustomers()->count() > 0) {
-            // we imitate an foreign key constraint exception, because doctrine
-            // does not support sqlite constraints, which must be tested, too.
-            $pdoException = new \PDOException('SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails', '23000');
-            throw new ForeignKeyConstraintViolationException(sprintf('An exception occurred while deleting the customer type with id %s.', $this->getId()), new PDOException($pdoException));
+            // we imitate a foreign key constraint exception because Doctrine
+            // does not support SQLite constraints, which must be tested, too.
+
+            $pdoException = new \PDOException('SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails', 23000);
+
+            // @todo: This check can be removed when dropping support for doctrine/dbal 2.x.
+            if (class_exists(LegacyPDOException::class)) {
+                throw new ForeignKeyConstraintViolationException(sprintf('An exception occurred while deleting the customer type with id %s.', $this->getId()), new LegacyPDOException($pdoException));
+            }
+
+            throw new ForeignKeyConstraintViolationException(PDODriverException::new($pdoException), null);
         }
     }
 }

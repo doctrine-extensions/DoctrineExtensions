@@ -1,6 +1,15 @@
 <?php
 
-namespace Tree\Fixture\Genealogy;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree\Fixture\Genealogy;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,6 +26,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 abstract class Person
 {
     /**
+     * @ORM\OneToMany(targetEntity="Person", mappedBy="parent")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $children;
+    /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -32,13 +47,6 @@ abstract class Person
      * @var Person
      */
     private $parent;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Person", mappedBy="parent")
-     *
-     * @var Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $children;
 
     /**
      * @Gedmo\TreeLeft
@@ -77,7 +85,7 @@ abstract class Person
     /**
      * @return Person
      */
-    public function setParent(Person $parent)
+    public function setParent(self $parent)
     {
         $this->parent = $parent;
 

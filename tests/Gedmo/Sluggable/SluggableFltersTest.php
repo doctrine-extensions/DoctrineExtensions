@@ -1,26 +1,34 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
+use Gedmo\Tests\Sluggable\Fixture\Article;
+use Gedmo\Tests\Sluggable\Fixture\Doctrine\FakeFilter;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Florian Vilpoix <florianv@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableFltersTest extends BaseTestCaseORM
+final class SluggableFltersTest extends BaseTestCaseORM
 {
-    const TARGET = 'Sluggable\\Fixture\\Article';
+    public const TARGET = Article::class;
 
-    const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
-    const FAKE_FILTER_NAME = 'fake-filter';
+    public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    public const FAKE_FILTER_NAME = 'fake-filter';
 
     protected function setUp(): void
     {
@@ -32,9 +40,9 @@ class SluggableFltersTest extends BaseTestCaseORM
         $sluggableListener->addManagedFilter(self::FAKE_FILTER_NAME, true);
         $evm->addEventSubscriber($sluggableListener);
 
-        $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
-        $config->addFilter(self::FAKE_FILTER_NAME, 'Sluggable\Fixture\Doctrine\FakeFilter');
+        $config = $this->getDefaultConfiguration();
+        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
+        $config->addFilter(self::FAKE_FILTER_NAME, FakeFilter::class);
 
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
 
@@ -42,17 +50,10 @@ class SluggableFltersTest extends BaseTestCaseORM
         $this->em->getFilters()->enable(self::FAKE_FILTER_NAME);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::TARGET,
-        ];
-    }
-
     /**
      * @test
      */
-    public function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled()
+    public function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled(): void
     {
         // disable one managed doctrine filter
         $this->em->getFilters()->disable(self::FAKE_FILTER_NAME);
@@ -64,6 +65,13 @@ class SluggableFltersTest extends BaseTestCaseORM
         $this->em->persist($slug);
         $this->em->flush();
 
-        $this->assertEquals('my-title-my-code', $slug->getSlug());
+        static::assertSame('my-title-my-code', $slug->getSlug());
+    }
+
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::TARGET,
+        ];
     }
 }

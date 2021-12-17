@@ -11,7 +11,7 @@ Features:
 - Specific annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation, Yaml and Xml mapping support for extensions
 
 Update **2012-06-26**
 
@@ -31,7 +31,7 @@ and any number of them
 
 **Portability:**
 
-- **Timestampable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **Timestampable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Timestampable** behavior
@@ -50,8 +50,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -59,9 +59,14 @@ on how to setup and use the extensions in most optimized way.
 ## Timestampable Entity example:
 
 ### Timestampable annotations:
-- **@Gedmo\Mapping\Annotation\Timestampable** this annotation tells that this column is timestampable
-by default it updates this column on update. If column is not date, datetime or time
+- **@Gedmo\Mapping\Annotation\Timestampable** this annotation tells that this column is timestampable.
+By default it updates this column on update. If column is not date, datetime or time
 type it will trigger an exception.
+
+### Timestampable attributes:
+- **@Gedmo\Mapping\Annotation\Timestampable** this attribute tells that this column is timestampable.
+  By default it updates this column on update. If column is not date, datetime or time
+  type it will trigger an exception.
 
 Available configuration options:
 
@@ -73,6 +78,8 @@ should be updated
 **Note:** that Timestampable interface is not necessary, except in cases where
 you need to identify entity as being Timestampable. The metadata is loaded only once then
 cache is activated
+
+### Annotations
 
 ``` php
 <?php
@@ -165,9 +172,92 @@ class Article
 }
 ```
 
+### Attributes
+
+```php
+#[ORM\Entity]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    private $id;
+
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    private $title;
+
+    #[ORM\Column(name: 'body', type: Types::STRING)]
+    private $body;
+
+    /**
+     * @var \DateTime
+     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(name: 'created', type: Types::DATE_MUTABLE)]
+    private $created;
+
+    /**
+     * @var \DateTime
+     */
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable]
+    private $updated;
+
+    /**
+     * @var \DateTime
+     */
+    #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
+    private $contentChanged;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setBody($body)
+    {
+        $this->body = $body;
+    }
+
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    public function getContentChanged()
+    {
+        return $this->contentChanged;
+    }
+}
+```
+
 <a name="document-mapping"></a>
 
 ## Timestampable Document example:
+
+**Note:** this example is using annotations and attributes for mapping, you should use
+one of them, not both.
 
 ``` php
 <?php
@@ -200,6 +290,7 @@ class Article
      * @ODM\Date
      * @Gedmo\Timestampable(on="create")
      */
+     #[Gedmo\Timestampable(on: 'create')]
     private $created;
 
     /**
@@ -208,6 +299,7 @@ class Article
      * @ODM\Date
      * @Gedmo\Timestampable
      */
+     #[Gedmo\Timestampable]
     private $updated;
 
     /**
@@ -216,6 +308,7 @@ class Article
      * @ODM\Date
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
+     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
     private $contentChanged;
 
     public function getId()

@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Category;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class InMemoryUpdatesTest extends BaseTestCaseORM
+final class InMemoryUpdatesTest extends BaseTestCaseORM
 {
-    const CATEGORY = 'Tree\\Fixture\\Category';
+    public const CATEGORY = Category::class;
 
     protected function setUp(): void
     {
@@ -62,20 +68,20 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
         $node = $repo->find(2);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
-        $this->assertEquals(2, $left);
-        $this->assertEquals(5, $right);
+        static::assertSame(2, $left);
+        static::assertSame(5, $right);
 
         $node = $repo->find(3);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
-        $this->assertEquals(6, $left);
-        $this->assertEquals(7, $right);
+        static::assertSame(6, $left);
+        static::assertSame(7, $right);
 
         $node = $repo->find(4);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
-        $this->assertEquals(3, $left);
-        $this->assertEquals(4, $right);
+        static::assertSame(3, $left);
+        static::assertSame(4, $right);
 
         /*print "Tree:\n";
         for ($i=1; $i < 5; $i++) {

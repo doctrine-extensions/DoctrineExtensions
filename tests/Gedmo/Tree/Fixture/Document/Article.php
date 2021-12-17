@@ -1,6 +1,15 @@
 <?php
 
-namespace Tree\Fixture\Document;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MONGO;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -61,7 +70,7 @@ class Article
         return $this->title;
     }
 
-    public function setParent(Article $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

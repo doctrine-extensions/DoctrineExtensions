@@ -1,12 +1,26 @@
 <?php
 
-namespace Tool;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -21,10 +35,6 @@ use Gedmo\Tree\TreeListener;
  * ORM object manager
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
 {
@@ -64,7 +74,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
-        $schema = array_map(function ($class) use ($em) {
+        $schema = array_map(static function ($class) use ($em) {
             return $em->getClassMetadata($class);
         }, (array) $this->getUsedEntityFixtures());
 
@@ -73,6 +83,11 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;
+    }
+
+    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null): EntityManager
+    {
+        return $this->getMockSqliteEntityManager($evm, $this->getDefaultConfiguration());
     }
 
     /**
@@ -89,7 +104,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $config = $this->getMockAnnotatedConfig();
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
-        $schema = array_map(function ($class) use ($em) {
+        $schema = array_map(static function ($class) use ($em) {
             return $em->getClassMetadata($class);
         }, (array) $this->getUsedEntityFixtures());
 
@@ -110,18 +125,18 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      */
     protected function getMockMappedEntityManager(EventManager $evm = null)
     {
-        $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
-        $driver->expects($this->once())
+        $driver = $this->getMockBuilder(Driver::class)->getMock();
+        $driver->expects(static::once())
             ->method('getDatabasePlatform')
-            ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
+            ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
 
-        $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
-            ->setConstructorArgs([], $driver)
+        $conn = $this->getMockBuilder(Connection::class)
+            ->setConstructorArgs([[], $driver])
             ->getMock();
 
-        $conn->expects($this->once())
+        $conn->expects(static::once())
             ->method('getEventManager')
-            ->will($this->returnValue($evm ?: $this->getEventManager()));
+            ->willReturn($evm ?: $this->getEventManager());
 
         $config = $this->getMockAnnotatedConfig();
         $this->em = EntityManager::create($conn, $config);
@@ -157,7 +172,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         if ($this->queryAnalyzer) {
             $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
             if ($writeToLog) {
-                $fileName = __DIR__.'/../../temp/query_debug_'.time().'.log';
+                $fileName = TESTS_TEMP_DIR.'/query_debug_'.time().'.log';
                 if (false !== ($file = fopen($fileName, 'w+'))) {
                     fwrite($file, $output);
                     fclose($file);
@@ -173,7 +188,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     /**
      * Creates default mapping driver
      *
-     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     * @return MappingDriver
      */
     protected function getMetadataDriverImplementation()
     {
@@ -188,11 +203,43 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     abstract protected function getUsedEntityFixtures();
 
     /**
-     * Build event manager
+     * Get annotation mapping configuration
      *
-     * @return EventManager
+     * @return \Doctrine\ORM\Configuration
      */
-    private function getEventManager()
+    protected function getMockAnnotatedConfig()
+    {
+        $config = new Configuration();
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+
+        return $config;
+    }
+
+    protected function getDefaultConfiguration(): Configuration
+    {
+        $config = new Configuration();
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
+
+        return $config;
+    }
+
+    private function getMetadataDefaultDriverImplementation(): MappingDriver
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            return new AttributeDriver([]);
+        }
+
+        return new AnnotationDriver($_ENV['annotation_reader']);
+    }
+
+    /**
+     * Build event manager
+     */
+    private function getEventManager(): EventManager
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
@@ -203,20 +250,5 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $evm->addEventSubscriber(new SoftDeleteableListener());
 
         return $evm;
-    }
-
-    /**
-     * Get annotation mapping configuration
-     *
-     * @return \Doctrine\ORM\Configuration
-     */
-    protected function getMockAnnotatedConfig()
-    {
-        $config = new Configuration();
-        $config->setProxyDir(__DIR__.'/../../temp');
-        $config->setProxyNamespace('Proxy');
-        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
-
-        return $config;
     }
 }

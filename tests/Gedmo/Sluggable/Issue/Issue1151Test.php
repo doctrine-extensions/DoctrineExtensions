@@ -1,18 +1,40 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue1151\Article;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue1151\Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * Gedmo\Sluggable\Issue1151Test
  *
  * @author Vaidas Lažauskas <vaidas@notrix.lt>
  */
-class Issue1151Test extends BaseTestCaseMongoODM
+final class Issue1151Test extends BaseTestCaseMongoODM
 {
+    /**
+     * Set up test
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+
+        $this->getMockDocumentManager($evm);
+    }
+
     /**
      * Test if new object with predefined id will be processed by sluggable listener
      */
@@ -24,18 +46,6 @@ class Issue1151Test extends BaseTestCaseMongoODM
         $this->dm->persist($article);
 
         $this->dm->flush();
-        $this->assertEquals('test', $article->getSlug());
-    }
-
-    /**
-     * Set up test
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener());
-
-        $this->getMockDocumentManager($evm);
+        static::assertSame('test', $article->getSlug());
     }
 }

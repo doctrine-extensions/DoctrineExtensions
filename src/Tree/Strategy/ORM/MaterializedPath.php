@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -10,7 +17,6 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPath extends AbstractMaterializedPath
 {
@@ -25,7 +31,7 @@ class MaterializedPath extends AbstractMaterializedPath
         $path = addcslashes($wrapped->getPropertyValue($config['path']), '%');
 
         $separator = $config['path_ends_with_separator'] ? null : $config['path_separator'];
-        
+
         // Remove node's children
         $qb = $om->createQueryBuilder();
         $qb->select('e')

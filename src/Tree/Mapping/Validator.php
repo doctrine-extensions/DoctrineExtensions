@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Mapping;
 
 use Gedmo\Exception\InvalidMappingException;
@@ -12,7 +19,6 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author <rocco@roccosportal.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Validator
 {
@@ -88,7 +94,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
     }
 
     /**
@@ -103,7 +109,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathTypes);
+        return $mapping && in_array($mapping['type'], $this->validPathTypes, true);
     }
 
     /**
@@ -118,7 +124,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
+        return $mapping && in_array($mapping['type'], $this->validPathSourceTypes, true);
     }
 
     /**
@@ -133,7 +139,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathHashTypes);
+        return $mapping && in_array($mapping['type'], $this->validPathHashTypes, true);
     }
 
     /**
@@ -163,7 +169,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validRootTypes);
+        return $mapping && in_array($mapping['type'], $this->validRootTypes, true);
     }
 
     /**
@@ -186,7 +192,7 @@ class Validator
             $missingFields[] = 'right';
         }
         if ($missingFields) {
-            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->name}");
+            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->getName()}");
         }
     }
 
@@ -207,7 +213,7 @@ class Validator
             $missingFields[] = 'closure class';
         }
         if ($missingFields) {
-            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->name}");
+            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->getName()}");
         }
     }
 
@@ -231,7 +237,7 @@ class Validator
             $missingFields[] = 'path_source';
         }
         if ($missingFields) {
-            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->name}");
+            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->getName()}");
         }
     }
 }

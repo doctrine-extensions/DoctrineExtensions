@@ -1,26 +1,33 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Genealogy\Man;
-use Tree\Fixture\Genealogy\Woman;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Genealogy\Man;
+use Gedmo\Tests\Tree\Fixture\Genealogy\Person;
+use Gedmo\Tests\Tree\Fixture\Genealogy\Woman;
+use Gedmo\Tree\TreeListener;
 
 /**
  * Additional tests for tree inheritance and in-memory updates
  *
  * @author Illya Klymov <xanf@xanf.me>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
+final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
-    const PERSON = 'Tree\\Fixture\\Genealogy\\Person';
-    const MAN = 'Tree\\Fixture\\Genealogy\\Man';
-    const WOMAN = 'Tree\\Fixture\\Genealogy\\Woman';
+    public const PERSON = Person::class;
+    public const MAN = Man::class;
+    public const WOMAN = Woman::class;
 
     protected function setUp(): void
     {
@@ -56,30 +63,30 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         $left = $man1->getLeft();
         $right = $man1->getRight();
         $level = $man1->getLevel();
-        $this->assertEquals(1, $left);
-        $this->assertEquals(8, $right);
-        $this->assertEquals(0, $level);
+        static::assertSame(1, $left);
+        static::assertSame(8, $right);
+        static::assertSame(0, $level);
 
         $left = $woman1->getLeft();
         $right = $woman1->getRight();
         $level = $woman1->getLevel();
-        $this->assertEquals(2, $left);
-        $this->assertEquals(7, $right);
-        $this->assertEquals(1, $level);
+        static::assertSame(2, $left);
+        static::assertSame(7, $right);
+        static::assertSame(1, $level);
 
         $left = $man2->getLeft();
         $right = $man2->getRight();
         $level = $man2->getLevel();
-        $this->assertEquals(3, $left);
-        $this->assertEquals(6, $right);
-        $this->assertEquals(2, $level);
+        static::assertSame(3, $left);
+        static::assertSame(6, $right);
+        static::assertSame(2, $level);
 
         $left = $woman2->getLeft();
         $right = $woman2->getRight();
         $level = $woman2->getLevel();
-        $this->assertEquals(4, $left);
-        $this->assertEquals(5, $right);
-        $this->assertEquals(3, $level);
+        static::assertSame(4, $left);
+        static::assertSame(5, $right);
+        static::assertSame(3, $level);
     }
 
     protected function getUsedEntityFixtures()

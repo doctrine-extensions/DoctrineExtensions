@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue1240\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue1240\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue1240Test extends BaseTestCaseORM
+final class Issue1240Test extends BaseTestCaseORM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Issue1240\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {
@@ -45,11 +51,11 @@ class Issue1240Test extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals('the+title', $article->getSlug());
-        $this->assertEquals('The+Title', $article->getCamelSlug());
+        static::assertSame('the+title', $article->getSlug());
+        static::assertSame('The+Title', $article->getCamelSlug());
 
-        $this->assertEquals('the+title+1', $article2->getSlug());
-        $this->assertEquals('The+Title+1', $article2->getCamelSlug());
+        static::assertSame('the+title+1', $article2->getSlug());
+        static::assertSame('The+Title+1', $article2->getCamelSlug());
 
         $article = new Article();
         $article->setTitle('the title');
@@ -57,8 +63,8 @@ class Issue1240Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        $this->assertEquals('the+title+2', $article->getSlug());
-        $this->assertEquals('The+Title+2', $article->getCamelSlug());
+        static::assertSame('the+title+2', $article->getSlug());
+        static::assertSame('The+Title+2', $article->getCamelSlug());
     }
 
     protected function getUsedEntityFixtures()

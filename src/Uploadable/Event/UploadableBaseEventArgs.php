@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Uploadable\Event;
 
 use Doctrine\Common\EventArgs;
@@ -12,21 +19,27 @@ use Gedmo\Uploadable\UploadableListener;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class UploadableBaseEventArgs extends EventArgs
 {
     /**
      * The instance of the Uploadable listener that fired this event
      *
-     * @var \Gedmo\Uploadable\UploadableListener
+     * @var UploadableListener
      */
     private $uploadableListener;
 
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var EntityManagerInterface
      */
     private $em;
+
+    /**
+     * @todo Check if this property must be removed, as it is not used.
+     *
+     * @var array
+     */
+    private $config = [];
 
     /**
      * The Uploadable entity
@@ -43,13 +56,15 @@ abstract class UploadableBaseEventArgs extends EventArgs
     private $extensionConfiguration;
 
     /**
-     * @var \Gedmo\Uploadable\FileInfo\FileInfoInterface
+     * @var FileInfoInterface
      */
     private $fileInfo;
 
     /**
-     * @var string - Is the file being created, updated or removed?
-     *             This value can be: CREATE, UPDATE or DELETE
+     * Is the file being created, updated or removed?
+     * This value can be: CREATE, UPDATE or DELETE
+     *
+     * @var string
      */
     private $action;
 

@@ -1,36 +1,41 @@
 <?php
 
-namespace Gedmo\SoftDeleteable;
+declare(strict_types=1);
 
-use SoftDeleteable\Fixture\Document\UsingTrait;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\SoftDeleteable;
+
+use Gedmo\Tests\SoftDeleteable\Fixture\Document\UsingTrait;
 
 /**
  * Test for SoftDeletable Entity Trait
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeletableDocumentTraitTest extends \PHPUnit\Framework\TestCase
+final class SoftDeletableDocumentTraitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var UsingTrait
      */
     protected $entity;
 
-    public function testGetSetDeletedAt()
+    public function testGetSetDeletedAt(): void
     {
         $time = new \DateTime();
         $entity = new UsingTrait();
 
-        $this->assertNull($entity->getDeletedAt(), 'deletedAt defaults to null');
-        $this->assertFalse($entity->isDeleted(), 'isDeleted defaults to false');
-        $this->assertSame($entity, $entity->setDeletedAt($time), 'Setter has a fluid interface');
-        $this->assertSame($time, $entity->getDeletedAt(), 'Getter returns a DateTime Object');
-        $this->assertTrue($entity->isDeleted(), 'Is deleted is true when deleteAt is not equal to null');
-        $this->assertSame($entity, $entity->setDeletedAt(), 'Setting deletedAt to null undeletes object');
-        $this->assertFalse($entity->isDeleted(), 'isDeleted should now return false');
+        static::assertNull($entity->getDeletedAt(), 'deletedAt defaults to null');
+        static::assertFalse($entity->isDeleted(), 'isDeleted defaults to false');
+        static::assertSame($entity, $entity->setDeletedAt($time), 'Setter has a fluid interface');
+        static::assertSame($time, $entity->getDeletedAt(), 'Getter returns a DateTime Object');
+        static::assertTrue($entity->isDeleted(), 'Is deleted is true when deleteAt is not equal to null');
+        static::assertSame($entity, $entity->setDeletedAt(), 'Setting deletedAt to null undeletes object');
+        static::assertFalse($entity->isDeleted(), 'isDeleted should now return false');
     }
 }

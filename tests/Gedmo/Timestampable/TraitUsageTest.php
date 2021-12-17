@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Timestampable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\UsingTrait;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Timestampable\Fixture\UsingTrait;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TraitUsageTest extends BaseTestCaseORM
+final class TraitUsageTest extends BaseTestCaseORM
 {
-    const TARGET = 'Timestampable\\Fixture\\UsingTrait';
+    public const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {
@@ -26,7 +32,7 @@ class TraitUsageTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TimestampableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
@@ -40,8 +46,8 @@ class TraitUsageTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertNotNull($sport->getCreatedAt());
-        $this->assertNotNull($sport->getUpdatedAt());
+        static::assertNotNull($sport->getCreatedAt());
+        static::assertNotNull($sport->getUpdatedAt());
     }
 
     /**
@@ -50,8 +56,8 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodthShouldReturnObject()
     {
         $sport = new UsingTrait();
-        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
-        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
+        static::assertInstanceOf(UsingTrait::class, $sport->setCreatedAt(new \DateTime()));
+        static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedAt(new \DateTime()));
     }
 
     protected function getUsedEntityFixtures()

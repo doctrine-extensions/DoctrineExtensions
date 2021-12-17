@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Driver;
 
 use Gedmo\Mapping\Driver;
@@ -9,7 +16,6 @@ use Gedmo\Mapping\Driver;
  * extension mapping driver support
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Chain implements Driver
 {
@@ -71,7 +77,7 @@ class Chain implements Driver
     public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {
-            if (0 === strpos($meta->name, $namespace)) {
+            if (0 === strpos($meta->getName(), $namespace)) {
                 $driver->readExtendedMetadata($meta, $config);
 
                 return;
@@ -85,15 +91,11 @@ class Chain implements Driver
         }
 
         // commenting it for customized mapping support, debugging of such cases might get harder
-        //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->name . ' is not a valid entity or mapped super class.');
+        //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->getName() . ' is not a valid entity or mapped super class.');
     }
 
     /**
      * Passes in the mapping read by original driver
-     *
-     * @param $driver
-     *
-     * @return void
      */
     public function setOriginalDriver($driver)
     {

@@ -1,25 +1,31 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Translatable\Fixture\Document\Personal\Article;
-use Translatable\Fixture\Document\Personal\ArticleTranslation;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Translatable\Fixture\Document\Personal\Article;
+use Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
+final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Translatable\Fixture\Document\Personal\Article';
-    const TRANSLATION = 'Translatable\Fixture\Document\Personal\ArticleTranslation';
+    public const ARTICLE = Article::class;
+    public const TRANSLATION = ArticleTranslation::class;
 
     private $translatableListener;
     private $id;
@@ -34,7 +40,7 @@ class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
     /**
@@ -46,7 +52,7 @@ class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $translations = $article->getTranslations();
 
-        $this->assertCount(2, $translations);
+        static::assertCount(2, $translations);
     }
 
     /**
@@ -58,10 +64,10 @@ class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('lt');
 
         $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
-        $this->assertEquals('lt', $article->getTitle());
+        static::assertSame('lt', $article->getTitle());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new Article();
         $article->setTitle('en');

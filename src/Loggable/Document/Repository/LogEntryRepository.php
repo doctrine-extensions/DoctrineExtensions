@@ -1,8 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Document\Repository;
 
-use Doctrine\MongoDB\Cursor;
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Loggable\Document\LogEntry;
@@ -14,7 +20,6 @@ use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
  * to interact with log entries.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LogEntryRepository extends DocumentRepository
 {
@@ -40,12 +45,12 @@ class LogEntryRepository extends DocumentRepository
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
+        $qb->field('objectClass')->equals($wrapped->getMetadata()->getName());
         $qb->sort('version', 'DESC');
         $q = $qb->getQuery();
 
         $result = $q->execute();
-        if ($result instanceof Cursor || $result instanceof Iterator) {
+        if ($result instanceof Iterator) {
             $result = $result->toArray();
         }
 
@@ -73,13 +78,13 @@ class LogEntryRepository extends DocumentRepository
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($objectMeta->name);
-        $qb->field('version')->lte(intval($version));
+        $qb->field('objectClass')->equals($objectMeta->getName());
+        $qb->field('version')->lte((int) $version);
         $qb->sort('version', 'ASC');
         $q = $qb->getQuery();
 
         $logs = $q->execute();
-        if ($logs instanceof Cursor || $logs instanceof Iterator) {
+        if ($logs instanceof Iterator) {
             $logs = $logs->toArray();
         }
         if ($logs) {
@@ -87,7 +92,7 @@ class LogEntryRepository extends DocumentRepository
             while (($log = array_shift($logs))) {
                 $data = array_merge($data, $log->getData());
             }
-            $this->fillDocument($document, $data, $objectMeta);
+            $this->fillDocument($document, $data);
         } else {
             throw new \Gedmo\Exception\UnexpectedValueException('Count not find any log entries under version: '.$version);
         }
@@ -102,10 +107,10 @@ class LogEntryRepository extends DocumentRepository
     {
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         $objectMeta = $wrapped->getMetadata();
-        $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->name);
+        $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->getName());
         $fields = $config['versioned'];
         foreach ($data as $field => $value) {
-            if (!in_array($field, $fields)) {
+            if (!in_array($field, $fields, true)) {
                 continue;
             }
             $mapping = $objectMeta->getFieldMapping($field);
@@ -134,26 +139,22 @@ class LogEntryRepository extends DocumentRepository
     /**
      * Get the currently used LoggableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
-     *
-     * @return LoggableListener
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      */
-    private function getLoggableListener()
+    private function getLoggableListener(): LoggableListener
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
-                        break;
+
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
             }
         }

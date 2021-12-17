@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\RootAssociationCategory;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\RootAssociationCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NestedTreeRootAssociationTest extends BaseTestCaseORM
+final class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    const CATEGORY = 'Tree\\Fixture\\RootAssociationCategory';
+    public const CATEGORY = RootAssociationCategory::class;
 
     protected function setUp(): void
     {
@@ -36,23 +42,23 @@ class NestedTreeRootAssociationTest extends BaseTestCaseORM
 
         // Foods
         $food = $repo->findOneBy(['title' => 'Food']);
-        $this->assertEquals($food->getId(), $food->getRoot()->getId());
+        static::assertSame($food->getId(), $food->getRoot()->getId());
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
-        $this->assertEquals($food->getId(), $fruits->getRoot()->getId());
+        static::assertSame($food->getId(), $fruits->getRoot()->getId());
 
         $vegetables = $repo->findOneBy(['title' => 'Vegetables']);
-        $this->assertEquals($food->getId(), $vegetables->getRoot()->getId());
+        static::assertSame($food->getId(), $vegetables->getRoot()->getId());
 
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
-        $this->assertEquals($food->getId(), $carrots->getRoot()->getId());
+        static::assertSame($food->getId(), $carrots->getRoot()->getId());
 
         $potatoes = $repo->findOneBy(['title' => 'Potatoes']);
-        $this->assertEquals($food->getId(), $potatoes->getRoot()->getId());
+        static::assertSame($food->getId(), $potatoes->getRoot()->getId());
 
         // Sports
         $sports = $repo->findOneBy(['title' => 'Sports']);
-        $this->assertEquals($sports->getId(), $sports->getRoot()->getId());
+        static::assertSame($sports->getId(), $sports->getRoot()->getId());
     }
 
     protected function getUsedEntityFixtures()
@@ -62,7 +68,7 @@ class NestedTreeRootAssociationTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new RootAssociationCategory();
         $root->setTitle('Food');

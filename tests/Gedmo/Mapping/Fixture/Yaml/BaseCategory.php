@@ -1,60 +1,55 @@
 <?php
 
-namespace Mapping\Fixture\Yaml;
+declare(strict_types=1);
 
-/**
- * @MappedSupperClass
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
+namespace Gedmo\Tests\Mapping\Fixture\Yaml;
+
 class BaseCategory
 {
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $left;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $right;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $level;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $rooted;
 
     /**
-     * @var datetime
-     *
-     * @Column(name="created", type="datetime")
+     * @var \DateTime|null
      */
     private $created;
 
     /**
-     * @var date
-     *
-     * @Column(name="updated", type="date")
+     * @var \DateTime|null
      */
     private $updated;
 
-    /**
-     * Set created
-     *
-     * @param dateTime $created
-     */
-    public function setCreated(\dateTime $created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
     }
 
     /**
-     * Get created
-     *
-     * @return dateTime $created
+     * @return \DateTime $created
      */
     public function getCreated()
     {
@@ -62,9 +57,7 @@ class BaseCategory
     }
 
     /**
-     * Set updated
-     *
-     * @param date $updated
+     * @param \DateTime $updated
      */
     public function setUpdated($updated)
     {
@@ -72,9 +65,7 @@ class BaseCategory
     }
 
     /**
-     * Get updated
-     *
-     * @return date $updated
+     * @return \DateTime $updated
      */
     public function getUpdated()
     {

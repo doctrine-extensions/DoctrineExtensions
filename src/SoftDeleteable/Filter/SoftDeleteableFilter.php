@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable\Filter;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,7 +21,6 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Patrik Votoček <patrik@votocek.cz>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SoftDeleteableFilter extends SQLFilter
 {
@@ -29,7 +35,8 @@ class SoftDeleteableFilter extends SQLFilter
     protected $entityManager;
 
     /**
-     * @var string[bool]
+     * @var array<string, bool>
+     * @phpstan-var array<class-string, bool>
      */
     protected $disabled = [];
 
@@ -37,13 +44,16 @@ class SoftDeleteableFilter extends SQLFilter
      * @param string $targetTableAlias
      *
      * @return string
+     *
+     * @throws \Doctrine\DBAL\Exception
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         $class = $targetEntity->getName();
-        if (array_key_exists($class, $this->disabled) && true === $this->disabled[$class]) {
+        if (true === ($this->disabled[$class] ?? false)) {
             return '';
-        } elseif (array_key_exists($targetEntity->rootEntityName, $this->disabled) && true === $this->disabled[$targetEntity->rootEntityName]) {
+        }
+        if (true === ($this->disabled[$targetEntity->rootEntityName] ?? false)) {
             return '';
         }
 
@@ -53,9 +63,10 @@ class SoftDeleteableFilter extends SQLFilter
             return '';
         }
 
-        $conn = $this->getEntityManager()->getConnection();
-        $platform = $conn->getDatabasePlatform();
-        $column = $targetEntity->getQuotedColumnName($config['fieldName'], $platform);
+        $platform = $this->getConnection()->getDatabasePlatform();
+        $quoteStrategy = $this->getEntityManager()->getConfiguration()->getQuoteStrategy();
+
+        $column = $quoteStrategy->getColumnName($config['fieldName'], $targetEntity, $platform);
 
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
         if (isset($config['timeAware']) && $config['timeAware']) {
@@ -67,6 +78,8 @@ class SoftDeleteableFilter extends SQLFilter
 
     /**
      * @param string $class
+     *
+     * @phpstan-param class-string $class
      */
     public function disableForEntity($class)
     {
@@ -77,6 +90,8 @@ class SoftDeleteableFilter extends SQLFilter
 
     /**
      * @param string $class
+     *
+     * @phpstan-param class-string $class
      */
     public function enableForEntity($class)
     {
@@ -120,9 +135,11 @@ class SoftDeleteableFilter extends SQLFilter
     protected function getEntityManager()
     {
         if (null === $this->entityManager) {
-            $refl = new \ReflectionProperty('Doctrine\ORM\Query\Filter\SQLFilter', 'em');
-            $refl->setAccessible(true);
-            $this->entityManager = $refl->getValue($this);
+            $getEntityManager = \Closure::bind(function (): EntityManagerInterface {
+                return $this->em;
+            }, $this, parent::class);
+
+            $this->entityManager = $getEntityManager();
         }
 
         return $this->entityManager;

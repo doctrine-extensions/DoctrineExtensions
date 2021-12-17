@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
@@ -15,7 +22,6 @@ use MongoDB\BSON\Regex;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathRepository extends AbstractTreeRepository
 {
@@ -85,7 +91,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
 
         if (is_object($node)) {
-            if (!($node instanceof $meta->name)) {
+            if (!is_a($node, $meta->getName())) {
                 throw new InvalidArgumentException('Node is not related to this repository');
             }
 
@@ -109,13 +115,13 @@ class MaterializedPathRepository extends AbstractTreeRepository
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $config = $this->listener->getConfiguration($this->dm, $meta->getName());
         $separator = preg_quote($config['path_separator']);
         $qb = $this->dm->createQueryBuilder()
-            ->find($meta->name);
+            ->find($meta->getName());
         $regex = false;
 
-        if (is_object($node) && $node instanceof $meta->name) {
+        if (is_a($node, $meta->getName())) {
             $node = new MongoDocumentWrapper($node, $this->dm);
             $nodePath = preg_quote($node->getPropertyValue($config['path']));
 
@@ -138,7 +144,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->field($config['path'])->equals(new Regex($regex));
         }
 
-        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, 'asc' === $direction ? 'asc' : 'desc');
+        $qb->sort(null === $sortByField ? $config['path'] : $sortByField, 'asc' === $direction ? 'asc' : 'desc');
 
         return $qb;
     }

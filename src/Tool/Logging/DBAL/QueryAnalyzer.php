@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tool\Logging\DBAL;
 
 use Doctrine\DBAL\Logging\SQLLogger;
@@ -8,7 +15,6 @@ use Doctrine\DBAL\Types\Type;
 
 /**
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class QueryAnalyzer implements SQLLogger
 {
@@ -22,21 +28,21 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Start time of currently executed query
      *
-     * @var int
+     * @var float
      */
-    private $queryStartTime = null;
+    private $queryStartTime;
 
     /**
      * Total execution time of all queries
      *
-     * @var int
+     * @var float
      */
     private $totalExecutionTime = 0;
 
     /**
      * List of queries executed
      *
-     * @var array
+     * @var string[]
      */
     private $queries = [];
 
@@ -44,7 +50,7 @@ class QueryAnalyzer implements SQLLogger
      * Query execution times indexed
      * in same order as queries
      *
-     * @var array
+     * @var float[]
      */
     private $queryExecutionTimes = [];
 
@@ -138,7 +144,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get total execution time of queries
      *
-     * @return int
+     * @return float
      */
     public function getTotalExecutionTime()
     {
@@ -148,7 +154,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get all queries
      *
-     * @return array
+     * @return string[]
      */
     public function getExecutedQueries()
     {
@@ -168,7 +174,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get all query execution times
      *
-     * @return array
+     * @return float[]
      */
     public function getExecutionTimes()
     {
@@ -177,22 +183,16 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Create the SQL with mapped parameters
-     *
-     * @param string     $sql
-     * @param array|null $params
-     * @param array|null $types
-     *
-     * @return string
      */
-    private function generateSql($sql, $params, $types)
+    private function generateSql(string $sql, ?array $params, ?array $types): string
     {
-        if (null === $params || !count($params)) {
+        if (null === $params || [] === $params) {
             return $sql;
         }
         $converted = $this->getConvertedParams($params, $types);
         if (is_int(key($params))) {
             $index = key($converted);
-            $sql = preg_replace_callback('@\?@sm', function ($match) use (&$index, $converted) {
+            $sql = preg_replace_callback('@\?@sm', static function ($match) use (&$index, $converted) {
                 return $converted[$index++];
             }, $sql);
         } else {
@@ -206,13 +206,8 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Get the converted parameter list
-     *
-     * @param array $params
-     * @param array $types
-     *
-     * @return array
      */
-    private function getConvertedParams($params, $types)
+    private function getConvertedParams(array $params, array $types): array
     {
         $result = [];
         foreach ($params as $position => $value) {
@@ -227,14 +222,14 @@ class QueryAnalyzer implements SQLLogger
             } else {
                 if ($value instanceof \DateTimeInterface) {
                     $value = $value->format($this->platform->getDateTimeFormatString());
-                } elseif (!is_null($value)) {
+                } elseif (null !== $value) {
                     $type = Type::getType(gettype($value));
                     $value = $type->convertToDatabaseValue($value, $this->platform);
                 }
             }
             if (is_string($value)) {
                 $value = "'{$value}'";
-            } elseif (is_null($value)) {
+            } elseif (null === $value) {
                 $value = 'NULL';
             }
             $result[$position] = $value;

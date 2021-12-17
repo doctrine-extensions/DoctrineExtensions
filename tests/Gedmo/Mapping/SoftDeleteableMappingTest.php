@@ -1,38 +1,44 @@
 <?php
 
-namespace Gedmo\Mapping;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
  * These are mapping tests for SoftDeleteable extension
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeleteableMappingTest extends BaseTestCaseOM
+final class SoftDeleteableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\SoftDeleteable\SoftDeleteableListener
+     * @var SoftDeleteableListener
      */
     private $softDeleteable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -41,30 +47,30 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
 
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
-        $chain = new DriverChain();
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
+        $chain = new MappingDriverChain();
+        $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
 
         $this->softDeleteable = new SoftDeleteableListener();
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->softDeleteable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Yaml\SoftDeleteable',
-            'Mapping\Fixture\SoftDeleteable',
+            SoftDeleteable::class,
+            \Gedmo\Tests\Mapping\Fixture\SoftDeleteable::class,
         ], $chain);
     }
 
     public function testYamlMapping()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\SoftDeleteable');
-        $config = $this->softDeleteable->getConfiguration($this->em, $meta->name);
+        $meta = $this->em->getClassMetadata(SoftDeleteable::class);
+        $config = $this->softDeleteable->getConfiguration($this->em, $meta->getName());
 
-        $this->assertArrayHasKey('softDeleteable', $config);
-        $this->assertTrue($config['softDeleteable']);
-        $this->assertArrayHasKey('timeAware', $config);
-        $this->assertFalse($config['timeAware']);
-        $this->assertArrayHasKey('fieldName', $config);
-        $this->assertEquals('deletedAt', $config['fieldName']);
+        static::assertArrayHasKey('softDeleteable', $config);
+        static::assertTrue($config['softDeleteable']);
+        static::assertArrayHasKey('timeAware', $config);
+        static::assertFalse($config['timeAware']);
+        static::assertArrayHasKey('fieldName', $config);
+        static::assertSame('deletedAt', $config['fieldName']);
     }
 }

@@ -1,0 +1,34 @@
+name: Quality Assurance
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  phpstan:
+    name: PHPStan
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          extensions: mongodb-1.9.0, zip
+          tools: composer:v2
+
+      - name: Install Composer dependencies (highest)
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: highest
+          composer-options: --prefer-dist --prefer-stable --no-interaction --no-progress
+
+      - name: PHPStan
+        run: bin/phpstan --memory-limit=1G analyse --error-format=github

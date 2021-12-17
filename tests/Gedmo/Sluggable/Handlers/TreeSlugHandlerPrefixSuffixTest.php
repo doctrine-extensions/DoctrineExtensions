@@ -1,15 +1,25 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
-use Tool\BaseTestCaseORM;
 
-class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
+final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
-    const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlugPrefixSuffix';
+    public const TARGET = TreeSlugPrefixSuffix::class;
 
     protected function setUp(): void
     {
@@ -41,7 +51,7 @@ class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals('prefix.foo/bar/baz.suffix', $baz->getSlug());
+        static::assertSame('prefix.foo/bar/baz.suffix', $baz->getSlug());
     }
 
     protected function getUsedEntityFixtures()

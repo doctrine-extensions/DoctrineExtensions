@@ -1,24 +1,32 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Translatable\Fixture\Document\SimpleArticle as Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Translatable\Fixture\Document\SimpleArticle as Article;
+use Gedmo\Translatable\Document\Repository\TranslationRepository;
+use Gedmo\Translatable\Document\Translation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
+final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Translatable\\Fixture\\Document\\SimpleArticle';
-    const TRANSLATION = 'Gedmo\\Translatable\\Document\\Translation';
+    public const ARTICLE = Article::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
     private $id;
@@ -33,7 +41,7 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
     }
 
@@ -43,20 +51,21 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     public function shouldPersistMultipleTranslations()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $translations = $repo->findTranslations($sport);
 
-        $this->assertArrayHasKey('de_de', $translations);
-        $this->assertArrayHasKey('title', $translations['de_de']);
-        $this->assertArrayHasKey('content', $translations['de_de']);
-        $this->assertEquals('sport de', $translations['de_de']['title']);
-        $this->assertEquals('content de', $translations['de_de']['content']);
+        static::assertArrayHasKey('de_de', $translations);
+        static::assertArrayHasKey('title', $translations['de_de']);
+        static::assertArrayHasKey('content', $translations['de_de']);
+        static::assertSame('sport de', $translations['de_de']['title']);
+        static::assertSame('content de', $translations['de_de']['content']);
 
-        $this->assertArrayHasKey('ru_ru', $translations);
-        $this->assertArrayHasKey('title', $translations['ru_ru']);
-        $this->assertArrayHasKey('content', $translations['ru_ru']);
-        $this->assertEquals('sport ru', $translations['ru_ru']['title']);
-        $this->assertEquals('content ru', $translations['ru_ru']['content']);
+        static::assertArrayHasKey('ru_ru', $translations);
+        static::assertArrayHasKey('title', $translations['ru_ru']);
+        static::assertArrayHasKey('content', $translations['ru_ru']);
+        static::assertSame('sport ru', $translations['ru_ru']['title']);
+        static::assertSame('content ru', $translations['ru_ru']['content']);
     }
 
     /**
@@ -65,6 +74,7 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     public function shouldUpdateTranslation()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $repo
             ->translate($sport, 'title', 'ru_ru', 'sport ru change')
@@ -73,13 +83,13 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $translations = $repo->findTranslations($sport);
-        $this->assertCount(2, $translations);
+        static::assertCount(2, $translations);
 
-        $this->assertArrayHasKey('ru_ru', $translations);
-        $this->assertArrayHasKey('title', $translations['ru_ru']);
-        $this->assertArrayHasKey('content', $translations['ru_ru']);
-        $this->assertEquals('sport ru change', $translations['ru_ru']['title']);
-        $this->assertEquals('content ru change', $translations['ru_ru']['content']);
+        static::assertArrayHasKey('ru_ru', $translations);
+        static::assertArrayHasKey('title', $translations['ru_ru']);
+        static::assertArrayHasKey('content', $translations['ru_ru']);
+        static::assertSame('sport ru change', $translations['ru_ru']['title']);
+        static::assertSame('content ru change', $translations['ru_ru']['content']);
     }
 
     /**
@@ -88,6 +98,7 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     public function shouldUpdateMultipleTranslations()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $sport->setTitle('Changed');
         $repo
@@ -101,33 +112,34 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 
         $this->dm->flush();
 
-        $this->assertEquals('sport en update', $sport->getTitle());
-        $this->assertEquals('content en update', $sport->getContent());
+        static::assertSame('sport en update', $sport->getTitle());
+        static::assertSame('content en update', $sport->getContent());
 
         $translations = $repo->findTranslations($sport);
 
-        $this->assertArrayHasKey('de_de', $translations);
-        $this->assertArrayHasKey('title', $translations['de_de']);
-        $this->assertArrayHasKey('content', $translations['de_de']);
-        $this->assertEquals('sport de', $translations['de_de']['title']);
-        $this->assertEquals('content de', $translations['de_de']['content']);
+        static::assertArrayHasKey('de_de', $translations);
+        static::assertArrayHasKey('title', $translations['de_de']);
+        static::assertArrayHasKey('content', $translations['de_de']);
+        static::assertSame('sport de', $translations['de_de']['title']);
+        static::assertSame('content de', $translations['de_de']['content']);
 
-        $this->assertArrayHasKey('ru_ru', $translations);
-        $this->assertArrayHasKey('title', $translations['ru_ru']);
-        $this->assertArrayHasKey('content', $translations['ru_ru']);
-        $this->assertEquals('sport ru change', $translations['ru_ru']['title']);
-        $this->assertEquals('content ru change', $translations['ru_ru']['content']);
+        static::assertArrayHasKey('ru_ru', $translations);
+        static::assertArrayHasKey('title', $translations['ru_ru']);
+        static::assertArrayHasKey('content', $translations['ru_ru']);
+        static::assertSame('sport ru change', $translations['ru_ru']['title']);
+        static::assertSame('content ru change', $translations['ru_ru']['content']);
 
-        $this->assertArrayHasKey('lt_lt', $translations);
-        $this->assertArrayHasKey('title', $translations['lt_lt']);
-        $this->assertArrayHasKey('content', $translations['lt_lt']);
-        $this->assertEquals('sport lt', $translations['lt_lt']['title']);
-        $this->assertEquals('content lt', $translations['lt_lt']['content']);
+        static::assertArrayHasKey('lt_lt', $translations);
+        static::assertArrayHasKey('title', $translations['lt_lt']);
+        static::assertArrayHasKey('content', $translations['lt_lt']);
+        static::assertSame('sport lt', $translations['lt_lt']['title']);
+        static::assertSame('content lt', $translations['lt_lt']['content']);
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setContent('about sport');

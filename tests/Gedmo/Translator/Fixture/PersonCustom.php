@@ -1,6 +1,15 @@
 <?php
 
-namespace Translator\Fixture;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translator\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,6 +36,20 @@ class PersonCustom
      */
     private $description;
 
+    //
+    // TRANSLATIONS DEFINITION:
+    //
+
+    /**
+     * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -52,20 +75,6 @@ class PersonCustom
         return $this->description;
     }
 
-    //
-    // TRANSLATIONS DEFINITION:
-    //
-
-    /**
-     * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
-     */
-    private $translations;
-
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
-    }
-
     public function translate($locale = null)
     {
         if (null === $locale) {
@@ -75,7 +84,7 @@ class PersonCustom
         return new CustomProxy($this,
         /* Locale                            */ $locale,
         /* List of translatable properties:  */ ['name'],
-        /* Translation entity class:         */ 'Translator\Fixture\PersonCustomTranslation',
+        /* Translation entity class:         */ PersonCustomTranslation::class,
         /* Translations collection property: */ $this->translations
         );
     }

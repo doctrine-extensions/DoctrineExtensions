@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 
@@ -10,7 +18,6 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
  * for Loggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class ORM extends BaseAdapterORM implements LoggableAdapter
 {
@@ -19,7 +26,7 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
      */
     public function getDefaultLogEntryClass()
     {
-        return 'Gedmo\\Loggable\\Entity\\LogEntry';
+        return LogEntry::class;
     }
 
     /**
@@ -40,14 +47,14 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = (string) $objectMeta->getReflectionProperty($identifierField)->getValue($object);
 
-        $dql = "SELECT MAX(log.version) FROM {$meta->name} log";
+        $dql = "SELECT MAX(log.version) FROM {$meta->getName()} log";
         $dql .= ' WHERE log.objectId = :objectId';
         $dql .= ' AND log.objectClass = :objectClass';
 
         $q = $em->createQuery($dql);
         $q->setParameters([
             'objectId' => $objectId,
-            'objectClass' => $objectMeta->name,
+            'objectClass' => $objectMeta->getName(),
         ]);
 
         return $q->getSingleScalarResult() + 1;

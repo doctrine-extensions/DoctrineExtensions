@@ -1,53 +1,66 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class CustomTransliteratorTest extends BaseTestCaseORM
+final class CustomTransliteratorTest extends BaseTestCaseORM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Article';
+    public const ARTICLE = Article::class;
 
-    public function testStandardTransliteratorFailsOnChineseCharacters()
+    public function testStandardTransliteratorFailsOnChineseCharacters(): void
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
 
         $repo = $this->em->getRepository(self::ARTICLE);
 
         $chinese = $repo->findOneBy(['code' => 'zh']);
-        $this->assertEquals('bei-jing-zh', $chinese->getSlug());
+        static::assertSame('bei-jing-zh', $chinese->getSlug());
     }
 
-    public function testCanUseCustomTransliterator()
+    public function testCanUseCustomTransliterator(): void
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new MySluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
 
         $repo = $this->em->getRepository(self::ARTICLE);
 
         $chinese = $repo->findOneBy(['code' => 'zh']);
-        $this->assertEquals('bei-jing', $chinese->getSlug());
+        static::assertSame('bei-jing', $chinese->getSlug());
     }
 
-    private function populate()
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::ARTICLE,
+        ];
+    }
+
+    private function populate(): void
     {
         $chinese = new Article();
         $chinese->setTitle('北京');
@@ -56,20 +69,13 @@ class CustomTransliteratorTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
     }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-        ];
-    }
 }
 
 class MySluggableListener extends SluggableListener
 {
     public function __construct()
     {
-        $this->setTransliterator(['\Gedmo\Sluggable\Transliterator', 'transliterate']);
+        $this->setTransliterator([Transliterator::class, 'transliterate']);
     }
 }
 

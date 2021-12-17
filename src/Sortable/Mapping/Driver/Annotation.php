@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sortable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\SortableGroup;
+use Gedmo\Mapping\Annotation\SortablePosition;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -12,19 +21,18 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
  * extension.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation to mark field as one which will store node position
      */
-    const POSITION = 'Gedmo\\Mapping\\Annotation\\SortablePosition';
+    public const POSITION = SortablePosition::class;
 
     /**
      * Annotation to mark field as sorting group
      */
-    const GROUP = 'Gedmo\\Mapping\\Annotation\\SortableGroup';
+    public const GROUP = SortableGroup::class;
 
     /**
      * List of types which are valid for position fields
@@ -58,10 +66,10 @@ class Annotation extends AbstractAnnotationDriver
             if ($this->reader->getPropertyAnnotation($property, self::POSITION)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find 'position' - [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find 'position' - [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                    throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->getName()}");
                 }
                 $config['position'] = $field;
             }
@@ -70,7 +78,7 @@ class Annotation extends AbstractAnnotationDriver
             if ($this->reader->getPropertyAnnotation($property, self::GROUP)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field) && !$meta->hasAssociation($field)) {
-                    throw new InvalidMappingException("Unable to find 'group' - [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find 'group' - [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 if (!isset($config['groups'])) {
                     $config['groups'] = [];
@@ -81,7 +89,7 @@ class Annotation extends AbstractAnnotationDriver
 
         if (!$meta->isMappedSuperclass && $config) {
             if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
+                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->getName()}");
             }
         }
     }

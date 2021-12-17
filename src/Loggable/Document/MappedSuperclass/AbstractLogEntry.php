@@ -1,14 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Document\MappedSuperclass;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry
  *
  * @MongoODM\MappedSuperclass
  */
+#[MongoODM\MappedSuperclass]
 abstract class AbstractLogEntry
 {
     /**
@@ -16,6 +25,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Id
      */
+    #[MongoODM\Id]
     protected $id;
 
     /**
@@ -23,6 +33,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $action;
 
     /**
@@ -30,6 +41,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="date")
      */
+    #[MongoODM\Field(type: Type::DATE)]
     protected $loggedAt;
 
     /**
@@ -37,6 +49,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string", nullable=true)
      */
+    #[MongoODM\Field(type: Type::STRING, nullable: true)]
     protected $objectId;
 
     /**
@@ -44,6 +57,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $objectClass;
 
     /**
@@ -51,13 +65,15 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="int")
      */
+    #[MongoODM\Field(type: Type::INT)]
     protected $version;
 
     /**
-     * @var string
+     * @var array<string, mixed>|null
      *
      * @MongoODM\Field(type="hash", nullable=true)
      */
+    #[MongoODM\Field(type: Type::HASH, nullable: true)]
     protected $data;
 
     /**
@@ -65,6 +81,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string", nullable=true)
      */
+    #[MongoODM\Field(type: Type::STRING, nullable: true)]
     protected $username;
 
     /**
@@ -178,7 +195,7 @@ abstract class AbstractLogEntry
     /**
      * Get data
      *
-     * @return array or null
+     * @return array<string, mixed>|null
      */
     public function getData()
     {
@@ -188,7 +205,7 @@ abstract class AbstractLogEntry
     /**
      * Set data
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      */
     public function setData($data)
     {

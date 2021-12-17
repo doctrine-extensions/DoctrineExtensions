@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\IpTraceable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\IpTraceable;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -12,14 +20,13 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
  * extension.
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation field is ipTraceable
      */
-    const IP_TRACEABLE = 'Gedmo\\Mapping\\Annotation\\IpTraceable';
+    public const IP_TRACEABLE = IpTraceable::class;
 
     /**
      * List of types which are valid for IP
@@ -48,17 +55,17 @@ class Annotation extends AbstractAnnotationDriver
                 $field = $property->getName();
 
                 if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find ipTraceable [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find ipTraceable [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 if ($meta->hasField($field) && !$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->name}");
+                    throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->getName()}");
                 }
-                if (!in_array($ipTraceable->on, ['update', 'create', 'change'])) {
-                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
+                if (!in_array($ipTraceable->on, ['update', 'create', 'change'], true)) {
+                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
-                if ('change' == $ipTraceable->on) {
+                if ('change' === $ipTraceable->on) {
                     if (!isset($ipTraceable->field)) {
-                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->getName()}");
                     }
                     if (is_array($ipTraceable->field) && isset($ipTraceable->value)) {
                         throw new InvalidMappingException('IpTraceable extension does not support multiple value changeset detection yet.');

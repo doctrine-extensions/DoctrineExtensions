@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -9,7 +17,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * NestedSet Trait, usable with PHP >= 5.4
  *
  * @author Renaat De Muynck <renaat.demuynck@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 trait NestedSetEntity
 {
@@ -18,6 +25,7 @@ trait NestedSetEntity
      * @Gedmo\TreeRoot
      * @ORM\Column(name="root", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]
     private $root;
 
     /**
@@ -25,6 +33,7 @@ trait NestedSetEntity
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
+    #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     private $level;
 
     /**
@@ -32,6 +41,7 @@ trait NestedSetEntity
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
+    #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     private $left;
 
     /**
@@ -39,5 +49,6 @@ trait NestedSetEntity
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */
+    #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     private $right;
 }

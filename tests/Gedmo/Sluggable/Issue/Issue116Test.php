@@ -1,25 +1,31 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Sluggable\Fixture\Issue116\Country;
-use Tool\BaseTestCaseORM;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue116\Country;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue116Test extends BaseTestCaseORM
+final class Issue116Test extends BaseTestCaseORM
 {
-    const TARGET = 'Sluggable\\Fixture\\Issue116\\Country';
+    public const TARGET = Country::class;
 
     protected function setUp(): void
     {
@@ -31,17 +37,6 @@ class Issue116Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    protected function getMetadataDriverImplementation()
-    {
-        $chain = new DriverChain();
-        $chain->addDriver(
-            new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
-            'Sluggable\Fixture\Issue116'
-        );
-
-        return $chain;
-    }
-
     public function testSlugGeneration()
     {
         $country = new Country();
@@ -50,7 +45,18 @@ class Issue116Test extends BaseTestCaseORM
         $this->em->persist($country);
         $this->em->flush();
 
-        $this->assertEquals('new-zealand', $country->getAlias());
+        static::assertSame('new-zealand', $country->getAlias());
+    }
+
+    protected function getMetadataDriverImplementation()
+    {
+        $chain = new MappingDriverChain();
+        $chain->addDriver(
+            new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
+            'Gedmo\Tests\Sluggable\Fixture\Issue116'
+        );
+
+        return $chain;
     }
 
     protected function getUsedEntityFixtures()

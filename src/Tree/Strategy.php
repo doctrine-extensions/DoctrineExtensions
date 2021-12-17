@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree;
 
 use Doctrine\Persistence\ObjectManager;
@@ -10,29 +17,29 @@ interface Strategy
     /**
      * NestedSet strategy
      */
-    const NESTED = 'nested';
+    public const NESTED = 'nested';
 
     /**
      * Closure strategy
      */
-    const CLOSURE = 'closure';
+    public const CLOSURE = 'closure';
 
     /**
      * Materialized Path strategy
      */
-    const MATERIALIZED_PATH = 'materializedPath';
+    public const MATERIALIZED_PATH = 'materializedPath';
 
     /**
-     * Get the name of strategy
+     * Create a new strategy instance
+     */
+    public function __construct(TreeListener $listener);
+
+    /**
+     * Get the name of the strategy
      *
      * @return string
      */
     public function getName();
-
-    /**
-     * Initialize strategy with tree listener
-     */
-    public function __construct(TreeListener $listener);
 
     /**
      * Operations after metadata is loaded
@@ -45,9 +52,8 @@ interface Strategy
     /**
      * Operations on tree node insertion
      *
-     * @param ObjectManager    $om     - object manager
-     * @param object           $object - node
-     * @param AdapterInterface $ea     - event adapter
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -56,9 +62,8 @@ interface Strategy
     /**
      * Operations on tree node updates
      *
-     * @param ObjectManager    $om     - object manager
-     * @param object           $object - node
-     * @param AdapterInterface $ea     - event adapter
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -67,8 +72,8 @@ interface Strategy
     /**
      * Operations on tree node delete
      *
-     * @param ObjectManager $om     - object manager
-     * @param object        $object - node
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -77,8 +82,8 @@ interface Strategy
     /**
      * Operations on tree node removal
      *
-     * @param ObjectManager $om     - object manager
-     * @param object        $object - node
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -87,8 +92,8 @@ interface Strategy
     /**
      * Operations on tree node persist
      *
-     * @param ObjectManager $om     - object manager
-     * @param object        $object - node
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -97,8 +102,8 @@ interface Strategy
     /**
      * Operations on tree node update
      *
-     * @param ObjectManager $om     - object manager
-     * @param object        $object - node
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -107,9 +112,8 @@ interface Strategy
     /**
      * Operations on tree node insertions
      *
-     * @param ObjectManager    $om     - object manager
-     * @param object           $object - node
-     * @param AdapterInterface $ea     - event adapter
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -118,9 +122,8 @@ interface Strategy
     /**
      * Operations on tree node updates
      *
-     * @param ObjectManager    $om     - object manager
-     * @param object           $object - node
-     * @param AdapterInterface $ea     - event adapter
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -129,9 +132,8 @@ interface Strategy
     /**
      * Operations on tree node removals
      *
-     * @param ObjectManager    $om     - object manager
-     * @param object           $object - node
-     * @param AdapterInterface $ea     - event adapter
+     * @param ObjectManager $om
+     * @param object        $object
      *
      * @return void
      */
@@ -140,8 +142,7 @@ interface Strategy
     /**
      * Operations on the end of flush process
      *
-     * @param ObjectManager    $om - object manager
-     * @param AdapterInterface $ea - event adapter
+     * @param ObjectManager $om
      *
      * @return void
      */

@@ -1,6 +1,6 @@
 # Install Gedmo Doctrine2 extensions in Symfony 4
 
-Configure full featured [Doctrine2 extensions](http://github.com/Atlantic18/DoctrineExtensions) for your symfony 4 project.
+Configure full featured [Doctrine2 extensions](https://github.com/doctrine-extensions/DoctrineExtensions) for your symfony 4 project.
 This post will show you - how to create a simple configuration file to manage extensions with
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
@@ -54,7 +54,7 @@ doctrine:
 # only these lines are added additionally
         mappings:
             translatable:
-                type: annotation
+                type: annotation # or attribute
                 alias: Gedmo
                 prefix: Gedmo\Translatable\Entity
                 # make sure vendor library location is correct
@@ -79,7 +79,7 @@ to you also. To skip mapping of these entities, you can map **only superclasses*
 ```yaml
 mappings:
     translatable:
-        type: annotation
+        type: annotation # or attribute
         alias: Gedmo
         prefix: Gedmo\Translatable\Entity
         # make sure vendor library location is correct
@@ -106,18 +106,18 @@ orm:
 # only these lines are added additionally
     mappings:
         translatable:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Translatable\Entity
             # make sure vendor library location is correct
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
         loggable:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Loggable\Entity
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
         tree:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Tree\Entity
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Tree/Entity"
@@ -164,7 +164,7 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
-            - [ setDefaultLocale, [ %locale% ] ]
+            - [ setDefaultLocale, [ "%locale%" ] ]
             - [ setTranslationFallback, [ false ] ]
 
     gedmo.listener.timestampable:
@@ -446,7 +446,7 @@ doctrine_mongodb:
             auto_mapping: true
             mappings:
                 translatable:
-                    type: annotation
+                    type: annotation # or attribute
                     alias: GedmoDocument
                     prefix: Gedmo\Translatable\Document
                     # make sure vendor library location is correct
@@ -456,15 +456,15 @@ doctrine_mongodb:
 This also shows, how to make mappings based on single manager. All what differs is that **Document**
 instead of **Entity** is used. I haven't tested it with mongo though.
 
-**Note:** [extension repository](http://github.com/Atlantic18/DoctrineExtensions) contains all
-[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc) you may need
+**Note:** [extension repository](https://github.com/doctrine-extensions/DoctrineExtensions) contains all
+[documentation](../doc) you may need
 to understand how you can use it in your projects.
 
 <a name="alternative"></a>
 
 ## Alternative over configuration
 
-You can use [StofDoctrineExtensionsBundle](http://github.com/stof/StofDoctrineExtensionsBundle) which is a wrapper of these extensions
+You can use [StofDoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle) which is a wrapper of these extensions
 
 ## Troubleshooting
 

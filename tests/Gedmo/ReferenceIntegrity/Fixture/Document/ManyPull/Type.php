@@ -1,8 +1,18 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyPull;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -11,6 +21,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Type
 {
+    /**
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
+     * @Gedmo\ReferenceIntegrity("pull")
+     *
+     * @var Collection<int, Article>
+     */
+    protected $articles;
     /**
      * @ODM\Id
      */
@@ -25,14 +42,6 @@ class Type
      * @ODM\Field(type="string")
      */
     private $identifier;
-
-    /**
-     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
-     * @Gedmo\ReferenceIntegrity("pull")
-     *
-     * @var ArrayCollection
-     */
-    protected $articles = [];
 
     public function __construct()
     {
@@ -79,20 +88,15 @@ class Type
         return $this->identifier;
     }
 
-    /**
-     * Add articles
-     */
-    public function addArticle(Article $article)
+    public function addArticle(Article $article): void
     {
         $this->articles[] = $article;
     }
 
     /**
-     * Get posts
-     *
-     * @return ArrayCollection $articles
+     * @return Collection<int, Article> $articles
      */
-    public function getArticles()
+    public function getArticles(): Collection
     {
         return $this->articles;
     }

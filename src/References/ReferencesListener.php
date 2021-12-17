@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\References;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,7 +20,6 @@ use Gedmo\Mapping\MappedEventSubscriber;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ReferencesListener extends MappedEventSubscriber
 {
@@ -40,7 +46,7 @@ class ReferencesListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
@@ -71,14 +77,14 @@ class ReferencesListener extends MappedEventSubscriber
                     $manager = $this->getManager($mapping['type']);
                     $class = $mapping['class'];
                     $refMeta = $manager->getClassMetadata($class);
-                    $refConfig = $this->getConfiguration($manager, $refMeta->name);
+                    $refConfig = $this->getConfiguration($manager, $refMeta->getName());
                     if (isset($refConfig['referenceOne'][$mapping['mappedBy']])) {
                         $refMapping = $refConfig['referenceOne'][$mapping['mappedBy']];
                         $identifier = $refMapping['identifier'];
                         $property->setValue(
                             $object,
                             new LazyCollection(
-                                function () use ($id, &$manager, $class, $identifier) {
+                                static function () use ($id, &$manager, $class, $identifier) {
                                     $results = $manager
                                         ->getRepository($class)
                                         ->findBy([
@@ -107,6 +113,9 @@ class ReferencesListener extends MappedEventSubscriber
         $this->updateReferences($eventArgs);
     }
 
+    /**
+     * @return string[]
+     */
     public function getSubscribedEvents()
     {
         return [
@@ -132,18 +141,58 @@ class ReferencesListener extends MappedEventSubscriber
         return $this->managers[$type];
     }
 
-    protected function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    private function updateReferences(EventArgs $eventArgs)
+    public function updateManyEmbedReferences(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
+
+        if (isset($config['referenceManyEmbed'])) {
+            foreach ($config['referenceManyEmbed'] as $mapping) {
+                $property = $meta->reflClass->getProperty($mapping['field']);
+                $property->setAccessible(true);
+
+                $id = $ea->extractIdentifier($om, $object);
+                $manager = $this->getManager('document');
+
+                $class = $mapping['class'];
+                $refMeta = $manager->getClassMetadata($class);
+                // Trigger the loading of the configuration to validate the mapping
+                $this->getConfiguration($manager, $refMeta->getName());
+
+                $identifier = $mapping['identifier'];
+                $property->setValue(
+                    $object,
+                    new LazyCollection(
+                        static function () use ($id, &$manager, $class, $identifier) {
+                            $results = $manager
+                                ->getRepository($class)
+                                ->findBy([
+                                    $identifier => $id,
+                                ]);
+
+                            return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+                        }
+                    )
+                );
+            }
+        }
+    }
+
+    protected function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+
+    private function updateReferences(EventArgs $eventArgs): void
+    {
+        $ea = $this->getEventAdapter($eventArgs);
+        $om = $ea->getObjectManager();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
@@ -167,45 +216,5 @@ class ReferencesListener extends MappedEventSubscriber
         }
 
         $this->updateManyEmbedReferences($eventArgs);
-    }
-
-    public function updateManyEmbedReferences(EventArgs $eventArgs)
-    {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
-
-        if (isset($config['referenceManyEmbed'])) {
-            foreach ($config['referenceManyEmbed'] as $mapping) {
-                $property = $meta->reflClass->getProperty($mapping['field']);
-                $property->setAccessible(true);
-
-                $id = $ea->extractIdentifier($om, $object);
-                $manager = $this->getManager('document');
-
-                $class = $mapping['class'];
-                $refMeta = $manager->getClassMetadata($class);
-                // Trigger the loading of the configuration to validate the mapping
-                $this->getConfiguration($manager, $refMeta->name);
-
-                $identifier = $mapping['identifier'];
-                $property->setValue(
-                    $object,
-                    new LazyCollection(
-                        function () use ($id, &$manager, $class, $identifier) {
-                            $results = $manager
-                                ->getRepository($class)
-                                ->findBy([
-                                    $identifier => $id,
-                                ]);
-
-                            return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
-                        }
-                    )
-                );
-            }
-        }
     }
 }

@@ -1,28 +1,38 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Query\Builder;
+use Doctrine\ODM\MongoDB\Query\Query;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Gedmo\Tree\RepositoryInterface;
 use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
+use Gedmo\Tree\TreeListener;
 
 abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager
      *
-     * @var AbstractTreeListener
+     * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * Repository utils
      */
-    protected $repoUtils = null;
+    protected $repoUtils;
 
     /**
      * {@inheritdoc}
@@ -35,21 +45,19 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
             foreach ($listeners as $listener) {
                 if ($listener instanceof \Gedmo\Tree\TreeListener) {
                     $treeListener = $listener;
-                    break;
+
+                    break 2;
                 }
-            }
-            if ($treeListener) {
-                break;
             }
         }
 
-        if (is_null($treeListener)) {
+        if (null === $treeListener) {
             throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ODM MongoDB tree listener');
         }
 
         $this->listener = $treeListener;
         if (!$this->validate()) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: '.$treeListener->getStrategy($em, $class->name)->getName());
+            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: '.$treeListener->getStrategy($em, $class->getName())->getName());
         }
 
         $this->repoUtils = new RepositoryUtils($this->dm, $this->getClassMetadata(), $this->listener, $this);
@@ -118,80 +126,80 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     }
 
     /**
-     * Checks if current repository is right
-     * for currently used tree strategy
-     *
-     * @return bool
-     */
-    abstract protected function validate();
-
-    /**
      * Get all root nodes query builder
      *
-     * @param string - Sort by field
-     * @param string - Sort direction ("asc" or "desc")
+     * @param string|null $sortByField Sort by field
+     * @param string      $direction   Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     * @return Builder
      */
     abstract public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc');
 
     /**
      * Get all root nodes query
      *
-     * @param string - Sort by field
-     * @param string - Sort direction ("asc" or "desc")
+     * @param string|null $sortByField Sort by field
+     * @param string      $direction   Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\MongoDB\Query\Query - Query object
+     * @return Query
      */
     abstract public function getRootNodesQuery($sortByField = null, $direction = 'asc');
 
     /**
      * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        - Root node
-     * @param bool   $direct      - Obtain direct children?
-     * @param array  $options     - Options
-     * @param bool   $includeNode - Include node in results?
+     * @param object $node        Root node
+     * @param bool   $direct      Obtain direct children?
+     * @param array  $options     Options
+     * @param bool   $includeNode Include node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     * @return Builder
      */
     abstract public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false);
 
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        - Root node
-     * @param bool   $direct      - Obtain direct children?
-     * @param array  $options     - Options
-     * @param bool   $includeNode - Include node in results?
+     * @param object $node        Root node
+     * @param bool   $direct      Obtain direct children?
+     * @param array  $options     Options
+     * @param bool   $includeNode Include node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Query - Query object
+     * @return Query
      */
     abstract public function getNodesHierarchyQuery($node = null, $direct = false, array $options = [], $includeNode = false);
 
     /**
      * Get list of children followed by given $node. This returns a QueryBuilder object
      *
-     * @param object $node        - if null, all tree nodes will be taken
-     * @param bool   $direct      - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction   - sort direction : "ASC" or "DESC"
-     * @param bool   $includeNode - Include the root node in results?
+     * @param object $node        if null, all tree nodes will be taken
+     * @param bool   $direct      true to take only direct children
+     * @param string $sortByField field name to sort by
+     * @param string $direction   sort direction : "ASC" or "DESC"
+     * @param bool   $includeNode Include the root node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     * @return Builder
      */
     abstract public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
     /**
      * Get list of children followed by given $node. This returns a Query
      *
-     * @param object $node        - if null, all tree nodes will be taken
-     * @param bool   $direct      - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction   - sort direction : "ASC" or "DESC"
-     * @param bool   $includeNode - Include the root node in results?
+     * @param object $node        if null, all tree nodes will be taken
+     * @param bool   $direct      true to take only direct children
+     * @param string $sortByField field name to sort by
+     * @param string $direction   sort direction : "ASC" or "DESC"
+     * @param bool   $includeNode Include the root node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Query - Query object
+     * @return Query
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+
+    /**
+     * Checks if current repository is right
+     * for currently used tree strategy
+     *
+     * @return bool
+     */
+    abstract protected function validate();
 }

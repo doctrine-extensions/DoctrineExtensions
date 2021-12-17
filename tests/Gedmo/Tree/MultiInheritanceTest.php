@@ -1,24 +1,33 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
 
-use Tool\BaseTestCaseORM;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
+
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\ANode;
+use Gedmo\Tests\Tree\Fixture\BaseNode;
+use Gedmo\Tests\Tree\Fixture\Node;
+use Gedmo\Translatable\Entity\Translation;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceTest extends BaseTestCaseORM
+final class MultiInheritanceTest extends BaseTestCaseORM
 {
-    const NODE = 'Tree\\Fixture\\Node';
-    const BASE_NODE = 'Tree\\Fixture\\BaseNode';
-    const ANODE = 'Tree\\Fixture\\ANode';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const NODE = Node::class;
+    public const BASE_NODE = BaseNode::class;
+    public const ANODE = ANode::class;
+    public const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {
@@ -37,15 +46,15 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($food);
         $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
-        $this->assertEquals(1, $left);
-        $this->assertNotNull($food->getCreated());
-        $this->assertNotNull($food->getUpdated());
+        static::assertSame(1, $left);
+        static::assertNotNull($food->getCreated());
+        static::assertNotNull($food->getUpdated());
 
         $translationRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $translationRepo->findTranslations($food);
 
-        $this->assertCount(0, $translations);
-        $this->assertEquals('food', $food->getSlug());
+        static::assertCount(0, $translations);
+        static::assertSame('food', $food->getSlug());
     }
 
     /**
@@ -59,16 +68,16 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
         $count = $repo->childCount($vegies, true/*direct*/);
-        $this->assertEquals(3, $count);
+        static::assertSame(3, $count);
 
         $children = $repo->children($vegies, true);
-        $this->assertCount(3, $children);
+        static::assertCount(3, $children);
 
         // node repository will not find it
         $baseNodeRepo = $this->em->getRepository(self::BASE_NODE);
         $cabbage = $baseNodeRepo->findOneBy(['identifier' => 'cabbage']);
         $path = $baseNodeRepo->getPath($cabbage);
-        $this->assertCount(3, $path);
+        static::assertCount(3, $path);
     }
 
     protected function getUsedEntityFixtures()
@@ -81,37 +90,37 @@ class MultiInheritanceTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
-        $root = new \Tree\Fixture\Node();
+        $root = new \Gedmo\Tests\Tree\Fixture\Node();
         $root->setTitle('Food');
         $root->setIdentifier('food');
 
-        $root2 = new \Tree\Fixture\Node();
+        $root2 = new \Gedmo\Tests\Tree\Fixture\Node();
         $root2->setTitle('Sports');
         $root2->setIdentifier('sport');
 
-        $child = new \Tree\Fixture\Node();
+        $child = new \Gedmo\Tests\Tree\Fixture\Node();
         $child->setTitle('Fruits');
         $child->setParent($root);
         $child->setIdentifier('fruit');
 
-        $child2 = new \Tree\Fixture\Node();
+        $child2 = new \Gedmo\Tests\Tree\Fixture\Node();
         $child2->setTitle('Vegitables');
         $child2->setParent($root);
         $child2->setIdentifier('vegie');
 
-        $childsChild = new \Tree\Fixture\Node();
+        $childsChild = new \Gedmo\Tests\Tree\Fixture\Node();
         $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
         $childsChild->setIdentifier('carrot');
 
-        $potatoes = new \Tree\Fixture\Node();
+        $potatoes = new \Gedmo\Tests\Tree\Fixture\Node();
         $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
         $potatoes->setIdentifier('potatoe');
 
-        $cabbages = new \Tree\Fixture\BaseNode();
+        $cabbages = new \Gedmo\Tests\Tree\Fixture\BaseNode();
         $cabbages->setIdentifier('cabbage');
         $cabbages->setParent($child2);
 

@@ -1,6 +1,15 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Uploadable\Fixture\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,6 +35,11 @@ class Article
      * @ORM\OneToMany(targetEntity="File", mappedBy="article", cascade={"persist", "remove"})
      */
     private $files;
+
+    /**
+     * @var string|null
+     */
+    private $filePath;
 
     public function __construct()
     {

@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Event\Adapter;
 
 use Doctrine\Common\EventArgs;
@@ -13,7 +20,6 @@ use Gedmo\Mapping\Event\AdapterInterface;
  * event arguments
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ODM implements AdapterInterface
 {
@@ -26,6 +32,19 @@ class ODM implements AdapterInterface
      * @var \Doctrine\ODM\MongoDB\DocumentManager
      */
     private $dm;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __call($method, $args)
+    {
+        if (null === $this->args) {
+            throw new RuntimeException('Event args must be set before calling its methods');
+        }
+        $method = str_replace('Object', $this->getDomainObjectName(), $method);
+
+        return call_user_func_array([$this->args, $method], $args);
+    }
 
     /**
      * {@inheritdoc}
@@ -68,11 +87,11 @@ class ODM implements AdapterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return DocumentManager
      */
     public function getObjectManager()
     {
-        if (!is_null($this->dm)) {
+        if (null !== $this->dm) {
             return $this->dm;
         }
 
@@ -90,19 +109,6 @@ class ODM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function __call($method, $args)
-    {
-        if (is_null($this->args)) {
-            throw new RuntimeException('Event args must be set before calling its methods');
-        }
-        $method = str_replace('Object', $this->getDomainObjectName(), $method);
-
-        return call_user_func_array([$this->args, $method], $args);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getObjectChangeSet($uow, $object)
     {
         return $uow->getDocumentChangeSet($object);
@@ -113,7 +119,7 @@ class ODM implements AdapterInterface
      */
     public function getSingleIdentifierFieldName($meta)
     {
-        return $meta->identifier;
+        return $meta->getIdentifier()[0];
     }
 
     /**
@@ -154,17 +160,17 @@ class ODM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function setOriginalObjectProperty($uow, $oid, $property, $value)
+    public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
-        $uow->setOriginalDocumentProperty($oid, $property, $value);
+        $uow->setOriginalDocumentProperty(spl_object_hash($object), $property, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function clearObjectChangeSet($uow, $oid)
+    public function clearObjectChangeSet($uow, $object)
     {
-        $uow->clearDocumentChangeSet($oid);
+        $uow->clearDocumentChangeSet(spl_object_hash($object));
     }
 
     /**

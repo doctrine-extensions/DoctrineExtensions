@@ -12,7 +12,7 @@ Features:
 - Automatic translation of Entity or Document fields when loaded
 - ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation, Yaml and Xml mapping support for extensions
 
 **2012-01-28**
 
@@ -22,7 +22,7 @@ constraint. This dramatically improves the management of translations
 **2012-01-04**
 
 - Refactored translatable to be able to persist, update many translations
-using repository, [issue #224](https://github.com/Atlantic18/DoctrineExtensions/issues/224)
+using repository, [issue #224](https://github.com/doctrine-extensions/DoctrineExtensions/issues/224)
 
 **2011-12-11**
 
@@ -54,14 +54,14 @@ and any number of them
 
 **Note list:**
 
-- Public [Translatable repository](http://github.com/Atlantic18/DoctrineExtensions "Translatable extension on Github") is available on github
+- Public [Translatable repository](https://github.com/doctrine-extensions/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May impact your application performance since it does an additional query for translation if loaded without query hint
 - Last update date: **2012-02-15**
 
 **Portability:**
 
-- **Translatable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **Translatable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Translatable** behavior
@@ -83,15 +83,21 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 ### Translatable annotations:
 - **@Gedmo\Mapping\Annotation\Translatable** it will **translate** this field
-- **@Gedmo\Mapping\Annotation\TranslationEntity(class="my\class")** it will use this class to store **translations** generated
-- **@Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language** this will identify this column as **locale** or **language**
+- **@Gedmo\Mapping\Annotation\TranslationEntity(class="my\class")** it will use this class to store the generated **translations**
+- **@Gedmo\Mapping\Annotation\Locale** or **@Gedmo\Mapping\Annotation\Language** these will identify this column as **locale** or **language**
 used to override the global locale
+
+### Translatable attributes:
+- **Gedmo\Mapping\Annotation\Translatable** it will **translate** this field
+- **Gedmo\Mapping\Annotation\TranslationEntity(class: MyClass::class)** it will use this class to store the generated **translations**
+- **Gedmo\Mapping\Annotation\Locale** or **Gedmo\Mapping\Annotation\Language** these will identify this column as **locale** or **language**
+  used to override the global locale
 
 <a name="entity-domain-object"></a>
 
@@ -100,6 +106,8 @@ used to override the global locale
 **Note:** that Translatable interface is not necessary, except in cases where
 you need to identify an entity as being Translatable. The metadata is loaded only once when
 cache is activated
+
+### Annotations
 
 ``` php
 <?php
@@ -169,6 +177,72 @@ class Article implements Translatable
 }
 ```
 
+### Attributes
+
+``` php
+<?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\Translatable;
+
+ #[ORM\Table(name: 'articles')]
+ #[ORM\Entity]
+class Article implements Translatable
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private $id;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(name: 'title', type: 'string', length: 128)]
+    private $title;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(name: 'content', type: 'text')]
+    private $content;
+
+    /**
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     */
+    #[Gedmo\Locale]
+    private $locale;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function setTranslatableLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+}
+```
+
 <a name="document-domain-object"></a>
 
 ## Translatable Document example:
@@ -193,12 +267,14 @@ class Article implements Translatable
      * @Gedmo\Translatable
      * @ODM\Field(type="string")
      */
+    #[Gedmo\Translatable]
     private $title;
 
     /**
      * @Gedmo\Translatable
      * @ODM\Field(type="string")
      */
+    #[Gedmo\Translatable]
     private $content;
 
     /**
@@ -206,6 +282,7 @@ class Article implements Translatable
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
      */
+    #[Gedmo\Locale]
     private $locale;
 
     public function getId()
@@ -619,12 +696,16 @@ your translations by extending the mapped superclass.
 
 ArticleTranslation Entity:
 
+**Note:** this example is using annotations and attributes for mapping, you should use
+one of them, not both.
+
 ``` php
 <?php
 namespace Entity\Translation;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 
 /**
  * @ORM\Table(name="article_translations", indexes={
@@ -632,6 +713,9 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
  * })
  * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
+ #[ORM\Table(name: 'article_translations')]
+ #[ORM\Index(name: 'article_translation_idx', columns: ['locale', 'object_class', 'field', 'foreign_key'])]
+ #[ORM\Entity(repositoryClass: TranslationRepository::class)]
 class ArticleTranslation extends AbstractTranslation
 {
     /**
@@ -644,17 +728,23 @@ class ArticleTranslation extends AbstractTranslation
 It is handy for specific methods common to the Translation Entity
 
 **Note:** This Entity will be used instead of default Translation Entity
-only if we specify a class annotation @Gedmo\TranslationEntity(class="my\translation\entity"):
+only if we specify a class annotation `@Gedmo\TranslationEntity(class="my\translation\entity")`
+or a class attribute `#[Gedmo\TranslationEntity(class: ArticleTranslation::class)]`
 
 ``` php
 <?php
+
 use Doctrine\ORM\Mapping as ORM;
+use Entity\Translation\ArticleTranslation;
 
 /**
  * @ORM\Table(name="articles")
  * @ORM\Entity
  * @Gedmo\TranslationEntity(class="Entity\Translation\ArticleTranslation")
  */
+#[ORM\Table(name: 'articles')]
+#[ORM\Entity]
+#[Gedmo\TranslationEntity(class: ArticleTranslation::class)]
 class Article
 {
     // ...
@@ -678,7 +768,7 @@ implementing array access on entity, using left join to fill collection and so o
 Note: that [query hint](#orm-query-hint) will work on personal translations the same way.
 You can always use a left join like for standard doctrine collections.
 
-Usage example:
+Usage example (using both annotations and attributes, you should only use one of them):
 
 ``` php
 <?php
@@ -687,11 +777,14 @@ namespace Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Entity\CategoryTranslation;
 
 /**
  * @ORM\Entity
  * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
  */
+ #[ORM\Entity]
+ #[Gedmo\TranslationEntity(class: CategoryTranslation::class)]
 class Category
 {
     /**
@@ -699,18 +792,25 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(length=64)
      */
+    #[ORM\Column(length: 64)]
+    #[Gedmo\Translatable]
     private $title;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(type="text", nullable=true)
      */
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Gedmo\Translatable]
     private $description;
 
     /**
@@ -720,6 +820,7 @@ class Category
      *   cascade={"persist", "remove"}
      * )
      */
+    #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
     private $translations;
 
     public function __construct()
@@ -789,6 +890,9 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
  *     })}
  * )
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'category_translations')]
+#[ORM\UniqueConstraint(name: 'lookup_unique_idx', columns: ['locale', 'object_id', 'field'])]
 class CategoryTranslation extends AbstractPersonalTranslation
 {
     /**
@@ -809,6 +913,8 @@ class CategoryTranslation extends AbstractPersonalTranslation
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="translations")
      * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
      */
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'translations')]
+    #[ORM\JoinColumn(name: 'object_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     protected $object;
 }
 ```
