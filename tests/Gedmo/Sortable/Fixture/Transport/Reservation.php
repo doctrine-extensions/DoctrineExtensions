@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture\Transport;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Reservation
 {
     /**
@@ -24,11 +26,15 @@ class Reservation
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Bus")
      */
+    #[ORM\ManyToOne(targetEntity: Bus::class)]
     private $bus;
 
     /**
@@ -37,23 +43,30 @@ class Reservation
      * @Gedmo\SortableGroup
      * @ORM\Column(length=191)
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(length: 191)]
     private $destination;
 
     /**
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private $travelDate;
 
     /**
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     private $seat;
 
     /**
      * @ORM\Column(length=191)
      */
+    #[ORM\Column(length: 191)]
     private $name;
 
     public function getId()

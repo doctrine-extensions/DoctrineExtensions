@@ -16,17 +16,21 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Car extends Vehicle
 {
     /**
      * @ORM\ManyToOne(targetEntity="Car", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
+    #[ORM\ManyToOne(targetEntity: Car::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="Car", mappedBy="parent")
      */
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Car::class)]
     private $children;
 
     public function setParent($parent = null)

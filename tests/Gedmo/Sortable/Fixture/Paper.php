@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Paper
 {
     /**
@@ -24,16 +26,21 @@ class Paper
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="name", type="string")
      */
+    #[ORM\Column(name: 'name', type: Types::STRING)]
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity="Author", mappedBy="paper", cascade={"persist", "remove"})
      */
+    #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Author::class, cascade: ['persist', 'remove'])]
     private $authors;
 
     public function __construct()

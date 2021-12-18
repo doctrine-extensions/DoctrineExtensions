@@ -11,11 +11,13 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Customer
 {
     /**
@@ -23,16 +25,21 @@ class Customer
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="name", type="string")
      */
+    #[ORM\Column(name: 'name', type: Types::STRING)]
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="CustomerType", inversedBy="customers")
      */
+    #[ORM\ManyToOne(targetEntity: CustomerType::class, inversedBy: 'customers')]
     private $type;
 
     public function getId()
