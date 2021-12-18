@@ -21,10 +21,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ODM\Document(collection: 'posts')]
 class Post
 {
-    /** @ODM\Id */
-    #[ODM\Id]
-    private $id;
-
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
@@ -40,6 +36,12 @@ class Post
     #[Gedmo\SortableGroup]
     #[ODM\ReferenceOne(targetDocument: Category::class)]
     protected $category;
+
+    /**
+     * @ODM\Id
+     */
+    #[ODM\Id]
+    private $id;
 
     /**
      * @ODM\Field(type="string")

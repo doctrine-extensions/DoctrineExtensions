@@ -21,10 +21,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ODM\Document(collection: 'kids')]
 class Kid
 {
-    /** @ODM\Id */
-    #[ODM\Id]
-    private $id;
-
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
@@ -40,6 +36,12 @@ class Kid
     #[Gedmo\SortableGroup]
     #[ODM\Field(type: MongoDBType::DATE)]
     protected $birthdate;
+
+    /**
+     * @ODM\Id
+     */
+    #[ODM\Id]
+    private $id;
 
     /**
      * @ODM\Field(type="string")

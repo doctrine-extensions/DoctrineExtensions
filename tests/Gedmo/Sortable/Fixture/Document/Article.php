@@ -21,10 +21,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ODM\Document(collection: 'articles')]
 class Article
 {
-    /** @ODM\Id */
-    #[ODM\Id]
-    private $id;
-
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
@@ -32,6 +28,12 @@ class Article
     #[Gedmo\SortablePosition]
     #[ODM\Field(type: MongoDBType::INT)]
     protected $position;
+
+    /**
+     * @ODM\Id
+     */
+    #[ODM\Id]
+    private $id;
 
     /**
      * @ODM\Field(type="string")
