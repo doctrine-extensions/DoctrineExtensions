@@ -23,6 +23,7 @@ a release.
 - SoftDeleteable: Support to use annotations as attributes on PHP >= 8.0.
 - Blameable: Support to use annotations as attributes on PHP >= 8.0.
 - IpTraceable: Support to use annotations as attributes on PHP >= 8.0.
+- Sortable: Support to use annotations as attributes on PHP >= 8.0.
 
 ### Fixed
 - Blameable, IpTraceable, Timestampable: Type handling for the tracked field values configured in the origin field.
