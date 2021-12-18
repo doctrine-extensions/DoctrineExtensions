@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 class AbstractNode
 {
     /**
@@ -24,23 +26,31 @@ class AbstractNode
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=191)
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
     protected $name;
 
     /**
      * @Gedmo\SortableGroup
      * @ORM\Column(type="string", length=191)
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(type: Types::STRING, length: 191)]
     protected $path;
 
     /**
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     protected $position;
 
     public function getId()

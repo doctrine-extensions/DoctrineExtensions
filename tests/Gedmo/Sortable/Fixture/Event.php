@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
+#[ORM\Entity(repositoryClass: SortableRepository::class)]
 class Event
 {
     /**
@@ -26,6 +29,9 @@ class Event
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
@@ -34,6 +40,8 @@ class Event
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private $dateTime;
 
     /**
@@ -41,6 +49,7 @@ class Event
      *
      * @ORM\Column(type="string", length=191)
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
     private $name;
 
     /**
@@ -49,6 +58,8 @@ class Event
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     private $position;
 
     public function getId()

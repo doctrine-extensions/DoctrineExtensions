@@ -15,13 +15,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Driver\PDO\Exception as PDODriverException;
 use Doctrine\DBAL\Driver\PDOException as LegacyPDOException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity(repositoryClass: SortableRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class CustomerType
 {
     /**
@@ -29,22 +33,29 @@ class CustomerType
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="name", type="string")
      */
+    #[ORM\Column(name: 'name', type: Types::STRING)]
     private $name;
 
     /**
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(name: 'position', type: Types::INTEGER)]
     private $position;
 
     /**
      * @ORM\OneToMany(targetEntity="Customer", mappedBy="type")
      */
+    #[ORM\OneToMany(mappedBy: 'type', targetEntity: Customer::class)]
     private $customers;
 
     public function __construct()
@@ -95,6 +106,7 @@ class CustomerType
     /**
      * @ORM\PostRemove
      */
+    #[ORM\PostRemove]
     public function postRemove()
     {
         if ($this->getCustomers()->count() > 0) {
