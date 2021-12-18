@@ -376,7 +376,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(1, $level);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

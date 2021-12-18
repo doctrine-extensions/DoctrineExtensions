@@ -80,7 +80,7 @@ final class Issue449Test extends BaseTestCaseORM
         static::assertNotSame($slug, $article->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

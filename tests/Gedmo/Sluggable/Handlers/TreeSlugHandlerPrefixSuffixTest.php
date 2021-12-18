@@ -54,7 +54,7 @@ final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
         static::assertSame('prefix.foo/bar/baz.suffix', $baz->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

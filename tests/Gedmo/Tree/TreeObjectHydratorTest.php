@@ -173,7 +173,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(2, $stack->queries);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

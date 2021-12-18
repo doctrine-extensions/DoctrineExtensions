@@ -421,7 +421,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertSame('Potatoes', $leafs[2]->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

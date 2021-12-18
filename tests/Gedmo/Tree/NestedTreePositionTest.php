@@ -465,7 +465,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

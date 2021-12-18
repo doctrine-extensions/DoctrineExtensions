@@ -94,7 +94,7 @@ final class InMemoryUpdatesTest extends BaseTestCaseORM
         print "\n\n";*/
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

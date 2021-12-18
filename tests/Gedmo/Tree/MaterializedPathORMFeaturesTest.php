@@ -110,7 +110,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         return md5($this->generatePath($sources));
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

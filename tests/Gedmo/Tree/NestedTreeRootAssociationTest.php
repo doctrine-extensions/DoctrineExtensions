@@ -61,7 +61,7 @@ final class NestedTreeRootAssociationTest extends BaseTestCaseORM
         static::assertSame($sports->getId(), $sports->getRoot()->getId());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

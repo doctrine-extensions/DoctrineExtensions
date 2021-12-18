@@ -104,7 +104,7 @@ final class Issue109Test extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

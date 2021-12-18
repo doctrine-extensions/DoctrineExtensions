@@ -54,7 +54,7 @@ final class Issue939Test extends BaseTestCaseORM
         static::assertSame('misc-articles', $category->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

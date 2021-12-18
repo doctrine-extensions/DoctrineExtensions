@@ -108,7 +108,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         static::assertSame('title in de', $file->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::PERSON,

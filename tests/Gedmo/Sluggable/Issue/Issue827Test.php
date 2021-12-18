@@ -277,7 +277,7 @@ final class Issue827Test extends BaseTestCaseORM
         static::assertSame('unique-to-post-2-1', $test5->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

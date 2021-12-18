@@ -58,7 +58,7 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         static::assertNotNull($test->getCreatedAt());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TRANSLATION,

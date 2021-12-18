@@ -72,7 +72,7 @@ final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
         static::assertSame('root/foo-1', $foo2->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

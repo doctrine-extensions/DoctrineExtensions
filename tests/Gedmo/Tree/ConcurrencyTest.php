@@ -122,7 +122,7 @@ final class ConcurrencyTest extends BaseTestCaseORM
         static::assertSame(7, $child2Parent->getRight());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

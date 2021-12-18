@@ -90,7 +90,7 @@ final class Issue922Test extends BaseTestCaseORM
         static::assertFalse($p1->getBoolean());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::POST,

@@ -62,7 +62,7 @@ final class Issue138Test extends BaseTestCaseORM
         static::assertSame('Food', $result[0]['title']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

@@ -104,7 +104,7 @@ final class ChangeTest extends BaseTestCaseORM
         );
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

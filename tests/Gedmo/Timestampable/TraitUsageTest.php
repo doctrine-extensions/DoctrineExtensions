@@ -60,7 +60,7 @@ final class TraitUsageTest extends BaseTestCaseORM
         static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedAt(new \DateTime()));
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

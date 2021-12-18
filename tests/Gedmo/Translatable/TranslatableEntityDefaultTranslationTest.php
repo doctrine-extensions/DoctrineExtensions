@@ -466,7 +466,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 
     // --- Fixture related methods ---------------------------------------------
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

@@ -290,7 +290,7 @@ final class TimestampableTest extends BaseTestCaseORM
         static::assertInstanceOf(\DateTime::class, $found->getReachedRelevantLevel());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

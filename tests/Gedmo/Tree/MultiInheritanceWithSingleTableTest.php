@@ -103,7 +103,7 @@ final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         var_dump('processed: '.$num);
     }*/
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::VEHICLE,

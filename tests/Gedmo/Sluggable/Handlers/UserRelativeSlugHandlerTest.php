@@ -59,7 +59,7 @@ final class UserRelativeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('knplabs-nantes/gedi', $gedi->getSlug(), 'relative slug is invalid');
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::USER,

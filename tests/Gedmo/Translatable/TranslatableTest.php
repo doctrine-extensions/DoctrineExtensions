@@ -324,7 +324,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertEmpty($article->getViews());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

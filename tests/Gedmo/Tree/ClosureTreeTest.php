@@ -309,7 +309,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertNotNull($categoryTwo->getId());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,
