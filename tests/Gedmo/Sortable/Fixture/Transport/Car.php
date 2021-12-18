@@ -23,14 +23,14 @@ class Car extends Vehicle
      * @ORM\ManyToOne(targetEntity="Car", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    #[ORM\ManyToOne(targetEntity: Car::class, inversedBy: 'children')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="Car", mappedBy="parent")
      */
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Car::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private $children;
 
     public function setParent($parent = null)
