@@ -115,7 +115,7 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         static::assertSame('facebook-de', $result[0]['link.facebook']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

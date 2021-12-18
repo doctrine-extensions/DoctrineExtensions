@@ -114,7 +114,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         static::assertSame('Lebensmittel', $food->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

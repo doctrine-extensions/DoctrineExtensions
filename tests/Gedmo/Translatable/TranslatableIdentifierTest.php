@@ -116,7 +116,7 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
         static::assertSame('title in de', $object->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

@@ -496,7 +496,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

@@ -80,7 +80,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         static::assertCount(3, $path);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::NODE,

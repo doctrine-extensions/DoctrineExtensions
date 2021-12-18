@@ -449,7 +449,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         static::assertSame($getTreeHtml(false), $getTree(false));
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

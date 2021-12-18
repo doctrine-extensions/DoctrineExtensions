@@ -108,7 +108,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('web/enthusiast/php/herzult', $herzult->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::OCCUPATION,

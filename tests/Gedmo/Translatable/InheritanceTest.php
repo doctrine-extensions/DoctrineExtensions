@@ -141,7 +141,7 @@ final class InheritanceTest extends BaseTestCaseORM
         static::assertSame('mime de', $images[0]->getMime());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

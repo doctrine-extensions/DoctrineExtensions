@@ -89,7 +89,7 @@ final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         static::assertSame(3, $level);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::PERSON,

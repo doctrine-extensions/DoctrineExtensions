@@ -115,7 +115,7 @@ final class Issue114Test extends BaseTestCaseORM
         static::assertCount(1, $trans);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

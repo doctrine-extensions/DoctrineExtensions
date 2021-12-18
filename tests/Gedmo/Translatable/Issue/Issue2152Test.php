@@ -87,7 +87,7 @@ final class Issue2152Test extends BaseTestCaseORM
         static::assertSame($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TRANSLATION,

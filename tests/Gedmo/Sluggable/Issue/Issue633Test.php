@@ -97,7 +97,7 @@ final class Issue633Test extends BaseTestCaseORM
         static::assertSame('unique-to-code-1', $test3->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

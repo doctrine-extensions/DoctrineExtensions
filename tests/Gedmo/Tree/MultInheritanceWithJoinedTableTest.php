@@ -120,7 +120,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         static::assertSame(2, $user3->getLevel());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::USER,

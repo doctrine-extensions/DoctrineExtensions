@@ -94,7 +94,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         static::assertFalse($wrapped->hasValidIdentifier());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

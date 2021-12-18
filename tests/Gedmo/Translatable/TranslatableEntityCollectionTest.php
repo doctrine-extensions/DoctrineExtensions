@@ -174,7 +174,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         static::assertSame('content lt', $translations['lt_lt']['content']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

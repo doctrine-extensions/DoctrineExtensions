@@ -393,7 +393,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         return new $class();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

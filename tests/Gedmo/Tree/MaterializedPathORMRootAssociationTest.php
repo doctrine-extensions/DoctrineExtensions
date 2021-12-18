@@ -143,7 +143,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         return $path;
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,
