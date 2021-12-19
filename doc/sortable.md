@@ -8,7 +8,7 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Attribute, Yaml and Xml mapping support for extensions
 
-> Sortable, and all other doctrine extensions from this package, is available as Symfony bundle.
+> Sortable, and all other doctrine extensions from this package are available as Symfony bundle.
 > See [StofDoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle) for details.
 
 Contents:
@@ -29,14 +29,14 @@ on how to setup and use the extensions in most optimized way.
 - [SortableGroup](../src/Mapping/Annotation/SortableGroup.php) - used to specify property for **grouping**
 - [SortablePosition](../src/Mapping/Annotation/SortablePosition.php) - used to specify property to store **position** index
 
-|            | SortableGroup                             | SortablePosition                               |
-|------------|-------------------------------------------|------------------------------------------------|
+|             | SortableGroup                               | SortablePosition                               |
+|-------------|---------------------------------------------|------------------------------------------------|
 | Annotations | `@Gedmo\Mapping\Annotation\SortableGroup`   | `@Gedmo\Mapping\Annotation\SortablePosition`   |
-| Attributes | `#[Gedmo\Mapping\Annotation\SortableGroup]` | `#[Gedmo\Mapping\Annotation\SortablePosition]` |
-| Yaml       | `gedmo: [sortableGroup]`                    | `gedmo: [sortablePosition]`                    |
-| Xml        | `<gedmo:sortable-group />`                  | `<gedmo:sortable-position />`                  |
+| Attributes  | `#[Gedmo\Mapping\Annotation\SortableGroup]` | `#[Gedmo\Mapping\Annotation\SortablePosition]` |
+| Yaml        | `gedmo: [sortableGroup]`                    | `gedmo: [sortablePosition]`                    |
+| Xml         | `<gedmo:sortable-group />`                  | `<gedmo:sortable-position />`                  |
 
-> Implementin **[Sortable interface](../src/Sortable/Sortable.php) is optional**, except in cases there you need to identify entity as being Sortable.
+> Implementing **[Sortable interface](../src/Sortable/Sortable.php) is optional**, except in cases there you need to identify entity as being Sortable.
 > The metadata is loaded only once then cache is activated.
 
 > You **should register [SortableRepository](../src/Sortable/Entity/Repository/SortableRepository.php)** (or a subclass) as the repository in the Entity
@@ -46,6 +46,7 @@ annotation to benefit from its query methods.
 
 ```php
 <?php
+
 namespace Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -354,6 +355,7 @@ objects are compared by simply implementing the Doctrine\Common\Comparable inter
 namespace Entity;
 
 use Doctrine\Common\Comparable;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="items")
