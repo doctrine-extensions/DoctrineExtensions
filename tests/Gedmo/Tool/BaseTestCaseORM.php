@@ -182,7 +182,7 @@ abstract class BaseTestCaseORM extends TestCase
     /**
      * Get a list of used fixture classes
      *
-     * @return array<class-string>
+     * @phpstan-return list<class-string>
      */
     abstract protected function getUsedEntityFixtures(): array;
 
