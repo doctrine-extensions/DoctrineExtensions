@@ -25,7 +25,7 @@ use Gedmo\Tests\Timestampable\Fixture\Type;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
 
-class CarbonTest extends BaseTestCaseORM
+final class CarbonTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
     public const COMMENT = Comment::class;
@@ -57,7 +57,7 @@ class CarbonTest extends BaseTestCaseORM
         DoctrineType::overrideType(Types::DATETIME_MUTABLE, \Doctrine\DBAL\Types\DateTimeType::class);
     }
 
-    public function testShouldHandleStandardBehavior()
+    public function testShouldHandleStandardBehavior(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -149,7 +149,7 @@ class CarbonTest extends BaseTestCaseORM
         static::assertNotSame($sport->getAuthorChanged(), $sa, 'Author must have changed after update');
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

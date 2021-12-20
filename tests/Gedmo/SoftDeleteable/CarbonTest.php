@@ -20,7 +20,7 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Article;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Comment;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
-class CarbonTest extends BaseTestCaseORM
+final class CarbonTest extends BaseTestCaseORM
 {
     public const ARTICLE_CLASS = Article::class;
     public const COMMENT_CLASS = Comment::class;
@@ -97,7 +97,7 @@ class CarbonTest extends BaseTestCaseORM
         static::assertInstanceOf(Carbon::class, $comment->getDeletedAt());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE_CLASS,
