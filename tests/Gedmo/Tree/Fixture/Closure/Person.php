@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Tree\Fixture\Closure;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Tree\Entity\Repository\ClosureTreeRepository;
 
 /**
  * @Gedmo\Tree(type="closure")
@@ -24,31 +26,50 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   "user" = "User"
  *   })
  */
+#[ORM\Entity(repositoryClass: ClosureTreeRepository::class)]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
+#[ORM\DiscriminatorMap(['user' => User::class])]
 abstract class Person
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="full_name", type="string", length=64)
      */
+    #[ORM\Column(name: 'full_name', type: Types::STRING, length: 64)]
     private $fullName;
 
     /**
+     * @var self|null
+     *
      * @Gedmo\TreeParent
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="children", cascade={"persist"})
      */
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $parent;
 
     /**
+     * @var int|null
+     *
      * @ORM\Column(name="level", type="integer")
      * @Gedmo\TreeLevel
      */
+    #[ORM\Column(name: 'level', type: Types::INTEGER)]
     private $level;
 
     /**
@@ -61,52 +82,52 @@ abstract class Person
      */
     private $closures = [];
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setParent(Category $parent = null)
+    public function setParent(Category $parent = null): void
     {
         $this->parent = $parent;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    public function addClosure(CategoryClosure $closure)
+    public function addClosure(CategoryClosure $closure): void
     {
         $this->closures[] = $closure;
     }
 
-    public function setLevel($level)
+    public function setLevel(?int $level): void
     {
         $this->level = $level;
     }
 
-    public function getLevel()
+    public function getLevel(): ?int
     {
         return $this->level;
     }
 
-    public function setFullName($fullName)
+    public function setFullName(?string $fullName): void
     {
         $this->fullName = $fullName;
     }
 
-    public function getFullName()
+    public function getFullName(): ?string
     {
         return $this->fullName;
     }

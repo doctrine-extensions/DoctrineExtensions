@@ -17,6 +17,7 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class PersonClosure extends AbstractClosure
 {
 }

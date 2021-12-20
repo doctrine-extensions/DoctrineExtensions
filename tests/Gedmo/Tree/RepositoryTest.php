@@ -34,11 +34,11 @@ final class RepositoryTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testBasicFunctions()
+    public function testBasicFunctions(): void
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Vegitables']);
@@ -126,7 +126,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $leafs[3]->getTitle());
     }
 
-    public function testAdvancedFunctions()
+    public function testAdvancedFunctions(): void
     {
         $this->populateMore();
         $onions = $this->em->getRepository(self::CATEGORY)
@@ -240,7 +240,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertSame('Food', $node->getParent()->getTitle());
     }
 
-    public function testRootRemoval()
+    public function testRootRemoval(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
@@ -270,7 +270,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertNull($node->getParent());
     }
 
-    public function testVerificationAndRecover()
+    public function testVerificationAndRecover(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
@@ -313,7 +313,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
-    public function testMoveRootNode()
+    public function testMoveRootNode(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneBy(['title' => 'Food']);
@@ -332,7 +332,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
-    public function testIssue273()
+    public function testIssue273(): void
     {
         $this->populateUuid();
 

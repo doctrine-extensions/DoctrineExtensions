@@ -26,7 +26,14 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 {
     public const CATEGORY = MPFeaturesCategory::class;
 
+    /**
+     * @var array
+     */
     protected $config;
+
+    /**
+     * @var TreeListener
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -38,7 +45,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
@@ -47,7 +54,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function checkPathsAndHash()
+    public function checkPathsAndHash(): void
     {
         $category = $this->createCategory();
         $category->setTitle('1');
@@ -95,7 +102,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         return new $class();
     }
 
-    public function generatePath(array $sources)
+    public function generatePath(array $sources): string
     {
         $path = '';
         foreach ($sources as $p => $id) {
@@ -105,7 +112,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         return $path;
     }
 
-    public function generatePathHash(array $sources)
+    public function generatePathHash(array $sources): string
     {
         return md5($this->generatePath($sources));
     }

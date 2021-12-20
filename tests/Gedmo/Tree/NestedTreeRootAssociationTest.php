@@ -32,11 +32,11 @@ final class NestedTreeRootAssociationTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testRootEntity()
+    public function testRootEntity(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
