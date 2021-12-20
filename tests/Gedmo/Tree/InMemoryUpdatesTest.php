@@ -32,10 +32,10 @@ final class InMemoryUpdatesTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testInMemoryTreeInserts()
+    public function testInMemoryTreeInserts(): void
     {
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $repo = $this->em->getRepository(self::CATEGORY);

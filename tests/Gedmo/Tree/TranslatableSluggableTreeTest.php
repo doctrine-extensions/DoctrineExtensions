@@ -34,6 +34,9 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
     public const COMMENT = Comment::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -47,11 +50,11 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testNestedBehaviors()
+    public function testNestedBehaviors(): void
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Vegitables']);
@@ -90,7 +93,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         static::assertSame('deutschebles', $translations['de_DE']['slug']);
     }
 
-    public function testTranslations()
+    public function testTranslations(): void
     {
         $this->populateDeTranslations();
         $repo = $this->em->getRepository(self::CATEGORY);

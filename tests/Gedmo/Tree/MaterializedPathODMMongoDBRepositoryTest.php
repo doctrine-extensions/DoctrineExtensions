@@ -42,7 +42,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
 
         $this->repo = $this->dm->getRepository(self::CATEGORY);
@@ -51,7 +51,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     /**
      * @test
      */
-    public function getRootNodes()
+    public function getRootNodes(): void
     {
         /** @var CachingIterator $result */
         $result = $this->repo->getRootNodes('title');
@@ -71,7 +71,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     /**
      * @test
      */
-    public function getChildren()
+    public function getChildren(): void
     {
         $root = $this->repo->findOneBy(['title' => 'Food']);
 
@@ -172,7 +172,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     /**
      * @test
      */
-    public function getTree()
+    public function getTree(): void
     {
         $tree = $this->repo->getTree();
 
@@ -213,7 +213,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     /**
      * @test
      */
-    public function childrenHierarchy()
+    public function childrenHierarchy(): void
     {
         $tree = $this->repo->childrenHierarchy();
 
@@ -278,7 +278,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
 
-    public function testChildCount()
+    public function testChildCount(): void
     {
         // Count all
         $count = $this->repo->childCount();
@@ -302,19 +302,19 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame(2, $count);
     }
 
-    public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
+    public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount(new \DateTime());
     }
 
-    public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
+    public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount($this->createCategory());
     }
 
-    public function testChangeChildrenIndex()
+    public function testChangeChildrenIndex(): void
     {
         $childrenIndex = 'myChildren';
         $this->repo->setChildrenIndex($childrenIndex);

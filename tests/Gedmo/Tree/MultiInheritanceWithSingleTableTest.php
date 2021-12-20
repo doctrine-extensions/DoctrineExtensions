@@ -38,10 +38,10 @@ final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testConsistence()
+    public function testConsistence(): void
     {
         $this->populate();
         $this->em->clear();

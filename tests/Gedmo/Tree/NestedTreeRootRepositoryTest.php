@@ -32,7 +32,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
@@ -41,7 +41,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
      *
      * @test
      */
-    public function shouldBeAbleToShiftRootNode()
+    public function shouldBeAbleToShiftRootNode(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -68,7 +68,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSupportChildrenHierarchyAsArray()
+    public function shouldSupportChildrenHierarchyAsArray(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $result = $repo->childrenHierarchy();
@@ -132,7 +132,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSupportChildrenHierarchyAsHtml()
+    public function shouldSupportChildrenHierarchyAsHtml(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneBy(['title' => 'Food']);
@@ -203,7 +203,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSupportChildrenHierarchyByBuildTreeFunction()
+    public function shouldSupportChildrenHierarchyByBuildTreeFunction(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $q = $this->em
@@ -225,7 +225,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldRemoveRootNodeFromTree()
+    public function shouldRemoveRootNodeFromTree(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $this->populateMore();
@@ -255,7 +255,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleBasicRepositoryMethods()
+    public function shouldHandleBasicRepositoryMethods(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
@@ -287,7 +287,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleAdvancedRepositoryFunctions()
+    public function shouldHandleAdvancedRepositoryFunctions(): void
     {
         $this->populateMore();
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -398,7 +398,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldRemoveTreeLeafFromTree()
+    public function shouldRemoveTreeLeafFromTree(): void
     {
         $this->populateMore();
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -416,7 +416,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function getRootNodesTest()
+    public function getRootNodesTest(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -438,7 +438,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function changeChildrenIndexTest()
+    public function changeChildrenIndexTest(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $childrenIndex = 'myChildren';

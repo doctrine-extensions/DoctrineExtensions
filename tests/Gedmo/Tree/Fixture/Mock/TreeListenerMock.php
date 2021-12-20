@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree\Fixture\Mock;
 
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -22,7 +23,14 @@ use Gedmo\Tree\TreeListener;
  */
 class TreeListenerMock extends TreeListener
 {
+    /**
+     * @var bool
+     */
     public $releaseLocks = false;
+
+    /**
+     * @var Strategy
+     */
     protected $strategy;
 
     public function getStrategy(ObjectManager $om, $class)
@@ -35,12 +43,12 @@ class TreeListenerMock extends TreeListener
         return $this->strategy;
     }
 
-    public function setReleaseLocks($bool)
+    public function setReleaseLocks(bool $bool): void
     {
         $this->strategy->releaseLocks = $bool;
     }
 
-    protected function getStrategiesUsedForObjects(array $classes)
+    protected function getStrategiesUsedForObjects(array $classes): array
     {
         if (null === $this->strategy) {
             $this->strategy = new MaterializedPathMock($this);
