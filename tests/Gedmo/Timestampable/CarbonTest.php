@@ -57,10 +57,7 @@ class CarbonTest extends BaseTestCaseORM
         DoctrineType::overrideType(Types::DATETIME_MUTABLE, \Doctrine\DBAL\Types\DateTimeType::class);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleStandardBehavior()
+    public function testShouldHandleStandardBehavior()
     {
         $sport = new Article();
         $sport->setTitle('Sport');
