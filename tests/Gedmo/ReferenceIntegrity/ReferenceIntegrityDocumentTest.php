@@ -62,7 +62,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->populateManyRestrict();
     }
 
-    public function testOneNullify()
+    public function testOneNullify(): void
     {
         $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
             ->findOneBy(['title' => 'One Nullify Type']);
@@ -85,7 +85,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    public function testManyNullify()
+    public function testManyNullify(): void
     {
         $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
             ->findOneBy(['title' => 'Many Nullify Type']);
@@ -108,7 +108,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    public function testOnePull()
+    public function testOnePull(): void
     {
         $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneBy(['title' => 'One Pull Type 1']);
@@ -138,7 +138,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    public function testManyPull()
+    public function testManyPull(): void
     {
         $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneBy(['title' => 'Many Pull Type 1']);
@@ -168,7 +168,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    public function testOneRestrict()
+    public function testOneRestrict(): void
     {
         $this->expectException(ReferenceIntegrityStrictException::class);
         $type = $this->dm->getRepository(self::TYPE_ONE_RESTRICT_CLASS)
@@ -181,7 +181,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
     }
 
-    public function testManyRestrict()
+    public function testManyRestrict(): void
     {
         $this->expectException(ReferenceIntegrityStrictException::class);
         $type = $this->dm->getRepository(self::TYPE_MANY_RESTRICT_CLASS)

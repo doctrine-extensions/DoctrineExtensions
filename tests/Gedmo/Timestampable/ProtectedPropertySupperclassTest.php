@@ -41,7 +41,7 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testProtectedProperty()
+    public function testProtectedProperty(): void
     {
         $test = new SupperClassExtension();
         $test->setName('name');

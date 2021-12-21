@@ -64,7 +64,7 @@ class Person
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -74,7 +74,7 @@ class Person
         return $this->name;
     }
 
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         $this->description = $description;
     }
@@ -89,12 +89,12 @@ class Person
         return $this->lastName;
     }
 
-    public function setLastName($name)
+    public function setLastName($name): void
     {
         $this->lastName = $name;
     }
 
-    public function setParent(self $parent)
+    public function setParent(self $parent): void
     {
         $this->parent = $parent;
     }

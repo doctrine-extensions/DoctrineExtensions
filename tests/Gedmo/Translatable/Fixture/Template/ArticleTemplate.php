@@ -44,7 +44,7 @@ class ArticleTemplate
     #[Gedmo\Translatable]
     private $content;
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -54,7 +54,7 @@ class ArticleTemplate
         return $this->title;
     }
 
-    public function setContent($content)
+    public function setContent($content): void
     {
         $this->content = $content;
     }
@@ -64,7 +64,7 @@ class ArticleTemplate
         return $this->content;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): void
     {
         $this->locale = $locale;
     }

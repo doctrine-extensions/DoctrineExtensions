@@ -55,7 +55,7 @@ class PersonCustom
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -65,7 +65,7 @@ class PersonCustom
         return $this->name;
     }
 
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         $this->description = $description;
     }

@@ -54,7 +54,7 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleStringIdentifier()
+    public function shouldHandleStringIdentifier(): void
     {
         $object = new StringIdentifier();
         $object->setTitle('title in en');

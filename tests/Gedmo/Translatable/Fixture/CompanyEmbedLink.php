@@ -41,40 +41,30 @@ class CompanyEmbedLink
     #[ORM\Column(name: 'facebook', type: Types::STRING, length: 191, nullable: true)]
     protected $facebook;
 
-    /**
-     * @return string
-     */
-    public function getWebsite()
+    public function getWebsite(): string
     {
         return $this->website;
     }
 
     /**
      * @param string $website
-     *
-     * @return CompanyEmbedLink
      */
-    public function setWebsite($website)
+    public function setWebsite($website): self
     {
         $this->website = $website;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFacebook()
+    public function getFacebook(): string
     {
         return $this->facebook;
     }
 
     /**
      * @param string $facebook
-     *
-     * @return CompanyEmbedLink
      */
-    public function setFacebook($facebook)
+    public function setFacebook($facebook): self
     {
         $this->facebook = $facebook;
 

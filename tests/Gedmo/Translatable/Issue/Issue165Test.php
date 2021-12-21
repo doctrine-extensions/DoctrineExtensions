@@ -45,7 +45,7 @@ final class Issue165Test extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    public function shouldPersistUntranslatedFields()
+    public function shouldPersistUntranslatedFields(): void
     {
         $article = new SimpleArticle();
         $article->setTitle('en');

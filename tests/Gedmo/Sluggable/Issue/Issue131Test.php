@@ -35,7 +35,7 @@ final class Issue131Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $test = new Article();
         $test->setTitle('');
@@ -57,7 +57,7 @@ final class Issue131Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleOnlyZeroInSlug()
+    public function shouldHandleOnlyZeroInSlug(): void
     {
         $article = new Article();
         $article->setTitle('0');

@@ -21,33 +21,37 @@ use Doctrine\ORM\Mapping as ORM;
 class Author
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="author_name", type="string", length=128, nullable=true)
      */
     #[ORM\Column(name: 'author_name', type: Types::STRING, length: 128, nullable: true)]
     private $name;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="author_email", type="string", length=50, nullable=true)
      */
     #[ORM\Column(name: 'author_email', type: Types::STRING, length: 50, nullable: true)]
     private $email;
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }

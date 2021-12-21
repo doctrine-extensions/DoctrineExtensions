@@ -85,10 +85,8 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      *
      * @param string        $dbName
      * @param MappingDriver $mappingDriver
-     *
-     * @return DocumentManager
      */
-    protected function getMockDocumentManager($dbName, MappingDriver $mappingDriver = null)
+    protected function getMockDocumentManager($dbName, MappingDriver $mappingDriver = null): DocumentManager
     {
         if (!extension_loaded('mongodb')) {
             static::markTestSkipped('Missing Mongo extension.');
@@ -106,17 +104,13 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      *
      * @param string        $dbName
      * @param MappingDriver $mappingDriver
-     *
-     * @return DocumentManager
      */
-    protected function getMockMappedDocumentManager($dbName, MappingDriver $mappingDriver = null)
+    protected function getMockMappedDocumentManager($dbName, MappingDriver $mappingDriver = null): DocumentManager
     {
         $conn = $this->getMockBuilder('Doctrine\\MongoDB\\Connection')->getMock();
         $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
 
-        $dm = DocumentManager::create($conn, $config, $this->getEventManager());
-
-        return $dm;
+        return DocumentManager::create($conn, $config, $this->getEventManager());
     }
 
     /**
@@ -125,10 +119,8 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      * database in memory
      *
      * @param MappingDriver $mappingDriver
-     *
-     * @return EntityManager
      */
-    protected function getMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null)
+    protected function getMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
@@ -154,10 +146,8 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      * annotation mapping driver
      *
      * @param MappingDriver $mappingDriver
-     *
-     * @return EntityManager
      */
-    protected function getMockMappedEntityManager(MappingDriver $mappingDriver = null)
+    protected function getMockMappedEntityManager(MappingDriver $mappingDriver = null): EntityManager
     {
         $driver = $this->getMockBuilder(Driver::class)->getMock();
         $driver->expects(static::once())
@@ -246,10 +236,8 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
 
     /**
      * Get annotation mapping configuration for ORM
-     *
-     * @return \Doctrine\ORM\Configuration
      */
-    private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null)
+    private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
     {
         $config = $this->getMockBuilder(\Doctrine\ORM\Configuration::class)->getMock();
         $config->expects(static::once())

@@ -37,6 +37,8 @@ class Product
     private $stockItems;
 
     /**
+     * @var Collection<int, Metadata>
+     *
      * @ODM\EmbedMany(targetDocument="Gedmo\Tests\References\Fixture\ODM\MongoDB\Metadata")
      */
     private $metadatas;
@@ -51,7 +53,7 @@ class Product
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -61,7 +63,7 @@ class Product
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -71,22 +73,22 @@ class Product
         return $this->stockItems;
     }
 
-    public function setStockItems(Collection $stockItems)
+    public function setStockItems(Collection $stockItems): void
     {
         $this->stockItems = $stockItems;
     }
 
-    public function addMetadata($metadata)
+    public function addMetadata($metadata): void
     {
         $this->metadatas[] = $metadata;
     }
 
-    public function removeMetadata($metadata)
+    public function removeMetadata($metadata): void
     {
         $this->metadatas->removeElement($metadata);
     }
 
-    public function getMetadatas()
+    public function getMetadatas(): Collection
     {
         return $this->metadatas;
     }

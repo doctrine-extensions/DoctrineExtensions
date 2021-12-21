@@ -61,7 +61,7 @@ final class SortableMappingTest extends BaseTestCaseOM
         ], $chain);
     }
 
-    public function testYamlMapping()
+    public function testYamlMapping(): void
     {
         $meta = $this->em->getClassMetadata(Sortable::class);
         $config = $this->sortable->getConfiguration($this->em, $meta->getName());

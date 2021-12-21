@@ -23,6 +23,8 @@ use Gedmo\Translatable\Translatable;
 class Article implements Translatable
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -78,12 +80,12 @@ class Article implements Translatable
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private $comments;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addComment(Comment $comment)
+    public function addComment(Comment $comment): void
     {
         $comment->setArticle($this);
         $this->comments[] = $comment;
@@ -94,7 +96,7 @@ class Article implements Translatable
         return $this->comments;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -104,7 +106,7 @@ class Article implements Translatable
         return $this->title;
     }
 
-    public function setContent($content)
+    public function setContent($content): void
     {
         $this->content = $content;
     }
@@ -114,12 +116,12 @@ class Article implements Translatable
         return $this->content;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): void
     {
         $this->locale = $locale;
     }
 
-    public function setViews($views)
+    public function setViews($views): void
     {
         $this->views = $views;
     }
@@ -129,7 +131,7 @@ class Article implements Translatable
         return $this->views;
     }
 
-    public function setAuthor($author)
+    public function setAuthor($author): void
     {
         $this->author = $author;
     }

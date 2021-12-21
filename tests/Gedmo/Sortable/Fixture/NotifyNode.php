@@ -65,14 +65,14 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
      * @param mixed  $oldValue
      * @param mixed  $newValue
      */
-    protected function triggerPropertyChanged($propName, $oldValue, $newValue)
+    protected function triggerPropertyChanged($propName, $oldValue, $newValue): void
     {
         foreach ($this->_propertyChangedListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
         }
     }
 
-    protected function setProperty($property, $newValue)
+    protected function setProperty($property, $newValue): void
     {
         $oldValue = $this->{$property};
         if ($oldValue !== $newValue) {

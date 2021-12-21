@@ -81,7 +81,7 @@ class MySluggableListener extends SluggableListener
 
 class Transliterator
 {
-    public static function transliterate($text, $separator, $object)
+    public static function transliterate($text, $separator, $object): string
     {
         return 'Bei Jing';
     }

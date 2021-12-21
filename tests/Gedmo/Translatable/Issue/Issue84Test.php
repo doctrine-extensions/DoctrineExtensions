@@ -42,7 +42,7 @@ final class Issue84Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIssue84()
+    public function testIssue84(): void
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
 

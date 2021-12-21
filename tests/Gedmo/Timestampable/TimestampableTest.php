@@ -47,7 +47,7 @@ final class TimestampableTest extends BaseTestCaseORM
      *
      * @test
      */
-    public function shouldHandleDetatchedAndMergedBackEntities()
+    public function shouldHandleDetatchedAndMergedBackEntities(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -67,7 +67,7 @@ final class TimestampableTest extends BaseTestCaseORM
      *
      * @test
      */
-    public function shouldHandleDetatchedAndMergedBackEntitiesAfterPersist()
+    public function shouldHandleDetatchedAndMergedBackEntitiesAfterPersist(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -95,7 +95,7 @@ final class TimestampableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleStandardBehavior()
+    public function shouldHandleStandardBehavior(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -178,7 +178,7 @@ final class TimestampableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldBeAbleToForceDates()
+    public function shouldBeAbleToForceDates(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -226,7 +226,7 @@ final class TimestampableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSolveIssue767()
+    public function shouldSolveIssue767(): void
     {
         $type = new Type();
         $type->setTitle('Published');

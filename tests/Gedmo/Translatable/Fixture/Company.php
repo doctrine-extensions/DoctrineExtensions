@@ -23,6 +23,8 @@ use Gedmo\Translatable\Translatable;
 class Company implements Translatable
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -78,28 +80,20 @@ class Company implements Translatable
 
     /**
      * @param mixed $title
-     *
-     * @return Company
      */
-    public function setTitle($title)
+    public function setTitle($title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * @return CompanyEmbedLink
-     */
-    public function getLink()
+    public function getLink(): CompanyEmbedLink
     {
         return $this->link;
     }
 
-    /**
-     * @return Company
-     */
-    public function setLink(CompanyEmbedLink $link)
+    public function setLink(CompanyEmbedLink $link): self
     {
         $this->link = $link;
 
@@ -108,10 +102,8 @@ class Company implements Translatable
 
     /**
      * @param mixed $locale
-     *
-     * @return Company
      */
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): self
     {
         $this->locale = $locale;
 

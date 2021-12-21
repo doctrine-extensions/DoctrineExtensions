@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -47,12 +49,12 @@ class Article
     #[ORM\Column(length: 128)]
     private $titleTest;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -62,7 +64,7 @@ class Article
         return $this->title;
     }
 
-    public function setTitleTest($titleTest)
+    public function setTitleTest($titleTest): void
     {
         $this->titleTest = $titleTest;
     }

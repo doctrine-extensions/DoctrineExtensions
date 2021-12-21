@@ -55,7 +55,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldEnsureSolvedIssue234()
+    public function shouldEnsureSolvedIssue234(): void
     {
         $this->translatableListener->setTranslatableLocale('de');
         $this->translatableListener->setDefaultLocale('en');
@@ -85,7 +85,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldPersistMultipleTranslations()
+    public function shouldPersistMultipleTranslations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -110,7 +110,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldUpdateTranslation()
+    public function shouldUpdateTranslation(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -134,7 +134,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldUpdateMultipleTranslations()
+    public function shouldUpdateMultipleTranslations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);

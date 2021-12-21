@@ -25,7 +25,7 @@ class EncoderListener extends MappedEventSubscriber
         ];
     }
 
-    public function loadClassMetadata(EventArgs $args)
+    public function loadClassMetadata(EventArgs $args): void
     {
         $ea = $this->getEventAdapter($args);
         // this will check for our metadata
@@ -35,7 +35,7 @@ class EncoderListener extends MappedEventSubscriber
         );
     }
 
-    public function onFlush(EventArgs $args)
+    public function onFlush(EventArgs $args): void
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();

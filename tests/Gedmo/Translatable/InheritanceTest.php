@@ -54,7 +54,7 @@ final class InheritanceTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleMappedSuperclass()
+    public function shouldHandleMappedSuperclass(): void
     {
         $article = new TemplatedArticle();
         $article->setName('name in en');
@@ -99,7 +99,7 @@ final class InheritanceTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleInheritedTranslationsThroughBaseObjectClass()
+    public function shouldHandleInheritedTranslationsThroughBaseObjectClass(): void
     {
         $file = new File();
         $file->setSize(500);

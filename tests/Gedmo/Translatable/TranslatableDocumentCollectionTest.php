@@ -48,7 +48,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    public function shouldPersistMultipleTranslations()
+    public function shouldPersistMultipleTranslations(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         static::assertInstanceOf(TranslationRepository::class, $repo);
@@ -71,7 +71,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    public function shouldUpdateTranslation()
+    public function shouldUpdateTranslation(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         static::assertInstanceOf(TranslationRepository::class, $repo);
@@ -95,7 +95,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    public function shouldUpdateMultipleTranslations()
+    public function shouldUpdateMultipleTranslations(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         static::assertInstanceOf(TranslationRepository::class, $repo);

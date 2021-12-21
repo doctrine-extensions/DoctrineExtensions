@@ -51,7 +51,7 @@ final class Issue173Test extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testIssue173()
+    public function testIssue173(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -71,13 +71,13 @@ final class Issue173Test extends BaseTestCaseORM
             ->select('c1')
             ->from(self::CATEGORY, 'c1')
             ->join('c1.products', 'p')
-            ->getDql()
+            ->getDQL()
         ;
         $dql2 = $query3
             ->select('c2')
             ->from(self::CATEGORY, 'c2')
             ->join('c2.articles', 'a')
-            ->getDql()
+            ->getDQL()
         ;
         $query
             ->select('c')

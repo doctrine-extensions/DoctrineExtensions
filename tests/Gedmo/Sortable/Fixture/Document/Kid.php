@@ -54,7 +54,7 @@ class Kid
         return $this->id;
     }
 
-    public function setLastname($lastname)
+    public function setLastname($lastname): void
     {
         $this->lastname = $lastname;
     }
@@ -64,7 +64,7 @@ class Kid
         return $this->lastname;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }
@@ -74,7 +74,7 @@ class Kid
         return $this->position;
     }
 
-    public function setBirthdate(\DateTime $birthdate)
+    public function setBirthdate(\DateTime $birthdate): void
     {
         $this->birthdate = $birthdate;
     }

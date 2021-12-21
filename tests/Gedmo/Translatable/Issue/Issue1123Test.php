@@ -47,7 +47,7 @@ final class Issue1123Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldFindInheritedClassTranslations()
+    public function shouldFindInheritedClassTranslations(): void
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
 

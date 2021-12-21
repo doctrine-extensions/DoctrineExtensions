@@ -37,7 +37,7 @@ final class Issue939Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $category = new Category();
         $category->setTitle('Misc articles');

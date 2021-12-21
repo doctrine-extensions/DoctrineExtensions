@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Comment
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -61,17 +63,17 @@ class Comment
     #[Gedmo\Language]
     private $locale;
 
-    public function setArticle($article)
+    public function setArticle($article): void
     {
         $this->article = $article;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setSubject($subject)
+    public function setSubject($subject): void
     {
         $this->subject = $subject;
     }
@@ -81,7 +83,7 @@ class Comment
         return $this->subject;
     }
 
-    public function setMessage($message)
+    public function setMessage($message): void
     {
         $this->message = $message;
     }
@@ -91,7 +93,7 @@ class Comment
         return $this->message;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): void
     {
         $this->locale = $locale;
     }

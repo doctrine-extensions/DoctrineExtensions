@@ -62,7 +62,7 @@ final class ClosureTreeMappingTest extends BaseTestCaseOM
         ], $chain);
     }
 
-    public function testTreeMetadata()
+    public function testTreeMetadata(): void
     {
         $meta = $this->em->getClassMetadata(ClosureTree::class);
         $config = $this->tree->getConfiguration($this->em, $meta->getName());

@@ -35,7 +35,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testTranslatable()
+    public function testTranslatable(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -96,7 +96,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldTranslateRelation()
+    public function shouldTranslateRelation(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -129,7 +129,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleDomainObjectProxy()
+    public function shouldHandleDomainObjectProxy(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -147,7 +147,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('Женя', $name);
     }
 
-    public function testTranslatableProxyWithUpperCaseProperty()
+    public function testTranslatableProxyWithUpperCaseProperty(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -169,7 +169,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('Абрамович', $lastName);
     }
 
-    public function testTranslatableWithMagicProperties()
+    public function testTranslatableWithMagicProperties(): void
     {
         $person = new Person();
         $person->translate('en')->setName('Jen');
@@ -183,7 +183,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('multilingual description', $person->description);
     }
 
-    public function testTranslatableWithCustomProxy()
+    public function testTranslatableWithCustomProxy(): void
     {
         $person = new PersonCustom();
         $person->setName('Jen');

@@ -32,7 +32,7 @@ final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testPrefixSuffix()
+    public function testPrefixSuffix(): void
     {
         $foo = new TreeSlugPrefixSuffix();
         $foo->setTitle('Foo');

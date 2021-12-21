@@ -34,7 +34,7 @@ final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->getMockDocumentManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);
@@ -52,7 +52,7 @@ final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('food/fruits/citrons', $citrons->getSlug());
     }
 
-    public function testSlugUpdates()
+    public function testSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);

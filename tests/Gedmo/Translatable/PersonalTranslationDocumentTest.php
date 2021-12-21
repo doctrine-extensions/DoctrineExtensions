@@ -46,7 +46,7 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    public function shouldCreateTranslations()
+    public function shouldCreateTranslations(): void
     {
         $this->populate();
         $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
@@ -58,7 +58,7 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    public function shouldTranslateTheRecord()
+    public function shouldTranslateTheRecord(): void
     {
         $this->populate();
         $this->translatableListener->setTranslatableLocale('lt');

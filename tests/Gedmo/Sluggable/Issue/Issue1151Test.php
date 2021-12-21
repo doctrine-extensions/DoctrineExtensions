@@ -38,7 +38,7 @@ final class Issue1151Test extends BaseTestCaseMongoODM
     /**
      * Test if new object with predefined id will be processed by sluggable listener
      */
-    public function testSlugCreateOnNewArticle()
+    public function testSlugCreateOnNewArticle(): void
     {
         $article = new Article();
         $article->setId('ABC123');

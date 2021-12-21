@@ -56,7 +56,7 @@ final class MappingTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testNoCacheImplementationMapping()
+    public function testNoCacheImplementationMapping(): void
     {
         $food = new BehavioralCategory();
         $food->setTitle('Food');

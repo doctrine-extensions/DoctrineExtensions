@@ -33,7 +33,7 @@ class Car extends Vehicle
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private $children;
 
-    public function setParent($parent = null)
+    public function setParent($parent = null): void
     {
         $this->parent = $parent;
     }

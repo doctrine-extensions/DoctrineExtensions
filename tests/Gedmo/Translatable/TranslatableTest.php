@@ -52,7 +52,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldUpdateTranslationInDefaultLocaleIssue751()
+    public function shouldUpdateTranslationInDefaultLocaleIssue751(): void
     {
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -92,7 +92,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldPersistDefaultLocaleTranslationIfRequired()
+    public function shouldPersistDefaultLocaleTranslationIfRequired(): void
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
 
@@ -113,7 +113,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldGenerateTranslations()
+    public function shouldGenerateTranslations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -236,7 +236,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSolveTranslationFallbackGithubIssue9()
+    public function shouldSolveTranslationFallbackGithubIssue9(): void
     {
         $this->populate();
         $this->translatableListener->setTranslationFallback(false);
@@ -261,7 +261,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSolveGithubIssue64()
+    public function shouldSolveGithubIssue64(): void
     {
         $judo = new Sport();
         $judo->setTitle('Judo');
@@ -297,7 +297,7 @@ final class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldRespectFallbackOption()
+    public function shouldRespectFallbackOption(): void
     {
         $article = new Article();
         $article->setTitle('Euro2012');

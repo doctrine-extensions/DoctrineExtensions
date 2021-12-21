@@ -46,7 +46,7 @@ final class Issue922Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldTranslateDateFields()
+    public function shouldTranslateDateFields(): void
     {
         $p1 = new Post();
         $p1->setPublishedAt(new \DateTime());

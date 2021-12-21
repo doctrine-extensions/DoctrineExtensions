@@ -38,7 +38,7 @@ final class Issue1240Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldWorkWithPlusAsSeparator()
+    public function shouldWorkWithPlusAsSeparator(): void
     {
         $article = new Article();
         $article->setTitle('the title');

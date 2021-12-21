@@ -68,7 +68,7 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function shouldBeAbleToMapSluggableUsingYamlDriver()
+    public function shouldBeAbleToMapSluggableUsingYamlDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
@@ -119,7 +119,7 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function shouldBeAbleToMapSluggableUsingAnnotationDriver()
+    public function shouldBeAbleToMapSluggableUsingAnnotationDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::SLUGGABLE);
         $cacheId = ExtensionMetadataFactory::getCacheId(
