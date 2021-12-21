@@ -61,7 +61,7 @@ final class MaterializedPathTreeMappingTest extends BaseTestCaseOM
         ], $chain);
     }
 
-    public function testTreeMetadata()
+    public function testTreeMetadata(): void
     {
         $meta = $this->em->getClassMetadata(MaterializedPathTree::class);
         $config = $this->tree->getConfiguration($this->em, $meta->getName());

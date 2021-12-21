@@ -47,7 +47,7 @@ final class Issue827Test extends BaseTestCaseORM
      * @test
      * @group issue827
      */
-    public function shouldHandleForeignKeyUniqueBasedSlug()
+    public function shouldHandleForeignKeyUniqueBasedSlug(): void
     {
         // Creating categories
 
@@ -103,7 +103,7 @@ final class Issue827Test extends BaseTestCaseORM
      * @test
      * @group issue827
      */
-    public function handlePersistedSlugsForForeignKeyUniqueBased()
+    public function handlePersistedSlugsForForeignKeyUniqueBased(): void
     {
         // Creating categories
 
@@ -150,7 +150,7 @@ final class Issue827Test extends BaseTestCaseORM
      * @test
      * @group issue827
      */
-    public function shouldHandleForeignKeyMultipleColumnsUniqueBasedSlug()
+    public function shouldHandleForeignKeyMultipleColumnsUniqueBasedSlug(): void
     {
         // Creating parents
 
@@ -227,7 +227,7 @@ final class Issue827Test extends BaseTestCaseORM
      * @test
      * @group issue827
      */
-    public function handlePersistedForeignKeyMultipleColumnsUniqueBasedSlug()
+    public function handlePersistedForeignKeyMultipleColumnsUniqueBasedSlug(): void
     {
         // Creating parents
 

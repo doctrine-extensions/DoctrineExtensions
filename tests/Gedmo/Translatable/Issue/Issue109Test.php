@@ -50,7 +50,7 @@ final class Issue109Test extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testIssue109()
+    public function testIssue109(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -73,7 +73,7 @@ final class Issue109Test extends BaseTestCaseORM
         static::assertCount(3, $result);
     }
 
-    public function populate()
+    public function populate(): void
     {
         $text0 = new Article();
         $text0->setTitle('text0');

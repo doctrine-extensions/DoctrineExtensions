@@ -46,28 +46,22 @@ class Article
     /**
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function setType(Type $type)
+    public function setType(Type $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return Type
-     */
-    public function getType()
+    public function getType(): Type
     {
         return $this->type;
     }

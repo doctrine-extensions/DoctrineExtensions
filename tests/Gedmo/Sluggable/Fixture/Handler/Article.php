@@ -80,7 +80,7 @@ class Article implements Sluggable
         return $this->title;
     }
 
-    public function setCode(?string $code)
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }

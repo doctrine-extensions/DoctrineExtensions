@@ -23,6 +23,8 @@ use Gedmo\Timestampable\Timestampable;
 class TitledArticle implements Timestampable
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,6 +35,8 @@ class TitledArticle implements Timestampable
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
@@ -76,22 +80,19 @@ class TitledArticle implements Timestampable
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="state", value={"Published", "Closed"})
      */
-    #[ORM\Column(name: 'closed', type: TYPES::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'state', value: ['Published', 'Closed'])]
     private $closed;
 
     /**
      * @param \DateTime $chText
      */
-    public function setChText($chText)
+    public function setChText($chText): void
     {
         $this->chText = $chText;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getChText()
+    public function getChText(): \DateTime
     {
         return $this->chText;
     }
@@ -99,15 +100,12 @@ class TitledArticle implements Timestampable
     /**
      * @param \DateTime $chTitle
      */
-    public function setChTitle($chTitle)
+    public function setChTitle($chTitle): void
     {
         $this->chTitle = $chTitle;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getChTitle()
+    public function getChTitle(): \DateTime
     {
         return $this->chTitle;
     }
@@ -115,30 +113,27 @@ class TitledArticle implements Timestampable
     /**
      * @param \DateTime $closed
      */
-    public function setClosed($closed)
+    public function setClosed($closed): void
     {
         $this->closed = $closed;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getClosed()
+    public function getClosed(): \DateTime
     {
         return $this->closed;
     }
 
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setText($text)
+    public function setText($text): void
     {
         $this->text = $text;
     }
@@ -148,17 +143,17 @@ class TitledArticle implements Timestampable
         return $this->text;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setState($state)
+    public function setState($state): void
     {
         $this->state = $state;
     }

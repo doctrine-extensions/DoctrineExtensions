@@ -62,7 +62,7 @@ class StockItem
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -72,7 +72,7 @@ class StockItem
         return $this->sku;
     }
 
-    public function setSku($sku)
+    public function setSku($sku): void
     {
         $this->sku = $sku;
     }
@@ -82,12 +82,12 @@ class StockItem
         return $this->quantity;
     }
 
-    public function setQuantity($quantity)
+    public function setQuantity($quantity): void
     {
         $this->quantity = $quantity;
     }
 
-    public function setProduct(Product $product)
+    public function setProduct(Product $product): void
     {
         $this->product = $product;
     }
@@ -97,7 +97,7 @@ class StockItem
         return $this->product;
     }
 
-    public function setProductId($productId)
+    public function setProductId($productId): void
     {
         $this->productId = $productId;
     }

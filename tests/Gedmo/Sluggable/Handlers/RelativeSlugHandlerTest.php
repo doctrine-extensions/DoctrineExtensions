@@ -37,7 +37,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::SLUG);
@@ -55,7 +55,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('single', $single->getSlug());
     }
 
-    public function testUpdateOperations()
+    public function testUpdateOperations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::SLUG);

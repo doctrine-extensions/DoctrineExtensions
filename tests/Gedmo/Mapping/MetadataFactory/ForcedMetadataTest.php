@@ -58,7 +58,7 @@ final class ForcedMetadataTest extends TestCase
     /**
      * @test
      */
-    public function shouldWork()
+    public function shouldWork(): void
     {
         $this->prepare();
 

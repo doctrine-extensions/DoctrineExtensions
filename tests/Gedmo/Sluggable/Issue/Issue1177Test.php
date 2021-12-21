@@ -38,7 +38,7 @@ final class Issue1177Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldTryPreferedSlugFirst()
+    public function shouldTryPreferedSlugFirst(): void
     {
         $article = new Article();
         $article->setTitle('the title with number 1');

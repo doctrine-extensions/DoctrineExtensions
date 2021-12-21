@@ -58,7 +58,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleQueryCache()
+    public function shouldHandleQueryCache(): void
     {
         $this->em->getConfiguration()->setQueryCache(new ArrayAdapter());
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -79,7 +79,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function subselectByTranslatedField()
+    public function subselectByTranslatedField(): void
     {
         $this->populateMore();
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -101,7 +101,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function subselectStatements()
+    public function subselectStatements(): void
     {
         $this->populateMore();
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -123,7 +123,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function joinedWithStatements()
+    public function joinedWithStatements(): void
     {
         $this->populateMore();
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
@@ -149,7 +149,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectWithTranslationFallbackOnSimpleObjectHydration()
+    public function shouldSelectWithTranslationFallbackOnSimpleObjectHydration(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
@@ -182,7 +182,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function selectWithTranslationFallbackOnArrayHydration()
+    public function selectWithTranslationFallbackOnArrayHydration(): void
     {
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
         $dql .= ' LEFT JOIN a.comments c';
@@ -211,7 +211,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function selectWithOptionalFallbackOnSimpleObjectHydration()
+    public function selectWithOptionalFallbackOnSimpleObjectHydration(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
@@ -246,7 +246,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldBeAbleToUseInnerJoinStrategyForTranslations()
+    public function shouldBeAbleToUseInnerJoinStrategyForTranslations(): void
     {
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -266,7 +266,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
      *
      * @test
      */
-    public function shouldBeAbleToOverrideTranslationFallbackByHint()
+    public function shouldBeAbleToOverrideTranslationFallbackByHint(): void
     {
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $this->translatableListener->setTranslationFallback(false);
@@ -294,7 +294,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldBeAbleToOverrideTranslatableLocale()
+    public function shouldBeAbleToOverrideTranslatableLocale(): void
     {
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -313,7 +313,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectWithTranslationFallbackOnObjectHydration()
+    public function shouldSelectWithTranslationFallbackOnObjectHydration(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -364,7 +364,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectCountStatement()
+    public function shouldSelectCountStatement(): void
     {
         $dql = 'SELECT COUNT(a) FROM '.self::ARTICLE.' a';
         $dql .= ' WHERE a.title LIKE :title';
@@ -390,7 +390,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectOrderedJoinedComponentTranslation()
+    public function shouldSelectOrderedJoinedComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -442,7 +442,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectOrderedByTranslatableInteger()
+    public function shouldSelectOrderedByTranslatableInteger(): void
     {
         // Given
         $this->populateMore();
@@ -478,7 +478,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectSecondJoinedComponentTranslation()
+    public function shouldSelectSecondJoinedComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -563,7 +563,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectSinglePartializedComponentTranslation()
+    public function shouldSelectSinglePartializedComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -606,7 +606,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSelectSingleComponentTranslation()
+    public function shouldSelectSingleComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -654,7 +654,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
      * @test
      * @group testSelectWithUnmappedField
      */
-    public function shouldSelectWithUnmappedField()
+    public function shouldSelectWithUnmappedField(): void
     {
         $dql = 'SELECT a.title, count(a.id) AS num FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
@@ -672,7 +672,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldPreserveSkipOnLoadForSimpleHydrator()
+    public function shouldPreserveSkipOnLoadForSimpleHydrator(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
@@ -694,7 +694,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldPreserveSkipOnLoadForObjectHydrator()
+    public function shouldPreserveSkipOnLoadForObjectHydrator(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,

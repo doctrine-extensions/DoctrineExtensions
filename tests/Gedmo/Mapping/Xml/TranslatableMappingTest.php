@@ -62,7 +62,7 @@ final class TranslatableMappingTest extends BaseTestCaseOM
         ], $chain);
     }
 
-    public function testTranslatableMetadata()
+    public function testTranslatableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Translatable::class);
         $config = $this->translatable->getConfiguration($this->em, $meta->getName());
@@ -82,7 +82,7 @@ final class TranslatableMappingTest extends BaseTestCaseOM
         static::assertFalse($config['fallback']['views']);
     }
 
-    public function testTranslatableMetadataWithEmbedded()
+    public function testTranslatableMetadataWithEmbedded(): void
     {
         $meta = $this->em->getClassMetadata(TranslatableWithEmbedded::class);
         $config = $this->translatable->getConfiguration($this->em, $meta->getName());

@@ -38,7 +38,7 @@ final class Issue633Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleUniqueBasedSlug()
+    public function shouldHandleUniqueBasedSlug(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');
@@ -71,7 +71,7 @@ final class Issue633Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function handlePersistedSlugsForUniqueBased()
+    public function handlePersistedSlugsForUniqueBased(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');

@@ -84,7 +84,7 @@ class Article implements Sluggable
         return $this->code;
     }
 
-    public function setSlug(?string $slug)
+    public function setSlug(?string $slug): void
     {
         $this->slug = $slug;
     }

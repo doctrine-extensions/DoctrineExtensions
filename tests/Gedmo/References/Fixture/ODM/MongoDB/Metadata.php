@@ -37,7 +37,7 @@ class Metadata
         $this->setCategory($category);
     }
 
-    public function setCategoryId($categoryId)
+    public function setCategoryId($categoryId): void
     {
         $this->categoryId = $categoryId;
     }
@@ -47,7 +47,7 @@ class Metadata
         return $this->categoryId;
     }
 
-    public function setCategory(Category $category)
+    public function setCategory(Category $category): void
     {
         $this->category = $category;
         $this->categoryId = $category->getId();

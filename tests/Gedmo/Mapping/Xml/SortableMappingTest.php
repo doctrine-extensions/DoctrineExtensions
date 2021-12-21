@@ -61,7 +61,7 @@ final class SortableMappingTest extends BaseTestCaseOM
         ], $chain);
     }
 
-    public function testSluggableMetadata()
+    public function testSluggableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Sortable::class);
         $config = $this->sortable->getConfiguration($this->em, $meta->getName());

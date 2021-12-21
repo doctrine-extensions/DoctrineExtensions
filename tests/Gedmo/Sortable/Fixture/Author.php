@@ -23,6 +23,8 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 class Author
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -54,7 +56,7 @@ class Author
     #[ORM\Column(name: 'position', type: Types::INTEGER)]
     private $position;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -64,7 +66,7 @@ class Author
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -74,7 +76,7 @@ class Author
         return $this->paper;
     }
 
-    public function setPaper($paper)
+    public function setPaper($paper): void
     {
         $this->paper = $paper;
     }
@@ -84,7 +86,7 @@ class Author
         return $this->position;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }

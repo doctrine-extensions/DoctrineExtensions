@@ -63,7 +63,7 @@ final class UploadableMappingTest extends BaseTestCaseOM
         ], $chain);
     }
 
-    public function testMetadata()
+    public function testMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Uploadable::class);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());

@@ -36,7 +36,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->getMockDocumentManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);
@@ -54,7 +54,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('single', $single->getSlug());
     }
 
-    public function testUpdateOperations()
+    public function testUpdateOperations(): void
     {
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);

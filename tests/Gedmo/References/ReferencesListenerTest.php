@@ -57,7 +57,7 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         $listener->registerManager('entity', $this->em);
     }
 
-    public function testShouldPersistReferencedIdentifiersIntoIdentifierField()
+    public function testShouldPersistReferencedIdentifiersIntoIdentifierField(): void
     {
         $stockItem = new StockItem();
         $stockItem->setName('Apple TV');
@@ -77,7 +77,7 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         static::assertSame($product->getId(), $stockItem->getProductId());
     }
 
-    public function testShouldPopulateReferenceOneWithProxyFromIdentifierField()
+    public function testShouldPopulateReferenceOneWithProxyFromIdentifierField(): void
     {
         $product = new Product();
         $product->setName('Apple TV');
@@ -100,7 +100,7 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         static::assertSame($product, $stockItem->getProduct());
     }
 
-    public function testShouldPopulateReferenceManyWithLazyCollectionInstance()
+    public function testShouldPopulateReferenceManyWithLazyCollectionInstance(): void
     {
         $product = new Product();
         $product->setName('Apple TV');
@@ -142,7 +142,7 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         static::assertSame('AMZN-APP-TV', $last->getSku());
     }
 
-    public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
+    public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance(): void
     {
         $tvCategory = new Category();
         $tvCategory->setName('Television');

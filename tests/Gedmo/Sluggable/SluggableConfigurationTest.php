@@ -42,7 +42,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testInsertedNewSlug()
+    public function testInsertedNewSlug(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 

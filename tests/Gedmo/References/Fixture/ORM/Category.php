@@ -41,7 +41,7 @@ class Category
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName($name): self
     {
         $this->name = $name;
 

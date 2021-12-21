@@ -34,7 +34,7 @@ class MaterializedPathCategory
      *
      * @return int $id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -44,7 +44,7 @@ class MaterializedPathCategory
      *
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -54,7 +54,7 @@ class MaterializedPathCategory
      *
      * @return string $title
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -62,7 +62,7 @@ class MaterializedPathCategory
     /**
      * Add children
      */
-    public function addChildren(Category $children)
+    public function addChildren(Category $children): void
     {
         $this->children[] = $children;
     }
@@ -72,7 +72,7 @@ class MaterializedPathCategory
      *
      * @return Collection $children
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -82,7 +82,7 @@ class MaterializedPathCategory
      *
      * @param Category $parent
      */
-    public function setParent($parent)
+    public function setParent($parent): void
     {
         $this->parent = $parent;
     }
@@ -92,12 +92,12 @@ class MaterializedPathCategory
      *
      * @return Category $parent
      */
-    public function getParent()
+    public function getParent(): Category
     {
         return $this->parent;
     }
 
-    public function setLevel($level)
+    public function setLevel($level): void
     {
         $this->level = $level;
     }
@@ -107,7 +107,7 @@ class MaterializedPathCategory
         return $this->level;
     }
 
-    public function setPath($path)
+    public function setPath($path): void
     {
         $this->path = $path;
     }
@@ -117,7 +117,7 @@ class MaterializedPathCategory
         return $this->path;
     }
 
-    public function setLockTime($lockTime)
+    public function setLockTime($lockTime): void
     {
         $this->lockTime = $lockTime;
     }

@@ -23,6 +23,8 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 class Item
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -54,12 +56,12 @@ class Item
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
     private $category;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -69,7 +71,7 @@ class Item
         return $this->name;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }
@@ -79,7 +81,7 @@ class Item
         return $this->position;
     }
 
-    public function setCategory(Category $category = null)
+    public function setCategory(Category $category = null): void
     {
         $this->category = $category;
     }

@@ -51,7 +51,7 @@ class Category extends BaseCategory
     /**
      * @return int $id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -59,7 +59,7 @@ class Category extends BaseCategory
     /**
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -67,7 +67,7 @@ class Category extends BaseCategory
     /**
      * @return string $title
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -75,7 +75,7 @@ class Category extends BaseCategory
     /**
      * @param string $slug
      */
-    public function setSlug($slug)
+    public function setSlug($slug): void
     {
         $this->slug = $slug;
     }
@@ -83,7 +83,7 @@ class Category extends BaseCategory
     /**
      * @return string $slug
      */
-    public function getSlug()
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -91,7 +91,7 @@ class Category extends BaseCategory
     /**
      * @param Category $children
      */
-    public function addChildren(self $children)
+    public function addChildren(self $children): void
     {
         $this->children[] = $children;
     }
@@ -107,7 +107,7 @@ class Category extends BaseCategory
     /**
      * @param Category $parent
      */
-    public function setParent($parent)
+    public function setParent($parent): void
     {
         $this->parent = $parent;
     }
@@ -115,7 +115,7 @@ class Category extends BaseCategory
     /**
      * @return Category $parent
      */
-    public function getParent()
+    public function getParent(): self
     {
         return $this->parent;
     }

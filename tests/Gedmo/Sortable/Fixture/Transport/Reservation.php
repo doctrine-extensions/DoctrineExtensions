@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Reservation
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -69,12 +71,12 @@ class Reservation
     #[ORM\Column(length: 191)]
     private $name;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setBus(Bus $bus)
+    public function setBus(Bus $bus): void
     {
         $this->bus = $bus;
     }
@@ -84,7 +86,7 @@ class Reservation
         return $this->bus;
     }
 
-    public function setDestination($destination)
+    public function setDestination($destination): void
     {
         $this->destination = $destination;
     }
@@ -94,7 +96,7 @@ class Reservation
         return $this->destination;
     }
 
-    public function setTravelDate(\DateTime $date)
+    public function setTravelDate(\DateTime $date): void
     {
         $this->travelDate = $date;
     }
@@ -104,7 +106,7 @@ class Reservation
         return $this->travelDate;
     }
 
-    public function setSeat($seat)
+    public function setSeat($seat): void
     {
         $this->seat = $seat;
     }
@@ -114,7 +116,7 @@ class Reservation
         return $this->seat;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }

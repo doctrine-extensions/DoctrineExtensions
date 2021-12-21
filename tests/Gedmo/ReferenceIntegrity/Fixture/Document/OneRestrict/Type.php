@@ -52,15 +52,12 @@ class Type
     /**
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -68,20 +65,17 @@ class Type
     /**
      * @param string $identifier
      */
-    public function setIdentifier($identifier)
+    public function setIdentifier($identifier): void
     {
         $this->identifier = $identifier;
     }
 
-    /**
-     * @return string
-     */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
 
-    public function setArticle(Article $article)
+    public function setArticle(Article $article): void
     {
         $this->article = $article;
     }
@@ -89,7 +83,7 @@ class Type
     /**
      * @return Article $articles
      */
-    public function getArticle()
+    public function getArticle(): Article
     {
         return $this->article;
     }

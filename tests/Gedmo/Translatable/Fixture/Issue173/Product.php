@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Product
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -45,12 +47,12 @@ class Product
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
     private $category;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -60,7 +62,7 @@ class Product
         return $this->title;
     }
 
-    public function setCategory(Category $category)
+    public function setCategory(Category $category): void
     {
         $this->category = $category;
     }

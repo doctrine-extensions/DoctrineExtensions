@@ -63,7 +63,7 @@ final class LoggableMappingTest extends BaseTestCaseOM
         ], $chain);
     }
 
-    public function testLoggableMetadataWithEmbedded()
+    public function testLoggableMetadataWithEmbedded(): void
     {
         $meta = $this->em->getClassMetadata(LoggableWithEmbedded::class);
         $config = $this->loggable->getConfiguration($this->em, $meta->getName());

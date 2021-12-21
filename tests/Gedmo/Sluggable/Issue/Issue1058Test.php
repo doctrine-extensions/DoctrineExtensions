@@ -41,7 +41,7 @@ final class Issue1058Test extends BaseTestCaseORM
      * @test
      * @group issue1058
      */
-    public function shouldHandleUniqueConstraintsBasedOnRelation()
+    public function shouldHandleUniqueConstraintsBasedOnRelation(): void
     {
         $userFoo = new User();
         $this->em->persist($userFoo);

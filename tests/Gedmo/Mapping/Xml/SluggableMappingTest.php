@@ -47,7 +47,7 @@ final class SluggableMappingTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldBeAbleToMapSluggableMetadata()
+    public function shouldBeAbleToMapSluggableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Sluggable::class);
         $config = $this->sluggable->getConfiguration($this->em, $meta->getName());

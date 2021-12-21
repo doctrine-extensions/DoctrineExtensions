@@ -37,7 +37,7 @@ final class UserRelativeSlugHandlerTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testRelativeSlug()
+    public function testRelativeSlug(): void
     {
         $company = new Company();
         $company->setTitle('KnpLabs');

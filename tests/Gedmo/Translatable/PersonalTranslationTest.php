@@ -56,7 +56,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldPersistDefaultLocaleTranslationIfRequired()
+    public function shouldPersistDefaultLocaleTranslationIfRequired(): void
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $this->populate();
@@ -68,7 +68,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldCreateTranslations()
+    public function shouldCreateTranslations(): void
     {
         $this->populate();
         $article = $this->em->find(self::ARTICLE, ['id' => 1]);
@@ -79,7 +79,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldTranslateTheRecord()
+    public function shouldTranslateTheRecord(): void
     {
         $this->populate();
         $this->translatableListener->setTranslatableLocale('lt');
@@ -96,7 +96,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldCascadeDeletionsByForeignKeyConstraints()
+    public function shouldCascadeDeletionsByForeignKeyConstraints(): void
     {
         if ('sqlite' === $this->em->getConnection()->getDatabasePlatform()->getName()) {
             static::markTestSkipped('Foreign key constraints does not map in sqlite.');
@@ -111,7 +111,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldOverrideTranslationInEntityBeingTranslated()
+    public function shouldOverrideTranslationInEntityBeingTranslated(): void
     {
         $this->translatableListener->setDefaultLocale('de');
         $article = new Article();
@@ -138,7 +138,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
      *
      * @test
      */
-    public function shouldPersistDefaultLocaleValue()
+    public function shouldPersistDefaultLocaleValue(): void
     {
         $this->translatableListener->setTranslatableLocale('de');
         $article = new Article();
@@ -178,7 +178,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldFindFromIdentityMap()
+    public function shouldFindFromIdentityMap(): void
     {
         $article = new Article();
         $article->setTitle('en');
@@ -208,7 +208,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldBeAbleToUseTranslationQueryHint()
+    public function shouldBeAbleToUseTranslationQueryHint(): void
     {
         $this->populate();
         $dql = 'SELECT a.title FROM '.self::ARTICLE.' a';

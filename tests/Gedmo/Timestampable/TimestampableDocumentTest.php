@@ -37,7 +37,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
     }
 
-    public function testTimestampable()
+    public function testTimestampable(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);
@@ -69,7 +69,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         );
     }
 
-    public function testForcedValues()
+    public function testForcedValues(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -113,7 +113,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    public function shouldHandleOnChangeWithBooleanValue()
+    public function shouldHandleOnChangeWithBooleanValue(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);

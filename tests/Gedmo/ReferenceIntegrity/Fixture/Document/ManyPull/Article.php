@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
@@ -30,9 +31,9 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
+     * @var Collection<int, Type>
      *
-     * @var ArrayCollection
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
      */
     private $types;
 
@@ -52,15 +53,12 @@ class Article
     /**
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -68,17 +66,15 @@ class Article
     /**
      * Add types
      */
-    public function addType(Type $type)
+    public function addType(Type $type): void
     {
         $this->types[] = $type;
     }
 
     /**
-     * Get posts
-     *
-     * @return ArrayCollection $types
+     * @return Collection<int, Type>
      */
-    public function getTypes()
+    public function getTypes(): Collection
     {
         return $this->types;
     }

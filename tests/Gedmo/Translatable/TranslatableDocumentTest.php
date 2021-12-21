@@ -46,7 +46,7 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
     }
 
-    public function testTranslation()
+    public function testTranslation(): void
     {
         // test inserted translations
         $repo = $this->dm->getRepository(self::ARTICLE);

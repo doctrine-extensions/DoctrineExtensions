@@ -31,7 +31,7 @@ class Article
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }

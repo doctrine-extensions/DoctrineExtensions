@@ -39,7 +39,7 @@ class User
      */
     private $password;
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -49,7 +49,7 @@ class User
         return $this->name;
     }
 
-    public function setPassword($password)
+    public function setPassword($password): void
     {
         $this->password = $password;
     }

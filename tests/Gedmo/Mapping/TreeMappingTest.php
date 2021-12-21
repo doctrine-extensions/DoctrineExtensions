@@ -75,7 +75,7 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
 
-    public function testApcCached()
+    public function testApcCached(): void
     {
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $this->em->getClassMetadata(CategoryClosure::class);
@@ -87,7 +87,7 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         static::assertTrue($meta->hasAssociation('descendant'));
     }
 
-    public function testYamlNestedMapping()
+    public function testYamlNestedMapping(): void
     {
         $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
@@ -109,7 +109,7 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         static::assertSame('nested', $config['strategy']);
     }
 
-    public function testYamlClosureMapping()
+    public function testYamlClosureMapping(): void
     {
         $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
@@ -123,7 +123,7 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         static::assertSame(CategoryClosure::class, $config['closure']);
     }
 
-    public function testYamlMaterializedPathMapping()
+    public function testYamlMaterializedPathMapping(): void
     {
         $meta = $this->em->getClassMetadata(self::YAML_MATERIALIZED_PATH_CATEGORY);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());

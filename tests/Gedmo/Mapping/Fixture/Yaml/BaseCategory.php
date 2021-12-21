@@ -43,7 +43,7 @@ class BaseCategory
      */
     private $updated;
 
-    public function setCreated(\DateTime $created)
+    public function setCreated(\DateTime $created): void
     {
         $this->created = $created;
     }
@@ -51,7 +51,7 @@ class BaseCategory
     /**
      * @return \DateTime $created
      */
-    public function getCreated()
+    public function getCreated(): ?\DateTime
     {
         return $this->created;
     }
@@ -59,7 +59,7 @@ class BaseCategory
     /**
      * @param \DateTime $updated
      */
-    public function setUpdated($updated)
+    public function setUpdated($updated): void
     {
         $this->updated = $updated;
     }
@@ -67,55 +67,55 @@ class BaseCategory
     /**
      * @return \DateTime $updated
      */
-    public function getUpdated()
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }
 
-    public function setLeft($left)
+    public function setLeft($left): self
     {
         $this->left = $left;
 
         return $this;
     }
 
-    public function getLeft()
+    public function getLeft(): int
     {
         return $this->left;
     }
 
-    public function setRight($right)
+    public function setRight($right): self
     {
         $this->right = $right;
 
         return $this;
     }
 
-    public function getRight()
+    public function getRight(): int
     {
         return $this->right;
     }
 
-    public function setLevel($level)
+    public function setLevel($level): self
     {
         $this->level = $level;
 
         return $this;
     }
 
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
 
-    public function setRooted($rooted)
+    public function setRooted($rooted): self
     {
         $this->rooted = $rooted;
 
         return $this;
     }
 
-    public function getRooted()
+    public function getRooted(): int
     {
         return $this->rooted;
     }

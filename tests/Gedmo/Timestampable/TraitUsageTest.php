@@ -38,7 +38,7 @@ final class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldTimestampUsingTrait()
+    public function shouldTimestampUsingTrait(): void
     {
         $sport = new UsingTrait();
         $sport->setTitle('Sport');
@@ -53,7 +53,7 @@ final class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function traitMethodthShouldReturnObject()
+    public function traitMethodthShouldReturnObject(): void
     {
         $sport = new UsingTrait();
         static::assertInstanceOf(UsingTrait::class, $sport->setCreatedAt(new \DateTime()));

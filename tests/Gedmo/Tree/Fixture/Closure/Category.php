@@ -76,7 +76,7 @@ class Category
         $this->closures = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -91,27 +91,27 @@ class Category
         return $this->title;
     }
 
-    public function setParent(self $parent = null)
+    public function setParent(self $parent = null): void
     {
         $this->parent = $parent;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    public function addClosure(CategoryClosure $closure)
+    public function addClosure(CategoryClosure $closure): void
     {
         $this->closures[] = $closure;
     }
 
-    public function setLevel($level)
+    public function setLevel($level): void
     {
         $this->level = $level;
     }
 
-    public function getLevel()
+    public function getLevel(): ?int
     {
         return $this->level;
     }

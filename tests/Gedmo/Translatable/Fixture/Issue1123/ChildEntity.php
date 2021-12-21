@@ -45,12 +45,12 @@ class ChildEntity extends BaseEntity implements Translatable
         return $this->childTitle;
     }
 
-    public function setChildTitle($childTitle)
+    public function setChildTitle($childTitle): void
     {
         $this->childTitle = $childTitle;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): void
     {
         $this->locale = $locale;
     }

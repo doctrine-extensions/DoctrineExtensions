@@ -55,7 +55,7 @@ final class Issue449Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled()
+    public function shouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled(): void
     {
         $article = new Article();
         $article->setTitle('the soft title');

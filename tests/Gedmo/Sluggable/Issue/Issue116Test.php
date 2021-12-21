@@ -38,7 +38,7 @@ final class Issue116Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $country = new Country();
         $country->setOriginalName('New Zealand');

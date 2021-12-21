@@ -22,6 +22,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Paper
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -48,7 +50,7 @@ class Paper
         $this->authors = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -58,17 +60,17 @@ class Paper
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getAuthors()
+    public function getAuthors(): ArrayCollection
     {
         return $this->authors;
     }
 
-    public function addAuthor($author)
+    public function addAuthor($author): void
     {
         $this->authors->add($author);
     }

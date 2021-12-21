@@ -39,7 +39,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::PERSON);
@@ -54,7 +54,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('singer/hurty', $hurty->getSlug());
     }
 
-    public function testSlugUpdates()
+    public function testSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::PERSON);
@@ -82,7 +82,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('artist/hurty', $hurty->getSlug());
     }
 
-    public function test1093()
+    public function test1093(): void
     {
         $this->populate();
         $personRepo = $this->em->getRepository(self::PERSON);

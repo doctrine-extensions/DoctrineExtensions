@@ -41,7 +41,7 @@ class TitledArticle implements Timestampable
     #[Gedmo\Timestampable(on: 'change', field: 'title')]
     private ?\DateTime $chTitle;
 
-    #[ORM\Column(name: 'closed', type: TYPES::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'state', value: ['Published', 'Closed'])]
     private ?\DateTime $closed;
 

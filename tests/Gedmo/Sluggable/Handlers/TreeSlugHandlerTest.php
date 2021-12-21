@@ -37,7 +37,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
@@ -64,7 +64,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('food/fruits/banana', $banana->getSlug());
     }
 
-    public function testSlugUpdates()
+    public function testSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
@@ -94,7 +94,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('foodissimo/fructis/citrons', $citrons->getSlug());
     }
 
-    public function testMoreSlugUpdates()
+    public function testMoreSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);

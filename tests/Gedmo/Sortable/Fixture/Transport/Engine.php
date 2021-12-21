@@ -21,6 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Engine
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -42,12 +44,12 @@ class Engine
     #[ORM\Column(type: Types::INTEGER)]
     private $valves;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setType($type)
+    public function setType($type): void
     {
         $this->type = $type;
     }
@@ -57,7 +59,7 @@ class Engine
         return $this->type;
     }
 
-    public function setValves($valves)
+    public function setValves($valves): void
     {
         $this->valves = $valves;
     }

@@ -62,37 +62,37 @@ class Event
     #[ORM\Column(type: Types::INTEGER)]
     private $position;
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setDateTime(\DateTime $date)
+    public function setDateTime(\DateTime $date): void
     {
         $this->dateTime = $date;
     }
 
-    public function getDateTime()
+    public function getDateTime(): \DateTime
     {
         return $this->dateTime;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }
 
-    public function getPosition()
+    public function getPosition(): int
     {
         return $this->position;
     }

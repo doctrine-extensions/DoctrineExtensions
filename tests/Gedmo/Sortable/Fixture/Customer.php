@@ -21,6 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Customer
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -42,7 +44,7 @@ class Customer
     #[ORM\ManyToOne(targetEntity: CustomerType::class, inversedBy: 'customers')]
     private $type;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -52,7 +54,7 @@ class Customer
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -62,7 +64,7 @@ class Customer
         return $this->type;
     }
 
-    public function setType(CustomerType $type)
+    public function setType(CustomerType $type): void
     {
         $this->type = $type;
         if (!$type->getCustomers()->contains($this)) {

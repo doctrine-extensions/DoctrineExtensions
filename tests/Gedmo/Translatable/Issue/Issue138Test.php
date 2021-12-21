@@ -46,7 +46,7 @@ final class Issue138Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIssue138()
+    public function testIssue138(): void
     {
         $this->populate();
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';

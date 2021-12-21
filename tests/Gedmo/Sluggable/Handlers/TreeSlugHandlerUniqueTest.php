@@ -32,7 +32,7 @@ final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testUniqueRoot()
+    public function testUniqueRoot(): void
     {
         $foo1 = new TreeSlug();
         $foo1->setTitle('Foo');
@@ -49,7 +49,7 @@ final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
         static::assertSame('foo-1', $foo2->getSlug());
     }
 
-    public function testUniqueLeaf()
+    public function testUniqueLeaf(): void
     {
         $root = new TreeSlug();
         $root->setTitle('root');

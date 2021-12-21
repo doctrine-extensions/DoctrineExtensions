@@ -28,7 +28,7 @@ class Image extends File
     #[ORM\Column(length: 128)]
     private $mime;
 
-    public function setMime($mime)
+    public function setMime($mime): void
     {
         $this->mime = $mime;
     }
