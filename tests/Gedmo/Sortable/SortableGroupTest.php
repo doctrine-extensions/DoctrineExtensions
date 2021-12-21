@@ -53,10 +53,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToRemove(): void
+    public function testShouldBeAbleToRemove(): void
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
@@ -81,10 +78,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * fix issue #502
      */
-    public function shouldBeAbleToChangeGroup(): void
+    public function testShouldBeAbleToChangeGroup(): void
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
@@ -122,10 +118,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * issue #873
      */
-    public function shouldBeAbleToChangeGroupWhenMultiGroups(): void
+    public function testShouldBeAbleToChangeGroupWhenMultiGroups(): void
     {
         $this->populate();
 
@@ -188,10 +183,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group failing
      */
-    public function shouldBeAbleToChangeGroupAndPosition(): void
+    public function testShouldBeAbleToChangeGroupAndPosition(): void
     {
         $this->populate();
 

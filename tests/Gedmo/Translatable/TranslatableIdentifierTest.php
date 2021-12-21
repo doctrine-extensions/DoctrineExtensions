@@ -51,10 +51,7 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleStringIdentifier(): void
+    public function testShouldHandleStringIdentifier(): void
     {
         $object = new StringIdentifier();
         $object->setTitle('title in en');

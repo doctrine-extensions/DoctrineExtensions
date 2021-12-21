@@ -59,10 +59,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->getFilterCollection()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSoftlyDeleteIfColumnNameDifferFromPropertyName(): void
+    public function testShouldSoftlyDeleteIfColumnNameDifferFromPropertyName(): void
     {
         $repo = $this->dm->getRepository(self::USER_CLASS);
 

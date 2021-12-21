@@ -65,10 +65,7 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableUsingYamlDriver(): void
+    public function testShouldBeAbleToMapSluggableUsingYamlDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
@@ -116,10 +113,7 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertSame('/', $second['separator']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableUsingAnnotationDriver(): void
+    public function testShouldBeAbleToMapSluggableUsingAnnotationDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::SLUGGABLE);
         $cacheId = ExtensionMetadataFactory::getCacheId(

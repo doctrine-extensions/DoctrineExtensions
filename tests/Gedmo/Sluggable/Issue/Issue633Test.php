@@ -35,10 +35,7 @@ final class Issue633Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleUniqueBasedSlug(): void
+    public function testShouldHandleUniqueBasedSlug(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');
@@ -68,10 +65,7 @@ final class Issue633Test extends BaseTestCaseORM
         static::assertSame('unique-to-code-1', $test3->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function handlePersistedSlugsForUniqueBased(): void
+    public function testHandlePersistedSlugsForUniqueBased(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');

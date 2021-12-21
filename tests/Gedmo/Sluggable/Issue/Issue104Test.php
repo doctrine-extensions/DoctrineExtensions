@@ -26,10 +26,7 @@ final class Issue104Test extends BaseTestCaseORM
 {
     public const CAR = Car::class;
 
-    /**
-     * @test
-     */
-    public function shouldThrowAnExceptionWhenMappedSuperclassProtectedProperty(): void
+    public function testShouldThrowAnExceptionWhenMappedSuperclassProtectedProperty(): void
     {
         $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();

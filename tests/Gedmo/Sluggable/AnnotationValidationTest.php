@@ -26,10 +26,7 @@ final class AnnotationValidationTest extends BaseTestCaseORM
 {
     public const TARGET = Validate::class;
 
-    /**
-     * @test
-     */
-    public function shouldFailValidationOnInvalidAnnotation(): void
+    public function testShouldFailValidationOnInvalidAnnotation(): void
     {
         $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();

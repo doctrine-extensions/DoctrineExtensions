@@ -81,10 +81,8 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
 
     /**
      * Covers issue #438
-     *
-     * @test
      */
-    public function shouldPersistDefaultLocaleValue(): void
+    public function testShouldPersistDefaultLocaleValue(): void
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $this->translatableListener->setTranslatableLocale('de');

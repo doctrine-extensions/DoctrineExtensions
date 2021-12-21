@@ -43,10 +43,7 @@ final class Issue922Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldTranslateDateFields(): void
+    public function testShouldTranslateDateFields(): void
     {
         $p1 = new Post();
         $p1->setPublishedAt(new \DateTime());

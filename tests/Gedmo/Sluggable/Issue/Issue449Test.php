@@ -52,10 +52,7 @@ final class Issue449Test extends BaseTestCaseORM
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled(): void
+    public function testShouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled(): void
     {
         $article = new Article();
         $article->setTitle('the soft title');

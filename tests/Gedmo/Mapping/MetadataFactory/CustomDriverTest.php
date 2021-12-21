@@ -59,10 +59,7 @@ final class CustomDriverTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function shouldWork(): void
+    public function testShouldWork(): void
     {
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(

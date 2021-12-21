@@ -35,7 +35,7 @@ return (new PhpCsFixer\Config())
         'blank_line_before_statement' => true,
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
-        // @todo: Uncomment the follwing rule in the next major release.
+        // @todo: Uncomment the following rule in the next major release.
         // 'declare_strict_types' => true,
         'error_suppression' => true,
         'header_comment' => ['header' => $header],
@@ -59,7 +59,7 @@ return (new PhpCsFixer\Config())
         'php_unit_namespaced' => true,
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_strict' => true,
-        'php_unit_test_annotation' => false,
+        'php_unit_test_annotation' => ['style' => 'prefix'],
         'php_unit_test_case_static_method_calls' => true,
         'psr_autoloading' => true,
         'random_api_migration' => true,

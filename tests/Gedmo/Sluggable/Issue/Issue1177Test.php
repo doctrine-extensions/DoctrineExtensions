@@ -35,10 +35,7 @@ final class Issue1177Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldTryPreferedSlugFirst(): void
+    public function testShouldTryPreferedSlugFirst(): void
     {
         $article = new Article();
         $article->setTitle('the title with number 1');

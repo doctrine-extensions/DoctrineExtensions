@@ -52,10 +52,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldEnsureSolvedIssue234(): void
+    public function testShouldEnsureSolvedIssue234(): void
     {
         $this->translatableListener->setTranslatableLocale('de');
         $this->translatableListener->setDefaultLocale('en');
@@ -82,10 +79,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         static::assertSame('my article en', $trans['en']['title']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldPersistMultipleTranslations(): void
+    public function testShouldPersistMultipleTranslations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -107,10 +101,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         static::assertSame('content ru', $translations['ru_ru']['content']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldUpdateTranslation(): void
+    public function testShouldUpdateTranslation(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -131,10 +122,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         static::assertSame('content ru change', $translations['ru_ru']['content']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldUpdateMultipleTranslations(): void
+    public function testShouldUpdateMultipleTranslations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);

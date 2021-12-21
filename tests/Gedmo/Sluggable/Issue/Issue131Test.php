@@ -54,10 +54,7 @@ final class Issue131Test extends BaseTestCaseORM
         static::assertNull($test2->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleOnlyZeroInSlug(): void
+    public function testShouldHandleOnlyZeroInSlug(): void
     {
         $article = new Article();
         $article->setTitle('0');
