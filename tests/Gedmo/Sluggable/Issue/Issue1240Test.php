@@ -35,10 +35,7 @@ final class Issue1240Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldWorkWithPlusAsSeparator(): void
+    public function testShouldWorkWithPlusAsSeparator(): void
     {
         $article = new Article();
         $article->setTitle('the title');

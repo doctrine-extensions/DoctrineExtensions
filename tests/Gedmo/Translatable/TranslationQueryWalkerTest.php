@@ -55,10 +55,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleQueryCache(): void
+    public function testShouldHandleQueryCache(): void
     {
         $this->em->getConfiguration()->setQueryCache(new ArrayAdapter());
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -76,10 +73,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertCount(1, $result);
     }
 
-    /**
-     * @test
-     */
-    public function subselectByTranslatedField(): void
+    public function testSubselectByTranslatedField(): void
     {
         $this->populateMore();
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -98,10 +92,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('Cabbages', $result[1]['title']);
     }
 
-    /**
-     * @test
-     */
-    public function subselectStatements(): void
+    public function testSubselectStatements(): void
     {
         $this->populateMore();
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -120,10 +111,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('Cabbages', $result[1]['title']);
     }
 
-    /**
-     * @test
-     */
-    public function joinedWithStatements(): void
+    public function testJoinedWithStatements(): void
     {
         $this->populateMore();
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
@@ -146,10 +134,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('good', $comments[0]['subject']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectWithTranslationFallbackOnSimpleObjectHydration(): void
+    public function testShouldSelectWithTranslationFallbackOnSimpleObjectHydration(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
@@ -179,10 +164,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('about food', $result[0]->getContent());
     }
 
-    /**
-     * @test
-     */
-    public function selectWithTranslationFallbackOnArrayHydration(): void
+    public function testSelectWithTranslationFallbackOnArrayHydration(): void
     {
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
         $dql .= ' LEFT JOIN a.comments c';
@@ -208,10 +190,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('about food', $result[0]['content']);
     }
 
-    /**
-     * @test
-     */
-    public function selectWithOptionalFallbackOnSimpleObjectHydration(): void
+    public function testSelectWithOptionalFallbackOnSimpleObjectHydration(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
@@ -243,10 +222,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertNull($result[0]->getViews()); // optional fallback is false,  thus no translation required
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToUseInnerJoinStrategyForTranslations(): void
+    public function testShouldBeAbleToUseInnerJoinStrategyForTranslations(): void
     {
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -263,10 +239,8 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
     /**
      * referres to issue #755
-     *
-     * @test
      */
-    public function shouldBeAbleToOverrideTranslationFallbackByHint(): void
+    public function testShouldBeAbleToOverrideTranslationFallbackByHint(): void
     {
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $this->translatableListener->setTranslationFallback(false);
@@ -291,10 +265,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertNull($result[0]['title']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToOverrideTranslatableLocale(): void
+    public function testShouldBeAbleToOverrideTranslatableLocale(): void
     {
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -310,10 +281,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('Maistas', $result[0]['title']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectWithTranslationFallbackOnObjectHydration(): void
+    public function testShouldSelectWithTranslationFallbackOnObjectHydration(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -361,10 +329,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertNull($result[0]->getContent());
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectCountStatement(): void
+    public function testShouldSelectCountStatement(): void
     {
         $dql = 'SELECT COUNT(a) FROM '.self::ARTICLE.' a';
         $dql .= ' WHERE a.title LIKE :title';
@@ -387,10 +352,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame(0, (int) $result);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectOrderedJoinedComponentTranslation(): void
+    public function testShouldSelectOrderedJoinedComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -439,10 +401,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('Moteris', $result[3]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectOrderedByTranslatableInteger(): void
+    public function testShouldSelectOrderedByTranslatableInteger(): void
     {
         // Given
         $this->populateMore();
@@ -475,10 +434,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         );
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectSecondJoinedComponentTranslation(): void
+    public function testShouldSelectSecondJoinedComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -560,10 +516,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('maistas yra blogas', $bad->getMessage());
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectSinglePartializedComponentTranslation(): void
+    public function testShouldSelectSinglePartializedComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -603,10 +556,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('Maistas', $food['title']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSelectSingleComponentTranslation(): void
+    public function testShouldSelectSingleComponentTranslation(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -651,10 +601,9 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group testSelectWithUnmappedField
      */
-    public function shouldSelectWithUnmappedField(): void
+    public function testShouldSelectWithUnmappedField(): void
     {
         $dql = 'SELECT a.title, count(a.id) AS num FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
@@ -669,10 +618,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame(1, $result[0]['num']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldPreserveSkipOnLoadForSimpleHydrator(): void
+    public function testShouldPreserveSkipOnLoadForSimpleHydrator(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
@@ -691,10 +637,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertTrue($this->translatableListener->isSkipOnLoad());
     }
 
-    /**
-     * @test
-     */
-    public function shouldPreserveSkipOnLoadForObjectHydrator(): void
+    public function testShouldPreserveSkipOnLoadForObjectHydrator(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,

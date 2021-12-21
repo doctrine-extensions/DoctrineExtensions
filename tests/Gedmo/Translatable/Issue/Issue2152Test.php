@@ -42,10 +42,7 @@ final class Issue2152Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFindInheritedClassTranslations(): void
+    public function testShouldFindInheritedClassTranslations(): void
     {
         //Arrange
         //by default we have English

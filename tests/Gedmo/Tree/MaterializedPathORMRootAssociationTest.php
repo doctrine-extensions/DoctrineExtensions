@@ -51,10 +51,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function insertUpdateAndRemove(): void
+    public function testInsertUpdateAndRemove(): void
     {
         // Insert
         $category = $this->createCategory();

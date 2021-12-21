@@ -44,10 +44,9 @@ final class Issue827Test extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function shouldHandleForeignKeyUniqueBasedSlug(): void
+    public function testShouldHandleForeignKeyUniqueBasedSlug(): void
     {
         // Creating categories
 
@@ -100,10 +99,9 @@ final class Issue827Test extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function handlePersistedSlugsForForeignKeyUniqueBased(): void
+    public function testHandlePersistedSlugsForForeignKeyUniqueBased(): void
     {
         // Creating categories
 
@@ -147,10 +145,9 @@ final class Issue827Test extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function shouldHandleForeignKeyMultipleColumnsUniqueBasedSlug(): void
+    public function testShouldHandleForeignKeyMultipleColumnsUniqueBasedSlug(): void
     {
         // Creating parents
 
@@ -224,10 +221,9 @@ final class Issue827Test extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function handlePersistedForeignKeyMultipleColumnsUniqueBasedSlug(): void
+    public function testHandlePersistedForeignKeyMultipleColumnsUniqueBasedSlug(): void
     {
         // Creating parents
 

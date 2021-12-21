@@ -55,10 +55,7 @@ final class ForcedMetadataTest extends TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldWork(): void
+    public function testShouldWork(): void
     {
         $this->prepare();
 

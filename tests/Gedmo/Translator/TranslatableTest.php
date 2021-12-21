@@ -93,10 +93,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
     }
 
-    /**
-     * @test
-     */
-    public function shouldTranslateRelation(): void
+    public function testShouldTranslateRelation(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -126,10 +123,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('zenia', $parent->translate('fr')->getName());
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleDomainObjectProxy(): void
+    public function testShouldHandleDomainObjectProxy(): void
     {
         $person = new Person();
         $person->setName('Jen');

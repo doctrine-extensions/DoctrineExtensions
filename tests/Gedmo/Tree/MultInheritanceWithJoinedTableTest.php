@@ -50,10 +50,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleMultilevelInheritance(): void
+    public function testShouldHandleMultilevelInheritance(): void
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $adminRight = $admins->getRight();
@@ -68,10 +65,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         static::assertNotSame($adminRight, $admins->getRight());
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToPopulateTree(): void
+    public function testShouldBeAbleToPopulateTree(): void
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $user3 = new \Gedmo\Tests\Tree\Fixture\User('user3@test.com', 'secret');

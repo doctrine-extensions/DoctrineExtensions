@@ -50,10 +50,7 @@ final class SluggableFltersTest extends BaseTestCaseORM
         $this->em->getFilters()->enable(self::FAKE_FILTER_NAME);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled(): void
+    public function testShouldSuccessWhenManagedFilterHasAlreadyBeenDisabled(): void
     {
         // disable one managed doctrine filter
         $this->em->getFilters()->disable(self::FAKE_FILTER_NAME);

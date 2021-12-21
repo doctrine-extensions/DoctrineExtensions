@@ -110,10 +110,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         );
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleOnChangeWithBooleanValue(): void
+    public function testShouldHandleOnChangeWithBooleanValue(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);

@@ -52,10 +52,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function insertUpdateAndRemove(): void
+    public function testInsertUpdateAndRemove(): void
     {
         // Insert
         $category = $this->createCategory();
@@ -133,10 +130,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         static::assertSame('4-1', $firstResult->getTreeRootValue());
     }
 
-    /**
-     * @test
-     */
-    public function useOfSeparatorInPathSourceShouldThrowAnException(): void
+    public function testUseOfSeparatorInPathSourceShouldThrowAnException(): void
     {
         $this->expectException(RuntimeException::class);
 

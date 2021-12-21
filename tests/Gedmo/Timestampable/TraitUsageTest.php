@@ -35,10 +35,7 @@ final class TraitUsageTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldTimestampUsingTrait(): void
+    public function testShouldTimestampUsingTrait(): void
     {
         $sport = new UsingTrait();
         $sport->setTitle('Sport');
@@ -50,10 +47,7 @@ final class TraitUsageTest extends BaseTestCaseORM
         static::assertNotNull($sport->getUpdatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function traitMethodthShouldReturnObject(): void
+    public function testTraitMethodthShouldReturnObject(): void
     {
         $sport = new UsingTrait();
         static::assertInstanceOf(UsingTrait::class, $sport->setCreatedAt(new \DateTime()));
