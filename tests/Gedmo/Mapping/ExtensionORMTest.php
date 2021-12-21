@@ -82,7 +82,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
         static::assertInstanceOf(\Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ORM::class, $eventAdapter);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::USER,

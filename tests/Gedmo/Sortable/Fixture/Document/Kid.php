@@ -12,30 +12,41 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="kids")
  */
+#[ODM\Document(collection: 'kids')]
 class Kid
 {
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
      */
+    #[Gedmo\SortablePosition]
+    #[ODM\Field(type: MongoDBType::INT)]
     protected $position;
 
     /**
      * @Gedmo\SortableGroup
      * @ODM\Field(type="date")
      */
+    #[Gedmo\SortableGroup]
+    #[ODM\Field(type: MongoDBType::DATE)]
     protected $birthdate;
-    /** @ODM\Id */
+
+    /**
+     * @ODM\Id
+     */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $lastname;
 
     public function getId()

@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Issue116\Country;
@@ -48,7 +49,7 @@ final class Issue116Test extends BaseTestCaseORM
         static::assertSame('new-zealand', $country->getAlias());
     }
 
-    protected function getMetadataDriverImplementation()
+    protected function getMetadataDriverImplementation(): MappingDriver
     {
         $chain = new MappingDriverChain();
         $chain->addDriver(
@@ -59,7 +60,7 @@ final class Issue116Test extends BaseTestCaseORM
         return $chain;
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

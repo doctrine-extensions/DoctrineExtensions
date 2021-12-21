@@ -92,7 +92,7 @@ final class Issue173Test extends BaseTestCaseORM
         )->getResult();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

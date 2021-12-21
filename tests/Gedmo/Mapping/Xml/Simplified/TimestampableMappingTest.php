@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Mapping\Xml\Simplified;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Tests\Mapping\Fixture\Xml\Status;
 use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
@@ -59,7 +60,7 @@ final class TimestampableMappingTest extends BaseTestCaseORM
         static::assertSame('Published', $onChange['value']);
     }
 
-    protected function getMetadataDriverImplementation()
+    protected function getMetadataDriverImplementation(): MappingDriver
     {
         $xmlDriver = new SimplifiedXmlDriver([
             __DIR__.'/../../Driver/Xml' => 'Gedmo\Tests\Mapping\Fixture\Xml',
@@ -71,7 +72,7 @@ final class TimestampableMappingTest extends BaseTestCaseORM
         return $chain;
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             Timestampable::class,

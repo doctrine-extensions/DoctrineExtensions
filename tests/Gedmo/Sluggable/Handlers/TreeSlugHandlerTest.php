@@ -130,7 +130,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('foodissimo/fructis/citrons', $citrons->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

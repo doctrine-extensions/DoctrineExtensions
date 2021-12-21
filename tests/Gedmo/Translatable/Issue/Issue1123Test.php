@@ -91,7 +91,7 @@ final class Issue1123Test extends BaseTestCaseORM
         static::assertSame('child', $res[0]['discr']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TRANSLATION,

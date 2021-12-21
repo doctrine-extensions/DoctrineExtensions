@@ -86,7 +86,7 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
         static::assertSame('de', $cust->test);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::MIXED,

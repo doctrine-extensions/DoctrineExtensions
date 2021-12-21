@@ -33,11 +33,11 @@ final class MultiInheritanceTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $this->getMockSqliteEntityManager();
+        $this->getDefaultMockSqliteEntityManager();
         $this->populate();
     }
 
-    public function testInheritance()
+    public function testInheritance(): void
     {
         $meta = $this->em->getClassMetadata(self::NODE);
         $repo = $this->em->getRepository(self::NODE);
@@ -62,7 +62,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
      * Child count is invalid resulting in SINGLE_TABLE and JOINED
      * inheritance mapping. Also getChildren, getPath results are invalid
      */
-    public function testCaseGithubIssue7()
+    public function testCaseGithubIssue7(): void
     {
         $repo = $this->em->getRepository(self::NODE);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
@@ -80,7 +80,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         static::assertCount(3, $path);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::NODE,

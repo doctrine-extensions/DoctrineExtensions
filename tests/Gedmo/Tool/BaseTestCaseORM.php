@@ -28,6 +28,7 @@ use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Tool\Logging\DBAL\QueryAnalyzer;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Base test case contains common mock objects
@@ -36,7 +37,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
+abstract class BaseTestCaseORM extends TestCase
 {
     /**
      * @var EntityManager
@@ -59,12 +60,8 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      * EntityManager mock object together with
      * annotation mapping driver and pdo_sqlite
      * database in memory
-     *
-     * @param EventManager $evm
-     *
-     * @return EntityManager
      */
-    protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null)
+    protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
@@ -94,19 +91,15 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      * EntityManager mock object together with
      * annotation mapping driver and custom
      * connection
-     *
-     * @param EventManager $evm
-     *
-     * @return EntityManager
      */
-    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null)
+    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null): EntityManager
     {
         $config = $this->getMockAnnotatedConfig();
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
         $schema = array_map(static function ($class) use ($em) {
             return $em->getClassMetadata($class);
-        }, (array) $this->getUsedEntityFixtures());
+        }, $this->getUsedEntityFixtures());
 
         $schemaTool = new SchemaTool($em);
         $schemaTool->dropSchema([]);
@@ -118,12 +111,8 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     /**
      * EntityManager mock object with
      * annotation mapping driver
-     *
-     * @param EventManager $evm
-     *
-     * @return EntityManager
      */
-    protected function getMockMappedEntityManager(EventManager $evm = null)
+    protected function getMockMappedEntityManager(EventManager $evm = null): EntityManager
     {
         $driver = $this->getMockBuilder(Driver::class)->getMock();
         $driver->expects(static::once())
@@ -149,7 +138,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      *
      * @throws \RuntimeException
      */
-    protected function startQueryLog()
+    protected function startQueryLog(): void
     {
         if (!$this->em || !$this->em->getConnection()->getDatabasePlatform()) {
             throw new \RuntimeException('EntityManager and database platform must be initialized');
@@ -162,12 +151,9 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      * Stops query statistic log and outputs
      * the data to screen or file
      *
-     * @param bool $dumpOnlySql
-     * @param bool $writeToLog
-     *
      * @throws \RuntimeException
      */
-    protected function stopQueryLog($dumpOnlySql = false, $writeToLog = false)
+    protected function stopQueryLog(bool $dumpOnlySql = false, bool $writeToLog = false): void
     {
         if ($this->queryAnalyzer) {
             $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
@@ -187,10 +173,8 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
 
     /**
      * Creates default mapping driver
-     *
-     * @return MappingDriver
      */
-    protected function getMetadataDriverImplementation()
+    protected function getMetadataDriverImplementation(): MappingDriver
     {
         return new AnnotationDriver($_ENV['annotation_reader']);
     }
@@ -198,16 +182,14 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     /**
      * Get a list of used fixture classes
      *
-     * @return array
+     * @phpstan-return list<class-string>
      */
-    abstract protected function getUsedEntityFixtures();
+    abstract protected function getUsedEntityFixtures(): array;
 
     /**
      * Get annotation mapping configuration
-     *
-     * @return \Doctrine\ORM\Configuration
      */
-    protected function getMockAnnotatedConfig()
+    protected function getMockAnnotatedConfig(): Configuration
     {
         $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);

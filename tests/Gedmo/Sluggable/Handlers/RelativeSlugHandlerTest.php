@@ -87,7 +87,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('cars-code/jen', $jen->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::SLUG,

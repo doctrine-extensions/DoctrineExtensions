@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture\Transport;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -24,6 +25,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *      "bus" = "Bus"
  * })
  */
+#[ORM\Entity]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
+#[ORM\DiscriminatorMap(['vehicle' => Vehicle::class, 'car' => Car::class, 'bus' => Bus::class])]
 class Vehicle
 {
     /**
@@ -31,23 +36,31 @@ class Vehicle
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Engine")
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\ManyToOne(targetEntity: Engine::class)]
     private $engine;
 
     /**
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     private $title;
 
     /**
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     private $sortByEngine;
 
     public function getId()

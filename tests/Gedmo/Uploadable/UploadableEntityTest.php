@@ -694,7 +694,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         ];
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::IMAGE_CLASS,

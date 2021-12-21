@@ -713,7 +713,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertTrue($this->translatableListener->isSkipOnLoad());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

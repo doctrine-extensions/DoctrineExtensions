@@ -67,7 +67,7 @@ final class Issue1177Test extends BaseTestCaseORM
         static::assertSame('the-title-with-number-2', $article->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

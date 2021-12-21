@@ -86,7 +86,7 @@ final class Issue1058Test extends BaseTestCaseORM
         static::assertSame('the-title-1', $page->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

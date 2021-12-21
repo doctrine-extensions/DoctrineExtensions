@@ -53,7 +53,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
@@ -100,7 +100,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $dumpTime($start, 'moving took:');
     }*/
 
-    public function testClosureTree()
+    public function testClosureTree(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $closureRepo = $this->em->getRepository(self::CLOSURE);
@@ -163,7 +163,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         }
     }
 
-    public function testUpdateOfParent()
+    public function testUpdateOfParent(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
@@ -186,7 +186,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertFalse($this->hasAncestor($closures, 'Fruits'));
     }
 
-    public function testAnotherUpdateOfParent()
+    public function testAnotherUpdateOfParent(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
@@ -205,7 +205,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertTrue($this->hasAncestor($closures, 'Strawberries'));
     }
 
-    public function testBranchRemoval()
+    public function testBranchRemoval(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
@@ -225,7 +225,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         // pdo_sqlite will not cascade
     }
 
-    public function testSettingParentToChild()
+    public function testSettingParentToChild(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -236,7 +236,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    public function testIfEntityHasNotIncludedTreeLevelFieldThenDontProcessIt()
+    public function testIfEntityHasNotIncludedTreeLevelFieldThenDontProcessIt(): void
     {
         $listener = $this->getMockBuilder(TreeListener::class)->getMock();
         $strategy = $this->getMockBuilder(Closure::class)
@@ -263,7 +263,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    public function testCascadePersistTree()
+    public function testCascadePersistTree(): void
     {
         $politics = new Category();
         $politics->setTitle('Politics');
@@ -283,13 +283,13 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertCount(1, $closure);
     }
 
-    public function testPersistOnRightEmInstance()
+    public function testPersistOnRightEmInstance(): void
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $emOne = $this->getMockSqliteEntityManager($evm);
-        $emTwo = $this->getMockSqliteEntityManager($evm);
+        $emOne = $this->getDefaultMockSqliteEntityManager($evm);
+        $emTwo = $this->getDefaultMockSqliteEntityManager($evm);
 
         $categoryOne = new Category();
         $categoryOne->setTitle('Politics');
@@ -309,7 +309,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertNotNull($categoryTwo->getId());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,
