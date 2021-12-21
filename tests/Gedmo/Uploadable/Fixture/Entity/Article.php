@@ -12,28 +12,42 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Uploadable\Fixture\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Article
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string")
      */
+    #[ORM\Column(name: 'title', type: Types::STRING)]
     private $title;
 
     /**
+     * @var Collection<int, File>
+     *
      * @ORM\OneToMany(targetEntity="File", mappedBy="article", cascade={"persist", "remove"})
      */
+    #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'article', cascade: ['persist', 'remove'])]
     private $files;
 
     /**
@@ -46,37 +60,40 @@ class Article
         $this->files = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setFilePath($filePath)
+    public function setFilePath(?string $filePath): void
     {
         $this->filePath = $filePath;
     }
 
-    public function getFilePath()
+    public function getFilePath(): ?string
     {
         return $this->filePath;
     }
 
-    public function getFiles()
+    /**
+     * @return Collection<int, File>
+     */
+    public function getFiles(): Collection
     {
         return $this->files;
     }
 
-    public function addFile(File $file)
+    public function addFile(File $file): void
     {
         $this->files[] = $file;
     }
