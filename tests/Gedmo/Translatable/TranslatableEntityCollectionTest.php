@@ -41,14 +41,6 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $conn = [
-            'driver' => 'pdo_mysql',
-            'host' => '127.0.0.1',
-            'dbname' => 'test',
-            'user' => 'root',
-            'password' => 'nimda',
-        ];
-        //$this->getMockCustomEntityManager($conn, $evm);
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
