@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Uploadable;
+namespace Gedmo\Tests\Uploadable\FilenameGenerator;
 
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
 

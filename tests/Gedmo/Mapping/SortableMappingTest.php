@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
