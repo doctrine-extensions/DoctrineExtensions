@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Uploadable;
 
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These are tests for FilenameGeneratorAlphanumeric class
@@ -19,15 +20,13 @@ use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCase
+final class FilenameGeneratorAlphanumericTest extends TestCase
 {
-    public function testGenerator()
+    public function testGenerator(): void
     {
-        $generator = new FilenameGeneratorAlphanumeric();
-
         $filename = 'MegaName_For_A_###$$$File$$$###';
         $extension = '.exe';
 
-        static::assertSame('meganame-for-a-file-.exe', $generator->generate($filename, $extension));
+        static::assertSame('meganame-for-a-file-.exe', FilenameGeneratorAlphanumeric::generate($filename, $extension));
     }
 }

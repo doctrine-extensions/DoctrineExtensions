@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Uploadable\Fixture\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -18,37 +19,46 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="ALPHANUMERIC", appendNumber=true)
  */
+#[ORM\Entity]
 class FileWithAlphanumericName
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="path", type="string", nullable=true)
      * @Gedmo\UploadableFilePath
      */
+    #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     private $filePath;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setFilePath($filePath)
+    public function setFilePath(?string $filePath): void
     {
         $this->filePath = $filePath;
     }
 
-    public function getFilePath()
+    public function getFilePath(): ?string
     {
         return $this->filePath;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return TESTS_TEMP_DIR.'/uploadable';
     }
