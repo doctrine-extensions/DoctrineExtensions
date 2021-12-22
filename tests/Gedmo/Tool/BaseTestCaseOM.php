@@ -117,7 +117,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      */
-    protected function getMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null): EntityManager
+    protected function getDefaultMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',

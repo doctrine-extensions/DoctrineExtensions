@@ -31,7 +31,7 @@ final class Issue104Test extends BaseTestCaseORM
         $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $audi = new Car();
         $audi->setDescription('audi car');

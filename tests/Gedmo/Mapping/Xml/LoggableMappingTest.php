@@ -58,7 +58,7 @@ final class LoggableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->loggable);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             LogEntry::class,
             Loggable::class,
             LoggableWithEmbedded::class,
