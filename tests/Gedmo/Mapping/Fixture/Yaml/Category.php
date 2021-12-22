@@ -56,17 +56,11 @@ class Category extends BaseCategory
         return $this->id;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle(?string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string $title
-     */
     public function getTitle(): string
     {
         return $this->title;
