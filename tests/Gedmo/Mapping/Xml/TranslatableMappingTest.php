@@ -56,7 +56,7 @@ final class TranslatableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->translatable);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             Translation::class,
             Translatable::class,
         ], $chain);

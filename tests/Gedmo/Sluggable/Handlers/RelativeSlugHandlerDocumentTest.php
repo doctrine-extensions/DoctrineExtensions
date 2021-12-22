@@ -33,7 +33,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
     public function testSlugGeneration(): void

@@ -32,7 +32,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
         $this->encoderListener = new EncoderListener();
         $evm->addEventSubscriber($this->encoderListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testExtensionMetadata(): void

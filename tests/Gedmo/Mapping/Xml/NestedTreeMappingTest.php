@@ -48,7 +48,7 @@ final class NestedTreeMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->tree);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             NestedTree::class,
         ], $chain);
     }

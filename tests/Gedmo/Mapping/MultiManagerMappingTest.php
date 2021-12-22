@@ -46,7 +46,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
     {
         parent::setUp();
         // EM with standard annotation mapping
-        $this->em1 = $this->getMockSqliteEntityManager([
+        $this->em1 = $this->getDefaultMockSqliteEntityManager([
             \Gedmo\Tests\Sluggable\Fixture\Article::class,
         ]);
         // EM with yaml and annotation mapping
@@ -63,7 +63,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
         $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver2, 'Gedmo\Translatable');
 
-        $this->em2 = $this->getMockSqliteEntityManager([
+        $this->em2 = $this->getDefaultMockSqliteEntityManager([
             PersonTranslation::class,
             User::class,
         ], $chain);

@@ -36,7 +36,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new TreeListener());
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testSlugGeneration(): void

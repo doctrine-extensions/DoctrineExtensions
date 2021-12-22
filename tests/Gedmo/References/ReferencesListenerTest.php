@@ -52,7 +52,7 @@ final class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->evm->addEventSubscriber($listener);
 
-        $this->em = $this->getMockSqliteEntityManager(
+        $this->em = $this->getDefaultMockSqliteEntityManager(
             [
                 StockItem::class,
                 Category::class,

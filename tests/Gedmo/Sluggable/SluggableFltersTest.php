@@ -44,7 +44,7 @@ final class SluggableFltersTest extends BaseTestCaseORM
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
         $config->addFilter(self::FAKE_FILTER_NAME, FakeFilter::class);
 
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
+        $this->em = $this->getDefaultMockSqliteEntityManager($evm, $config);
 
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->em->getFilters()->enable(self::FAKE_FILTER_NAME);

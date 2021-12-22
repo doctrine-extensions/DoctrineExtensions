@@ -54,7 +54,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 

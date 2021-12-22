@@ -29,7 +29,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
     protected function setUp(): void
     {
         parent::setUp();
-        $this->getMockSqliteEntityManager(new EventManager());
+        $this->getDefaultMockSqliteEntityManager(new EventManager());
         $this->populate();
     }
 

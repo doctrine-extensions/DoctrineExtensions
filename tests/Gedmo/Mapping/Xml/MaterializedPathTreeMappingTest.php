@@ -56,7 +56,7 @@ final class MaterializedPathTreeMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->tree);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             MaterializedPathTree::class,
         ], $chain);
     }

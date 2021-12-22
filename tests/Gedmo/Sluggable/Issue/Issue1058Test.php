@@ -34,7 +34,7 @@ final class Issue1058Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**

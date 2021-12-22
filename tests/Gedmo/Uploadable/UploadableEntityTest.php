@@ -135,7 +135,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $evm->addEventSubscriber($this->listener);
         $config = $this->getDefaultConfiguration();
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
+        $this->em = $this->getDefaultMockSqliteEntityManager($evm, $config);
         $this->testFile = TESTS_PATH.'/data/test.txt';
         $this->testFile2 = TESTS_PATH.'/data/test2.txt';
         $this->testFile3 = TESTS_PATH.'/data/test_3.txt';

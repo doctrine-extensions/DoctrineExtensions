@@ -44,10 +44,10 @@ final class Issue449Test extends BaseTestCaseORM
         $this->softDeleteableListener = new SoftDeleteableListener();
         $evm->addEventSubscriber($this->softDeleteableListener);
 
-        $config = $this->getMockAnnotatedConfig();
+        $config = $this->getDefaultConfiguration();
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
 
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
+        $this->em = $this->getDefaultMockSqliteEntityManager($evm, $config);
 
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }

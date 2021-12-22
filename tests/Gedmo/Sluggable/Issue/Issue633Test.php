@@ -32,7 +32,7 @@ final class Issue633Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testShouldHandleUniqueBasedSlug(): void
