@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\Uploadable
  */
 #[ORM\Entity]
+#[Gedmo\Uploadable]
 class FileWithoutPath
 {
     /**
@@ -41,6 +42,7 @@ class FileWithoutPath
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
+    #[Gedmo\UploadableFilePath]
     private $filePath;
 
     public function getId(): ?int
