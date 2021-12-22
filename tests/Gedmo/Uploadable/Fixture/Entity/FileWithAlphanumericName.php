@@ -14,12 +14,14 @@ namespace Gedmo\Tests\Uploadable\Fixture\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * @ORM\Entity
  * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="ALPHANUMERIC", appendNumber=true)
  */
 #[ORM\Entity]
+#[Gedmo\Uploadable(pathMethod: 'getPath', filenameGenerator: Validator::FILENAME_GENERATOR_ALPHANUMERIC, appendNumber: true)]
 class FileWithAlphanumericName
 {
     /**
@@ -41,6 +43,7 @@ class FileWithAlphanumericName
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
+    #[Gedmo\UploadableFilePath]
     private $filePath;
 
     public function getId(): ?int

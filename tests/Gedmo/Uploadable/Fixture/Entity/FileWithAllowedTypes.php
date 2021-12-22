@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\Uploadable(allowedTypes="text/plain,text/html")
  */
 #[ORM\Entity]
+#[Gedmo\Uploadable(allowedTypes: 'text/plain,text/html')]
 class FileWithAllowedTypes
 {
     /**
@@ -49,6 +50,7 @@ class FileWithAllowedTypes
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
+    #[Gedmo\UploadableFilePath]
     private $filePath;
 
     /**
@@ -58,6 +60,7 @@ class FileWithAllowedTypes
      * @Gedmo\UploadableFileSize
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL, nullable: true)]
+    #[Gedmo\UploadableFileSize]
     private $fileSize;
 
     /**

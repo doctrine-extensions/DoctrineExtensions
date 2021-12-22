@@ -14,12 +14,14 @@ namespace Gedmo\Tests\Uploadable\Fixture\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Tests\Uploadable\FakeFilenameGenerator;
 
 /**
  * @ORM\Entity
  * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Gedmo\Tests\Uploadable\FakeFilenameGenerator")
  */
 #[ORM\Entity]
+#[Gedmo\Uploadable(pathMethod: 'getPath', filenameGenerator: FakeFilenameGenerator::class)]
 class FileWithCustomFilenameGenerator
 {
     /**
@@ -41,6 +43,7 @@ class FileWithCustomFilenameGenerator
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
+    #[Gedmo\UploadableFilePath]
     private $filePath;
 
     public function getId(): ?int

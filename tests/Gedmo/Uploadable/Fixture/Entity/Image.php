@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\Uploadable(pathMethod="getPath")
  */
 #[ORM\Entity]
+#[Gedmo\Uploadable(pathMethod: 'getPath')]
 class Image
 {
     /**
@@ -49,6 +50,7 @@ class Image
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
+    #[Gedmo\UploadableFilePath]
     private $filePath;
 
     /**
@@ -58,6 +60,7 @@ class Image
      * @Gedmo\UploadableFileSize
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL, nullable: true)]
+    #[Gedmo\UploadableFileSize]
     private $size;
 
     /**
@@ -67,6 +70,7 @@ class Image
      * @Gedmo\UploadableFileMimeType
      */
     #[ORM\Column(name: 'mime_type', type: Types::STRING, nullable: true)]
+    #[Gedmo\UploadableFileMimeType]
     private $mime;
 
     /**

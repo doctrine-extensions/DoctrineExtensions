@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\Uploadable(appendNumber=true, pathMethod="getPath")
  */
 #[ORM\Entity]
+#[Gedmo\Uploadable(appendNumber: true, pathMethod: 'getPath')]
 class FileAppendNumber
 {
     /**
@@ -49,6 +50,7 @@ class FileAppendNumber
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING)]
+    #[Gedmo\UploadableFilePath]
     private $filePath;
 
     /**
