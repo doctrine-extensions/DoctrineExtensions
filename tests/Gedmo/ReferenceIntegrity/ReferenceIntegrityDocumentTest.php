@@ -50,7 +50,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber(new ReferenceIntegrityListener());
 
-        $this->dm = $this->getMockDocumentManager($evm, $this->getMockAnnotatedConfig());
+        $this->dm = $this->getDefaultDocumentManager($evm);
 
         $this->populateOneNullify();
         $this->populateManyNullify();

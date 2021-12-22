@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\References\Fixture\ORM;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
@@ -18,46 +19,66 @@ use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class StockItem
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
-     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column
      */
+    #[ORM\Column]
     private $name;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column
      */
+    #[ORM\Column]
     private $sku;
 
     /**
+     * @var int|null
+     *
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: Types::INTEGER)]
     private $quantity;
 
     /**
+     * @var Product|null
+     *
      * @Gedmo\ReferenceOne(type="document", class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
      */
     private $product;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: Types::STRING)]
     private $productId;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -67,42 +88,42 @@ class StockItem
         $this->name = $name;
     }
 
-    public function getSku()
+    public function getSku(): ?string
     {
         return $this->sku;
     }
 
-    public function setSku($sku): void
+    public function setSku(?string $sku): void
     {
         $this->sku = $sku;
     }
 
-    public function getQuantity()
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
 
-    public function setQuantity($quantity): void
+    public function setQuantity(?int $quantity): void
     {
         $this->quantity = $quantity;
     }
 
-    public function setProduct(Product $product): void
+    public function setProduct(?Product $product): void
     {
         $this->product = $product;
     }
 
-    public function getProduct()
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
 
-    public function setProductId($productId): void
+    public function setProductId(?string $productId): void
     {
         $this->productId = $productId;
     }
 
-    public function getProductId()
+    public function getProductId(): ?string
     {
         return $this->productId;
     }

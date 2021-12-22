@@ -12,20 +12,28 @@ declare(strict_types=1);
 namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
+     * @var string|null
+     *
      * @ODM\Id
      */
+    #[ODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $title;
 
     /**
@@ -33,12 +41,10 @@ class Article
      *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type", inversedBy="articles")
      */
+    #[ODM\ReferenceOne(targetDocument: Type::class, inversedBy: 'articles')]
     private $type;
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -14,20 +14,28 @@ namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
+     * @var string|null
+     *
      * @ODM\Id
      */
+    #[ODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $title;
 
     /**
@@ -35,6 +43,7 @@ class Article
      *
      * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
      */
+    #[ODM\ReferenceMany(targetDocument: Type::class, inversedBy: 'articles')]
     private $types;
 
     public function __construct()
@@ -42,30 +51,21 @@ class Article
         $this->types = new ArrayCollection();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * Add types
-     */
     public function addType(Type $type): void
     {
         $this->types[] = $type;

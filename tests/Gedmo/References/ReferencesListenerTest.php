@@ -11,10 +11,9 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\References;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoDBAnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as ORMAnnotationDriver;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
 use Gedmo\References\ReferencesListener;
 use Gedmo\Tests\References\Fixture\ODM\MongoDB\Metadata;
 use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
@@ -24,7 +23,14 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 final class ReferencesListenerTest extends BaseTestCaseOM
 {
+    /**
+     * @var EntityManager
+     */
     private $em;
+
+    /**
+     * @var DocumentManager
+     */
     private $dm;
 
     protected function setUp(): void
@@ -35,9 +41,10 @@ final class ReferencesListenerTest extends BaseTestCaseOM
             static::markTestSkipped('Missing Mongo extension.');
         }
 
-        $reader = new AnnotationReader();
-
-        $this->dm = $this->getMockDocumentManager('test', new MongoDBAnnotationDriver($reader, __DIR__.'/Fixture/ODM/MongoDB'));
+        $this->dm = $this->getMockDocumentManager(
+            'test',
+            $this->getMongoDBDriver([__DIR__.'/Fixture/ODM/MongoDB'])
+        );
 
         $listener = new ReferencesListener([
             'document' => $this->dm,
@@ -45,14 +52,12 @@ final class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->evm->addEventSubscriber($listener);
 
-        $reader = new AnnotationReader();
-
         $this->em = $this->getMockSqliteEntityManager(
             [
                 StockItem::class,
                 Category::class,
             ],
-            new ORMAnnotationDriver($reader, __DIR__.'/Fixture/ORM')
+            $this->getORMDriver([__DIR__.'/Fixture/ORM'])
         );
         $listener->registerManager('entity', $this->em);
     }
