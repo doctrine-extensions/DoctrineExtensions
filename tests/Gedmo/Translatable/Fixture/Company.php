@@ -35,6 +35,8 @@ class Company implements Translatable
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string", length=128)
      * @Gedmo\Translatable
      */
@@ -62,26 +64,17 @@ class Company implements Translatable
         $this->link = new CompanyEmbedLink();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param mixed $title
-     */
-    public function setTitle($title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 

@@ -56,7 +56,7 @@ class Type
         return $this->identifier;
     }
 
-    public function setIdentifier($identifier): void
+    public function setIdentifier(?string $identifier): void
     {
         $this->identifier = $identifier;
     }

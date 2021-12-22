@@ -61,9 +61,6 @@ class Book
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle(?string $title): void
     {
         $this->title = $title;

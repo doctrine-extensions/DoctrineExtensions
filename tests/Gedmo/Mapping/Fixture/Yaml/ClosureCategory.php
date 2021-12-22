@@ -35,21 +35,11 @@ class ClosureCategory
         return $this->id;
     }
 
-    /**
-     * Set title
-     *
-     * @param string $title
-     */
-    public function setTitle(?string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * Get title
-     *
-     * @return string $title
-     */
     public function getTitle(): string
     {
         return $this->title;

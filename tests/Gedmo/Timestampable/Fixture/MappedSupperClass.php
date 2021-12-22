@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class MappedSupperClass
 {
     /**
-     * @var int
+     * @var int|null
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -34,7 +34,7 @@ class MappedSupperClass
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @Gedmo\Locale
      */
@@ -42,7 +42,7 @@ class MappedSupperClass
     protected $locale;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=191)
@@ -52,7 +52,7 @@ class MappedSupperClass
     protected $name;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="created_at", type="datetime")
      * @Gedmo\Timestampable(on="create")
@@ -62,42 +62,24 @@ class MappedSupperClass
     protected $createdAt;
 
     /**
-     * Get id
-     *
-     * @return int $id
      * @codeCoverageIgnore
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     */
     public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * Get name
-     *
-     * @return string $name
-     */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime $createdAt
-     */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
