@@ -32,7 +32,7 @@ final class TranslatableTest extends BaseTestCaseORM
         parent::setUp();
 
         $evm = new EventManager();
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testTranslatable(): void
