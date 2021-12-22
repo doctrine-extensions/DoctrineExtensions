@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 
@@ -18,25 +19,38 @@ use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
  * @ORM\Table(name="test_users")
  * @ORM\Entity
  */
+#[ORM\Table(name: 'test_users')]
+#[ORM\Entity]
 class User
 {
     /**
-     * @ORM\Column(type="integer")
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Ext\Encode(type="sha1", secret="xxx")
      * @ORM\Column(length=64)
      */
+    #[ORM\Column(length: 64)]
     private $name;
 
     /**
+     * @var string|null
+     *
      * @Ext\Encode(type="md5")
      * @ORM\Column(length=32)
      */
+    #[ORM\Column(length: 32)]
     private $password;
 
     public function setName(?string $name): void
@@ -44,17 +58,17 @@ class User
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setPassword($password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }

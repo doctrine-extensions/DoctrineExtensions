@@ -57,7 +57,7 @@ class Article
      * @Gedmo\Slug(updatable=true, unique=true, unique_base="category", fields={"title"})
      * @ORM\Column(length=64, nullable=true)
      */
-    #[ORM\Column(name: 'title', length: 64)]
+    #[ORM\Column(length: 64, nullable: true)]
     private $slug;
 
     public function getId(): ?int
