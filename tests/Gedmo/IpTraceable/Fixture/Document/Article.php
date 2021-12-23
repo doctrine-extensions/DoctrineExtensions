@@ -51,6 +51,7 @@ class Article
      * @Gedmo\IpTraceable(on="create")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
+    #[Gedmo\IpTraceable(on: 'create')]
     private $created;
 
     /**
