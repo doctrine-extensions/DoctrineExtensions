@@ -67,7 +67,7 @@ class User extends Role
      */
     public function generateString(int $length = 8): string
     {
-        $length = (int) $length;
+        $length = $length;
         if ($length < 0) {
             throw new \Exception("Invalid password length '$length'");
         }

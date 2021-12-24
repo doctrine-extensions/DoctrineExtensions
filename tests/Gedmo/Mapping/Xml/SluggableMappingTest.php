@@ -41,13 +41,10 @@ final class SluggableMappingTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->sluggable);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableMetadata()
+    public function testShouldBeAbleToMapSluggableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Sluggable::class);
         $config = $this->sluggable->getConfiguration($this->em, $meta->getName());

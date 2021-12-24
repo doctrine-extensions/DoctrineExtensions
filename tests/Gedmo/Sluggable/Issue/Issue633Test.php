@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -32,13 +32,10 @@ final class Issue633Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleUniqueBasedSlug()
+    public function testShouldHandleUniqueBasedSlug(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');
@@ -68,10 +65,7 @@ final class Issue633Test extends BaseTestCaseORM
         static::assertSame('unique-to-code-1', $test3->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function handlePersistedSlugsForUniqueBased()
+    public function testHandlePersistedSlugsForUniqueBased(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');

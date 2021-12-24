@@ -24,6 +24,8 @@ a release.
 - Blameable: Support to use annotations as attributes on PHP >= 8.0.
 - IpTraceable: Support to use annotations as attributes on PHP >= 8.0.
 - Sortable: Support to use annotations as attributes on PHP >= 8.0.
+- Sluggable: Support to use annotations as attributes on PHP >= 8.0.
+- Uploadable: Support to use annotations as attributes on PHP >= 8.0.
 - SoftDeleteable: Support for custom column types (like Carbon).
 - Timestampable: Support for custom column types (like Carbon).
 

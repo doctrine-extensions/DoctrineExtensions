@@ -56,13 +56,13 @@ final class ClosureTreeMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->tree);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             ClosureTree::class,
             ClosureTreeClosure::class,
         ], $chain);
     }
 
-    public function testTreeMetadata()
+    public function testTreeMetadata(): void
     {
         $meta = $this->em->getClassMetadata(ClosureTree::class);
         $config = $this->tree->getConfiguration($this->em, $meta->getName());

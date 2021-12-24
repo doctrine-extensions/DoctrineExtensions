@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Image
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -45,12 +47,12 @@ class Image
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'images')]
     private $articles;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addArticle(Article $article)
+    public function addArticle(Article $article): void
     {
         $this->articles[] = $article;
     }
@@ -60,7 +62,7 @@ class Image
         return $this->articles;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }

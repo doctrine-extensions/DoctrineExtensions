@@ -51,10 +51,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function checkPathsAndHash(): void
+    public function testCheckPathsAndHash(): void
     {
         $category = $this->createCategory();
         $category->setTitle('1');

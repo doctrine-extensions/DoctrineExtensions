@@ -43,7 +43,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testChange()
+    public function testChange(): void
     {
         $test = new TitledArticle();
         $test->setTitle('Test');
@@ -116,7 +116,7 @@ class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
 {
     protected $dateTime;
 
-    public function setDateValue(\DateTime $dateTime)
+    public function setDateValue(\DateTime $dateTime): void
     {
         $this->dateTime = $dateTime;
     }

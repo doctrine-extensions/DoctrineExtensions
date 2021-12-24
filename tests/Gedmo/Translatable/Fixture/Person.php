@@ -24,6 +24,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Person
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -41,12 +43,12 @@ class Person
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
     private $name;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }

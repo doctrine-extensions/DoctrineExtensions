@@ -52,27 +52,27 @@ class SoftDeleteable
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setCode($code)
+    public function setCode($code): void
     {
         $this->code = $code;
     }
 
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

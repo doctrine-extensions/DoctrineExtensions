@@ -12,9 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -61,40 +59,14 @@ abstract class BaseTestCaseORM extends TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      */
-    protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null): EntityManager
+    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
         ];
 
-        $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
-        $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
-
-        $schema = array_map(static function ($class) use ($em) {
-            return $em->getClassMetadata($class);
-        }, (array) $this->getUsedEntityFixtures());
-
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema([]);
-        $schemaTool->createSchema($schema);
-
-        return $this->em = $em;
-    }
-
-    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null): EntityManager
-    {
-        return $this->getMockSqliteEntityManager($evm, $this->getDefaultConfiguration());
-    }
-
-    /**
-     * EntityManager mock object together with
-     * annotation mapping driver and custom
-     * connection
-     */
-    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null): EntityManager
-    {
-        $config = $this->getMockAnnotatedConfig();
+        $config = null === $config ? $this->getDefaultConfiguration() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
         $schema = array_map(static function ($class) use ($em) {
@@ -106,31 +78,6 @@ abstract class BaseTestCaseORM extends TestCase
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;
-    }
-
-    /**
-     * EntityManager mock object with
-     * annotation mapping driver
-     */
-    protected function getMockMappedEntityManager(EventManager $evm = null): EntityManager
-    {
-        $driver = $this->getMockBuilder(Driver::class)->getMock();
-        $driver->expects(static::once())
-            ->method('getDatabasePlatform')
-            ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
-
-        $conn = $this->getMockBuilder(Connection::class)
-            ->setConstructorArgs([[], $driver])
-            ->getMock();
-
-        $conn->expects(static::once())
-            ->method('getEventManager')
-            ->willReturn($evm ?: $this->getEventManager());
-
-        $config = $this->getMockAnnotatedConfig();
-        $this->em = EntityManager::create($conn, $config);
-
-        return $this->em;
     }
 
     /**
@@ -176,6 +123,10 @@ abstract class BaseTestCaseORM extends TestCase
      */
     protected function getMetadataDriverImplementation(): MappingDriver
     {
+        if (PHP_VERSION_ID >= 80000) {
+            return new AttributeDriver([]);
+        }
+
         return new AnnotationDriver($_ENV['annotation_reader']);
     }
 
@@ -186,10 +137,7 @@ abstract class BaseTestCaseORM extends TestCase
      */
     abstract protected function getUsedEntityFixtures(): array;
 
-    /**
-     * Get annotation mapping configuration
-     */
-    protected function getMockAnnotatedConfig(): Configuration
+    protected function getDefaultConfiguration(): Configuration
     {
         $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
@@ -197,25 +145,6 @@ abstract class BaseTestCaseORM extends TestCase
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
 
         return $config;
-    }
-
-    protected function getDefaultConfiguration(): Configuration
-    {
-        $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Proxy');
-        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
-
-        return $config;
-    }
-
-    private function getMetadataDefaultDriverImplementation(): MappingDriver
-    {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriver([]);
-        }
-
-        return new AnnotationDriver($_ENV['annotation_reader']);
     }
 
     /**

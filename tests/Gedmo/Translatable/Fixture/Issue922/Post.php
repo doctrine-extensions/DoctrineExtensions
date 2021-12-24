@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Post
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -63,12 +65,12 @@ class Post
     #[Gedmo\Translatable]
     private $boolean;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setPublishedAt($publishedAt)
+    public function setPublishedAt($publishedAt): self
     {
         $this->publishedAt = $publishedAt;
 
@@ -80,7 +82,7 @@ class Post
         return $this->publishedAt;
     }
 
-    public function setTimestampAt($timestampAt)
+    public function setTimestampAt($timestampAt): self
     {
         $this->timestampAt = $timestampAt;
 
@@ -92,7 +94,7 @@ class Post
         return $this->timestampAt;
     }
 
-    public function setDateAt($dateAt)
+    public function setDateAt($dateAt): self
     {
         $this->dateAt = $dateAt;
 
@@ -104,7 +106,7 @@ class Post
         return $this->dateAt;
     }
 
-    public function setBoolean($boolean)
+    public function setBoolean($boolean): self
     {
         $this->boolean = $boolean;
 

@@ -49,44 +49,32 @@ class Tag
     #[ODM\Field(type: MongoDBType::DATE)]
     protected $updated;
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreated()
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
 
-    public function setCreated(\DateTime $created)
+    public function setCreated(\DateTime $created): void
     {
         $this->created = $created;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getUpdated()
+    public function getUpdated(): \DateTime
     {
         return $this->updated;
     }
 
-    public function setUpdated(\DateTime $updated)
+    public function setUpdated(\DateTime $updated): void
     {
         $this->updated = $updated;
     }

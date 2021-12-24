@@ -23,6 +23,8 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 class SimpleListItem
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -46,12 +48,12 @@ class SimpleListItem
     #[ORM\Column(type: Types::INTEGER)]
     private $position;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -61,7 +63,7 @@ class SimpleListItem
         return $this->name;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }

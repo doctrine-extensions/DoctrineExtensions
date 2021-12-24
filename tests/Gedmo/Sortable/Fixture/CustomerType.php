@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Driver\PDO\Exception as PDODriverException;
 use Doctrine\DBAL\Driver\PDOException as LegacyPDOException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -29,6 +30,8 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 class CustomerType
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -39,12 +42,16 @@ class CustomerType
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="name", type="string")
      */
     #[ORM\Column(name: 'name', type: Types::STRING)]
     private $name;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer")
      */
@@ -53,6 +60,8 @@ class CustomerType
     private $position;
 
     /**
+     * @var Collection<int, Customer>
+     *
      * @ORM\OneToMany(targetEntity="Customer", mappedBy="type")
      */
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Customer::class)]
@@ -63,42 +72,45 @@ class CustomerType
         $this->customers = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getPosition()
+    public function getPosition(): ?int
     {
         return $this->position;
     }
 
-    public function setPosition($position)
+    public function setPosition(?int $position): void
     {
         $this->position = $position;
     }
 
-    public function getCustomers()
+    /**
+     * @return Collection<int, Customer>
+     */
+    public function getCustomers(): Collection
     {
         return $this->customers;
     }
 
-    public function addCustomer(Customer $customer)
+    public function addCustomer(Customer $customer): void
     {
         $this->customers->add($customer);
     }
 
-    public function removeCustomer(Customer $customer)
+    public function removeCustomer(Customer $customer): void
     {
         $this->customers->removeElement($customer);
     }
@@ -107,7 +119,7 @@ class CustomerType
      * @ORM\PostRemove
      */
     #[ORM\PostRemove]
-    public function postRemove()
+    public function postRemove(): void
     {
         if ($this->getCustomers()->count() > 0) {
             // we imitate a foreign key constraint exception because Doctrine

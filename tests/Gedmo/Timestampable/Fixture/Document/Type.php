@@ -41,7 +41,7 @@ class Type
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -56,7 +56,7 @@ class Type
         return $this->identifier;
     }
 
-    public function setIdentifier($identifier)
+    public function setIdentifier(?string $identifier): void
     {
         $this->identifier = $identifier;
     }

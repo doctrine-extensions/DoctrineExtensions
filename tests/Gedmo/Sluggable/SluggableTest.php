@@ -38,10 +38,7 @@ final class SluggableTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    /**
-     * @test
-     */
-    public function shouldInsertNewSlug(): void
+    public function testShouldInsertNewSlug(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
@@ -49,10 +46,7 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('the-title-my-code', $article->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldBuildUniqueSlug(): void
+    public function testShouldBuildUniqueSlug(): void
     {
         for ($i = 0; $i < 12; ++$i) {
             $article = new Article();
@@ -66,10 +60,7 @@ final class SluggableTest extends BaseTestCaseORM
         }
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleUniqueSlugLimitedLength(): void
+    public function testShouldHandleUniqueSlugLimitedLength(): void
     {
         $long = 'the title the title the title the title the title the title the title';
         $article = new Article();
@@ -98,10 +89,7 @@ final class SluggableTest extends BaseTestCaseORM
         }
     }
 
-    /**
-     * @test
-     */
-    public function doubleDelimiterShouldBeRemoved(): void
+    public function testDoubleDelimiterShouldBeRemoved(): void
     {
         $long = 'Sample long title which should be correctly slugged blablabla';
         $article = new Article();
@@ -120,10 +108,7 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('sample-long-title-which-should-be-correctly-slugged-blablabla-1', $article2->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleNumbersInSlug(): void
+    public function testShouldHandleNumbersInSlug(): void
     {
         $article = new Article();
         $article->setTitle('the title');
@@ -143,10 +128,7 @@ final class SluggableTest extends BaseTestCaseORM
         }
     }
 
-    /**
-     * @test
-     */
-    public function shouldUpdateSlug(): void
+    public function testShouldUpdateSlug(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTitle('the title updated');
@@ -156,10 +138,7 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('the-title-updated-my-code', $article->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToForceRegenerationOfSlug(): void
+    public function testShouldBeAbleToForceRegenerationOfSlug(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setSlug(null);
@@ -169,10 +148,7 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('the-title-my-code', $article->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToForceTheSlug(): void
+    public function testShouldBeAbleToForceTheSlug(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setSlug('my-forced-slug');
@@ -189,10 +165,7 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('forced', $new->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldSolveGithubIssue45(): void
+    public function testShouldSolveGithubIssue45(): void
     {
         // persist new records with same slug
         $article = new Article();
@@ -210,10 +183,7 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('test-code-1', $article2->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldSolveGithubIssue57(): void
+    public function testShouldSolveGithubIssue57(): void
     {
         // slug matched by prefix
         $article = new Article();
@@ -230,10 +200,7 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('my-s', $article2->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldAllowForcingEmptySlugAndRegenerateIfNullIssue807(): void
+    public function testShouldAllowForcingEmptySlugAndRegenerateIfNullIssue807(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setSlug('');

@@ -32,6 +32,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Vehicle
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -63,12 +65,12 @@ class Vehicle
     #[ORM\Column(type: Types::INTEGER)]
     private $sortByEngine;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setSortByEngine($sort)
+    public function setSortByEngine($sort): void
     {
         $this->sortByEngine = $sort;
     }
@@ -78,7 +80,7 @@ class Vehicle
         return $this->sortByEngine;
     }
 
-    public function setEngine(Engine $engine)
+    public function setEngine(Engine $engine): void
     {
         $this->engine = $engine;
     }
@@ -88,7 +90,7 @@ class Vehicle
         return $this->engine;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }

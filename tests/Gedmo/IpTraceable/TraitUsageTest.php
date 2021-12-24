@@ -38,10 +38,7 @@ final class TraitUsageTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldIpTraceUsingTrait(): void
+    public function testShouldIpTraceUsingTrait(): void
     {
         $sport = new UsingTrait();
         $sport->setTitle('Sport');
@@ -53,10 +50,7 @@ final class TraitUsageTest extends BaseTestCaseORM
         static::assertNotNull($sport->getUpdatedFromIp());
     }
 
-    /**
-     * @test
-     */
-    public function traitMethodShouldReturnObject(): void
+    public function testTraitMethodShouldReturnObject(): void
     {
         $sport = new UsingTrait();
         static::assertInstanceOf(UsingTrait::class, $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));

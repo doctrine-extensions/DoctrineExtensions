@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Loggable;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -55,7 +55,7 @@ final class LoggableMappingTest extends \PHPUnit\Framework\TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
 
-    public function testLoggableMapping()
+    public function testLoggableMapping(): void
     {
         $meta = $this->em->getClassMetadata(self::YAML_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CATEGORY, 'Gedmo\Loggable');

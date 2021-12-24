@@ -36,10 +36,7 @@ final class HardRelationTest extends BaseTestCaseORM
         $this->em->getFilters()->enable('softdelete');
     }
 
-    /**
-     * @test
-     */
-    public function shouldCascadeSoftdeleteForHardRelations(): void
+    public function testShouldCascadeSoftdeleteForHardRelations(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -61,10 +58,7 @@ final class HardRelationTest extends BaseTestCaseORM
         static::assertNull($person, 'Softdelete should cascade to hard relation entity');
     }
 
-    /**
-     * @test
-     */
-    public function shouldCascadeToInversedRelationAsWell(): void
+    public function testShouldCascadeToInversedRelationAsWell(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -86,10 +80,7 @@ final class HardRelationTest extends BaseTestCaseORM
         static::assertNull($address, 'Softdelete should cascade to hard relation entity');
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleTimeAwareSoftDeleteable(): void
+    public function testShouldHandleTimeAwareSoftDeleteable(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');

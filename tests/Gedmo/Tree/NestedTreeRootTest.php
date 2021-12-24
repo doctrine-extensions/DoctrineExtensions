@@ -38,10 +38,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    /**
-     * @test
-     */
-    public function shouldRemoveAndSynchronize(): void
+    public function testShouldRemoveAndSynchronize(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);

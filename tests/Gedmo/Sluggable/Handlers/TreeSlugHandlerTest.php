@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -34,10 +34,10 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
@@ -64,7 +64,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('food/fruits/banana', $banana->getSlug());
     }
 
-    public function testSlugUpdates()
+    public function testSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
@@ -94,7 +94,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('foodissimo/fructis/citrons', $citrons->getSlug());
     }
 
-    public function testMoreSlugUpdates()
+    public function testMoreSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);

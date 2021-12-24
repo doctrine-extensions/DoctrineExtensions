@@ -46,7 +46,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
     {
         parent::setUp();
         // EM with standard annotation mapping
-        $this->em1 = $this->getMockSqliteEntityManager([
+        $this->em1 = $this->getDefaultMockSqliteEntityManager([
             \Gedmo\Tests\Sluggable\Fixture\Article::class,
         ]);
         // EM with yaml and annotation mapping
@@ -63,7 +63,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
         $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver2, 'Gedmo\Translatable');
 
-        $this->em2 = $this->getMockSqliteEntityManager([
+        $this->em2 = $this->getDefaultMockSqliteEntityManager([
             PersonTranslation::class,
             User::class,
         ], $chain);
@@ -71,7 +71,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
         $this->dm1 = $this->getMockDocumentManager('gedmo_extensions_test');
     }
 
-    public function testTwoDiferentManager()
+    public function testTwoDiferentManager(): void
     {
         $meta = $this->dm1->getClassMetadata(Article::class);
         $dmArticle = new \Gedmo\Tests\Sluggable\Fixture\Document\Article();
@@ -90,7 +90,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
         static::assertSame('title-code', $em1Article->getSlug());
     }
 
-    public function testTwoSameManagers()
+    public function testTwoSameManagers(): void
     {
         $em1Article = new \Gedmo\Tests\Sluggable\Fixture\Article();
         $em1Article->setCode('code');

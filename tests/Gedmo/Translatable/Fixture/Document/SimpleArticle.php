@@ -46,7 +46,7 @@ class SimpleArticle
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -56,7 +56,7 @@ class SimpleArticle
         return $this->title;
     }
 
-    public function setContent($content)
+    public function setContent($content): void
     {
         $this->content = $content;
     }

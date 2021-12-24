@@ -66,14 +66,11 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         $evm->addEventSubscriber($this->softDeleteableListener);
         $config = $this->getDefaultConfiguration();
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
+        $this->em = $this->getDefaultMockSqliteEntityManager($evm, $config);
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToHardDeleteSoftdeletedItems(): void
+    public function testShouldBeAbleToHardDeleteSoftdeletedItems(): void
     {
         $repo = $this->em->getRepository(self::USER_CLASS);
 
@@ -93,10 +90,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         static::assertNull($user);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSoftlyDeleteIfColumnNameDifferFromPropertyName(): void
+    public function testShouldSoftlyDeleteIfColumnNameDifferFromPropertyName(): void
     {
         $repo = $this->em->getRepository(self::USER_CLASS);
 
@@ -494,10 +488,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         static::assertNull($user);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFilterBeQueryCachedCorrectlyWhenToggledForEntity(): void
+    public function testShouldFilterBeQueryCachedCorrectlyWhenToggledForEntity(): void
     {
         if (!class_exists(ArrayCache::class)) {
             static::markTestSkipped('Test only applies when doctrine/cache 1.x is installed');
@@ -596,10 +587,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    /**
-     * @test
-     */
-    public function shouldNotDeleteIfColumnNameDifferFromPropertyName(): void
+    public function testShouldNotDeleteIfColumnNameDifferFromPropertyName(): void
     {
         $repo = $this->em->getRepository(self::USER_NO_HARD_DELETE_CLASS);
 

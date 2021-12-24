@@ -168,7 +168,7 @@ class ForeignRootCategory
     /**
      * @param mixed $root
      */
-    public function setRoot($root)
+    public function setRoot($root): void
     {
         $this->root = $root;
     }

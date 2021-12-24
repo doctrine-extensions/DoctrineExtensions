@@ -30,27 +30,17 @@ class ClosureCategory
      *
      * @return int $id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set title
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * Get title
-     *
-     * @return string $title
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -58,7 +48,7 @@ class ClosureCategory
     /**
      * Add children
      */
-    public function addChildren(Category $children)
+    public function addChildren(Category $children): void
     {
         $this->children[] = $children;
     }
@@ -68,7 +58,7 @@ class ClosureCategory
      *
      * @return Collection $children
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -78,7 +68,7 @@ class ClosureCategory
      *
      * @param Category $parent
      */
-    public function setParent($parent)
+    public function setParent($parent): void
     {
         $this->parent = $parent;
     }
@@ -88,12 +78,12 @@ class ClosureCategory
      *
      * @return Category $parent
      */
-    public function getParent()
+    public function getParent(): Category
     {
         return $this->parent;
     }
 
-    public function setLevel($level)
+    public function setLevel($level): void
     {
         $this->level = $level;
     }

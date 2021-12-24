@@ -61,10 +61,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->repo = $this->em->getRepository(self::CATEGORY);
     }
 
-    /**
-     * @test
-     */
-    public function getRootNodes(): void
+    public function testGetRootNodes(): void
     {
         $result = $this->repo->getRootNodes('title');
 
@@ -74,10 +71,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[2]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getPath(): void
+    public function testGetPath(): void
     {
         $childNode = $this->repo->findOneBy(['title' => 'Carrots']);
 
@@ -96,10 +90,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[0]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getChildren(): void
+    public function testGetChildren(): void
     {
         $root = $this->repo->findOneBy(['title' => 'Food']);
 
@@ -160,10 +151,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[2]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getChildrenForEntityWithTrimmedSeparators(): void
+    public function testGetChildrenForEntityWithTrimmedSeparators(): void
     {
         $meta = $this->em->getClassMetadata(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
         $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
@@ -227,10 +215,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[2]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getTree(): void
+    public function testGetTree(): void
     {
         $tree = $this->repo->getTree();
 

@@ -48,10 +48,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $this->repo = $this->dm->getRepository(self::CATEGORY);
     }
 
-    /**
-     * @test
-     */
-    public function getRootNodes(): void
+    public function testGetRootNodes(): void
     {
         /** @var CachingIterator $result */
         $result = $this->repo->getRootNodes('title');
@@ -68,10 +65,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Sports', $result->current()->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getChildren(): void
+    public function testGetChildren(): void
     {
         $root = $this->repo->findOneBy(['title' => 'Food']);
 
@@ -169,10 +163,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Sports', $result->current()->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getTree(): void
+    public function testGetTree(): void
     {
         $tree = $this->repo->getTree();
 
@@ -210,10 +201,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Best Whisky', $tree->current()->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function childrenHierarchy(): void
+    public function testChildrenHierarchy(): void
     {
         $tree = $this->repo->childrenHierarchy();
 

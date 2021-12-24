@@ -21,7 +21,7 @@ use Gedmo\Uploadable\FileInfo\FileInfoArray;
  */
 final class FileInfoArrayTest extends \PHPUnit\Framework\TestCase
 {
-    public function testConstructorIfKeysAreNotValidOrSomeAreMissingThrowException()
+    public function testConstructorIfKeysAreNotValidOrSomeAreMissingThrowException(): void
     {
         $this->expectException('RuntimeException');
         $fileInfo = new FileInfoArray([]);

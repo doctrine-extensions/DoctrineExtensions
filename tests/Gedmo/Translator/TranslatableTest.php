@@ -32,10 +32,10 @@ final class TranslatableTest extends BaseTestCaseORM
         parent::setUp();
 
         $evm = new EventManager();
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testTranslatable()
+    public function testTranslatable(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -93,10 +93,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
     }
 
-    /**
-     * @test
-     */
-    public function shouldTranslateRelation()
+    public function testShouldTranslateRelation(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -126,10 +123,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('zenia', $parent->translate('fr')->getName());
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleDomainObjectProxy()
+    public function testShouldHandleDomainObjectProxy(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -147,7 +141,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('Женя', $name);
     }
 
-    public function testTranslatableProxyWithUpperCaseProperty()
+    public function testTranslatableProxyWithUpperCaseProperty(): void
     {
         $person = new Person();
         $person->setName('Jen');
@@ -169,7 +163,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('Абрамович', $lastName);
     }
 
-    public function testTranslatableWithMagicProperties()
+    public function testTranslatableWithMagicProperties(): void
     {
         $person = new Person();
         $person->translate('en')->setName('Jen');
@@ -183,7 +177,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('multilingual description', $person->description);
     }
 
-    public function testTranslatableWithCustomProxy()
+    public function testTranslatableWithCustomProxy(): void
     {
         $person = new PersonCustom();
         $person->setName('Jen');

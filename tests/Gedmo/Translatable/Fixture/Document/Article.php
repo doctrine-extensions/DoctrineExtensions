@@ -55,7 +55,7 @@ class Article
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -65,7 +65,7 @@ class Article
         return $this->title;
     }
 
-    public function setCode($code)
+    public function setCode($code): void
     {
         $this->code = $code;
     }

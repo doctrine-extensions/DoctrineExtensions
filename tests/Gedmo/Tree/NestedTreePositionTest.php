@@ -37,10 +37,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFailToPersistRootSibling(): void
+    public function testShouldFailToPersistRootSibling(): void
     {
         $food = new Category();
         $food->setTitle('Food');
@@ -59,10 +56,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertSame(4, $sport->getRight());
     }
 
-    /**
-     * @test
-     */
-    public function shouldFailToPersistRootAsSiblingForRootBasedTree(): void
+    public function testShouldFailToPersistRootAsSiblingForRootBasedTree(): void
     {
         $this->expectException('UnexpectedValueException');
         $food = new RootCategory();

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Exception\InvalidMappingException;
@@ -26,20 +26,12 @@ final class Issue104Test extends BaseTestCaseORM
 {
     public const CAR = Car::class;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    /**
-     * @test
-     */
-    public function shouldThrowAnExceptionWhenMappedSuperclassProtectedProperty()
+    public function testShouldThrowAnExceptionWhenMappedSuperclassProtectedProperty(): void
     {
         $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $audi = new Car();
         $audi->setDescription('audi car');

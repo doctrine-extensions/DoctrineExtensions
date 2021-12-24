@@ -9,7 +9,9 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * UploadableFileName Annotation for Uploadable behavioral extension
@@ -19,6 +21,7 @@ use Doctrine\Common\Annotations\Annotation;
  *
  * @author tiger-seo <tiger.seo@gmail.com>
  */
-final class UploadableFileName extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class UploadableFileName implements GedmoAnnotation
 {
 }

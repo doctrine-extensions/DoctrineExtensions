@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -44,7 +44,7 @@ final class Issue114Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIssue114()
+    public function testIssue114(): void
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
 

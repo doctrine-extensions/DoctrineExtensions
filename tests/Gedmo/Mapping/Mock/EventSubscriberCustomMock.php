@@ -15,7 +15,7 @@ use Gedmo\Mapping\MappedEventSubscriber;
 
 class EventSubscriberCustomMock extends MappedEventSubscriber
 {
-    public function getAdapter($args)
+    public function getAdapter($args): \Gedmo\Mapping\Event\AdapterInterface
     {
         return $this->getEventAdapter($args);
     }

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -38,7 +38,7 @@ final class Issue1151Test extends BaseTestCaseMongoODM
     /**
      * Test if new object with predefined id will be processed by sluggable listener
      */
-    public function testSlugCreateOnNewArticle()
+    public function testSlugCreateOnNewArticle(): void
     {
         $article = new Article();
         $article->setId('ABC123');

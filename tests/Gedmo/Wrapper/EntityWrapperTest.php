@@ -29,11 +29,11 @@ final class EntityWrapperTest extends BaseTestCaseORM
     protected function setUp(): void
     {
         parent::setUp();
-        $this->getMockSqliteEntityManager(new EventManager());
+        $this->getDefaultMockSqliteEntityManager(new EventManager());
         $this->populate();
     }
 
-    public function testManaged()
+    public function testManaged(): void
     {
         $test = $this->em->find(self::ARTICLE, ['id' => 1]);
         static::assertInstanceOf(self::ARTICLE, $test);
@@ -47,7 +47,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         static::assertTrue($wrapped->hasValidIdentifier());
     }
 
-    public function testProxy()
+    public function testProxy(): void
     {
         $this->em->clear();
         $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
@@ -63,7 +63,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
-    public function testDetachedEntity()
+    public function testDetachedEntity(): void
     {
         $test = $this->em->find(self::ARTICLE, ['id' => 1]);
         $this->em->clear();
@@ -73,7 +73,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
-    public function testDetachedProxy()
+    public function testDetachedProxy(): void
     {
         $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
         $this->em->clear();
@@ -83,7 +83,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
-    public function testSomeFunctions()
+    public function testSomeFunctions(): void
     {
         $test = new Article();
         $wrapped = new EntityWrapper($test, $this->em);

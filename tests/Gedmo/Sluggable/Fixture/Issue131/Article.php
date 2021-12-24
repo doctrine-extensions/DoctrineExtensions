@@ -47,6 +47,7 @@ class Article
      * @Gedmo\Slug(updatable=true, unique=true, fields={"title"})
      * @ORM\Column(length=64, unique=true, nullable=true)
      */
+    #[Gedmo\Slug(updatable: true, unique: true, fields: ['title'])]
     #[ORM\Column(length: 64, unique: true, nullable: true)]
     private $slug;
 

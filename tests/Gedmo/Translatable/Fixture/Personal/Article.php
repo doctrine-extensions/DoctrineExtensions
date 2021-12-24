@@ -24,6 +24,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -52,7 +54,7 @@ class Article
         return $this->translations;
     }
 
-    public function addTranslation(PersonalArticleTranslation $t)
+    public function addTranslation(PersonalArticleTranslation $t): void
     {
         if (!$this->translations->contains($t)) {
             $this->translations[] = $t;
@@ -60,12 +62,12 @@ class Article
         }
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }

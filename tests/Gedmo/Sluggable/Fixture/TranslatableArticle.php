@@ -65,6 +65,7 @@ class TranslatableArticle implements Sluggable, Translatable
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
+    #[Gedmo\Slug(fields: ['title', 'code'])]
     private $slug;
 
     /**

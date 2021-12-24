@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Category
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -51,12 +53,12 @@ class Category
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
     private $products;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -66,7 +68,7 @@ class Category
         return $this->title;
     }
 
-    public function addArticles(Article $article)
+    public function addArticles(Article $article): void
     {
         $this->articles[] = $article;
     }
@@ -76,7 +78,7 @@ class Category
         return $this->articles;
     }
 
-    public function addProducts(Product $product)
+    public function addProducts(Product $product): void
     {
         $this->products[] = $product;
     }

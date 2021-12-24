@@ -12,37 +12,50 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translator\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class PersonCustom
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="name", type="string", length=128)
      */
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
     private $name;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="desc", type="string", length=128)
      */
+    #[ORM\Column(name: 'desc', type: Types::STRING, length: 128)]
     private $description;
 
-    //
-    // TRANSLATIONS DEFINITION:
-    //
-
     /**
+     * @var Collection<int, PersonCustomTranslation>
+     *
      * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: PersonCustomTranslation::class, mappedBy: 'translatable', cascade: ['persist'])]
     private $translations;
 
     public function __construct()
@@ -50,32 +63,32 @@ class PersonCustom
         $this->translations = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function translate($locale = null)
+    public function translate(string $locale = null)
     {
         if (null === $locale) {
             return $this;

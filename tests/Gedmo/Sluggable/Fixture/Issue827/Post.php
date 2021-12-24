@@ -36,6 +36,7 @@ class Post
      */
     #[ORM\Id]
     #[ORM\Column(length: 64, nullable: true)]
+    #[Gedmo\Slug(updatable: true, unique: true, fields: ['title'])]
     private $slug;
 
     /**

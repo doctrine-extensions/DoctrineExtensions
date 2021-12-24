@@ -35,10 +35,7 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBePossibleToSlugIdentifiers(): void
+    public function testShouldBePossibleToSlugIdentifiers(): void
     {
         $sport = new Identifier();
         $sport->setTitle('Sport');
@@ -48,10 +45,7 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
         static::assertSame('sport', $sport->getId());
     }
 
-    /**
-     * @test
-     */
-    public function shouldPersistMultipleNonConflictingIdentifierSlugs(): void
+    public function testShouldPersistMultipleNonConflictingIdentifierSlugs(): void
     {
         $sport = new Identifier();
         $sport->setTitle('Sport');

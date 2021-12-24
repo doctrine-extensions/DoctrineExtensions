@@ -28,7 +28,7 @@ class SupperClassExtension extends MappedSupperClass
     #[Gedmo\Translatable]
     private $title;
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }

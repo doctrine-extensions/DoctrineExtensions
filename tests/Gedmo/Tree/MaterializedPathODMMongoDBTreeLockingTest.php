@@ -52,10 +52,7 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $this->config = $this->listener->getConfiguration($this->dm, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function modifyingANodeWhileItsTreeIsLockedShouldThrowAnException(): void
+    public function testModifyingANodeWhileItsTreeIsLockedShouldThrowAnException(): void
     {
         // By default, TreeListenerMock disables the release of the locks
         // for testing purposes
@@ -78,10 +75,7 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $this->dm->flush();
     }
 
-    /**
-     * @test
-     */
-    public function modifyingANodeWhileItsTreeIsNotLockedShouldNotThrowException(): void
+    public function testModifyingANodeWhileItsTreeIsNotLockedShouldNotThrowException(): void
     {
         static::markTestSkipped('the locking test is failing after removal of scheduleExtraUpdate');
         $article = $this->createArticle();

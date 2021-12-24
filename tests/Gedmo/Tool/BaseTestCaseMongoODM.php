@@ -67,8 +67,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 
     /**
      * DocumentManager mock object together with annotation mapping driver and database.
-     *
-     * @param EventManager $evm
      */
     protected function getMockDocumentManager(?EventManager $evm = null, ?Configuration $config = null): DocumentManager
     {
@@ -88,12 +86,8 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     /**
      * DocumentManager mock object with
      * annotation mapping driver
-     *
-     * @param EventManager $evm
-     *
-     * @return DocumentManager
      */
-    protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null)
+    protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null): DocumentManager
     {
         $conn = $this->getMockBuilder('Doctrine\\MongoDB\\Connection')->getMock();
 

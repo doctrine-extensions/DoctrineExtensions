@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
@@ -43,10 +43,7 @@ final class Issue922Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldTranslateDateFields()
+    public function testShouldTranslateDateFields(): void
     {
         $p1 = new Post();
         $p1->setPublishedAt(new \DateTime());

@@ -53,10 +53,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->config = $this->listener->getConfiguration($this->dm, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function insertUpdateAndRemove(): void
+    public function testInsertUpdateAndRemove(): void
     {
         // Insert
         $category = $this->createCategory();
@@ -126,10 +123,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         static::assertSame(1, $firstResult->getLevel());
     }
 
-    /**
-     * @test
-     */
-    public function useOfSeparatorInPathSourceShouldThrowAnException(): void
+    public function testUseOfSeparatorInPathSourceShouldThrowAnException(): void
     {
         $this->expectException(RuntimeException::class);
 

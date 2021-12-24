@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Sluggable\Fixture;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Sluggable\Sluggable;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
@@ -57,6 +58,8 @@ class SuffixWithTreeHandler implements Sluggable
      * }, separator="-", updatable=true, fields={"title"}, suffix=".test")
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'], suffix: '.test')]
+    #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 

@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class MixedValue
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -47,12 +49,12 @@ class MixedValue
     #[ORM\Column(type: 'custom')]
     private $cust;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setDate($date)
+    public function setDate($date): void
     {
         $this->date = $date;
     }
@@ -62,7 +64,7 @@ class MixedValue
         return $this->date;
     }
 
-    public function setCust($cust)
+    public function setCust($cust): void
     {
         $this->cust = $cust;
     }

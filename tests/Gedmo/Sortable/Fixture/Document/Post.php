@@ -54,7 +54,7 @@ class Post
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -64,7 +64,7 @@ class Post
         return $this->title;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }
@@ -74,7 +74,7 @@ class Post
         return $this->position;
     }
 
-    public function setCategory(Category $category)
+    public function setCategory(Category $category): void
     {
         $this->category = $category;
     }

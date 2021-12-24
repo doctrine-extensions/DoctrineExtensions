@@ -48,6 +48,7 @@ class Page
      * @Gedmo\Slug(style="camel", separator="_", fields={"content"})
      * @ORM\Column(type="string", length=128)
      */
+    #[Gedmo\Slug(style: 'camel', separator: '_', fields: ['content'])]
     #[ORM\Column(type: Types::STRING, length: 128)]
     private $slug;
 

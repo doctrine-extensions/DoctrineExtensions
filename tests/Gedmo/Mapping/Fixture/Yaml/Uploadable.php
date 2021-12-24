@@ -28,7 +28,7 @@ class Uploadable
         return $this->path;
     }
 
-    public function callbackMethod()
+    public function callbackMethod(): void
     {
     }
 }

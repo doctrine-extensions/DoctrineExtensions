@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -32,10 +32,10 @@ final class Issue131Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $test = new Article();
         $test->setTitle('');
@@ -54,10 +54,7 @@ final class Issue131Test extends BaseTestCaseORM
         static::assertNull($test2->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleOnlyZeroInSlug()
+    public function testShouldHandleOnlyZeroInSlug(): void
     {
         $article = new Article();
         $article->setTitle('0');
