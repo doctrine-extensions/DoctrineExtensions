@@ -28,6 +28,7 @@ class Type
      * @Gedmo\ReferenceIntegrity("nullify")
      */
     #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'type')]
+    #[Gedmo\ReferenceIntegrity(value: 'nullify')]
     protected $article;
 
     /**

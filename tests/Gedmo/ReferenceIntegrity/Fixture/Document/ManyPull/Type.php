@@ -30,6 +30,7 @@ class Type
      * @Gedmo\ReferenceIntegrity("pull")
      */
     #[ODM\ReferenceMany(targetDocument: Article::class, mappedBy: 'types')]
+    #[Gedmo\ReferenceIntegrity(value: 'pull')]
     protected $articles;
 
     /**

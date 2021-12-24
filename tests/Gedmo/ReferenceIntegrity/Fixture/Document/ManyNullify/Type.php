@@ -30,6 +30,7 @@ class Type
      * @Gedmo\ReferenceIntegrity("nullify")
      */
     #[ODM\ReferenceMany(targetDocument: Article::class, mappedBy: 'type')]
+    #[Gedmo\ReferenceIntegrity(value: 'nullify')]
     protected $articles;
 
     /**
