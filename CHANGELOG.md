@@ -27,6 +27,7 @@ a release.
 - Sluggable: Support to use annotations as attributes on PHP >= 8.0.
 - Uploadable: Support to use annotations as attributes on PHP >= 8.0.
 - Tree: Support to use annotations as attributes on PHP >= 8.0.
+- References: Support to use annotations as attributes on PHP >= 8.0.
 
 ### Fixed
 - Blameable, IpTraceable, Timestampable: Type handling for the tracked field values configured in the origin field.
