@@ -9,7 +9,9 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * Group annotation for Sortable extension
@@ -19,6 +21,7 @@ use Doctrine\Common\Annotations\Annotation;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class SortableGroup extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class SortableGroup implements GedmoAnnotation
 {
 }

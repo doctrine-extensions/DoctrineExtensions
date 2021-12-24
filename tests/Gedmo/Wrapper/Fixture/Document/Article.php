@@ -12,31 +12,41 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Wrapper\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * @MongoODM\Document(collection="articles")
  */
+#[MongoODM\Document(collection: 'article')]
 class Article
 {
-    /** @MongoODM\Id */
+    /**
+     * @var string|null
+     *
+     * @MongoODM\Id
+     */
+    #[MongoODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     private $title;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

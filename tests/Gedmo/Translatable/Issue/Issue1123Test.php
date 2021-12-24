@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -44,10 +44,7 @@ final class Issue1123Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFindInheritedClassTranslations()
+    public function testShouldFindInheritedClassTranslations(): void
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
 
@@ -91,7 +88,7 @@ final class Issue1123Test extends BaseTestCaseORM
         static::assertSame('child', $res[0]['discr']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TRANSLATION,

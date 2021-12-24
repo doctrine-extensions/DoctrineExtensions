@@ -84,7 +84,7 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
@@ -267,7 +267,7 @@ class LoggableListener extends MappedEventSubscriber
 
         // Filter embedded documents
         if (isset($meta->isEmbeddedDocument) && $meta->isEmbeddedDocument) {
-            return;
+            return null;
         }
 
         if ($config = $this->getConfiguration($om, $meta->getName())) {

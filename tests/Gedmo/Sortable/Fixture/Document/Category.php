@@ -12,18 +12,22 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
 /**
  * @ODM\Document(collection="categories")
  */
+#[ODM\Document(collection: 'categories')]
 class Category
 {
     /** @ODM\Id */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $name;
 
     public function getId()
@@ -31,7 +35,7 @@ class Category
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }

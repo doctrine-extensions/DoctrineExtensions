@@ -15,14 +15,17 @@ use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
 
 class MimeTypeGuesserStub implements MimeTypeGuesserInterface
 {
+    /**
+     * @var string|null
+     */
     protected $mimeType;
 
-    public function __construct($mimeType)
+    public function __construct(?string $mimeType)
     {
         $this->mimeType = $mimeType;
     }
 
-    public function guess($path)
+    public function guess($path): ?string
     {
         return $this->mimeType;
     }

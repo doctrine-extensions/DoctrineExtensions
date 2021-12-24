@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
@@ -46,7 +46,7 @@ final class Issue138Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIssue138()
+    public function testIssue138(): void
     {
         $this->populate();
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -62,7 +62,7 @@ final class Issue138Test extends BaseTestCaseORM
         static::assertSame('Food', $result[0]['title']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

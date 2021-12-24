@@ -51,10 +51,7 @@ final class InheritanceTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleMappedSuperclass()
+    public function testShouldHandleMappedSuperclass(): void
     {
         $article = new TemplatedArticle();
         $article->setName('name in en');
@@ -96,10 +93,7 @@ final class InheritanceTest extends BaseTestCaseORM
         static::assertSame('content in de', $translations['de']['content']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleInheritedTranslationsThroughBaseObjectClass()
+    public function testShouldHandleInheritedTranslationsThroughBaseObjectClass(): void
     {
         $file = new File();
         $file->setSize(500);
@@ -141,7 +135,7 @@ final class InheritanceTest extends BaseTestCaseORM
         static::assertSame('mime de', $images[0]->getMime());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

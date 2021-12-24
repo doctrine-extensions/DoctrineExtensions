@@ -40,21 +40,10 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $conn = [
-                    'driver' => 'pdo_mysql',
-                    'host' => '127.0.0.1',
-                    'dbname' => 'test',
-                    'user' => 'root',
-                    'password' => 'nimda',
-        ];
-        //$this->getMockCustomEntityManager($conn, $evm);
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleStringIdentifier()
+    public function testShouldHandleStringIdentifier(): void
     {
         $object = new StringIdentifier();
         $object->setTitle('title in en');
@@ -116,7 +105,7 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
         static::assertSame('title in de', $object->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

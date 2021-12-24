@@ -26,6 +26,9 @@ final class ChangeTest extends BaseTestCaseORM
     public const TEST_IP = '34.234.1.10';
     public const FIXTURE = TitledArticle::class;
 
+    /**
+     * @var IpTraceableListener
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -38,10 +41,10 @@ final class ChangeTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testChange()
+    public function testChange(): void
     {
         $test = new TitledArticle();
         $test->setTitle('Test');
@@ -70,7 +73,7 @@ final class ChangeTest extends BaseTestCaseORM
         static::assertSame(self::TEST_IP, $test->getChtitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

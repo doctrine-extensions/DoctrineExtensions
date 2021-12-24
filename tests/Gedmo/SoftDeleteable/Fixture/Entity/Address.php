@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\SoftDeleteable\Fixture\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -18,67 +19,83 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
+#[ORM\Entity]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
 class Address
 {
     /**
-     * @ORM\Column(type="integer")
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     private $street;
 
     /**
+     * @var \DateTime|null
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private $deletedAt;
 
     /**
+     * @var Person|null
+     *
      * @ORM\OneToOne(targetEntity="Person", mappedBy="address", cascade={"remove"})
      */
+    #[ORM\OneToOne(targetEntity: Person::class, mappedBy: 'address', cascade: ['remove'])]
     private $owner;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setStreet($street)
+    public function setStreet(?string $street): self
     {
         $this->street = $street;
 
         return $this;
     }
 
-    public function getStreet()
+    public function getStreet(): ?string
     {
         return $this->street;
     }
 
-    public function setDeletedAt($deletedAt)
+    public function setDeletedAt(?\DateTime $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
 
         return $this;
     }
 
-    public function getDeletedAt()
+    public function getDeletedAt(): ?\DateTime
     {
         return $this->deletedAt;
     }
 
-    public function setOwner(Person $owner)
+    public function setOwner(Person $owner): self
     {
         $this->owner = $owner;
 
         return $this;
     }
 
-    public function getOwner()
+    public function getOwner(): ?Person
     {
         return $this->owner;
     }

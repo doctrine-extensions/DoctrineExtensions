@@ -32,7 +32,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TimestampableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testTimestampableNoInterface(): void

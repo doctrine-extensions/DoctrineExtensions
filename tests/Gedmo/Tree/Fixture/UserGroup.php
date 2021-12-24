@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Tree\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * Group entity
@@ -19,34 +21,34 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @ORM\Table(name="user_group")
  */
+#[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[ORM\Table(name: 'user_group')]
 class UserGroup extends Role
 {
     /**
-     * @ORM\Column(name="name", type="string", length=191)
+     * @var string|null
      *
-     * @var string
+     * @ORM\Column(name="name", type="string", length=191)
      */
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 191)]
     private $name;
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->setName($name);
     }
 
-    /**
-     * @return string
-     */
-    public function getRoleId()
+    public function getRoleId(): ?string
     {
         return $this->name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
         $this->setRoleId($name);

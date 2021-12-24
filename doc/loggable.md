@@ -9,7 +9,7 @@ Features:
 - ORM and ODM support using same listener
 - Can be nested with other behaviors
 - Objects can be reverted to previous versions
-- Annotation, Yaml and Xml mapping support for extensions
+- Attributes, Annotation, Yaml and Xml mapping support for extensions
 
 Update **2011-04-04**
 
@@ -18,7 +18,7 @@ and any number of them
 
 **Portability:**
 
-- **Loggable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **Loggable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Loggable**
@@ -37,8 +37,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 ### Loggable annotations:
@@ -46,6 +46,12 @@ on how to setup and use the extensions in most optimized way.
 - **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="my\class")** this class annotation
 will store logs to optionally specified **logEntryClass**. You will still need to specify versioned fields with the following annotation.
 - **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
+
+### Loggable annotations:
+
+- **\#[Gedmo\Mapping\Annotation\Loggable(logEntryClass: MyClass::class]** this class attribute
+will store logs to optionally specified **logEntryClass**. You will still need to specify versioned fields with the following attribute.
+- **\#[Gedmo\Mapping\Annotation\Versioned]** tracks attributed property for changes
 
 ### Loggable username:
 
@@ -65,17 +71,23 @@ $evm->addEventSubscriber($loggableListener);
 you need to identify entity as being Loggable. The metadata is loaded only once when
 cache is active
 
+**Note:** this example is using annotations and attributes for mapping, you should use
+one of them, not both.
+
 ``` php
 <?php
 namespace Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @Gedmo\Loggable
  */
+#[ORM\Entity]
+#[Gedmo\Loggable]
 class Article
 {
     /**
@@ -83,12 +95,17 @@ class Article
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
     /**
      * @Gedmo\Versioned
      * @ORM\Column(name="title", type="string", length=8)
      */
+    #[Gedmo\Versioned]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     private $title;
 
     public function getId()
@@ -118,20 +135,26 @@ namespace Document;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * @ODM\Document(collection="articles")
  * @Gedmo\Loggable
  */
+#[Gedmo\Loggable]
+#[ODM\Document(collection: 'articles')]
 class Article
 {
     /** @ODM\Id */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      * @Gedmo\Versioned
      */
+    #[Gedmo\Versioned]
+    #[ODM\Field(type: Type::STRING)]
     private $title;
 
     public function __toString()

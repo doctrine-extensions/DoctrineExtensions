@@ -49,13 +49,13 @@ final class TimestampableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->timestampable);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             Timestampable::class,
             Status::class,
         ], $chain);
     }
 
-    public function testTimestampableMetadata()
+    public function testTimestampableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Timestampable::class);
         $config = $this->timestampable->getConfiguration($this->em, $meta->getName());

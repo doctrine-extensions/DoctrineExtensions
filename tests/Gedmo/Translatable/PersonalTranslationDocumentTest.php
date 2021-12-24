@@ -40,13 +40,10 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldCreateTranslations()
+    public function testShouldCreateTranslations(): void
     {
         $this->populate();
         $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
@@ -55,10 +52,7 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         static::assertCount(2, $translations);
     }
 
-    /**
-     * @test
-     */
-    public function shouldTranslateTheRecord()
+    public function testShouldTranslateTheRecord(): void
     {
         $this->populate();
         $this->translatableListener->setTranslatableLocale('lt');

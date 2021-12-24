@@ -26,6 +26,9 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
 {
     public const ARTICLE = ConfigurationArticle::class;
 
+    /**
+     * @var int|null
+     */
     private $articleId;
 
     protected function setUp(): void
@@ -35,11 +38,11 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testInsertedNewSlug()
+    public function testInsertedNewSlug(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
@@ -47,7 +50,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         static::assertSame('the-title-my-code', $article->getSlug());
     }
 
-    public function testNonUniqueSlugGeneration()
+    public function testNonUniqueSlugGeneration(): void
     {
         for ($i = 0; $i < 5; ++$i) {
             $article = new ConfigurationArticle();
@@ -61,7 +64,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         }
     }
 
-    public function testSlugLimit()
+    public function testSlugLimit(): void
     {
         $long = 'the title the title the title the title the';
         $article = new ConfigurationArticle();
@@ -76,7 +79,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         static::assertSame(32, strlen($shorten));
     }
 
-    public function testNonUpdatableSlug()
+    public function testNonUpdatableSlug(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTitle('the title updated');
@@ -87,7 +90,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         static::assertSame('the-title-my-code', $article->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

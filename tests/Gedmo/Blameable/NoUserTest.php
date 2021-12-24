@@ -35,10 +35,10 @@ final class NoUserTest extends BaseTestCaseMongoODM
         $evm->addEventSubscriber($listener);
 
         // create the document manager
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
-    public function testWhenNoUserIsAvailable()
+    public function testWhenNoUserIsAvailable(): void
     {
         $sport = new Article();
         $sport->setTitle('sport no user');

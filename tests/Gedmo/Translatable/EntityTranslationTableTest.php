@@ -43,7 +43,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testFixtureGeneratedTranslations()
+    public function testFixtureGeneratedTranslations(): void
     {
         $person = new Person();
         $person->setName('name in en');
@@ -81,10 +81,8 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
 
     /**
      * Covers issue #438
-     *
-     * @test
      */
-    public function shouldPersistDefaultLocaleValue()
+    public function testShouldPersistDefaultLocaleValue(): void
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $this->translatableListener->setTranslatableLocale('de');
@@ -109,7 +107,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         }
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::PERSON,

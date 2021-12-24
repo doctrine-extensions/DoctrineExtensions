@@ -168,7 +168,7 @@ class Validator
             throw new InvalidMappingException(sprintf('Option "maxSize" must be a number >= 0 for class "%s".', $meta->getName()));
         }
 
-        if (self::$enableMimeTypesConfigException && ('' !== $config['allowedTypes'] && '' !== $config['disallowedTypes'])) {
+        if (self::$enableMimeTypesConfigException && '' !== $config['allowedTypes'] && '' !== $config['disallowedTypes']) {
             $msg = 'You\'ve set "allowedTypes" and "disallowedTypes" options. You must set only one in class "%s".';
 
             throw new InvalidMappingException(sprintf($msg, $meta->getName()));

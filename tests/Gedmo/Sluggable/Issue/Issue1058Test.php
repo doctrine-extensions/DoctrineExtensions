@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -34,14 +34,13 @@ final class Issue1058Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
-     * @test
      * @group issue1058
      */
-    public function shouldHandleUniqueConstraintsBasedOnRelation()
+    public function testShouldHandleUniqueConstraintsBasedOnRelation(): void
     {
         $userFoo = new User();
         $this->em->persist($userFoo);
@@ -86,7 +85,7 @@ final class Issue1058Test extends BaseTestCaseORM
         static::assertSame('the-title-1', $page->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

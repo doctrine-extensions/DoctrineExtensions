@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -65,17 +67,17 @@ class Article
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addImage(Image $image)
+    public function addImage(Image $image): void
     {
         $this->images[] = $image;
     }
 
-    public function setImages(array $images)
+    public function setImages(array $images): void
     {
         foreach ($images as $img) {
             // first check if it does not contain it allready
@@ -87,12 +89,12 @@ class Article
         }
     }
 
-    public function getImages()
+    public function getImages(): \Doctrine\Common\Collections\ArrayCollection
     {
         return $this->images;
     }
 
-    public function addFile(File $file)
+    public function addFile(File $file): void
     {
         $this->files[] = $file;
     }
@@ -102,7 +104,7 @@ class Article
         return $this->files;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }

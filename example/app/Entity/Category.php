@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Entity;
+namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,8 +18,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="ext_categories")
- * @ORM\Entity(repositoryClass="Entity\Repository\CategoryRepository")
- * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
+ * @ORM\Entity(repositoryClass="App\Entity\Repository\CategoryRepository")
+ * @Gedmo\TranslationEntity(class="App\Entity\CategoryTranslation")
  */
 class Category
 {

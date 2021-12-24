@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -44,18 +44,15 @@ final class Issue449Test extends BaseTestCaseORM
         $this->softDeleteableListener = new SoftDeleteableListener();
         $evm->addEventSubscriber($this->softDeleteableListener);
 
-        $config = $this->getMockAnnotatedConfig();
+        $config = $this->getDefaultConfiguration();
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
 
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
+        $this->em = $this->getDefaultMockSqliteEntityManager($evm, $config);
 
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled()
+    public function testShouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled(): void
     {
         $article = new Article();
         $article->setTitle('the soft title');
@@ -80,7 +77,7 @@ final class Issue449Test extends BaseTestCaseORM
         static::assertNotSame($slug, $article->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

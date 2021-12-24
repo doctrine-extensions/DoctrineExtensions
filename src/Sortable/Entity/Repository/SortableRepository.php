@@ -26,10 +26,10 @@ class SortableRepository extends EntityRepository
      *
      * @var SortableListener
      */
-    protected $listener = null;
+    protected $listener;
 
-    protected $config = null;
-    protected $meta = null;
+    protected $config;
+    protected $meta;
 
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -65,10 +65,7 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableUsingYamlDriver()
+    public function testShouldBeAbleToMapSluggableUsingYamlDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
@@ -116,10 +113,7 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertSame('/', $second['separator']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableUsingAnnotationDriver()
+    public function testShouldBeAbleToMapSluggableUsingAnnotationDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::SLUGGABLE);
         $cacheId = ExtensionMetadataFactory::getCacheId(

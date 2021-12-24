@@ -46,7 +46,7 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function populate()
+    public function populate(): void
     {
         $entity = new Company();
         $entity->setTitle('test');
@@ -66,7 +66,7 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    public function testTranslate()
+    public function testTranslate(): void
     {
         /** @var EntityRepository $repo */
         $repo = $this->em->getRepository(self::FIXTURE);
@@ -98,7 +98,7 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         static::assertSame('facebook-de', $entity->getLink()->getFacebook());
     }
 
-    public function testQueryWalker()
+    public function testQueryWalker(): void
     {
         $dql = 'SELECT f FROM '.self::FIXTURE.' f';
 
@@ -115,7 +115,7 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         static::assertSame('facebook-de', $result[0]['link.facebook']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

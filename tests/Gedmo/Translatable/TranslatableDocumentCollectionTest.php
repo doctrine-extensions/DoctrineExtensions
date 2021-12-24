@@ -41,14 +41,11 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
     }
 
-    /**
-     * @test
-     */
-    public function shouldPersistMultipleTranslations()
+    public function testShouldPersistMultipleTranslations(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         static::assertInstanceOf(TranslationRepository::class, $repo);
@@ -68,10 +65,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         static::assertSame('content ru', $translations['ru_ru']['content']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldUpdateTranslation()
+    public function testShouldUpdateTranslation(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         static::assertInstanceOf(TranslationRepository::class, $repo);
@@ -92,10 +86,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         static::assertSame('content ru change', $translations['ru_ru']['content']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldUpdateMultipleTranslations()
+    public function testShouldUpdateMultipleTranslations(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         static::assertInstanceOf(TranslationRepository::class, $repo);

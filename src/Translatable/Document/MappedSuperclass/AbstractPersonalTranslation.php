@@ -10,12 +10,14 @@
 namespace Gedmo\Translatable\Document\MappedSuperclass;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * Gedmo\Translatable\Document\AbstractPersonalTranslation
  *
  * @MongoODM\MappedSuperclass
  */
+#[MongoODM\MappedSuperclass]
 abstract class AbstractPersonalTranslation
 {
     /**
@@ -23,35 +25,39 @@ abstract class AbstractPersonalTranslation
      *
      * @MongoODM\Id
      */
+    #[MongoODM\Id]
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
      * Related document with ManyToOne relation
      * must be mapped by user
      *
-     * @var object
+     * @var object|null
      */
     protected $object;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $field;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $content;
 
     /**
@@ -129,7 +135,7 @@ abstract class AbstractPersonalTranslation
     /**
      * Get object related
      *
-     * @return string
+     * @return object
      */
     public function getObject()
     {

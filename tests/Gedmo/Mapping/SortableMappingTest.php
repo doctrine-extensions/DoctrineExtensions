@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
@@ -55,13 +55,13 @@ final class SortableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->sortable);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             Sortable::class,
             SortableGroup::class,
         ], $chain);
     }
 
-    public function testYamlMapping()
+    public function testYamlMapping(): void
     {
         $meta = $this->em->getClassMetadata(Sortable::class);
         $config = $this->sortable->getConfiguration($this->em, $meta->getName());

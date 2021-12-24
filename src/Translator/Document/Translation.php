@@ -10,8 +10,7 @@
 namespace Gedmo\Translator\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Translator\Translation as BaseTranslation;
 
 /**
@@ -19,13 +18,15 @@ use Gedmo\Translator\Translation as BaseTranslation;
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  *
- * @MappedSuperclass
+ * @ODM\MappedSuperclass
  */
+#[ODM\MappedSuperclass]
 abstract class Translation extends BaseTranslation
 {
     /**
-     * @Id
+     * @ODM\Id
      */
+    #[ODM\Id]
     protected $id;
 
     /**
@@ -33,6 +34,7 @@ abstract class Translation extends BaseTranslation
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
@@ -40,6 +42,7 @@ abstract class Translation extends BaseTranslation
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $property;
 
     /**
@@ -47,6 +50,7 @@ abstract class Translation extends BaseTranslation
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $value;
 
     /**

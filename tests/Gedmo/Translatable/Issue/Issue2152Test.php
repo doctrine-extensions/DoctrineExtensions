@@ -42,10 +42,7 @@ final class Issue2152Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFindInheritedClassTranslations(): void
+    public function testShouldFindInheritedClassTranslations(): void
     {
         //Arrange
         //by default we have English
@@ -87,7 +84,7 @@ final class Issue2152Test extends BaseTestCaseORM
         static::assertSame($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TRANSLATION,

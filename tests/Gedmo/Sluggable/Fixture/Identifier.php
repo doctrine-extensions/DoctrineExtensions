@@ -17,31 +17,40 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Identifier
 {
     /**
+     * @var string|null
+     *
      * @ORM\Id
      * @Gedmo\Slug(separator="_", updatable=false, fields={"title"})
      * @ORM\Column(length=32, unique=true)
      */
+    #[ORM\Id]
+    #[ORM\Column(length: 32, unique: true)]
+    #[Gedmo\Slug(separator: '_', updatable: false, fields: ['title'])]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=32)
      */
+    #[ORM\Column(length: 32)]
     private $title;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

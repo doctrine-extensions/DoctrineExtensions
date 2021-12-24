@@ -50,12 +50,12 @@ class StringIdentifier
         return $this->uid;
     }
 
-    public function setUid($uid)
+    public function setUid($uid): void
     {
         $this->uid = $uid;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -65,7 +65,7 @@ class StringIdentifier
         return $this->title;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): void
     {
         $this->locale = $locale;
     }

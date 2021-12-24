@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Timestampable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\EmbeddedDocument()
  */
+#[ODM\EmbeddedDocument]
 class Tag
 {
     /**
@@ -24,6 +26,7 @@ class Tag
      *
      * @var string
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     protected $name;
 
     /**
@@ -32,6 +35,8 @@ class Tag
      *
      * @var \DateTime
      */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ODM\Field(type: MongoDBType::DATE)]
     protected $created;
 
     /**
@@ -40,46 +45,36 @@ class Tag
      *
      * @var \DateTime
      */
+    #[Gedmo\Timestampable]
+    #[ODM\Field(type: MongoDBType::DATE)]
     protected $updated;
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreated()
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
 
-    public function setCreated(\DateTime $created)
+    public function setCreated(\DateTime $created): void
     {
         $this->created = $created;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getUpdated()
+    public function getUpdated(): \DateTime
     {
         return $this->updated;
     }
 
-    public function setUpdated(\DateTime $updated)
+    public function setUpdated(\DateTime $updated): void
     {
         $this->updated = $updated;
     }

@@ -83,7 +83,7 @@ class ExtensionMetadataFactory
     public function getExtensionMetadata($meta)
     {
         if ($meta->isMappedSuperclass) {
-            return; // ignore mappedSuperclasses for now
+            return []; // ignore mappedSuperclasses for now
         }
         $config = [];
         $cmf = $this->objectManager->getMetadataFactory();
@@ -154,7 +154,7 @@ class ExtensionMetadataFactory
         $driver = null;
         $className = get_class($omDriver);
         $driverName = substr($className, strrpos($className, '\\') + 1);
-        if ($omDriver instanceof MappingDriverChain || 'DriverChain' == $driverName) {
+        if ($omDriver instanceof MappingDriverChain || 'DriverChain' === $driverName) {
             $driver = new Driver\Chain();
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
                 $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);

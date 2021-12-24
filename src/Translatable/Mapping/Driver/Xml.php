@@ -36,7 +36,7 @@ class Xml extends BaseXml
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (('entity' == $xmlDoctrine->getName() || 'mapped-superclass' == $xmlDoctrine->getName())) {
+        if (('entity' === $xmlDoctrine->getName() || 'mapped-superclass' === $xmlDoctrine->getName())) {
             if ($xml->count() && isset($xml->translation)) {
                 /**
                  * @var \SimpleXmlElement
@@ -107,7 +107,7 @@ class Xml extends BaseXml
             /** @var \SimpleXmlElement $data */
             $data = $mapping->translatable;
             if ($this->_isAttributeSet($data, 'fallback')) {
-                $config['fallback'][$fieldName] = 'true' == $this->_getAttribute($data, 'fallback') ? true : false;
+                $config['fallback'][$fieldName] = $this->_getBooleanAttribute($data, 'fallback');
             }
         }
     }

@@ -40,6 +40,9 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     public const MAPPED_SUPERCLASS_CHILD_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Child';
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
+    /**
+     * @var SoftDeleteableListener
+     */
     private $softDeleteableListener;
 
     protected function setUp(): void
@@ -49,17 +52,14 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $this->softDeleteableListener = new SoftDeleteableListener();
         $evm->addEventSubscriber($this->softDeleteableListener);
-        $config = $this->getMockAnnotatedConfig();
+        $config = $this->getDefaultConfiguration();
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
 
         $this->dm = $this->getMockDocumentManager($evm, $config);
         $this->dm->getFilterCollection()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSoftlyDeleteIfColumnNameDifferFromPropertyName()
+    public function testShouldSoftlyDeleteIfColumnNameDifferFromPropertyName(): void
     {
         $repo = $this->dm->getRepository(self::USER_CLASS);
 
@@ -87,7 +87,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
      * Tests the filter by enabling and disabling it between
      * some user persists actions.
      */
-    public function testSoftDeleteableFilter()
+    public function testSoftDeleteableFilter(): void
     {
         $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
         static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
@@ -124,7 +124,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
      * @TODO: not supported in ODM yet
      * test
      */
-    public function shouldSupportSoftDeleteableFilterTimeAware()
+    public function shouldSupportSoftDeleteableFilterTimeAware(): void
     {
         $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
         static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
@@ -160,7 +160,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
     }
 
-    public function testPostSoftDeleteEventIsDispatched()
+    public function testPostSoftDeleteEventIsDispatched(): void
     {
         $subscriber = $this->getMockBuilder(EventSubscriber::class)
             ->setMethods([

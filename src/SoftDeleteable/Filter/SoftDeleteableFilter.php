@@ -78,6 +78,8 @@ class SoftDeleteableFilter extends SQLFilter
 
     /**
      * @param string $class
+     *
+     * @phpstan-param class-string $class
      */
     public function disableForEntity($class)
     {
@@ -88,6 +90,8 @@ class SoftDeleteableFilter extends SQLFilter
 
     /**
      * @param string $class
+     *
+     * @phpstan-param class-string $class
      */
     public function enableForEntity($class)
     {

@@ -34,25 +34,19 @@ final class LoggableEntityTest extends BaseTestCaseORM
     public const RELATED_ARTICLE = RelatedArticle::class;
     public const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment::class;
 
-    private $articleId;
-    private $LoggableListener;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $evm = new EventManager();
-        $this->LoggableListener = new LoggableListener();
-        $this->LoggableListener->setUsername('jules');
-        $evm->addEventSubscriber($this->LoggableListener);
+        $loggableListener = new LoggableListener();
+        $loggableListener->setUsername('jules');
+        $evm->addEventSubscriber($loggableListener);
 
-        $this->em = $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleClonedEntity()
+    public function testShouldHandleClonedEntity(): void
     {
         $art0 = new Article();
         $art0->setTitle('Title');
@@ -73,7 +67,7 @@ final class LoggableEntityTest extends BaseTestCaseORM
         static::assertNotSame($logs[0]->getObjectId(), $logs[1]->getObjectId());
     }
 
-    public function testLoggable()
+    public function testLoggable(): void
     {
         $logRepo = $this->em->getRepository(LogEntry::class);
         $articleRepo = $this->em->getRepository(self::ARTICLE);
@@ -119,7 +113,7 @@ final class LoggableEntityTest extends BaseTestCaseORM
         static::assertNull($log->getData());
     }
 
-    public function testVersionControl()
+    public function testVersionControl(): void
     {
         $this->populate();
         $commentLogRepo = $this->em->getRepository(self::COMMENT_LOG);
@@ -145,7 +139,7 @@ final class LoggableEntityTest extends BaseTestCaseORM
         static::assertSame('update', $latest->getAction());
     }
 
-    public function testLogEmbedded()
+    public function testLogEmbedded(): void
     {
         $address = $this->populateEmbedded();
 
@@ -160,7 +154,7 @@ final class LoggableEntityTest extends BaseTestCaseORM
         static::assertCount(5, $logEntries[3]->getData());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

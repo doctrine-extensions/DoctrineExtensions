@@ -11,37 +11,61 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Blameable\Fixture\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Type
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string", length=128)
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private $title;
 
     /**
+     * @var Collection<int, Article>
+     *
      * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
      */
+    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'type')]
     private $articles;
 
-    public function getId()
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

@@ -23,9 +23,12 @@ use Gedmo\Tree\Strategy\ODM\MongoDB\MaterializedPath;
  */
 class MaterializedPathMock extends MaterializedPath
 {
+    /**
+     * @var bool
+     */
     public $releaseLocks = false;
 
-    protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
+    protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea): void
     {
         if ($this->releaseLocks) {
             parent::releaseTreeLocks($om, $ea);

@@ -12,7 +12,7 @@ Features:
 - Automatic translation of Entity or Document fields when loaded
 - ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation, Yaml and Xml mapping support for extensions
 
 **2012-01-28**
 
@@ -22,7 +22,7 @@ constraint. This dramatically improves the management of translations
 **2012-01-04**
 
 - Refactored translatable to be able to persist, update many translations
-using repository, [issue #224](https://github.com/Atlantic18/DoctrineExtensions/issues/224)
+using repository, [issue #224](https://github.com/doctrine-extensions/DoctrineExtensions/issues/224)
 
 **2011-12-11**
 
@@ -54,14 +54,14 @@ and any number of them
 
 **Note list:**
 
-- Public [Translatable repository](http://github.com/Atlantic18/DoctrineExtensions "Translatable extension on Github") is available on github
+- Public [Translatable repository](https://github.com/doctrine-extensions/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May impact your application performance since it does an additional query for translation if loaded without query hint
 - Last update date: **2012-02-15**
 
 **Portability:**
 
-- **Translatable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **Translatable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Translatable** behavior
@@ -83,8 +83,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 ### Translatable annotations:

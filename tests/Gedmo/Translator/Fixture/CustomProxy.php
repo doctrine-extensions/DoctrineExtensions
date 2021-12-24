@@ -15,9 +15,9 @@ use Gedmo\Translator\TranslationProxy;
 
 class CustomProxy extends TranslationProxy
 {
-    public function setName($name)
+    public function setName($name): void
     {
-        return $this->setTranslatedValue('name', $name);
+        $this->setTranslatedValue('name', $name);
     }
 
     public function getName()

@@ -11,6 +11,7 @@ namespace Gedmo\SoftDeleteable\Traits;
 
 use DateTime;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * A soft deletable trait you can apply to your MongoDB entities.
@@ -25,6 +26,7 @@ trait SoftDeleteableDocument
      *
      * @var DateTime|null
      */
+    #[ODM\Field(type: Type::DATE)]
     protected $deletedAt;
 
     /**

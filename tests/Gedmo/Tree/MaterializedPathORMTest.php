@@ -27,7 +27,14 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
 {
     public const CATEGORY = MPCategory::class;
 
+    /**
+     * @var array
+     */
     protected $config;
+
+    /**
+     * @var TreeListener
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -39,16 +46,13 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function insertUpdateAndRemove()
+    public function testInsertUpdateAndRemove(): void
     {
         // Insert
         $category = $this->createCategory();
@@ -126,10 +130,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         static::assertSame('4-1', $firstResult->getTreeRootValue());
     }
 
-    /**
-     * @test
-     */
-    public function useOfSeparatorInPathSourceShouldThrowAnException()
+    public function testUseOfSeparatorInPathSourceShouldThrowAnException(): void
     {
         $this->expectException(RuntimeException::class);
 
@@ -147,7 +148,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         return new $class();
     }
 
-    public function generatePath(array $sources)
+    public function generatePath(array $sources): string
     {
         $path = '';
 
@@ -158,7 +159,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         return $path;
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

@@ -23,7 +23,7 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
 class ReferenceIntegrityListener extends MappedEventSubscriber
 {
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {

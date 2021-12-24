@@ -52,7 +52,7 @@ final class AttributeAnnotationReader implements Reader
         return $this->annotationReader->getClassAnnotations($class);
     }
 
-    public function getClassAnnotation(ReflectionClass $class, $annotationName): ?Annotation
+    public function getClassAnnotation(ReflectionClass $class, $annotationName)
     {
         $annotation = $this->attributeReader->getClassAnnotation($class, $annotationName);
 
@@ -77,7 +77,7 @@ final class AttributeAnnotationReader implements Reader
         return $this->annotationReader->getPropertyAnnotations($property);
     }
 
-    public function getPropertyAnnotation(\ReflectionProperty $property, $annotationName): ?Annotation
+    public function getPropertyAnnotation(\ReflectionProperty $property, $annotationName)
     {
         $annotation = $this->attributeReader->getPropertyAnnotation($property, $annotationName);
 

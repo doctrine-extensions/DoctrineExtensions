@@ -12,30 +12,41 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="posts")
  */
+#[ODM\Document(collection: 'posts')]
 class Post
 {
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
      */
+    #[Gedmo\SortablePosition]
+    #[ODM\Field(type: MongoDBType::INT)]
     protected $position;
 
     /**
      * @Gedmo\SortableGroup
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sortable\Fixture\Document\Category")
      */
+    #[Gedmo\SortableGroup]
+    #[ODM\ReferenceOne(targetDocument: Category::class)]
     protected $category;
-    /** @ODM\Id */
+
+    /**
+     * @ODM\Id
+     */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $title;
 
     public function getId()
@@ -43,7 +54,7 @@ class Post
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -53,7 +64,7 @@ class Post
         return $this->title;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }
@@ -63,7 +74,7 @@ class Post
         return $this->position;
     }
 
-    public function setCategory(Category $category)
+    public function setCategory(Category $category): void
     {
         $this->category = $category;
     }

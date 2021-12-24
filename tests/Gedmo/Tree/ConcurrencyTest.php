@@ -36,11 +36,11 @@ final class ConcurrencyTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testConcurrentEntitiesInOneFlush()
+    public function testConcurrentEntitiesInOneFlush(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $sport = $repo->findOneBy(['title' => 'Root2']);
@@ -96,7 +96,7 @@ final class ConcurrencyTest extends BaseTestCaseORM
         static::assertSame(13, $right);
     }
 
-    public function testConcurrentTree()
+    public function testConcurrentTree(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
@@ -122,7 +122,7 @@ final class ConcurrencyTest extends BaseTestCaseORM
         static::assertSame(7, $child2Parent->getRight());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

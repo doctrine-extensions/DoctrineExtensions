@@ -42,10 +42,10 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         $loggableListener->setUsername('jules');
         $evm->addEventSubscriber($loggableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
-    public function testLogGeneration()
+    public function testLogGeneration(): void
     {
         $logRepo = $this->dm->getRepository(LogEntry::class);
         $articleRepo = $this->dm->getRepository(self::ARTICLE);
@@ -98,7 +98,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         static::assertNull($log->getData());
     }
 
-    public function testVersionControl()
+    public function testVersionControl(): void
     {
         $this->populate();
         $commentLogRepo = $this->dm->getRepository(self::COMMENT_LOG);

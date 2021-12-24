@@ -36,10 +36,10 @@ final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testInMemoryTreeInsertsWithInheritance()
+    public function testInMemoryTreeInsertsWithInheritance(): void
     {
         $nodes = [];
 
@@ -89,7 +89,7 @@ final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         static::assertSame(3, $level);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::PERSON,

@@ -11,44 +11,57 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
+#[ORM\Entity(repositoryClass: SortableRepository::class)]
 class Item
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=191)
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
     private $name;
 
     /**
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     private $position;
 
     /**
      * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
     private $category;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -58,7 +71,7 @@ class Item
         return $this->name;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }
@@ -68,7 +81,7 @@ class Item
         return $this->position;
     }
 
-    public function setCategory(Category $category = null)
+    public function setCategory(Category $category = null): void
     {
         $this->category = $category;
     }

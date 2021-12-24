@@ -16,6 +16,7 @@ use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\MPCategory;
 use Gedmo\Tests\Tree\Fixture\MPCategoryWithTrimmedSeparator;
+use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -29,7 +30,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     public const CATEGORY = MPCategory::class;
     public const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
 
-    /** @var \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
+    /** @var MaterializedPathRepository */
     protected $repo;
 
     /**
@@ -51,7 +52,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
@@ -60,10 +61,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->repo = $this->em->getRepository(self::CATEGORY);
     }
 
-    /**
-     * @test
-     */
-    public function getRootNodes()
+    public function testGetRootNodes(): void
     {
         $result = $this->repo->getRootNodes('title');
 
@@ -73,10 +71,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[2]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getPath()
+    public function testGetPath(): void
     {
         $childNode = $this->repo->findOneBy(['title' => 'Carrots']);
 
@@ -95,10 +90,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[0]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getChildren()
+    public function testGetChildren(): void
     {
         $root = $this->repo->findOneBy(['title' => 'Food']);
 
@@ -159,10 +151,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[2]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getChildrenForEntityWithTrimmedSeparators()
+    public function testGetChildrenForEntityWithTrimmedSeparators(): void
     {
         $meta = $this->em->getClassMetadata(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
         $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
@@ -226,10 +215,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $result[2]->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getTree()
+    public function testGetTree(): void
     {
         $tree = $this->repo->getTree();
 
@@ -254,7 +240,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Best Whisky', $tree[2]->getTitle());
     }
 
-    public function testChildrenHierarchyMethod()
+    public function testChildrenHierarchyMethod(): void
     {
         $tree = $this->repo->childrenHierarchy();
 
@@ -313,7 +299,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
 
-    public function testChildCount()
+    public function testChildCount(): void
     {
         // Count all
         $count = $this->repo->childCount();
@@ -337,19 +323,19 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame(2, $count);
     }
 
-    public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
+    public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount(new \DateTime());
     }
 
-    public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
+    public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount($this->createCategory());
     }
 
-    public function testIssue458()
+    public function testIssue458(): void
     {
         $this->em->clear();
 
@@ -374,7 +360,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame(2, $newNode->getLevel());
     }
 
-    public function testChangeChildrenIndex()
+    public function testChangeChildrenIndex(): void
     {
         $childrenIndex = 'myChildren';
         $this->repo->setChildrenIndex($childrenIndex);
@@ -393,7 +379,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         return new $class();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,
@@ -401,7 +387,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate($class = null): void
+    private function populate(string $class = null): void
     {
         $root = $this->createCategory($class);
         $root->setTitle('Food');

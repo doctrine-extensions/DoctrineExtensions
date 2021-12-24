@@ -113,9 +113,9 @@ To set up and run example, follow these steps:
 - download composer: `wget https://getcomposer.org/composer.phar`
 - install dev libraries: `php composer.phar install`
 - edit `example/em.php` and configure your database on top of the file
-- run: `./example/bin/console` or `php example/bin/console` for console commands
-- run: `./example/bin/console orm:schema-tool:create` to create schema
-- run: `php example/run.php` to run example
+- run: `php example/bin/console` or `php example/bin/console` for console commands
+- run: `php example/bin/console orm:schema-tool:create` to create the schema
+- run: `php example/bin/console app:print-category-translation-tree` to run the example to print the category translation tree
 
 ### Contributors
 

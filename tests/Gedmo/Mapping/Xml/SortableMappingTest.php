@@ -55,13 +55,13 @@ final class SortableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->sortable);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             Sortable::class,
             SortableGroup::class,
         ], $chain);
     }
 
-    public function testSluggableMetadata()
+    public function testSluggableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Sortable::class);
         $config = $this->sortable->getConfiguration($this->em, $meta->getName());

@@ -11,7 +11,7 @@ Features:
 - Mapping drivers for annotation and yaml
 - Conventional extension points for metadata extraction and object manager abstraction
 
-- Public [Mapping repository](http://github.com/Atlantic18/DoctrineExtensions "Mapping extension on Github") is available on github
+- Public [Mapping repository](https://github.com/doctrine-extensions/DoctrineExtensions "Mapping extension on Github") is available on github
 - Last update date: **2012-01-02**
 
 This article will cover the basic installation and usage of **Mapping** extension
@@ -31,8 +31,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="create-extension"></a>

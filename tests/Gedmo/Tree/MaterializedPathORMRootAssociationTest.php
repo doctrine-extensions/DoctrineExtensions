@@ -26,7 +26,14 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 {
     public const CATEGORY = MPCategoryWithRootAssociation::class;
 
+    /**
+     * @var array
+     */
     protected $config;
+
+    /**
+     * @var TreeListener
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -38,16 +45,13 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function insertUpdateAndRemove()
+    public function testInsertUpdateAndRemove(): void
     {
         // Insert
         $category = $this->createCategory();
@@ -132,7 +136,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         return new $class();
     }
 
-    public function generatePath(array $sources)
+    public function generatePath(array $sources): string
     {
         $path = '';
 
@@ -143,7 +147,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         return $path;
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

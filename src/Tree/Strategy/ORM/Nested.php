@@ -54,7 +54,7 @@ class Nested implements Strategy
      *
      * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * The max number of "right" field of the

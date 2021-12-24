@@ -11,24 +11,32 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture\Transport;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Reservation
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Bus")
      */
+    #[ORM\ManyToOne(targetEntity: Bus::class)]
     private $bus;
 
     /**
@@ -37,31 +45,38 @@ class Reservation
      * @Gedmo\SortableGroup
      * @ORM\Column(length=191)
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(length: 191)]
     private $destination;
 
     /**
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private $travelDate;
 
     /**
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     private $seat;
 
     /**
      * @ORM\Column(length=191)
      */
+    #[ORM\Column(length: 191)]
     private $name;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setBus(Bus $bus)
+    public function setBus(Bus $bus): void
     {
         $this->bus = $bus;
     }
@@ -71,7 +86,7 @@ class Reservation
         return $this->bus;
     }
 
-    public function setDestination($destination)
+    public function setDestination($destination): void
     {
         $this->destination = $destination;
     }
@@ -81,7 +96,7 @@ class Reservation
         return $this->destination;
     }
 
-    public function setTravelDate(\DateTime $date)
+    public function setTravelDate(\DateTime $date): void
     {
         $this->travelDate = $date;
     }
@@ -91,7 +106,7 @@ class Reservation
         return $this->travelDate;
     }
 
-    public function setSeat($seat)
+    public function setSeat($seat): void
     {
         $this->seat = $seat;
     }
@@ -101,7 +116,7 @@ class Reservation
         return $this->seat;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }

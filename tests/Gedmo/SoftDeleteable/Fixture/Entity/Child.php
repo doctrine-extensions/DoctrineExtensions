@@ -11,24 +11,29 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\SoftDeleteable\Fixture\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Child extends MappedSuperclass
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string")
      */
+    #[ORM\Column(name: 'title', type: Types::STRING)]
     private $title;
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

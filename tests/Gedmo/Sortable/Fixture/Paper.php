@@ -12,28 +12,37 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Paper
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="name", type="string")
      */
+    #[ORM\Column(name: 'name', type: Types::STRING)]
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity="Author", mappedBy="paper", cascade={"persist", "remove"})
      */
+    #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Author::class, cascade: ['persist', 'remove'])]
     private $authors;
 
     public function __construct()
@@ -41,7 +50,7 @@ class Paper
         $this->authors = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -51,17 +60,17 @@ class Paper
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getAuthors()
+    public function getAuthors(): ArrayCollection
     {
         return $this->authors;
     }
 
-    public function addAuthor($author)
+    public function addAuthor($author): void
     {
         $this->authors->add($author);
     }

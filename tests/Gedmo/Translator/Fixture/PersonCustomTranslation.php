@@ -25,10 +25,16 @@ use Gedmo\Translator\Entity\Translation;
  * )
  * @ORM\Entity
  */
+#[ORM\Entity]
+#[ORM\Index(name: 'pers_translations_lookup_idx', columns: ['locale', 'translatable_id'])]
+#[ORM\UniqueConstraint(name: 'pers_lookup_unique_idx', columns: ['locale', 'translatable_id', 'property'])]
 class PersonCustomTranslation extends Translation
 {
     /**
+     * @var PersonCustom|null
+     *
      * @ORM\ManyToOne(targetEntity="PersonCustom", inversedBy="translations")
      */
+    #[ORM\ManyToOne(targetEntity: PersonCustom::class, inversedBy: 'translations')]
     protected $translatable;
 }

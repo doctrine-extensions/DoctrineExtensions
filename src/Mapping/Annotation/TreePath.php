@@ -23,11 +23,15 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreePath extends Annotation
 {
+    /** @var string */
     public $separator = ',';
 
-    public $appendId = null;
+    /** @var bool|null */
+    public $appendId;
 
+    /** @var bool */
     public $startsWithSeparator = false;
 
+    /** @var bool */
     public $endsWithSeparator = true;
 }

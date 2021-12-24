@@ -50,20 +50,10 @@ final class SortableGroupTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SortableListener());
 
-        $this->getMockSqliteEntityManager($evm);
-        /*$this->getMockCustomEntityManager(array(
-            'driver' => 'pdo_mysql',
-            'dbname' => 'test',
-            'host' => '127.0.0.1',
-            'user' => 'root',
-            'password' => 'nimda'
-        ), $evm);*/
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToRemove()
+    public function testShouldBeAbleToRemove(): void
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
@@ -88,10 +78,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * fix issue #502
      */
-    public function shouldBeAbleToChangeGroup()
+    public function testShouldBeAbleToChangeGroup(): void
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
@@ -129,10 +118,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * issue #873
      */
-    public function shouldBeAbleToChangeGroupWhenMultiGroups()
+    public function testShouldBeAbleToChangeGroupWhenMultiGroups(): void
     {
         $this->populate();
 
@@ -195,10 +183,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group failing
      */
-    public function shouldBeAbleToChangeGroupAndPosition()
+    public function testShouldBeAbleToChangeGroupAndPosition(): void
     {
         $this->populate();
 
@@ -254,7 +241,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         static::assertSame(30, $position);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::VEHICLE,
