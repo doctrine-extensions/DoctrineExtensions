@@ -18,17 +18,17 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Types\DateType;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use Doctrine\DBAL\Types\Types;
-use Gedmo\Tests\Timestampable\Fixture\Article;
+use Gedmo\Tests\Timestampable\Fixture\ArticleCarbon;
 use Gedmo\Tests\Timestampable\Fixture\Author;
-use Gedmo\Tests\Timestampable\Fixture\Comment;
+use Gedmo\Tests\Timestampable\Fixture\CommentCarbon;
 use Gedmo\Tests\Timestampable\Fixture\Type;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
 
 final class CarbonTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const COMMENT = Comment::class;
+    public const ARTICLE = ArticleCarbon::class;
+    public const COMMENT = CommentCarbon::class;
     public const TYPE = Type::class;
 
     protected function setUp(): void
@@ -59,11 +59,11 @@ final class CarbonTest extends BaseTestCaseORM
 
     public function testShouldHandleStandardBehavior(): void
     {
-        $sport = new Article();
+        $sport = new ArticleCarbon();
         $sport->setTitle('Sport');
         $sport->setBody('Sport article body.');
 
-        $sportComment = new Comment();
+        $sportComment = new CommentCarbon();
         $sportComment->setMessage('hello');
         $sportComment->setArticle($sport);
         $sportComment->setStatus(0);
@@ -78,7 +78,7 @@ final class CarbonTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        /** @var Article $sport */
+        /** @var ArticleCarbon $sport */
         $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         static::assertInstanceOf(CarbonImmutable::class, $sport->getUpdated(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
         static::assertInstanceOf(Carbon::class, $sport->getCreated(), 'Type DATE_MUTABLE should become Carbon');
@@ -93,6 +93,7 @@ final class CarbonTest extends BaseTestCaseORM
         $author->setName('New author');
         $sport->setAuthor($author);
 
+        /** @var \Gedmo\Tests\Timestampable\Fixture\CommentCarbon $sportComment */
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         static::assertInstanceOf(DateTime::class, $sportComment->getModified(), 'Type TIME_MUTABLE should stay DateTime');
 
