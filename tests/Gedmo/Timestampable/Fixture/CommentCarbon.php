@@ -47,7 +47,7 @@ class CommentCarbon implements Timestampable
      *
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Timestampable\Fixture\ArticleCarbon", inversedBy="comments")
      */
-    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
+    #[ORM\ManyToOne(targetEntity: ArticleCarbon::class, inversedBy: 'comments')]
     private $article;
 
     /**
