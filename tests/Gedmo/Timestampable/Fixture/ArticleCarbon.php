@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Timestampable\Fixture;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
