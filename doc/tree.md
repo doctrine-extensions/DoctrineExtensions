@@ -1249,7 +1249,7 @@ You must pass a value in seconds to this parameter.
 ## Closure Table
 
 To be able to use this strategy, you'll need an additional entity which represents the closures. We already provide you an abstract
-entity, so you only need to extend it.
+entity, so you need to extend from it and add mapping information for ancestor and descendant.
 
 ### Closure Entity
 
@@ -1263,9 +1263,29 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\UniqueConstraint(name="closure_unique_idx", columns={"ancestor", "descendant"})
+ * @ORM\Index(name="closure_depth_idx", columns={"depth"})
  */
+#[ORM\Entity]
+#[ORM\UniqueConstraint(name: 'closure_unique_idx', columns: ['ancestor', 'descendant'])]
+#[ORM\Index(name: 'closure_depth_idx', columns: ['depth'])]
 class CategoryClosure extends AbstractClosure
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="YourNamespace\Entity\Category")
+     * @ORM\JoinColumn(name="ancestor", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    protected $ancestor;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="YourNamespace\Entity\Category")
+     * @ORM\JoinColumn(name="descendant", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    protected $descendant;
 }
 ```
 

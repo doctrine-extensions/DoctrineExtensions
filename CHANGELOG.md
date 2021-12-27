@@ -34,6 +34,10 @@ a release.
 - Blameable, IpTraceable, Timestampable: Type handling for the tracked field values configured in the origin field.
 - Loggable: Using only PHP 8 attributes.
 - References: Avoid deprecations using LazyCollection with PHP 8.1
+- Tree: Association mapping problems using Closure tree strategy (by manually defining mapping on the closure entity).
+
+### Deprecated
+- Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.
 
 ## [3.4.0] - 2021-12-05
 ### Added

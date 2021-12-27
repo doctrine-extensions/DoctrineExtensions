@@ -17,7 +17,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
 use Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory;
-use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosureWithoutMapping;
 use Gedmo\Tree\TreeListener;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -78,10 +78,10 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
     public function testApcCached(): void
     {
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
-        $this->em->getClassMetadata(CategoryClosure::class);
+        $this->em->getClassMetadata(CategoryClosureWithoutMapping::class);
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
-            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure$CLASSMETADATA'
+            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosureWithoutMapping$CLASSMETADATA'
         );
         static::assertTrue($meta->hasAssociation('ancestor'));
         static::assertTrue($meta->hasAssociation('descendant'));
@@ -120,7 +120,7 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         static::assertArrayHasKey('strategy', $config);
         static::assertSame('closure', $config['strategy']);
         static::assertArrayHasKey('closure', $config);
-        static::assertSame(CategoryClosure::class, $config['closure']);
+        static::assertSame(CategoryClosureWithoutMapping::class, $config['closure']);
     }
 
     public function testYamlMaterializedPathMapping(): void
