@@ -21,6 +21,8 @@ use Gedmo\Tree\Mapping\Validator;
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
  */
 class Yaml extends File implements Driver
 {

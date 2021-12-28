@@ -9,7 +9,7 @@ Features:
 - ORM and ODM support using same listener
 - Can be nested with other behaviors
 - Objects can be reverted to previous versions
-- Attributes, Annotation, Yaml and Xml mapping support for extensions
+- Attributes, Annotation and Xml mapping support for extensions
 
 This article will cover the basic installation and functionality of **Loggable**
 behavior
@@ -19,7 +19,6 @@ Content:
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 
@@ -167,38 +166,6 @@ class Article
         return $this->title;
     }
 }
-```
-
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  gedmo:
-    loggable:
-# using specific personal LogEntryClass class:
-      logEntryClass: My\LogEntry
-# without specifying the LogEntryClass class:
-#   loggable: true
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-      gedmo:
-        - versioned
-    content:
-      type: text
 ```
 
 <a name="xml-mapping"></a>

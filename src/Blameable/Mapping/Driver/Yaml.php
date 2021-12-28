@@ -21,6 +21,8 @@ use Gedmo\Mapping\Driver\File;
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
  */
 class Yaml extends File implements Driver
 {

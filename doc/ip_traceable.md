@@ -17,7 +17,7 @@ Features:
 - Specific attributes and annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
-- Attribute, Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation and Xml mapping support for extensions
 
 This article will cover the basic installation and functionality of **IpTraceable** behavior
 
@@ -26,7 +26,6 @@ Content:
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Advanced usage [examples](#advanced-examples)
 - Using [Traits](#traits)
@@ -255,42 +254,6 @@ class Article
 
 Now on update and creation these annotated fields will be automatically updated
 
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    createdFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: create
-    updatedFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: update
-```
-
 <a name="xml-mapping"></a>
 
 ## Xml mapping example
@@ -458,51 +421,6 @@ class Article
         return $this->publishedFromIp;
     }
 }
-```
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    createdFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: create
-    updatedFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: update
-    publishedFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: change
-          field: type.title
-          value: Published
-  manyToOne:
-    type:
-      targetEntity: Entity\Type
-      inversedBy: articles
 ```
 
 Now few operations to get it all done:

@@ -15,7 +15,6 @@ Content:
 
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Usage [examples](#usage)
 - [Using](#additional-usages) the extension to handle not only uploaded files
@@ -251,50 +250,6 @@ class File
 
     // Other methods..
 }
-```
-
-
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\File:
-  type: entity
-  table: files
-  gedmo:
-    uploadable:
-      allowOverwrite: true
-      appendNumber: true
-      path: '/my/path'
-      pathMethod: getPath
-      callback: callbackMethod
-      filenameGenerator: SHA1
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    path:
-      type: string
-      gedmo:
-        - uploadableFilePath
-    name:
-      type: string
-      gedmo:
-        - uploadableFileName
-    mimeType:
-      type: string
-      gedmo:
-        - uploadableFileMimeType
-    size:
-      type: decimal
-      gedmo:
-        - uploadableFileSize
 ```
 
 <a name="xml-mapping"></a>

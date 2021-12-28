@@ -27,7 +27,6 @@ Content:
 - [Including](#including-extension) the extension
 - Entity [example](#entity-domain-object)
 - Document [example](#document-domain-object)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 - [Persisting](#multi-translations) multiple translations
@@ -271,39 +270,6 @@ class Article implements Translatable
         $this->locale = $locale;
     }
 }
-```
-
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  gedmo:
-    translation:
-      locale: localeField
-# using specific personal translation class:
-#     entity: Translatable\Fixture\CategoryTranslation
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-      gedmo:
-        - translatable
-    content:
-      type: text
-      gedmo:
-        - translatable
 ```
 
 <a name="xml-mapping"></a>

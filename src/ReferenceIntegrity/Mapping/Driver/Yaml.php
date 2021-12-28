@@ -21,6 +21,8 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * extension.
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
  */
 class Yaml extends File implements Driver
 {

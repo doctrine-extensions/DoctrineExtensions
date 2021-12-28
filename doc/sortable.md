@@ -13,7 +13,6 @@ Contents:
 - [Sortable mapping](#sortable-mapping)
   - [Annotations](#annotation-mapping-example)
   - [Attributes](#attribute-mapping-example)
-  - [Yaml](#yaml-mapping-example)
   - [Xml](#xml-mapping-example)
 - [Basic usage examples](#basic-usage-examples)
 - [Custom comparison method](#custom-comparison)
@@ -178,34 +177,6 @@ class Item
         return $this->category;
     }
 }
-```
-
-### Yaml mapping example
-
-Yaml mapped Item: **/mapping/yaml/Entity.Item.dcm.yml**
-
-```yaml
-Entity\Item:
-  type: entity
-  table: items
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    name:
-      type: string
-      length: 64
-    position:
-      type: integer
-      gedmo:
-        - sortablePosition
-    category:
-      type: string
-      length: 128
-      gedmo:
-        - sortableGroup
 ```
 
 ### Xml mapping example

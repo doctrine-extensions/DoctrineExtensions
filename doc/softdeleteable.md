@@ -17,7 +17,6 @@ Content:
 
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Usage [examples](#usage)
 - Using [Traits](#traits)
@@ -166,22 +165,6 @@ class Article
 }
 ```
 
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  gedmo:
-    soft_deleteable:
-      field_name: deletedAt
-      time_aware: false
-      hard_delete: true
   id:
     id:
       type: integer

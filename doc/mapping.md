@@ -8,7 +8,7 @@ for different object managers like **ODM** and **ORM**.
 
 Features:
 
-- Mapping drivers for annotation and yaml
+- Mapping drivers for annotation
 - Conventional extension points for metadata extraction and object manager abstraction
 
 - Public [Mapping repository](https://github.com/doctrine-extensions/DoctrineExtensions "Mapping extension on Github") is available on github
