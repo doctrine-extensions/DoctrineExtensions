@@ -49,6 +49,7 @@ class Category
      *
      * @Gedmo\ReferenceManyEmbed(class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
      */
+    #[Gedmo\ReferenceManyEmbed(class: Product::class, identifier: 'metadatas.categoryId')]
     private $products;
 
     public function __construct()
