@@ -29,11 +29,6 @@ and any number of them
 **Note:**
 - Last update date: **2012-01-02**
 
-**Portability:**
-
-- **Timestampable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
-
 This article will cover the basic installation and functionality of **Timestampable** behavior
 
 Content:

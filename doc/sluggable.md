@@ -64,11 +64,6 @@ you can use your [custom transliterator](#transliterator)
 slug, you must explicitly call **addManagedFilter** with a name of softdeleteable filter, so it can be disabled during
 slug updates. The best place to do it, is when initializing sluggable listener. That will be automated in the future.
 
-**Portability:**
-
-- **Sluggable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
-
 This article will cover the basic installation and functionality of **Sluggable**
 behavior
 

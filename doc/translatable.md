@@ -59,11 +59,6 @@ and any number of them
 - May impact your application performance since it does an additional query for translation if loaded without query hint
 - Last update date: **2012-02-15**
 
-**Portability:**
-
-- **Translatable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
-
 This article will cover the basic installation and functionality of **Translatable** behavior
 
 Content:

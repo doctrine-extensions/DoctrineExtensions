@@ -19,12 +19,6 @@ Features:
 - Can be nested with other behaviors
 - Attribute, Annotation, Yaml and Xml mapping support for extensions
 
-
-**Symfony:**
-
-- **IpTraceable** is not yet available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony**, together with all other extensions
-
 This article will cover the basic installation and functionality of **IpTraceable** behavior
 
 Content:

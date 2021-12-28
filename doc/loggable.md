@@ -16,11 +16,6 @@ Update **2011-04-04**
 - Made single listener, one instance can be used for any object manager
 and any number of them
 
-**Portability:**
-
-- **Loggable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
-
 This article will cover the basic installation and functionality of **Loggable**
 behavior
 

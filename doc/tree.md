@@ -74,11 +74,6 @@ because nodes may have changed values in database but not in memory. Flushing di
 - Public [Tree repository](https://github.com/doctrine-extensions/DoctrineExtensions "Tree extension on Github") is available on github
 - Last update date: **2012-02-23**
 
-**Portability:**
-
-- **Tree** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
-
 This article will cover the basic installation and functionality of **Tree** behavior
 
 Content:
