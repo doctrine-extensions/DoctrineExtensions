@@ -26,6 +26,7 @@ trait IpTraceableDocument
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\IpTraceable(on: 'create')]
     protected $createdFromIp;
 
     /**
@@ -34,6 +35,7 @@ trait IpTraceableDocument
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\IpTraceable(on: 'update')]
     protected $updatedFromIp;
 
     /**
