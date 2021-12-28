@@ -81,7 +81,7 @@ one of them, not both.
 
 Column is a string field:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -187,7 +187,7 @@ class Article
 
 Column is an association:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -304,7 +304,7 @@ class Article
 **Note:** these examples are using annotations and attributes for mapping, you should use
 one of them, not both.
 
-``` php
+```php
 <?php
 namespace Document;
 
@@ -413,7 +413,7 @@ Entity\Article:
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -449,7 +449,7 @@ Entity\Article:
 
 Add another entity which would represent Article Type:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -492,7 +492,7 @@ class Type
 
 Now update the Article Entity to reflect publishedBy on Type change:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -619,7 +619,7 @@ Entity\Article:
 
 Now few operations to get it all done:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');
@@ -656,7 +656,7 @@ There is also a trait without annotations for easy integration purposes.
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
 
-``` php
+```php
 <?php
 namespace Blameable\Fixture;
 

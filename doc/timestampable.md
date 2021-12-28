@@ -81,7 +81,7 @@ cache is activated
 
 ### Annotations
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -259,7 +259,7 @@ class Article
 **Note:** this example is using annotations and attributes for mapping, you should use
 one of them, not both.
 
-``` php
+```php
 <?php
 namespace Document;
 
@@ -391,7 +391,7 @@ Entity\Article:
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -427,7 +427,7 @@ Entity\Article:
 
 Add another entity which would represent Article Type:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -470,7 +470,7 @@ class Type
 
 Now update the Article Entity to reflect published date on Type change:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -561,7 +561,7 @@ class Article
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
-``` yaml
+```yaml
 ---
 Entity\Article:
   type: entity
@@ -600,7 +600,7 @@ Entity\Article:
 
 Now few operations to get it all done:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');
@@ -629,7 +629,7 @@ Easy like that, any suggestions on improvements are very welcome
 
 First, we define our custom data type (note the type name is datetime and the type extends DateTimeType which simply overrides the default Doctrine type):
 
-``` php
+```php
 <?php
 
 namespace Acme\DoctrineExtensions\DBAL\Types;
@@ -680,7 +680,7 @@ class UTCDateTimeType extends DateTimeType
 
 Now in Symfony, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
 
-``` yaml
+```yaml
 doctrine:
     dbal:
         types:
@@ -689,7 +689,7 @@ doctrine:
 
 And our Entity properties look as expected:
 
-``` php
+```php
 <?php
 /**
  * @var \DateTime $dateCreated
@@ -710,7 +710,7 @@ private $dateLastModified;
 
 Now, in our view (suppose we are using Symfony and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
 
-``` twig
+```twig
 {{ myEntity.dateCreated | date("d/m/Y g:i a", app.user.timezone) }}
 ```
 
@@ -731,7 +731,7 @@ There is also a trait without annotations for easy integration purposes.
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
 
-``` php
+```php
 <?php
 namespace Timestampable\Fixture;
 

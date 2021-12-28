@@ -56,7 +56,7 @@ project
 Now you can use any namespace autoloader class and register this namespace. We
 will use Doctrine\Common\ClassLoader for instance:
 
-``` php
+```php
 <?php
 // path is related to bootstrap.php location for example
 $classLoader = new \Doctrine\Common\ClassLoader('Extension', "vendor");
@@ -94,7 +94,7 @@ may not be useful since object will not know how to match the value.
 
 Edit **Annotations.php** file:
 
-``` php
+```php
 <?php
 // file: vendor/Extension/Encoder/Mapping/Annotations.php
 
@@ -111,7 +111,7 @@ final class Encode extends Annotation
 
 Edit **Annotation.php** driver file:
 
-``` php
+```php
 <?php
 // file: vendor/Extension/Encoder/Mapping/Driver/Annotation.php
 
@@ -170,7 +170,7 @@ class Annotation implements Driver
 
 **Note:** this version of listener will support only ORM Entities
 
-``` php
+```php
 <?php
 // file: vendor/Extension/Encoder/EncoderListener.php
 
@@ -252,7 +252,7 @@ with some fields to encode.
 
 ### Attaching the EncoderListener
 
-``` php
+```php
 <?php
 $evm = new \Doctrine\Common\EventManager();
 $encoderListener = new \Extension\Encoder\EncoderListener;
@@ -264,7 +264,7 @@ $evm->addEventSubscriber($encoderListener);
 
 ### Create an entity with some fields to encode
 
-``` php
+```php
 <?php
 namespace YourNamespace\Entity;
 
@@ -326,7 +326,7 @@ If you will try to create a new **User** you will get encoded fields in database
 
 Now the event adapter comes into play, lets slightly modify our listener:
 
-``` php
+```php
 <?php
 // file: vendor/Extension/Encoder/EncoderListener.php
 
@@ -449,7 +449,7 @@ from the extended ones.
 
 Create extended ORM event adapter:
 
-``` php
+```php
 <?php
 // file: vendor/Extension/Encoder/Mapping/Event/Adapter/ORM.php
 
@@ -468,7 +468,7 @@ class ORM extends BaseAdapterORM
 
 Create extended ODM event adapter:
 
-``` php
+```php
 <?php
 // file: vendor/Extension/Encoder/Mapping/Event/Adapter/ODM.php
 

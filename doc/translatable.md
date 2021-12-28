@@ -109,7 +109,7 @@ cache is activated
 
 ### Annotations
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -179,7 +179,7 @@ class Article implements Translatable
 
 ### Attributes
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -247,7 +247,7 @@ class Article implements Translatable
 
 ## Translatable Document example:
 
-``` php
+```php
 <?php
 namespace Document;
 
@@ -354,7 +354,7 @@ Entity\Article:
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -386,7 +386,7 @@ Entity\Article:
 Currently a global locale used for translations is "en_us" which was
 set in **TranslationListener** globally. To save article with its translations:
 
-``` php
+```php
 <?php
 $article = new Entity\Article;
 $article->setTitle('my title in en');
@@ -401,7 +401,7 @@ matches current locale - it uses original record value as translation
 
 Now lets update our article in different locale:
 
-``` php
+```php
 <?php
 // first load the article
 $article = $em->find('Entity\Article', 1 /*article id*/);
@@ -415,7 +415,7 @@ $em->flush();
 This updated an article and inserted the translations for it in "de_de" locale
 To see and load all translations of **Translatable** Entity:
 
-``` php
+```php
 <?php
 // reload in different language
 $article = $em->find('Entity\Article', 1 /*article id*/);
@@ -444,7 +444,7 @@ Array (
 As far as our global locale is now "en_us" and updated article has "de_de" values.
 Lets try to load it and it should be translated in English
 
-``` php
+```php
 <?php
 $article = $em->getRepository('Entity\Article')->find(1/* id of article */);
 echo $article->getTitle();
@@ -468,7 +468,7 @@ the slug, so the value as an additional translation should be processed when cre
 
 ### Example of multiple translations:
 
-``` php
+```php
 <?php
 // persisting multiple translations, assume default locale is EN
 $repository = $em->getRepository('Gedmo\\Translatable\\Entity\\Translation');
@@ -522,7 +522,7 @@ do not have a translation in currently used locale.
 
 Now enough talking, here is an example:
 
-``` php
+```php
 <?php
 $dql = <<<___SQL
   SELECT a, c, u
@@ -546,7 +546,7 @@ $articles = $query->getArrayResult(); // array hydration
 
 And even a subselect:
 
-``` php
+```php
 <?php
 $dql = <<<___SQL
   SELECT a, c, u
@@ -572,7 +572,7 @@ $query->setHint(
 **NOTE:** if you use memcache or apc. You should set locale and other options like fallbacks
 to query through hints. Otherwise the query will be cached with a first used locale
 
-``` php
+```php
 <?php
 // locale
 $query->setHint(
@@ -609,7 +609,7 @@ In case if **translation query walker** is used, you can additionally override:
 
 ### Overriding translation fallback
 
-``` php
+```php
 <?php
 $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 1);
 ```
@@ -617,7 +617,7 @@ $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 1);
 will fallback to default locale translations instead of empty values if used.
 And will override the translation listener setting for fallback.
 
-``` php
+```php
 <?php
 $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 0);
 ```
@@ -626,7 +626,7 @@ will do the opposite.
 
 ### Using inner join strategy
 
-``` php
+```php
 <?php
 $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_INNER_JOIN, true);
 ```
@@ -637,7 +637,7 @@ records in your result set for instance.
 
 ### Overriding translatable locale
 
-``` php
+```php
 <?php
 $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'en');
 ```
@@ -661,14 +661,14 @@ will fill untranslated values as blanks
 
 To set the default locale:
 
-``` php
+```php
 <?php
 $translatableListener->setDefaultLocale('en_us');
 ```
 
 To set translation fallback:
 
-``` php
+```php
 <?php
 $translatableListener->setTranslationFallback(true); // default is false
 ```
@@ -679,7 +679,7 @@ will not store extra record in translation table by default.
 
 If you need to store translation in default locale, set:
 
-``` php
+```php
 <?php
 $translatableListener->setPersistDefaultLocaleTranslation(true); // default is false
 ```
@@ -699,7 +699,7 @@ ArticleTranslation Entity:
 **Note:** this example is using annotations and attributes for mapping, you should use
 one of them, not both.
 
-``` php
+```php
 <?php
 namespace Entity\Translation;
 
@@ -731,7 +731,7 @@ It is handy for specific methods common to the Translation Entity
 only if we specify a class annotation `@Gedmo\TranslationEntity(class="my\translation\entity")`
 or a class attribute `#[Gedmo\TranslationEntity(class: ArticleTranslation::class)]`
 
-``` php
+```php
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
@@ -770,7 +770,7 @@ You can always use a left join like for standard doctrine collections.
 
 Usage example (using both annotations and attributes, you should only use one of them):
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -875,7 +875,7 @@ class Category
 
 Now the translation entity for the Category:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -921,7 +921,7 @@ class CategoryTranslation extends AbstractPersonalTranslation
 
 Some example code to persist with translations:
 
-``` php
+```php
 <?php
 // assumes default locale is "en"
 $food = new Entity\Category;
@@ -948,7 +948,7 @@ Easy like that, any suggestions on improvements are very welcome
 
 Suppose you have a Sonata Backend with a simple form like:
 
-``` php
+```php
 <?php
 protected function configureFormFields(FormMapper $formMapper)    {
     $formMapper
@@ -961,7 +961,7 @@ protected function configureFormFields(FormMapper $formMapper)    {
 
 Then you can turn it into an i18n Form by providing the following changes.
 
-``` php
+```php
 <?php
 protected function configureFormFields(FormMapper $formMapper)
 {
@@ -988,10 +988,9 @@ https://gist.github.com/2437078
 
 Then you can change to your needs:
 
-``` php
+```php
     'field'                => 'title', //you need to provide which field you wish to translate
     'personal_translation' => 'ExampleBundle\Entity\Translation\ProductTranslation', //the personal translation entity
-
 ```
 
 
