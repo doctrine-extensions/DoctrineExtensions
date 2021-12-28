@@ -116,7 +116,7 @@ To set up and run example, follow these steps:
 
 ### Contributors
 
-Thanks to [everyone participating](http://github.com/l3pp4rd/DoctrineExtensions/contributors) in
+Thanks to [everyone participating](http://github.com/doctrine-extensions/DoctrineExtensions/contributors) in
 the development of these great Doctrine extensions!
 
 And especially ones who create and maintain new extensions:
