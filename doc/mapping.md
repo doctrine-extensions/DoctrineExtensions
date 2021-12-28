@@ -12,7 +12,6 @@ Features:
 - Conventional extension points for metadata extraction and object manager abstraction
 
 - Public [Mapping repository](https://github.com/doctrine-extensions/DoctrineExtensions "Mapping extension on Github") is available on github
-- Last update date: **2012-01-02**
 
 This article will cover the basic installation and usage of **Mapping** extension
 

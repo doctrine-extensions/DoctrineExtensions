@@ -22,57 +22,12 @@ Thanks for contributions to:
 - **[everzet](https://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](https://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
-Update **2018-02-26**
-
-- Nodes with no Parent can now be sorted based on a tree root id being an id from another table. Existing behaviour 
-  is unchanged unless you add properties to the `@TreeRoot` annotation. Example: You have two categories with no parent, 
-  horror and comedy, which are actually categories of 'Movie', which is in another table. Usually calling `moveUp()` or 
-  `moveDown()` would be impossible, but now you can add `@TreeRoot(identifierMethod="getRoot")`, where `getRoot` is the 
-  name of your class method returning the root id/entity.
-
-
-Update **2017-04-22**
-
-- Added the `TreeObjectHydrator` class for building trees from entities
-
-Update **2012-06-28**
-
-- Added "buildTree" functionality support for Closure and Materialized Path strategies
-
-Update **2012-02-23**
-
-- Added a new strategy to support the "Materialized Path" tree model. It works with ODM (MongoDB) and ORM.
-
-Update **2011-05-07**
-
-- Tree is now able to act as **closure** tree, this strategy was refactored
-and now fully functional. It is much faster for file-folder trees for instance
-where you do not care about tree ordering.
-
-Update **2011-04-11**
-
-- Made in memory node synchronization, this change does not require clearing the cached nodes after any updates
-to nodes, except **recover, verify and removeFromTree** operations.
-
-Update **2011-02-08**
-
-- Refactored to support multiple roots
-- Changed the repository name, relevant to strategy used
-- New [annotations](#annotations) were added
-
-
-Update **2011-02-02**
-
-- Refactored the Tree to the ability on supporting different tree models
-- Changed the repository location in order to support future updates
-
 **Note:**
 
 - After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear the EntityManager cache
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
 - Public [Tree repository](https://github.com/doctrine-extensions/DoctrineExtensions "Tree extension on Github") is available on github
-- Last update date: **2012-02-23**
 
 This article will cover the basic installation and functionality of **Tree** behavior
 

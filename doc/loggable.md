@@ -11,11 +11,6 @@ Features:
 - Objects can be reverted to previous versions
 - Attributes, Annotation, Yaml and Xml mapping support for extensions
 
-Update **2011-04-04**
-
-- Made single listener, one instance can be used for any object manager
-and any number of them
-
 This article will cover the basic installation and functionality of **Loggable**
 behavior
 

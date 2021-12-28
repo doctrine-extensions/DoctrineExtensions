@@ -12,54 +12,12 @@ Features:
 - Attribute, Annotation, Yaml and Xml mapping support for extensions
 - Multiple slugs, different slugs can link to same fields
 
-Update **2013-10-26**
-
-- Datetime support with default dateFormat Y-m-d-H:i
-
-Update **2013-08-23**
-
-- Added 'prefix' and 'suffix' configuration parameter #812
-
-Update **2013-08-19**
-
-- allow empty slug #807 regenerate slug only if set to `null`
-
-Update **2013-03-10**
-
-- Added 'unique_base' configuration parameter to the Sluggable behaviour
-
-Update **2012-11-30**
-
-- Recreated slug handlers, as they are used by many people
-
-Update **2012-02-26**
-
-- Remove slug handlers were removed because of complications it brought together
-
-
-Update **2011-09-11**
-
-- Refactored sluggable for doctrine2.2 by specifying slug fields directly in slug annotation
-- Slug handler functionality, possibility to create custom ones or use built-in
-tree path handler or linked slug through single valued association
-- Updated documentation mapping examples for 2.1.x version or higher
-
-Update **2011-04-04**
-
-- Made single listener, one instance can be used for any object manager and any number of them
-
-Update **2010-12-23**
-
-- Full support for unique index on slug field,
-no more exceptions during concurrent flushes.
-
 **Note:**
 
 - There is a reported [issue](https://github.com/doctrine-extensions/DoctrineExtensions/issues/254) that sluggable transliterator
 does not work on OSX 10.6 its ok starting again from 10.7 version. To overcome the problem
 you can use your [custom transliterator](#transliterator)
 - Public [Sluggable repository](https://github.com/doctrine-extensions/DoctrineExtensions "Sluggable extension on Github") is available on github
-- Last update date: **2012-02-26**
 - For usage together with **SoftDeleteable** in order to take into account softdeleted entities while generating unique
 slug, you must explicitly call **addManagedFilter** with a name of softdeleteable filter, so it can be disabled during
 slug updates. The best place to do it, is when initializing sluggable listener. That will be automated in the future.

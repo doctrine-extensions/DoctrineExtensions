@@ -13,22 +13,6 @@ Features:
 - Can be nested with other behaviors
 - Attribute, Annotation, Yaml and Xml mapping support for extensions
 
-Update **2012-06-26**
-
-- Allow multiple values for on="change"
-
-Update **2012-03-10**
-
-- Add [Timestampable traits](#traits)
-
-Update **2011-04-04**
-
-- Made single listener, one instance can be used for any object manager
-and any number of them
-
-**Note:**
-- Last update date: **2012-01-02**
-
 This article will cover the basic installation and functionality of **Timestampable** behavior
 
 Content:
