@@ -1,7 +1,7 @@
 # Reference Integrity behavior extension for Doctrine 2
 
 **ReferenceIntegrity** behavior will automate the reference integrity for referenced documents.
-It works through annotations and yaml, and supports 'nullify', 'pull' and 'restrict' which throws an exception.
+It works through annotations and attributes, and supports 'nullify', 'pull' and 'restrict' which throws an exception.
 
 So let's say you have a Type which is referenced to multiple Articles, when deleting the Type, by default the Article
 would still have a reference to Type, since Mongo doesn't care. When setting the ReferenceIntegrity to 'nullify' it
@@ -15,7 +15,7 @@ Features:
 - ODM only
 - ReferenceOne and ReferenceMany support
 - 'nullify', 'pull' and 'restrict' support
-- Attribute, Annotation and Yaml mapping support for extensions
+- Attribute and Annotation mapping support for extensions
 
 This article will cover the basic installation and functionality of **ReferenceIntegrity** behavior
 
@@ -23,7 +23,6 @@ Content:
 
 - [Including](#including-extension) the extension
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - Usage [examples](#advanced-examples)
 
 <a name="including-extension"></a>
@@ -79,32 +78,6 @@ class Type
 
 It is necessary to have the 'mappedBy' option set, to be able to access the referenced documents.
 On removal of Type, on the referenced Article the Type reference will be nullified (removed)
-
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Documents.Article.dcm.yml**
-
-```
----
-Document\Type:
-  type: document
-  collection: types
-  fields:
-      id:
-          id:     true
-      title:
-          type:   string
-      article:
-          reference: true
-          type: one
-          mappedBy: type
-          targetDocument: Document\Article
-          gedmo:
-              referenceIntegrity: nullify   # or pull or restrict
-
-```
 
 It is necessary to have the 'mappedBy' option set, to be able to access the referenced documents.
 

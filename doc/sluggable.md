@@ -30,7 +30,6 @@ Content:
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 - Custom [transliterator](#transliterator)
@@ -223,44 +222,6 @@ class Article
         return $this->slug;
     }
 }
-```
-
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    code:
-      type: string
-      length: 16
-    slug:
-      type: string
-      length: 128
-      gedmo:
-        slug:
-          separator: _
-          style: camel
-          fields:
-            - title
-            - code
-  indexes:
-    search_idx:
-      columns: slug
 ```
 
 <a name="xml-mapping"></a>
@@ -827,7 +788,7 @@ class Company
 ```
 
 For other mapping drivers see
-[xml](../tests/Gedmo/Mapping/Driver/Xml/Gedmo.Tests.Mapping.Fixture.Xml.Sluggable.dcm.xml) or [yaml](../tests/Gedmo/Mapping/Driver/Yaml/Gedmo.Tests.Mapping.Fixture.Yaml.Category.dcm.yml) examples from tests
+[xml](../tests/Gedmo/Mapping/Driver/Xml/Gedmo.Tests.Mapping.Fixture.Xml.Sluggable.dcm.xml) examples from tests
 
 And the example usage:
 

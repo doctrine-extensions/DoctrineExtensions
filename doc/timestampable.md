@@ -20,7 +20,6 @@ Content:
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Advanced usage [examples](#advanced-examples)
 - Using [Traits](#traits)
@@ -334,38 +333,6 @@ class Article
 
 Now on update and creation these annotated fields will be automatically updated
 
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```yaml
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    created:
-      type: date
-      gedmo:
-        timestampable:
-          on: create
-    updated:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: update
-```
-
 <a name="xml-mapping"></a>
 
 ## Xml mapping example
@@ -536,45 +503,6 @@ class Article
         return $this->published;
     }
 }
-```
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```yaml
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    created:
-      type: date
-      gedmo:
-        timestampable:
-          on: create
-    updated:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: update
-    published:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: change
-          field: type.title
-          value: Published
-  manyToOne:
-    type:
-      targetEntity: Entity\Type
-      inversedBy: articles
 ```
 
 Now few operations to get it all done:

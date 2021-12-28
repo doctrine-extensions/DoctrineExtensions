@@ -43,6 +43,7 @@ a release.
 ### Deprecated
 - Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.
 - `Gedmo\Tool\Logging\DBAL\QueryAnalizer` class without replacement.
+- Using YAML mapping is deprecated, you SHOULD migrate to attributes, annotations or XML.
 
 ### Changed
 - In order to use a custom cache for storing configuration of an extension, the user has to call `setCacheItemPool()`
