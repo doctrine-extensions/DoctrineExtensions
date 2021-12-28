@@ -36,6 +36,7 @@ class Metadata
      *
      * @Gedmo\ReferenceOne(type="entity", class="Gedmo\Tests\References\Fixture\ORM\Category", identifier="categoryId")
      */
+    #[Gedmo\ReferenceOne(type: 'entity', class: Category::class, identifier: 'categoryId')]
     private $category;
 
     /**

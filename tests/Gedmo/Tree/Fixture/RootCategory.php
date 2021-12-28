@@ -22,6 +22,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[Gedmo\Tree(type: 'nested')]
 class RootCategory
 {
     /**
@@ -58,6 +59,7 @@ class RootCategory
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -67,6 +69,7 @@ class RootCategory
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -80,6 +83,7 @@ class RootCategory
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -89,6 +93,7 @@ class RootCategory
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
+    #[Gedmo\TreeRoot]
     private $root;
 
     /**
@@ -98,6 +103,7 @@ class RootCategory
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     public function getId(): ?int

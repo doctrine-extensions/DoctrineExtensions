@@ -7,15 +7,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Mapping\Annotation;
+namespace Gedmo\References\Mapping\Driver;
 
-use Attribute;
+use Gedmo\Mapping\Driver\AttributeDriverInterface;
 
 /**
- * @NamedArgumentConstructor
- * @Annotation
+ * This is an attribute mapping driver for References
+ * behavioral extension.
+ *
+ * @internal
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class ReferenceManyEmbed extends Reference
+final class Attribute extends Annotation implements AttributeDriverInterface
 {
 }

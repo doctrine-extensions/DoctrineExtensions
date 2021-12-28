@@ -21,6 +21,7 @@ use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
  * @Gedmo\Tree(type="materializedPath")
  */
 #[Mongo\Document(repositoryClass: MaterializedPathRepository::class)]
+#[Gedmo\Tree(type: 'materializedPath')]
 class Category
 {
     /**
@@ -38,6 +39,7 @@ class Category
      * @Gedmo\TreePathSource
      */
     #[Mongo\Field(type: Type::STRING)]
+    #[Gedmo\TreePathSource]
     private $title;
 
     /**
@@ -47,6 +49,7 @@ class Category
      * @Gedmo\TreePath(separator="|")
      */
     #[Mongo\Field(type: Type::STRING)]
+    #[Gedmo\TreePath(separator: '|')]
     private $path;
 
     /**
@@ -56,6 +59,7 @@ class Category
      * @Mongo\ReferenceOne(targetDocument="Gedmo\Tests\Tree\Fixture\Document\Category")
      */
     #[Mongo\ReferenceOne(targetDocument: self::class)]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -65,6 +69,7 @@ class Category
      * @Mongo\Field(type="int")
      */
     #[Mongo\Field(type: Type::INT)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     public function getId(): ?string

@@ -196,6 +196,10 @@ class LazyCollection implements Collection
         return $this->results->toArray();
     }
 
+    /**
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         $this->initialize();
@@ -203,6 +207,10 @@ class LazyCollection implements Collection
         return $this->results->offsetExists($offset);
     }
 
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $this->initialize();
@@ -210,6 +218,10 @@ class LazyCollection implements Collection
         return $this->results->offsetGet($offset);
     }
 
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->initialize();
@@ -217,6 +229,10 @@ class LazyCollection implements Collection
         $this->results->offsetSet($offset, $value);
     }
 
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->initialize();
@@ -224,6 +240,10 @@ class LazyCollection implements Collection
         $this->results->offsetUnset($offset);
     }
 
+    /**
+     * @return \Traversable
+     */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $this->initialize();
@@ -231,6 +251,10 @@ class LazyCollection implements Collection
         return $this->results->getIterator();
     }
 
+    /**
+     * @return int
+     */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         $this->initialize();

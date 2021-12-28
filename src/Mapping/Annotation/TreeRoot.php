@@ -9,18 +9,37 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * TreeRoot annotation for Tree behavioral extension
  *
  * @Annotation
+ * @NamedArgumentConstructor
  * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class TreeRoot extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class TreeRoot implements GedmoAnnotation
 {
-    /** @var string */
+    /** @var string|null */
     public $identifierMethod;
+
+    /**
+     * @phpstan-param class-string|null $class
+     */
+    public function __construct(array $data = [], ?string $identifierMethod = null)
+    {
+        if ([] !== $data) {
+            @trigger_error(sprintf(
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->identifierMethod = $data['identifierMethod'] ?? $identifierMethod;
+    }
 }

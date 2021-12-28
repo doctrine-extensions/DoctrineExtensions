@@ -23,6 +23,7 @@ use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
  * @Gedmo\Tree(type="materializedPath")
  */
 #[ORM\Entity(repositoryClass: MaterializedPathRepository::class)]
+#[Gedmo\Tree(type: 'materializedPath')]
 class MPCategoryWithTrimmedSeparator
 {
     /**
@@ -44,6 +45,7 @@ class MPCategoryWithTrimmedSeparator
      * @ORM\Column(name="path", type="string", length=3000, nullable=true)
      */
     #[ORM\Column(name: 'path', type: Types::STRING, length: 3000, nullable: true)]
+    #[Gedmo\TreePath(appendId: false, startsWithSeparator: false, endsWithSeparator: false)]
     private $path;
 
     /**
@@ -53,6 +55,7 @@ class MPCategoryWithTrimmedSeparator
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    #[Gedmo\TreePathSource]
     private $title;
 
     /**
@@ -66,6 +69,7 @@ class MPCategoryWithTrimmedSeparator
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parentId;
 
     /**
@@ -75,6 +79,7 @@ class MPCategoryWithTrimmedSeparator
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**

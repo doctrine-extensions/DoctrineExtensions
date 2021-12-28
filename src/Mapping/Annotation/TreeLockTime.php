@@ -9,7 +9,9 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * TreeLockTime annotation for Tree behavioral extension
@@ -20,6 +22,7 @@ use Doctrine\Common\Annotations\Annotation;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class TreeLockTime extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class TreeLockTime implements GedmoAnnotation
 {
 }

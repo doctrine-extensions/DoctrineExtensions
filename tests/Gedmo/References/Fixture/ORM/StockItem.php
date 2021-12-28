@@ -63,6 +63,7 @@ class StockItem
      *
      * @Gedmo\ReferenceOne(type="document", class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
      */
+    #[Gedmo\ReferenceOne(type: 'document', class: Product::class, inversedBy: 'stockItems', identifier: 'productId')]
     private $product;
 
     /**

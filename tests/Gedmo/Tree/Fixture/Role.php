@@ -31,6 +31,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: Types::STRING)]
 #[ORM\DiscriminatorMap(['user' => User::class, 'usergroup' => UserGroup::class, 'userldap' => UserLDAP::class])]
+#[Gedmo\Tree(type: 'nested')]
 abstract class Role
 {
     /**
@@ -60,6 +61,7 @@ abstract class Role
      * @ORM\ManyToOne(targetEntity="UserGroup", inversedBy="children")
      */
     #[ORM\ManyToOne(targetEntity: UserGroup::class, inversedBy: 'children')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -69,6 +71,7 @@ abstract class Role
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -78,6 +81,7 @@ abstract class Role
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -87,6 +91,7 @@ abstract class Role
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $lvl;
 
     /**

@@ -45,6 +45,7 @@ class Product
      *
      * @Gedmo\ReferenceMany(type="entity", class="Gedmo\Tests\References\Fixture\ORM\StockItem", mappedBy="product")
      */
+    #[Gedmo\ReferenceMany(type: 'entity', class: StockItem::class, mappedBy: 'product')]
     private $stockItems;
 
     /**
