@@ -7,7 +7,7 @@ fields on creation, update, property subset update, or even on specific property
 This is very similar to Timestampable but sets a string.
 
 Note that you need to set the IP on the IpTraceableListener (unless you use the
-Symfony2 extension which does automatically assign the current request IP).
+Symfony extension which does automatically assign the current request IP).
 
 
 Features:
@@ -23,7 +23,7 @@ Features:
 **Symfony:**
 
 - **IpTraceable** is not yet available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony2**, together with all other extensions
+for **Symfony**, together with all other extensions
 
 This article will cover the basic installation and functionality of **IpTraceable** behavior
 
@@ -586,7 +586,7 @@ The Traits are very simplistic - if you use different field names it is recommen
 own Traits specific to your project. The ones provided by this bundle can be used as example.
 
 
-## Example of implementation in Symfony2
+## Example of implementation in Symfony
 
 In your Sf2 application, declare an event subscriber that automatically set IP value on IpTraceableListener.
 

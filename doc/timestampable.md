@@ -32,7 +32,7 @@ and any number of them
 **Portability:**
 
 - **Timestampable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
+ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Timestampable** behavior
 
@@ -678,7 +678,7 @@ class UTCDateTimeType extends DateTimeType
 }
 ```
 
-Now in Symfony2, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
+Now in Symfony, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
 
 ``` yaml
 doctrine:
@@ -708,7 +708,7 @@ private $dateCreated;
 private $dateLastModified;
 ```
 
-Now, in our view (suppose we are using Symfony2 and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
+Now, in our view (suppose we are using Symfony and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
 
 ``` twig
 {{ myEntity.dateCreated | date("d/m/Y g:i a", app.user.timezone) }}

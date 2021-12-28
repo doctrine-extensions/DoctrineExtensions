@@ -62,7 +62,7 @@ and any number of them
 **Portability:**
 
 - **Translatable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
+ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Translatable** behavior
 
@@ -944,7 +944,7 @@ This would create translations for english and lithuanian, and for fruits, **ru*
 Easy like that, any suggestions on improvements are very welcome
 
 
-### Example code to use Personal Translations with (Symfony2 Sonata) i18n Forms:
+### Example code to use Personal Translations with (Symfony Sonata) i18n Forms:
 
 Suppose you have a Sonata Backend with a simple form like:
 
@@ -995,6 +995,6 @@ Then you can change to your needs:
 ```
 
 
-### Translations field type using Personal Translations with Symfony2:
+### Translations field type using Personal Translations with Symfony:
 
 You can use [A2lixTranslationFormBundle](https://github.com/a2lix/TranslationFormBundle) to facilitate your translations.

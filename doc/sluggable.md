@@ -67,7 +67,7 @@ slug updates. The best place to do it, is when initializing sluggable listener. 
 **Portability:**
 
 - **Sluggable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
+ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Sluggable**
 behavior

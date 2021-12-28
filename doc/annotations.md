@@ -160,7 +160,7 @@ $connection = array(
 $em = Doctrine\ORM\EntityManager::create($connection, $config, $evm);
 ```
 
-**Note:** that symfony2 StofDoctrineExtensionsBundle does it automatically this
+**Note:** that Symfony StofDoctrineExtensionsBundle does it automatically this
 way you will maintain a single instance of annotation reader. It relates only
 to doctrine-common-2.1.x branch and newer.
 

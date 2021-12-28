@@ -19,7 +19,7 @@ and any number of them
 **Portability:**
 
 - **Loggable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
+ported to **Symfony** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Loggable**
 behavior
