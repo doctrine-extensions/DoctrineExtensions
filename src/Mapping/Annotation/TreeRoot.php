@@ -28,9 +28,6 @@ final class TreeRoot implements GedmoAnnotation
     /** @var string|null */
     public $identifierMethod;
 
-    /**
-     * @phpstan-param class-string|null $class
-     */
     public function __construct(array $data = [], ?string $identifierMethod = null)
     {
         if ([] !== $data) {

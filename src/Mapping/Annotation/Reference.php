@@ -49,7 +49,7 @@ abstract class Reference implements GedmoAnnotation
     public $inversedBy;
 
     /**
-     * @phpstan-param class-string|null $logEntryClass
+     * @phpstan-param class-string|null $class
      */
     public function __construct(
         array $data = [],

@@ -27,7 +27,7 @@ final class ReferenceIntegrity implements GedmoAnnotation
     /** @var string|null */
     public $value;
 
-    public function __construct(array $data = [], $value = null)
+    public function __construct(array $data = [], ?string $value = null)
     {
         if ([] !== $data) {
             @trigger_error(sprintf(

@@ -177,7 +177,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Add additional $translation for pending $oid object
      * which is being inserted
      *
-     * @param string $oid
+     * @param int    $oid
      * @param object $translation
      */
     public function addPendingTranslationInsert($oid, $translation)
@@ -496,7 +496,7 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Sets translation object which represents translation in default language.
      *
-     * @param string $oid   hash of basic entity
+     * @param int    $oid   hash of basic entity
      * @param string $field field of basic entity
      * @param mixed  $trans Translation object
      */
@@ -520,7 +520,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Check if object has any translation object which represents translation in default language.
      * This is for internal use only.
      *
-     * @param string $oid hash of the basic entity
+     * @param int $oid hash of the basic entity
      *
      * @return bool
      */
@@ -723,10 +723,10 @@ class TranslatableListener extends MappedEventSubscriber
      * Removes translation object which represents translation in default language.
      * This is for internal use only.
      *
-     * @param string $oid   hash of the basic entity
+     * @param int    $oid   hash of the basic entity
      * @param string $field field of basic entity
      */
-    private function removeTranslationInDefaultLocale(string $oid, string $field): void
+    private function removeTranslationInDefaultLocale(int $oid, string $field): void
     {
         if (isset($this->translationInDefaultLocale[$oid])) {
             if (isset($this->translationInDefaultLocale[$oid][$field])) {
@@ -745,12 +745,12 @@ class TranslatableListener extends MappedEventSubscriber
      * Gets translation object which represents translation in default language.
      * This is for internal use only.
      *
-     * @param string $oid   hash of the basic entity
+     * @param int    $oid   hash of the basic entity
      * @param string $field field of basic entity
      *
      * @return mixed Returns translation object if it exists or NULL otherwise
      */
-    private function getTranslationInDefaultLocale(string $oid, string $field)
+    private function getTranslationInDefaultLocale(int $oid, string $field)
     {
         if (array_key_exists($oid, $this->translationInDefaultLocale)) {
             $ret = $this->translationInDefaultLocale[$oid][$field] ?? null;
