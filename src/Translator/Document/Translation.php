@@ -24,13 +24,15 @@ use Gedmo\Translator\Translation as BaseTranslation;
 abstract class Translation extends BaseTranslation
 {
     /**
+     * @var string|null
+     *
      * @ODM\Id
      */
     #[ODM\Id]
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ODM\Field(type="string")
      */
@@ -38,7 +40,7 @@ abstract class Translation extends BaseTranslation
     protected $locale;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ODM\Field(type="string")
      */
@@ -46,7 +48,7 @@ abstract class Translation extends BaseTranslation
     protected $property;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ODM\Field(type="string")
      */
@@ -54,9 +56,7 @@ abstract class Translation extends BaseTranslation
     protected $value;
 
     /**
-     * Get id
-     *
-     * @return int $id
+     * @return string|null $id
      */
     public function getId()
     {

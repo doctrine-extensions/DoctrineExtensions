@@ -12,6 +12,8 @@ namespace Gedmo\Tree\Entity\Repository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\RepositoryInterface;
@@ -30,6 +32,8 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
 
     /**
      * Repository utils
+     *
+     * @var RepositoryUtils
      */
     protected $repoUtils;
 
@@ -169,7 +173,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @param string|null $sortByField Sort by field
      * @param string      $direction   Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\ORM\QueryBuilder QueryBuilder object
+     * @return QueryBuilder QueryBuilder object
      */
     abstract public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc');
 
@@ -179,7 +183,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @param string|null $sortByField Sort by field
      * @param string      $direction   Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\ORM\Query Query object
+     * @return Query Query object
      */
     abstract public function getRootNodesQuery($sortByField = null, $direction = 'asc');
 
@@ -191,7 +195,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @param array  $options     Options
      * @param bool   $includeNode Include node in results?
      *
-     * @return \Doctrine\ORM\QueryBuilder QueryBuilder object
+     * @return QueryBuilder QueryBuilder object
      */
     abstract public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false);
 
@@ -203,38 +207,38 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @param array  $options     Options
      * @param bool   $includeNode Include node in results?
      *
-     * @return \Doctrine\ORM\Query Query object
+     * @return Query Query object
      */
     abstract public function getNodesHierarchyQuery($node = null, $direct = false, array $options = [], $includeNode = false);
 
     /**
      * Get list of children followed by given $node. This returns a QueryBuilder object
      *
-     * @param object $node        if null, all tree nodes will be taken
-     * @param bool   $direct      true to take only direct children
-     * @param string $sortByField field name to sort by
-     * @param string $direction   sort direction : "ASC" or "DESC"
-     * @param bool   $includeNode Include the root node in results?
+     * @param object|null $node        if null, all tree nodes will be taken
+     * @param bool        $direct      true to take only direct children
+     * @param string      $sortByField field name to sort by
+     * @param string      $direction   sort direction : "ASC" or "DESC"
+     * @param bool        $includeNode Include the root node in results?
      *
-     * @return \Doctrine\ORM\QueryBuilder QueryBuilder object
+     * @return QueryBuilder QueryBuilder object
      */
     abstract public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
     /**
      * Get list of children followed by given $node. This returns a Query
      *
-     * @param object $node        if null, all tree nodes will be taken
-     * @param bool   $direct      true to take only direct children
-     * @param string $sortByField field name to sort by
-     * @param string $direction   sort direction : "ASC" or "DESC"
-     * @param bool   $includeNode Include the root node in results?
+     * @param object|null $node        if null, all tree nodes will be taken
+     * @param bool        $direct      true to take only direct children
+     * @param string      $sortByField field name to sort by
+     * @param string      $direction   sort direction : "ASC" or "DESC"
+     * @param bool        $includeNode Include the root node in results?
      *
-     * @return \Doctrine\ORM\Query Query object
+     * @return Query Query object
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
     /**
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     protected function getQueryBuilder()
     {

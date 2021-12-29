@@ -99,8 +99,10 @@ class Nested implements Strategy
     /**
      * Set node position strategy
      *
-     * @param string $oid
+     * @param int    $oid
      * @param string $position
+     *
+     * @return void
      */
     public function setNodePosition($oid, $position)
     {
@@ -291,6 +293,8 @@ class Nested implements Strategy
      * @param string $position
      *
      * @throws \Gedmo\Exception\UnexpectedValueException
+     *
+     * @return void
      */
     public function updateNode(EntityManagerInterface $em, $node, $parent, $position = 'FirstChild')
     {
@@ -585,6 +589,8 @@ class Nested implements Strategy
      * @param int        $first
      * @param int        $delta
      * @param int|string $root
+     *
+     * @return void
      */
     public function shiftRL(EntityManagerInterface $em, $class, $first, $delta, $root = null)
     {
@@ -657,6 +663,8 @@ class Nested implements Strategy
      * @param int|string $root
      * @param int|string $destRoot
      * @param int        $levelDelta
+     *
+     * @return void
      */
     public function shiftRangeRL(EntityManagerInterface $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {

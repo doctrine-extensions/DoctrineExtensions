@@ -12,6 +12,7 @@ namespace Gedmo\Translatable;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
@@ -179,6 +180,8 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @param int    $oid
      * @param object $translation
+     *
+     * @return void
      */
     public function addPendingTranslationInsert($oid, $translation)
     {
@@ -187,6 +190,8 @@ class TranslatableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
@@ -291,9 +296,9 @@ class TranslatableListener extends MappedEventSubscriber
      * Gets the locale to use for translation. Loads object
      * defined locale first..
      *
-     * @param object $object
-     * @param object $meta
-     * @param object $om
+     * @param object        $object
+     * @param ClassMetadata $meta
+     * @param object        $om
      *
      * @throws \Gedmo\Exception\RuntimeException if language or locale property is not
      *                                           found in entity
@@ -336,6 +341,8 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * This has to be done in the preFlush because, when an entity has been loaded
      * in a different locale, no changes will be detected.
+     *
+     * @return void
      */
     public function preFlush(EventArgs $args)
     {
@@ -368,6 +375,8 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Looks for translatable objects being inserted or updated
      * for further processing
+     *
+     * @return void
      */
     public function onFlush(EventArgs $args)
     {
@@ -405,6 +414,8 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Checks for inserted object to update their translation
      * foreign keys
+     *
+     * @return void
      */
     public function postPersist(EventArgs $args)
     {
@@ -436,6 +447,8 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * After object is loaded, listener updates the translations
      * by currently used locale
+     *
+     * @return void
      */
     public function postLoad(EventArgs $args)
     {
@@ -499,6 +512,8 @@ class TranslatableListener extends MappedEventSubscriber
      * @param int    $oid   hash of basic entity
      * @param string $field field of basic entity
      * @param mixed  $trans Translation object
+     *
+     * @return void
      */
     public function setTranslationInDefaultLocale($oid, $field, $trans)
     {
@@ -543,6 +558,8 @@ class TranslatableListener extends MappedEventSubscriber
      * @param string $locale locale to validate
      *
      * @throws \Gedmo\Exception\InvalidArgumentException if locale is not valid
+     *
+     * @return void
      */
     protected function validateLocale($locale)
     {

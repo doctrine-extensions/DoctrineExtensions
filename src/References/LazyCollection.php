@@ -17,12 +17,24 @@ use Doctrine\Common\Collections\Collection;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
+ *
+ * @template-implements Collection<array-key, mixed>
  */
 class LazyCollection implements Collection
 {
+    /**
+     * @var Collection
+     */
     private $results;
+
+    /**
+     * @var callable
+     */
     private $callback;
 
+    /**
+     * @param callable $callback
+     */
     public function __construct($callback)
     {
         $this->callback = $callback;

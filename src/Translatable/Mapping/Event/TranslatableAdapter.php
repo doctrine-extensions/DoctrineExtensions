@@ -76,6 +76,8 @@ interface TranslatableAdapter extends AdapterInterface
      *
      * @phpstan-param class-string $transClass
      * @phpstan-param class-string $objectClass
+     *
+     * @return void
      */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass);
 
@@ -83,6 +85,8 @@ interface TranslatableAdapter extends AdapterInterface
      * Inserts the translation record.
      *
      * @param object $translation
+     *
+     * @return void
      */
     public function insertTranslationRecord($translation);
 
@@ -103,6 +107,8 @@ interface TranslatableAdapter extends AdapterInterface
      * @param object $object
      * @param string $field
      * @param mixed  $value
+     *
+     * @return void
      */
     public function setTranslationValue($object, $field, $value);
 }

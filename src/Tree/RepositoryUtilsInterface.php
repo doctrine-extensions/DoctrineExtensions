@@ -71,6 +71,8 @@ interface RepositoryUtilsInterface
      * Sets the current children index.
      *
      * @param string $childrenIndex
+     *
+     * @return void
      */
     public function setChildrenIndex($childrenIndex);
 

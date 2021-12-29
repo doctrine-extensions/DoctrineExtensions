@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Strategy;
 
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\TreeLockingException;
@@ -488,7 +489,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * Remove node and its children
      *
      * @param ObjectManager $om
-     * @param object        $meta   Metadata
+     * @param ClassMetadata $meta   Metadata
      * @param object        $config config
      * @param object        $node   node to remove
      *
@@ -500,7 +501,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * Returns children of the node with its original path
      *
      * @param ObjectManager $om
-     * @param object        $meta         Metadata
+     * @param ClassMetadata $meta         Metadata
      * @param object        $config       config
      * @param string        $originalPath original path of object
      *

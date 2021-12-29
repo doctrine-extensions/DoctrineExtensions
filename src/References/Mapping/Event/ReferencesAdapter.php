@@ -40,6 +40,8 @@ interface ReferencesAdapter extends AdapterInterface
      * @param array|string|int $identifier
      *
      * @phpstan-param class-string $class
+     *
+     * @return object|null
      */
     public function getSingleReference($om, $class, $identifier);
 

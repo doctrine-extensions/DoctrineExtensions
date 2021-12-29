@@ -380,6 +380,8 @@ class Closure implements Strategy
      *
      * @param object $node
      * @param object $oldParent
+     *
+     * @return void
      */
     public function updateNode(EntityManagerInterface $em, $node, $oldParent)
     {
@@ -441,6 +443,11 @@ class Closure implements Strategy
         }
     }
 
+    /**
+     * @param array $association
+     *
+     * @return string|null
+     */
     protected function getJoinColumnFieldName($association)
     {
         if (count($association['joinColumnFieldNames']) > 1) {
@@ -452,6 +459,8 @@ class Closure implements Strategy
 
     /**
      * Process pending entities to set their "level" value
+     *
+     * @return void
      */
     protected function setLevelFieldOnPendingNodes(ObjectManager $em)
     {

@@ -23,8 +23,14 @@ use Gedmo\Mapping\MappedEventSubscriber;
  */
 class ReferencesListener extends MappedEventSubscriber
 {
+    /**
+     * @var array<string, ObjectManager>
+     */
     private $managers;
 
+    /**
+     * @param array<string, ObjectManager> $managers
+     */
     public function __construct(array $managers = [])
     {
         parent::__construct();
@@ -32,6 +38,9 @@ class ReferencesListener extends MappedEventSubscriber
         $this->managers = $managers;
     }
 
+    /**
+     * @return void
+     */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
@@ -40,6 +49,9 @@ class ReferencesListener extends MappedEventSubscriber
         );
     }
 
+    /**
+     * @return void
+     */
     public function postLoad(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
@@ -103,11 +115,17 @@ class ReferencesListener extends MappedEventSubscriber
         $this->updateManyEmbedReferences($eventArgs);
     }
 
+    /**
+     * @return void
+     */
     public function prePersist(EventArgs $eventArgs)
     {
         $this->updateReferences($eventArgs);
     }
 
+    /**
+     * @return void
+     */
     public function preUpdate(EventArgs $eventArgs)
     {
         $this->updateReferences($eventArgs);
@@ -126,6 +144,12 @@ class ReferencesListener extends MappedEventSubscriber
         ];
     }
 
+    /**
+     * @param string        $type
+     * @param ObjectManager $manager
+     *
+     * @return void
+     */
     public function registerManager($type, $manager)
     {
         $this->managers[$type] = $manager;
@@ -141,6 +165,9 @@ class ReferencesListener extends MappedEventSubscriber
         return $this->managers[$type];
     }
 
+    /**
+     * @return void
+     */
     public function updateManyEmbedReferences(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);

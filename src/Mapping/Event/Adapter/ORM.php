@@ -80,6 +80,8 @@ class ORM implements AdapterInterface
 
     /**
      * Set the entity manager
+     *
+     * @return void
      */
     public function setEntityManager(EntityManagerInterface $em)
     {

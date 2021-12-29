@@ -12,6 +12,7 @@ namespace Gedmo\Mapping\Driver;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\FileDriver;
 use Doctrine\Persistence\Mapping\Driver\FileLocator;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Mapping\Driver;
 
 /**
@@ -38,6 +39,8 @@ abstract class File implements Driver
 
     /**
      * original driver if it is available
+     *
+     * @var MappingDriver
      */
     protected $_originalDriver;
 
@@ -48,6 +51,9 @@ abstract class File implements Driver
      */
     protected $_paths = [];
 
+    /**
+     * @return void
+     */
     public function setLocator(FileLocator $locator)
     {
         $this->locator = $locator;
@@ -82,7 +88,7 @@ abstract class File implements Driver
     /**
      * Passes in the mapping read by original driver
      *
-     * @param object $driver
+     * @param MappingDriver $driver
      *
      * @return void
      */

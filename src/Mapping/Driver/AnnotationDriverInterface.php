@@ -29,6 +29,8 @@ interface AnnotationDriverInterface extends Driver
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
      * @param object $reader annotation reader class
+     *
+     * @return void
      */
     public function setAnnotationReader($reader);
 }

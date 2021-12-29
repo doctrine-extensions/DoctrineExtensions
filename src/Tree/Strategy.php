@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tree;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -45,7 +46,9 @@ interface Strategy
      * Operations after metadata is loaded
      *
      * @param ObjectManager $om
-     * @param object        $meta
+     * @param ClassMetadata $meta
+     *
+     * @return void
      */
     public function processMetadataLoad($om, $meta);
 
