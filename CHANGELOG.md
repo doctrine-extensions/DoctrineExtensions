@@ -29,6 +29,8 @@ a release.
 - Tree: Support to use annotations as attributes on PHP >= 8.0.
 - References: Support to use annotations as attributes on PHP >= 8.0.
 - ReferenceIntegrity: Support to use annotations as attributes on PHP >= 8.0.
+- SoftDeleteable: Support for custom column types (like Carbon).
+- Timestampable: Support for custom column types (like Carbon).
 
 ### Fixed
 - Blameable, IpTraceable, Timestampable: Type handling for the tracked field values configured in the origin field.
