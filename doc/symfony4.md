@@ -218,6 +218,17 @@ You will need to create this subscriber class if you use **loggable** , **transl
 behaviors. This listener will set the **locale used** from request and **username** to
 loggable and blameable. So, to finish the setup create **EventSubscriber\DoctrineExtensionSubscriber**
 
+## Register event subscriber for [Symfony Doctrine MongoDB Bundle](https://github.com/doctrine/DoctrineMongoDBBundle)
+
+Because DoctrineExtensions does not implement `EventSubscriberInterface` from MongoDBBundle, you need to manually tag 
+the listeners. Otherwise, the listeners will not be listening to the triggered events of Doctrine.
+
+```yaml
+Gedmo\Loggable\LoggableListener:
+    tags:
+        - { name: doctrine_mongodb.odm.event_subscriber }
+```
+
 ```php
 <?php
 
