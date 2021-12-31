@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tree\Mapping;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -85,8 +86,8 @@ class Validator
     /**
      * Checks if $field type is valid
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */
@@ -100,8 +101,8 @@ class Validator
     /**
      * Checks if $field type is valid for Path field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */
@@ -115,8 +116,8 @@ class Validator
     /**
      * Checks if $field type is valid for PathSource field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */
@@ -130,8 +131,8 @@ class Validator
     /**
      * Checks if $field type is valid for PathHash field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */
@@ -145,8 +146,8 @@ class Validator
     /**
      * Checks if $field type is valid for LockTime field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */
@@ -160,8 +161,8 @@ class Validator
     /**
      * Checks if $field type is valid for Root field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */
@@ -175,9 +176,11 @@ class Validator
     /**
      * Validates metadata for nested type tree
      *
-     * @param object $meta
+     * @param ClassMetadata $meta
      *
      * @throws InvalidMappingException
+     *
+     * @return void
      */
     public function validateNestedTreeMetadata($meta, array $config)
     {
@@ -199,9 +202,11 @@ class Validator
     /**
      * Validates metadata for closure type tree
      *
-     * @param object $meta
+     * @param ClassMetadata $meta
      *
      * @throws InvalidMappingException
+     *
+     * @return void
      */
     public function validateClosureTreeMetadata($meta, array $config)
     {
@@ -220,9 +225,11 @@ class Validator
     /**
      * Validates metadata for materialized path type tree
      *
-     * @param object $meta
+     * @param ClassMetadata $meta
      *
      * @throws InvalidMappingException
+     *
+     * @return void
      */
     public function validateMaterializedPathTreeMetadata($meta, array $config)
     {

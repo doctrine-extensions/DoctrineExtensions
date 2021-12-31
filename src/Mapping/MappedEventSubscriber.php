@@ -18,6 +18,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -159,6 +160,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
      * @param Reader $reader annotation reader class
+     *
+     * @return void
      */
     public function setAnnotationReader($reader)
     {
@@ -169,7 +172,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Scans the objects for extended annotations
      * event subscribers must subscribe to loadClassMetadata event
      *
-     * @param object $metadata
+     * @param ClassMetadata $metadata
      *
      * @return void
      */
@@ -231,6 +234,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @param string $field
      * @param mixed  $oldValue
      * @param mixed  $newValue
+     *
+     * @return void
      */
     protected function setFieldValue(AdapterInterface $adapter, $object, $field, $oldValue, $newValue)
     {

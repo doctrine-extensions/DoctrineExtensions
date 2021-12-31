@@ -9,6 +9,7 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
@@ -97,8 +98,8 @@ class Xml extends BaseXml
     /**
      * Checks if $field type is valid
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */

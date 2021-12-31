@@ -69,6 +69,8 @@ class LoggableListener extends MappedEventSubscriber
      * @param mixed $username
      *
      * @throws \Gedmo\Exception\InvalidArgumentException Invalid username
+     *
+     * @return void
      */
     public function setUsername($username)
     {
@@ -194,6 +196,8 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @param object $logEntry The LogEntry being persisted
      * @param object $object   The object being Logged
+     *
+     * @return void
      */
     protected function prePersistLogEntry($logEntry, $object)
     {

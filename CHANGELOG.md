@@ -35,6 +35,7 @@ a release.
 - Loggable: Using only PHP 8 attributes.
 - References: Avoid deprecations using LazyCollection with PHP 8.1
 - Tree: Association mapping problems using Closure tree strategy (by manually defining mapping on the closure entity).
+- Wrong PHPDoc type declarations.
 
 ### Deprecated
 - Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.

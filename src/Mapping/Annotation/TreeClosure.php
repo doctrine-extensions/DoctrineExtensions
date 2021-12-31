@@ -28,12 +28,12 @@ final class TreeClosure implements GedmoAnnotation
 {
     /**
      * @var string
-     * @phpstan-var class-string<AbstractClosure>
+     * @phpstan-var string|class-string<AbstractClosure>
      */
     public $class;
 
     /**
-     * @phpstan-param class-string|null $class
+     * @phpstan-param string|class-string<AbstractClosure> $class
      */
     public function __construct(array $data = [], string $class = '')
     {

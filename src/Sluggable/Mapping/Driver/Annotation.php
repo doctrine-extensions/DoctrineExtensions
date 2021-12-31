@@ -88,7 +88,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * @internal
      *
-     * @return SlugHandler[]
+     * @return array<string, SlugHandler[]>
      */
     protected function getSlugHandlers(\ReflectionProperty $property, Slug $slug, ClassMetadata $meta): array
     {

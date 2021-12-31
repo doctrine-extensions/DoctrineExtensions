@@ -102,6 +102,8 @@ class LogEntryRepository extends DocumentRepository
      * Fills a documents versioned fields with data
      *
      * @param object $document
+     *
+     * @return void
      */
     protected function fillDocument($document, array $data)
     {

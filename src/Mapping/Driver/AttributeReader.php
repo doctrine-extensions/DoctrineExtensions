@@ -32,9 +32,11 @@ final class AttributeReader
     }
 
     /**
+     * @phpstan-param class-string $annotationName
+     *
      * @return Annotation|Annotation[]|null
      */
-    public function getClassAnnotation(ReflectionClass $class, $annotationName)
+    public function getClassAnnotation(ReflectionClass $class, string $annotationName)
     {
         return $this->getClassAnnotations($class)[$annotationName] ?? null;
     }
@@ -48,9 +50,11 @@ final class AttributeReader
     }
 
     /**
+     * @phpstan-param class-string $annotationName
+     *
      * @return Annotation|Annotation[]|null
      */
-    public function getPropertyAnnotation(\ReflectionProperty $property, $annotationName)
+    public function getPropertyAnnotation(\ReflectionProperty $property, string $annotationName)
     {
         return $this->getPropertyAnnotations($property)[$annotationName] ?? null;
     }

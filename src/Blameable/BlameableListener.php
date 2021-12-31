@@ -9,6 +9,7 @@
 
 namespace Gedmo\Blameable;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
 
@@ -20,13 +21,16 @@ use Gedmo\Exception\InvalidArgumentException;
  */
 class BlameableListener extends AbstractTrackingListener
 {
+    /**
+     * @var mixed
+     */
     protected $user;
 
     /**
      * Get the user value to set on a blameable field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return mixed
      */
@@ -59,6 +63,8 @@ class BlameableListener extends AbstractTrackingListener
      * Set a user value to return
      *
      * @param mixed $user
+     *
+     * @return void
      */
     public function setUserValue($user)
     {

@@ -113,6 +113,8 @@ class SluggableListener extends MappedEventSubscriber
      * to urlize slugs
      *
      * @param callable $callable
+     *
+     * @return void
      */
     public function setUrlizer($callable)
     {
@@ -147,6 +149,8 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param string $name
      * @param bool   $disable True by default
+     *
+     * @return void
      */
     public function addManagedFilter($name, $disable = true)
     {
@@ -157,6 +161,8 @@ class SluggableListener extends MappedEventSubscriber
      * Removes a filter from the managed set
      *
      * @param string $name
+     *
+     * @return void
      */
     public function removeManagedFilter($name)
     {

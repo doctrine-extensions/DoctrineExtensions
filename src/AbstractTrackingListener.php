@@ -193,6 +193,8 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * @param ClassMetadata    $meta
      * @param string           $field
      * @param AdapterInterface $eventAdapter
+     *
+     * @return mixed
      */
     abstract protected function getFieldValue($meta, $field, $eventAdapter);
 
@@ -203,6 +205,8 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * @param AdapterInterface $eventAdapter
      * @param ClassMetadata    $meta
      * @param string           $field
+     *
+     * @return void
      */
     protected function updateField($object, $eventAdapter, $meta, $field)
     {
@@ -229,7 +233,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     }
 
     /**
-     * @param mixed $value
+     * @param mixed $values
      *
      * @return mixed[]|null
      */

@@ -92,26 +92,54 @@ class Validator
      */
     public static $validateWritableDirectory = true;
 
+    /**
+     * @param string $field
+     *
+     * @return void
+     */
     public static function validateFileNameField(ClassMetadata $meta, $field)
     {
         self::validateField($meta, $field, self::UPLOADABLE_FILE_NAME, self::$validFileNameTypes);
     }
 
+    /**
+     * @param string $field
+     *
+     * @return void
+     */
     public static function validateFileMimeTypeField(ClassMetadata $meta, $field)
     {
         self::validateField($meta, $field, self::UPLOADABLE_FILE_MIME_TYPE, self::$validFileMimeTypeTypes);
     }
 
+    /**
+     * @param string $field
+     *
+     * @return void
+     */
     public static function validateFilePathField(ClassMetadata $meta, $field)
     {
         self::validateField($meta, $field, self::UPLOADABLE_FILE_PATH, self::$validFilePathTypes);
     }
 
+    /**
+     * @param string $field
+     *
+     * @return void
+     */
     public static function validateFileSizeField(ClassMetadata $meta, $field)
     {
         self::validateField($meta, $field, self::UPLOADABLE_FILE_SIZE, self::$validFileSizeTypes);
     }
 
+    /**
+     * @param ClassMetadata $meta
+     * @param string        $field
+     * @param string        $uploadableField
+     * @param string[]      $validFieldTypes
+     *
+     * @return void
+     */
     public static function validateField($meta, $field, $uploadableField, $validFieldTypes)
     {
         if ($meta->isMappedSuperclass) {
@@ -127,6 +155,11 @@ class Validator
         }
     }
 
+    /**
+     * @param string $path
+     *
+     * @return void
+     */
     public static function validatePath($path)
     {
         if (!is_string($path) || '' === $path) {
@@ -146,6 +179,9 @@ class Validator
         }
     }
 
+    /**
+     * @return void
+     */
     public static function validateConfiguration(ClassMetadata $meta, array &$config)
     {
         if (!$config['filePathField'] && !$config['fileNameField']) {

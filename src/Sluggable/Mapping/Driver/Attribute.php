@@ -26,7 +26,7 @@ use Gedmo\Mapping\Driver\AttributeDriverInterface;
 final class Attribute extends Annotation implements AttributeDriverInterface
 {
     /**
-     * @return SlugHandler[]
+     * @return array<string, SlugHandler[]>
      */
     protected function getSlugHandlers(\ReflectionProperty $property, Slug $slug, ClassMetadata $meta): array
     {

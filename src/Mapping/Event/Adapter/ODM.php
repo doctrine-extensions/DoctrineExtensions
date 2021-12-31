@@ -80,6 +80,8 @@ class ODM implements AdapterInterface
 
     /**
      * Set the document manager
+     *
+     * @return void
      */
     public function setDocumentManager(DocumentManager $dm)
     {

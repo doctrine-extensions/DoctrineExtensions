@@ -18,7 +18,7 @@ use Gedmo\Sluggable\Handler\SlugHandlerInterface;
  * SlugHandler annotation for Sluggable behavioral extension
  *
  * @Annotation
- * @NamedArgumentConstructor()
+ * @NamedArgumentConstructor
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
@@ -27,7 +27,7 @@ final class SlugHandler implements GedmoAnnotation
 {
     /**
      * @var string
-     * @phpstan-var class-string<SlugHandlerInterface>
+     * @phpstan-var string|class-string<SlugHandlerInterface>
      */
     public $class = '';
 
@@ -36,6 +36,9 @@ final class SlugHandler implements GedmoAnnotation
      */
     public $options = [];
 
+    /**
+     * @phpstan-param string|class-string<SlugHandlerInterface> $class
+     */
     public function __construct(
         array $data = [],
         string $class = '',

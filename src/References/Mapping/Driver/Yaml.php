@@ -25,6 +25,9 @@ class Yaml extends File implements Driver
      */
     protected $_extension = '.dcm.yml';
 
+    /**
+     * @var array
+     */
     private $validReferences = [
         'referenceOne' => [],
         'referenceMany' => [],

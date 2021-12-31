@@ -11,6 +11,7 @@ namespace Gedmo\Tool\Wrapper;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\UnsupportedObjectManagerException;
 use Gedmo\Tool\WrapperInterface;
@@ -26,7 +27,7 @@ abstract class AbstractWrapper implements WrapperInterface
     /**
      * Object metadata
      *
-     * @var object
+     * @var ClassMetadata
      */
     protected $meta;
 
@@ -40,7 +41,7 @@ abstract class AbstractWrapper implements WrapperInterface
     /**
      * Object manager instance
      *
-     * @var \Doctrine\Persistence\ObjectManager
+     * @var ObjectManager
      */
     protected $om;
 
@@ -72,6 +73,9 @@ abstract class AbstractWrapper implements WrapperInterface
         throw new UnsupportedObjectManagerException('Given object manager is not managed by wrapper');
     }
 
+    /**
+     * @return void
+     */
     public static function clear()
     {
         self::$wrappedObjectReferences = [];

@@ -67,6 +67,12 @@ class TranslationProxy
         }
     }
 
+    /**
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
     public function __call($method, $arguments)
     {
         $matches = [];
@@ -96,6 +102,11 @@ class TranslationProxy
         return $return;
     }
 
+    /**
+     * @param string $property
+     *
+     * @return mixed
+     */
     public function __get($property)
     {
         if (in_array($property, $this->properties, true)) {
@@ -109,6 +120,12 @@ class TranslationProxy
         return $this->translatable->$property;
     }
 
+    /**
+     * @param string $property
+     * @param mixed  $value
+     *
+     * @return self
+     */
     public function __set($property, $value)
     {
         if (in_array($property, $this->properties, true)) {
@@ -116,12 +133,21 @@ class TranslationProxy
                 return $this->$setter($value);
             }
 
-            return $this->setTranslatedValue($property, $value);
+            $this->setTranslatedValue($property, $value);
+
+            return $this;
         }
 
         $this->translatable->$property = $value;
+
+        return $this;
     }
 
+    /**
+     * @param string $property
+     *
+     * @return bool
+     */
     public function __isset($property)
     {
         return in_array($property, $this->properties, true);
@@ -156,6 +182,8 @@ class TranslationProxy
      *
      * @param string $property property name
      * @param string $value    value
+     *
+     * @return void
      */
     public function setTranslatedValue($property, $value)
     {

@@ -11,6 +11,7 @@ namespace Gedmo\Mapping;
 
 use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver as DoctrineBundleMappingDriver;
 use Doctrine\Common\Cache\Cache;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -76,7 +77,7 @@ class ExtensionMetadataFactory
     /**
      * Reads extension metadata
      *
-     * @param object $meta
+     * @param ClassMetadata $meta
      *
      * @return array the metatada configuration
      */
@@ -139,7 +140,7 @@ class ExtensionMetadataFactory
      * Get the extended driver instance which will
      * read the metadata required by extension
      *
-     * @param object $omDriver
+     * @param MappingDriver $omDriver
      *
      * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
      *
