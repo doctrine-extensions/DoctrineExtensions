@@ -11,16 +11,6 @@ Features:
 - Objects can be reverted to previous versions
 - Attributes, Annotation, Yaml and Xml mapping support for extensions
 
-Update **2011-04-04**
-
-- Made single listener, one instance can be used for any object manager
-and any number of them
-
-**Portability:**
-
-- **Loggable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
-
 This article will cover the basic installation and functionality of **Loggable**
 behavior
 
@@ -57,7 +47,7 @@ will store logs to optionally specified **logEntryClass**. You will still need t
 
 In order to set the username, when adding the loggable listener you need to set it this way:
 
-``` php
+```php
 $loggableListener = new Gedmo\Loggable\LoggableListener;
 $loggableListener->setAnnotationReader($cachedAnnotationReader);
 $loggableListener->setUsername('admin');
@@ -74,7 +64,7 @@ cache is active
 **Note:** this example is using annotations and attributes for mapping, you should use
 one of them, not both.
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -129,7 +119,7 @@ class Article
 
 ## Loggable Document example:
 
-``` php
+```php
 <?php
 namespace Document;
 
@@ -215,7 +205,7 @@ Entity\Article:
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -244,7 +234,7 @@ Entity\Article:
 
 ## Basic usage examples:
 
-``` php
+```php
 <?php
 $article = new Entity\Article;
 $article->setTitle('my title');
@@ -258,7 +248,7 @@ it will store only identifier of that object to avoid storing proxies
 
 Now lets update our article:
 
-``` php
+```php
 <?php
 // first load the article
 $article = $em->find('Entity\Article', 1 /*article id*/);
@@ -270,7 +260,7 @@ $em->flush();
 This updated an article and inserted the logEntry for update action with new changeset
 Now lets revert it to previous version:
 
-``` php
+```php
 <?php
 // first check our log entries
 $repo = $em->getRepository('Gedmo\Loggable\Entity\LogEntry'); // we use default log entry class

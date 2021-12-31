@@ -7,7 +7,7 @@ fields on creation, update, property subset update, or even on specific property
 This is very similar to Timestampable but sets a string.
 
 Note that you need to set the IP on the IpTraceableListener (unless you use the
-Symfony2 extension which does automatically assign the current request IP).
+Symfony extension which does automatically assign the current request IP).
 
 
 Features:
@@ -18,12 +18,6 @@ Features:
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
 - Attribute, Annotation, Yaml and Xml mapping support for extensions
-
-
-**Symfony:**
-
-- **IpTraceable** is not yet available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony2**, together with all other extensions
 
 This article will cover the basic installation and functionality of **IpTraceable** behavior
 
@@ -301,7 +295,7 @@ Entity\Article:
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -586,7 +580,7 @@ The Traits are very simplistic - if you use different field names it is recommen
 own Traits specific to your project. The ones provided by this bundle can be used as example.
 
 
-## Example of implementation in Symfony2
+## Example of implementation in Symfony
 
 In your Sf2 application, declare an event subscriber that automatically set IP value on IpTraceableListener.
 
@@ -659,7 +653,7 @@ class IpTraceSubscriber implements EventSubscriberInterface
 
 ### Configuration for services.xml
 
-``` xml
+```xml
 <?xml version="1.0" ?>
 
 <container xmlns="http://symfony.com/schema/dic/services"

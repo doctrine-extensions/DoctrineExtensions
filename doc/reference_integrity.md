@@ -17,12 +17,6 @@ Features:
 - 'nullify', 'pull' and 'restrict' support
 - Attribute, Annotation and Yaml mapping support for extensions
 
-
-**Symfony:**
-
-- **ReferenceIntegrity** is available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony**, together with all other extensions
-
 This article will cover the basic installation and functionality of **ReferenceIntegrity** behavior
 
 Content:

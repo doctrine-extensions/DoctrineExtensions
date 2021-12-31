@@ -36,7 +36,7 @@ if a category is being moved, inserted or removed.
 
 To start with, I'll make the simple definitions of these two entities:
 
-``` php
+```php
 <?php
 
 namespace App\Entity;
@@ -75,7 +75,7 @@ class Shop
 
 It should have owner and so many more attributes, but lets keep it simple. Here follows Category:
 
-``` php
+```php
 <?php
 
 namespace App\Entity;
@@ -180,7 +180,7 @@ might be available only in next versions.
 
 Now everytime we do **insert**, **move** or **remove** actions for Category:
 
-``` php
+```php
 <?php
 
 use Doctrine\DBAL\LockMode;
