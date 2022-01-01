@@ -24,6 +24,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[Gedmo\Tree(type: 'nested')]
 class TreeSlugPrefixSuffix
 {
     /**
@@ -73,6 +74,7 @@ class TreeSlugPrefixSuffix
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -87,6 +89,7 @@ class TreeSlugPrefixSuffix
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -96,6 +99,7 @@ class TreeSlugPrefixSuffix
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -105,6 +109,7 @@ class TreeSlugPrefixSuffix
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
+    #[Gedmo\TreeRoot]
     private $root;
 
     /**
@@ -114,6 +119,7 @@ class TreeSlugPrefixSuffix
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     public function __construct()

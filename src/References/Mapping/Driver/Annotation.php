@@ -9,6 +9,7 @@
 
 namespace Gedmo\References\Mapping\Driver;
 
+use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver;
 use Gedmo\Mapping\Annotation\ReferenceMany;
 use Gedmo\Mapping\Annotation\ReferenceManyEmbed;
 use Gedmo\Mapping\Annotation\ReferenceOne;
@@ -41,9 +42,14 @@ class Annotation implements AnnotationDriverInterface
 
     /**
      * original driver if it is available
+     *
+     * @var MappingDriver
      */
     protected $_originalDriver;
 
+    /**
+     * @var string[]
+     */
     private $annotations = [
         'referenceOne' => self::REFERENCE_ONE,
         'referenceMany' => self::REFERENCE_MANY,

@@ -10,6 +10,7 @@
 namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 
@@ -21,6 +22,12 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
  */
 final class ORM extends BaseAdapterORM implements SortableAdapter
 {
+    /**
+     * @param ClassMetadata $meta
+     * @param array         $groups
+     *
+     * @return int|null
+     */
     public function getMaxPosition(array $config, $meta, $groups)
     {
         $em = $this->getObjectManager();
@@ -37,6 +44,13 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         return $res[0][1];
     }
 
+    /**
+     * @param array $relocation
+     * @param array $delta
+     * @param array $config
+     *
+     * @return void
+     */
     public function updatePositions($relocation, $delta, $config)
     {
         $sign = $delta['delta'] < 0 ? '-' : '+';

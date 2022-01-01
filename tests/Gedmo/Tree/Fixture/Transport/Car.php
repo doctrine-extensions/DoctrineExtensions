@@ -22,6 +22,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[Gedmo\Tree(type: 'nested')]
 class Car extends Vehicle
 {
     /**
@@ -31,6 +32,7 @@ class Car extends Vehicle
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     protected $children;
+
     /**
      * @var self|null
      *
@@ -42,6 +44,7 @@ class Car extends Vehicle
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -51,6 +54,7 @@ class Car extends Vehicle
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -60,6 +64,7 @@ class Car extends Vehicle
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -69,6 +74,7 @@ class Car extends Vehicle
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeRoot]
     private $root;
 
     /**
@@ -78,6 +84,7 @@ class Car extends Vehicle
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeLevel]
     private $classLevel;
 
     public function setParent(?self $parent = null): void

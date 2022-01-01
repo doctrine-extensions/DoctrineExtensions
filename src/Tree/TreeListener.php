@@ -99,6 +99,8 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Looks for Tree objects being updated
      * for further processing
+     *
+     * @return void
      */
     public function onFlush(EventArgs $args)
     {
@@ -139,6 +141,8 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Updates tree on Node removal
+     *
+     * @return void
      */
     public function preRemove(EventArgs $args)
     {
@@ -154,6 +158,8 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Checks for persisted Nodes
+     *
+     * @return void
      */
     public function prePersist(EventArgs $args)
     {
@@ -169,6 +175,8 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Checks for updated Nodes
+     *
+     * @return void
      */
     public function preUpdate(EventArgs $args)
     {
@@ -185,6 +193,8 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
+     *
+     * @return void
      */
     public function postPersist(EventArgs $args)
     {
@@ -201,6 +211,8 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
+     *
+     * @return void
      */
     public function postUpdate(EventArgs $args)
     {
@@ -217,6 +229,8 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
+     *
+     * @return void
      */
     public function postRemove(EventArgs $args)
     {
@@ -232,6 +246,8 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Mapps additional metadata
+     *
+     * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {

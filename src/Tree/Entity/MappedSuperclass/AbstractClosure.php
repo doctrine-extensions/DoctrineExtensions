@@ -19,6 +19,8 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class AbstractClosure
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -31,25 +33,29 @@ abstract class AbstractClosure
     /**
      * Mapped by listener
      * Visibility must be protected
+     *
+     * @var object|null
      */
     protected $ancestor;
 
     /**
      * Mapped by listener
      * Visibility must be protected
+     *
+     * @var object|null
      */
     protected $descendant;
 
     /**
+     * @var int|null
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     protected $depth;
 
     /**
-     * Get id
-     *
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
@@ -73,7 +79,7 @@ abstract class AbstractClosure
     /**
      * Get ancestor
      *
-     * @return object
+     * @return object|null
      */
     public function getAncestor()
     {
@@ -97,7 +103,7 @@ abstract class AbstractClosure
     /**
      * Get descendant
      *
-     * @return object
+     * @return object|null
      */
     public function getDescendant()
     {
@@ -121,7 +127,7 @@ abstract class AbstractClosure
     /**
      * Get depth
      *
-     * @return int
+     * @return int|null
      */
     public function getDepth()
     {

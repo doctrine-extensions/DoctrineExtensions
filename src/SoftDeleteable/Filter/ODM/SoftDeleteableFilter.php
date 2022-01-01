@@ -9,17 +9,28 @@
 
 namespace Gedmo\SoftDeleteable\Filter\ODM;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Query\Filter\BsonFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 class SoftDeleteableFilter extends BsonFilter
 {
-    protected $listener;
     /**
+     * @var SoftDeleteableListener|null
+     */
+    protected $listener;
+
+    /**
+     * @var DocumentManager|null
+     *
      * @deprecated `BsonFilter::$dm` is a protected property, thus this property is not required
      */
     protected $documentManager;
+
+    /**
+     * @var array<string, bool>
+     */
     protected $disabled = [];
 
     /**
@@ -59,16 +70,31 @@ class SoftDeleteableFilter extends BsonFilter
         ];
     }
 
+    /**
+     * @param string $class
+     * @phpstan-param class-string $class
+     *
+     * @return void
+     */
     public function disableForDocument($class)
     {
         $this->disabled[$class] = true;
     }
 
+    /**
+     * @param string $class
+     * @phpstan-param class-string $class
+     *
+     * @return void
+     */
     public function enableForDocument($class)
     {
         $this->disabled[$class] = false;
     }
 
+    /**
+     * @return SoftDeleteableListener|null
+     */
     protected function getListener()
     {
         if (null === $this->listener) {
@@ -93,6 +119,9 @@ class SoftDeleteableFilter extends BsonFilter
         return $this->listener;
     }
 
+    /**
+     * @return DocumentManager
+     */
     protected function getDocumentManager()
     {
         // Remove the following assignment on the next major release.

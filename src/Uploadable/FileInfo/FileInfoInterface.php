@@ -17,14 +17,29 @@ namespace Gedmo\Uploadable\FileInfo;
  */
 interface FileInfoInterface
 {
+    /**
+     * @return string|null
+     */
     public function getTmpName();
 
+    /**
+     * @return string|null
+     */
     public function getName();
 
+    /**
+     * @return string|null
+     */
     public function getSize();
 
+    /**
+     * @return string|null
+     */
     public function getType();
 
+    /**
+     * @return int
+     */
     public function getError();
 
     /**

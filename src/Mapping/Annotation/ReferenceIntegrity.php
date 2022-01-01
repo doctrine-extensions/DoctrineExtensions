@@ -9,7 +9,9 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * ReferenceIntegrity annotation for ReferenceIntegrity behavioral extension
@@ -19,6 +21,21 @@ use Doctrine\Common\Annotations\Annotation;
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  */
-final class ReferenceIntegrity extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class ReferenceIntegrity implements GedmoAnnotation
 {
+    /** @var string|null */
+    public $value;
+
+    public function __construct(array $data = [], ?string $value = null)
+    {
+        if ([] !== $data) {
+            @trigger_error(sprintf(
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->value = $data['value'] ?? $value;
+    }
 }

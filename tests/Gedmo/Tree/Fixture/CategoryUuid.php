@@ -26,6 +26,7 @@ use Gedmo\Tree\Node as NodeInterface;
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[Gedmo\Tree(type: 'nested')]
 class CategoryUuid implements NodeInterface
 {
     /**
@@ -55,6 +56,7 @@ class CategoryUuid implements NodeInterface
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -64,6 +66,7 @@ class CategoryUuid implements NodeInterface
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -77,6 +80,7 @@ class CategoryUuid implements NodeInterface
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parentId;
 
     /**
@@ -86,6 +90,7 @@ class CategoryUuid implements NodeInterface
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**
@@ -95,6 +100,7 @@ class CategoryUuid implements NodeInterface
      * @ORM\Column(name="root", type="string")
      */
     #[ORM\Column(name: 'root', type: Types::STRING)]
+    #[Gedmo\TreeRoot]
     private $root;
 
     /**

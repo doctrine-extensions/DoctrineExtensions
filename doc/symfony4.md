@@ -138,7 +138,7 @@ doctrine:
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
-```     
+```    
 <a name="ext-listeners"></a>
 
 ## Doctrine extension listener services

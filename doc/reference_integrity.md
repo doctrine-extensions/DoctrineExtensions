@@ -15,13 +15,7 @@ Features:
 - ODM only
 - ReferenceOne and ReferenceMany support
 - 'nullify', 'pull' and 'restrict' support
-- Annotation and Yaml mapping support for extensions
-
-
-**Symfony:**
-
-- **ReferenceIntegrity** is available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony2**, together with all other extensions
+- Attribute, Annotation and Yaml mapping support for extensions
 
 This article will cover the basic installation and functionality of **ReferenceIntegrity** behavior
 
@@ -44,26 +38,30 @@ on how to setup and use the extensions in most optimized way.
 
 ## ReferenceIntegrity Document example:
 
-``` php
+```php
 <?php
 namespace Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="types")
  */
+#[ODM\Document(collection: 'types')]
 class Type
 {
     /**
      * @ODM\Id
      */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private $title;
 
     /**
@@ -71,6 +69,8 @@ class Type
      * @Gedmo\ReferenceIntegrity("nullify")
      * @var Article
      */
+    #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'type')]
+    #[Gedmo\ReferenceIntegrity(value: 'nullify')]
     protected $article;
 
     // ...
@@ -114,7 +114,7 @@ It is necessary to have the 'mappedBy' option set, to be able to access the refe
 
 Few operations to see 'nullify' in action:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');
@@ -138,7 +138,7 @@ $article->getType(); // won't be referenced to Type anymore
 
 Few operations to see 'pull' in action:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');

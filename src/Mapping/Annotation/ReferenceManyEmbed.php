@@ -9,9 +9,13 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
+
 /**
+ * @NamedArgumentConstructor
  * @Annotation
  */
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class ReferenceManyEmbed extends Reference
 {
 }

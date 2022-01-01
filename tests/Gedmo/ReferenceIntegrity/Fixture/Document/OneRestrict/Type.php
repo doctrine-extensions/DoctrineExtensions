@@ -28,6 +28,7 @@ class Type
      * @Gedmo\ReferenceIntegrity("restrict")
      */
     #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'type')]
+    #[Gedmo\ReferenceIntegrity(value: 'restrict')]
     protected $article;
 
     /**

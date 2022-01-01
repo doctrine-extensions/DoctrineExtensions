@@ -17,12 +17,24 @@ use Doctrine\Common\Collections\Collection;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
+ *
+ * @template-implements Collection<array-key, mixed>
  */
 class LazyCollection implements Collection
 {
+    /**
+     * @var Collection
+     */
     private $results;
+
+    /**
+     * @var callable
+     */
     private $callback;
 
+    /**
+     * @param callable $callback
+     */
     public function __construct($callback)
     {
         $this->callback = $callback;
@@ -196,6 +208,10 @@ class LazyCollection implements Collection
         return $this->results->toArray();
     }
 
+    /**
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         $this->initialize();
@@ -203,6 +219,10 @@ class LazyCollection implements Collection
         return $this->results->offsetExists($offset);
     }
 
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $this->initialize();
@@ -210,6 +230,10 @@ class LazyCollection implements Collection
         return $this->results->offsetGet($offset);
     }
 
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->initialize();
@@ -217,6 +241,10 @@ class LazyCollection implements Collection
         $this->results->offsetSet($offset, $value);
     }
 
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->initialize();
@@ -224,6 +252,10 @@ class LazyCollection implements Collection
         $this->results->offsetUnset($offset);
     }
 
+    /**
+     * @return \Traversable
+     */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $this->initialize();
@@ -231,6 +263,10 @@ class LazyCollection implements Collection
         return $this->results->getIterator();
     }
 
+    /**
+     * @return int
+     */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         $this->initialize();

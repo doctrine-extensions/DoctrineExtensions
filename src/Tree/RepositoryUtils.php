@@ -17,16 +17,16 @@ use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 class RepositoryUtils implements RepositoryUtilsInterface
 {
-    /** @var \Doctrine\Persistence\Mapping\ClassMetadata */
+    /** @var ClassMetadata */
     protected $meta;
 
-    /** @var \Gedmo\Tree\TreeListener */
+    /** @var TreeListener */
     protected $listener;
 
-    /** @var \Doctrine\Persistence\ObjectManager */
+    /** @var ObjectManager */
     protected $om;
 
-    /** @var \Gedmo\Tree\RepositoryInterface */
+    /** @var RepositoryInterface */
     protected $repo;
 
     /**
@@ -37,6 +37,10 @@ class RepositoryUtils implements RepositoryUtilsInterface
      */
     protected $childrenIndex = '__children';
 
+    /**
+     * @param TreeListener        $listener
+     * @param RepositoryInterface $repo
+     */
     public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
     {
         $this->om = $om;
@@ -45,6 +49,9 @@ class RepositoryUtils implements RepositoryUtilsInterface
         $this->repo = $repo;
     }
 
+    /**
+     * @return ClassMetadata
+     */
     public function getClassMetadata()
     {
         return $this->meta;

@@ -76,8 +76,8 @@ class Yaml extends File implements Driver
     /**
      * Checks if $field type is valid as Sluggable field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */

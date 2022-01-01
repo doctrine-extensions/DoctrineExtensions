@@ -28,7 +28,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query builder
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
@@ -40,7 +40,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Query
      */
@@ -52,7 +52,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      */
     public function getTree($rootNode = null): Iterator
     {

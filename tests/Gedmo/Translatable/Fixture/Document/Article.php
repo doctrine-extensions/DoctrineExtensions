@@ -48,6 +48,7 @@ class Article
      */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
+    #[Gedmo\Slug(fields: ['title', 'code'])]
     private $slug;
 
     public function getId()

@@ -37,6 +37,8 @@ interface AdapterInterface
 
     /**
      * Set the event args object.
+     *
+     * @return void
      */
     public function setEventArgs(EventArgs $args);
 
@@ -157,6 +159,8 @@ interface AdapterInterface
      *
      * @param ORMUnitOfWork|MongoDBUnitOfWork $uow
      * @param object                          $object
+     *
+     * @return void
      */
     public function clearObjectChangeSet($uow, $object);
 }

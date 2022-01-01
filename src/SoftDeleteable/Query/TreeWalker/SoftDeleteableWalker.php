@@ -55,6 +55,8 @@ class SoftDeleteableWalker extends SqlWalker
     protected $configuration;
 
     /**
+     * @var string|null
+     *
      * @deprecated to be removed in 4.0, unused
      */
     protected $alias;

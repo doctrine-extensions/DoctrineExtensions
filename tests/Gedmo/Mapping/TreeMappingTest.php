@@ -11,29 +11,30 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
 use Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory;
-use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosureWithoutMapping;
 use Gedmo\Tree\TreeListener;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * These are mapping tests for tree extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class TreeMappingTest extends \PHPUnit\Framework\TestCase
+final class TreeMappingTest extends ORMMappingTestCase
 {
     public const TEST_YAML_ENTITY_CLASS = Category::class;
     public const YAML_CLOSURE_CATEGORY = ClosureCategory::class;
     public const YAML_MATERIALIZED_PATH_CATEGORY = MaterializedPathCategory::class;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
 
@@ -44,11 +45,9 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCache(new ArrayAdapter());
-        $config->setQueryCache(new ArrayAdapter());
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Mapping\Proxy');
+        parent::setUp();
+
+        $config = $this->getBasicConfiguration();
         $chainDriverImpl = new MappingDriverChain();
         $chainDriverImpl->addDriver(
             new YamlDriver([__DIR__.'/Driver/Yaml']),
@@ -70,18 +69,19 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         ];
 
         $this->listener = new TreeListener();
-        $evm = new \Doctrine\Common\EventManager();
-        $evm->addEventSubscriber(new TreeListener());
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->listener->setCacheItemPool($this->cache);
+        $evm = new EventManager();
+        $evm->addEventSubscriber($this->listener);
+        $this->em = EntityManager::create($conn, $config, $evm);
     }
 
     public function testApcCached(): void
     {
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
-        $this->em->getClassMetadata(CategoryClosure::class);
+        $this->em->getClassMetadata(CategoryClosureWithoutMapping::class);
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
-            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure$CLASSMETADATA'
+            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosureWithoutMapping$CLASSMETADATA'
         );
         static::assertTrue($meta->hasAssociation('ancestor'));
         static::assertTrue($meta->hasAssociation('descendant'));
@@ -94,7 +94,7 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Tree'
         );
-        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
+        $config = $this->cache->getItem($cacheId)->get();
         static::assertArrayHasKey('left', $config);
         static::assertSame('left', $config['left']);
         static::assertArrayHasKey('right', $config);
@@ -113,14 +113,14 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
     {
         $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
-        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
+        $config = $this->cache->getItem($cacheId)->get();
 
         static::assertArrayHasKey('parent', $config);
         static::assertSame('parent', $config['parent']);
         static::assertArrayHasKey('strategy', $config);
         static::assertSame('closure', $config['strategy']);
         static::assertArrayHasKey('closure', $config);
-        static::assertSame(CategoryClosure::class, $config['closure']);
+        static::assertSame(CategoryClosureWithoutMapping::class, $config['closure']);
     }
 
     public function testYamlMaterializedPathMapping(): void

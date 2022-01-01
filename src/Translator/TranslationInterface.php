@@ -20,6 +20,8 @@ interface TranslationInterface
      * Set the translatable item.
      *
      * @param object $translatable
+     *
+     * @return void
      */
     public function setTranslatable($translatable);
 
@@ -34,6 +36,8 @@ interface TranslationInterface
      * Set the translation locale.
      *
      * @param string $locale
+     *
+     * @return void
      */
     public function setLocale($locale);
 
@@ -48,6 +52,8 @@ interface TranslationInterface
      * Set the translated property.
      *
      * @param string $property
+     *
+     * @return void
      */
     public function setProperty($property);
 

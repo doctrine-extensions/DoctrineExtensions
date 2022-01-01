@@ -130,6 +130,8 @@ class EntityWrapper extends AbstractWrapper
     /**
      * Initialize the entity if it is proxy
      * required when is detached or not initialized
+     *
+     * @return void
      */
     protected function initialize()
     {

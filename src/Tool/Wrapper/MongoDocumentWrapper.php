@@ -116,6 +116,8 @@ class MongoDocumentWrapper extends AbstractWrapper
     /**
      * Initialize the document if it is proxy
      * required when is detached or not initialized
+     *
+     * @return void
      */
     protected function initialize()
     {

@@ -10,7 +10,7 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver as DoctrineBundleMappingDriver;
-use Doctrine\Common\Cache\Cache;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -21,6 +21,7 @@ use Gedmo\Mapping\Driver\AttributeAnnotationReader;
 use Gedmo\Mapping\Driver\AttributeDriverInterface;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Driver\File as FileDriver;
+use Psr\Cache\CacheItemPoolInterface;
 
 /**
  * The extension metadata factory is responsible for extension driver
@@ -59,24 +60,24 @@ class ExtensionMetadataFactory
     protected $annotationReader;
 
     /**
-     * Initializes extension driver
-     *
-     * @param string $extensionNamespace
-     * @param object $annotationReader
+     * @var CacheItemPoolInterface|null
      */
-    public function __construct(ObjectManager $objectManager, $extensionNamespace, $annotationReader)
+    private $cacheItemPool;
+
+    public function __construct(ObjectManager $objectManager, string $extensionNamespace, object $annotationReader, ?CacheItemPoolInterface $cacheItemPool = null)
     {
         $this->objectManager = $objectManager;
         $this->annotationReader = $annotationReader;
         $this->extensionNamespace = $extensionNamespace;
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
         $this->driver = $this->getDriver($omDriver);
+        $this->cacheItemPool = $cacheItemPool;
     }
 
     /**
      * Reads extension metadata
      *
-     * @param object $meta
+     * @param ClassMetadata $meta
      *
      * @return array the metatada configuration
      */
@@ -110,14 +111,7 @@ class ExtensionMetadataFactory
             $config['useObjectClass'] = $useObjectName;
         }
 
-        $cacheDriver = $cmf->getCacheDriver();
-
-        if ($cacheDriver instanceof Cache) {
-            // Cache the result, even if it's empty, to prevent re-parsing non-existent annotations.
-            $cacheId = self::getCacheId($meta->getName(), $this->extensionNamespace);
-
-            $cacheDriver->save($cacheId, $config);
-        }
+        $this->storeConfiguration($meta->getName(), $config);
 
         return $config;
     }
@@ -132,14 +126,14 @@ class ExtensionMetadataFactory
      */
     public static function getCacheId($className, $extensionNamespace)
     {
-        return $className.'\\$'.strtoupper(str_replace('\\', '_', $extensionNamespace)).'_CLASSMETADATA';
+        return str_replace('\\', '_', $className).'_$'.strtoupper(str_replace('\\', '_', $extensionNamespace)).'_CLASSMETADATA';
     }
 
     /**
      * Get the extended driver instance which will
      * read the metadata required by extension
      *
-     * @param object $omDriver
+     * @param MappingDriver $omDriver
      *
      * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
      *
@@ -200,5 +194,19 @@ class ExtensionMetadataFactory
         }
 
         return $driver;
+    }
+
+    private function storeConfiguration(string $className, array $config): void
+    {
+        if (null === $this->cacheItemPool) {
+            return;
+        }
+
+        // Cache the result, even if it's empty, to prevent re-parsing non-existent annotations.
+        $cacheId = self::getCacheId($className, $this->extensionNamespace);
+
+        $item = $this->cacheItemPool->getItem($cacheId);
+
+        $this->cacheItemPool->save($item->set($config));
     }
 }

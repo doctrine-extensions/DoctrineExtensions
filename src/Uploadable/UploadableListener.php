@@ -107,6 +107,8 @@ class UploadableListener extends MappedEventSubscriber
      * file field modified. Since we can't mark an entity as "dirty" in the "addEntityFileInfo" method,
      * doctrine thinks the entity has no changes, which produces that the "onFlush" event gets never called.
      * Here we mark the entity as dirty, so the "onFlush" event gets called, and the file is processed.
+     *
+     * @return void
      */
     public function preFlush(EventArgs $args)
     {
@@ -145,6 +147,8 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Handle file-uploading depending on the action
      * being done with objects
+     *
+     * @return void
      */
     public function onFlush(EventArgs $args)
     {
@@ -180,6 +184,8 @@ class UploadableListener extends MappedEventSubscriber
 
     /**
      * Handle removal of files
+     *
+     * @return void
      */
     public function postFlush(EventArgs $args)
     {
@@ -205,6 +211,8 @@ class UploadableListener extends MappedEventSubscriber
      * @throws \Gedmo\Exception\UploadableCouldntGuessMimeTypeException
      * @throws \Gedmo\Exception\UploadableMaxSizeException
      * @throws \Gedmo\Exception\UploadableInvalidMimeTypeException
+     *
+     * @return void
      */
     public function processFile(AdapterInterface $ea, $object, $action)
     {
@@ -499,6 +507,8 @@ class UploadableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
@@ -563,6 +573,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param array|FileInfoInterface $fileInfo
      *
      * @throws \RuntimeException
+     *
+     * @return void
      */
     public function addEntityFileInfo($entity, $fileInfo)
     {
@@ -597,6 +609,9 @@ class UploadableListener extends MappedEventSubscriber
         return $this->fileInfoObjects[$oid]['fileInfo'];
     }
 
+    /**
+     * @return void
+     */
     public function setMimeTypeGuesser(MimeTypeGuesserInterface $mimeTypeGuesser)
     {
         $this->mimeTypeGuesser = $mimeTypeGuesser;
@@ -648,6 +663,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param ClassMetadata $meta
      * @param array         $config
      * @param object        $object Entity
+     *
+     * @return void
      */
     protected function addFileRemoval($meta, $config, $object)
     {
@@ -662,6 +679,8 @@ class UploadableListener extends MappedEventSubscriber
 
     /**
      * @param string $filePath
+     *
+     * @return void
      */
     protected function cancelFileRemoval($filePath)
     {
@@ -727,6 +746,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param string $field
      * @param mixed  $value
      * @param bool   $notifyPropertyChanged
+     *
+     * @return void
      */
     protected function updateField($object, $uow, AdapterInterface $ea, ClassMetadata $meta, $field, $value, $notifyPropertyChanged = true)
     {

@@ -8,9 +8,6 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Attribute, Yaml and Xml mapping support for extensions
 
-> Sortable, and all other doctrine extensions from this package are available as Symfony bundle.
-> See [StofDoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle) for details.
-
 Contents:
 - [Setup and autoloading](#setup-and-autoloading)
 - [Sortable mapping](#sortable-mapping)

@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Entity\Repository;
 
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
@@ -109,7 +110,13 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @see getChildrenQueryBuilder
+     * @param object|null $node        if null, all tree nodes will be taken
+     * @param bool        $direct      true to take only direct children
+     * @param string      $sortByField field name to sort by
+     * @param string      $direction   sort direction : "ASC" or "DESC"
+     * @param bool        $includeNode Include the root node in results?
+     *
+     * @return QueryBuilder QueryBuilder object
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -167,7 +174,13 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @see getChildrenQuery
+     * @param object|null $node        if null, all tree nodes will be taken
+     * @param bool        $direct      true to take only direct children
+     * @param string      $sortByField field name to sort by
+     * @param string      $direction   sort direction : "ASC" or "DESC"
+     * @param bool        $includeNode Include the root node in results?
+     *
+     * @return Query Query object
      */
     public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -175,7 +188,13 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @see getChildren
+     * @param object|null          $node        The object to fetch children for; if null, all nodes will be retrieved
+     * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
+     * @param string|string[]|null $sortByField Field name(s) to sort by
+     * @param string               $direction   Sort direction : "ASC" or "DESC"
+     * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
+     *
+     * @return array|null List of children or null on failure
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -222,6 +241,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
      *
      * @throws \Gedmo\Exception\InvalidArgumentException
      * @throws \Gedmo\Exception\RuntimeException         if something fails in transaction
+     *
+     * @return void
      */
     public function removeFromTree($node)
     {
@@ -398,6 +419,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $q;
     }
 
+    /**
+     * @return array|bool
+     */
     public function verify()
     {
         $nodeMeta = $this->getClassMetadata();
@@ -460,6 +484,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $errors ?: true;
     }
 
+    /**
+     * @return void
+     */
     public function recover()
     {
         if (true === $this->verify()) {
@@ -470,6 +497,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $this->rebuildClosure();
     }
 
+    /**
+     * @return int
+     */
     public function rebuildClosure()
     {
         $nodeMeta = $this->getClassMetadata();
@@ -524,6 +554,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $newClosuresCount;
     }
 
+    /**
+     * @return int
+     */
     public function cleanUpClosure()
     {
         $conn = $this->_em->getConnection();
@@ -559,6 +592,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $deletedClosuresCount;
     }
 
+    /**
+     * @return int
+     */
     public function updateLevelValues()
     {
         $nodeMeta = $this->getClassMetadata();
@@ -603,6 +639,11 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return Strategy::CLOSURE === $this->listener->getStrategy($this->_em, $this->getClassMetadata()->name)->getName();
     }
 
+    /**
+     * @param array $association
+     *
+     * @return string|null
+     */
     protected function getJoinColumnFieldName($association)
     {
         if (count($association['joinColumnFieldNames']) > 1) {

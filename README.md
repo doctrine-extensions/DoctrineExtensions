@@ -28,7 +28,6 @@ flushed in a behavioral way.
 
     composer require gedmo/doctrine-extensions
 
-* [Symfony 2](/doc/symfony2.md)
 * [Symfony 4](/doc/symfony4.md)
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
 * [Laminas](/doc/laminas.md)
@@ -119,7 +118,7 @@ To set up and run example, follow these steps:
 
 ### Contributors
 
-Thanks to [everyone participating](http://github.com/l3pp4rd/DoctrineExtensions/contributors) in
+Thanks to [everyone participating](http://github.com/doctrine-extensions/DoctrineExtensions/contributors) in
 the development of these great Doctrine extensions!
 
 And especially ones who create and maintain new extensions:

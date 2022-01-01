@@ -10,7 +10,7 @@ Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory:
   gedmo:
     tree:
       type: closure
-      closure: Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure
+      closure: Gedmo\Tests\Tree\Fixture\Closure\CategoryClosureWithoutMapping
   fields:
     title:
       type: string

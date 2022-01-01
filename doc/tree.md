@@ -14,7 +14,7 @@ Features:
 - Synchronization of left, right values is automatic
 - Can support concurrent flush with many objects being persisted and updated
 - Can be nested with other extensions
-- Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation, Yaml and Xml mapping support for extensions
 
 Thanks for contributions to:
 
@@ -22,62 +22,12 @@ Thanks for contributions to:
 - **[everzet](https://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](https://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
-Update **2018-02-26**
-
-- Nodes with no Parent can now be sorted based on a tree root id being an id from another table. Existing behaviour 
-  is unchanged unless you add properties to the `@TreeRoot` annotation. Example: You have two categories with no parent, 
-  horror and comedy, which are actually categories of 'Movie', which is in another table. Usually calling `moveUp()` or 
-  `moveDown()` would be impossible, but now you can add `@TreeRoot(identifierMethod="getRoot")`, where `getRoot` is the 
-  name of your class method returning the root id/entity.
-
-
-Update **2017-04-22**
-
-- Added the `TreeObjectHydrator` class for building trees from entities
-
-Update **2012-06-28**
-
-- Added "buildTree" functionality support for Closure and Materialized Path strategies
-
-Update **2012-02-23**
-
-- Added a new strategy to support the "Materialized Path" tree model. It works with ODM (MongoDB) and ORM.
-
-Update **2011-05-07**
-
-- Tree is now able to act as **closure** tree, this strategy was refactored
-and now fully functional. It is much faster for file-folder trees for instance
-where you do not care about tree ordering.
-
-Update **2011-04-11**
-
-- Made in memory node synchronization, this change does not require clearing the cached nodes after any updates
-to nodes, except **recover, verify and removeFromTree** operations.
-
-Update **2011-02-08**
-
-- Refactored to support multiple roots
-- Changed the repository name, relevant to strategy used
-- New [annotations](#annotations) were added
-
-
-Update **2011-02-02**
-
-- Refactored the Tree to the ability on supporting different tree models
-- Changed the repository location in order to support future updates
-
 **Note:**
 
 - After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear the EntityManager cache
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
 - Public [Tree repository](https://github.com/doctrine-extensions/DoctrineExtensions "Tree extension on Github") is available on github
-- Last update date: **2012-02-23**
-
-**Portability:**
-
-- **Tree** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Tree** behavior
 
@@ -111,12 +61,17 @@ on how to setup and use the extensions in the most optimized way.
 you need to identify and entity as being a Tree Node. The metadata is loaded only once when the
 cache is activated
 
-``` php
+**Note:** this example is using annotations and attributes for mapping, you should use
+one of them, not both.
+
+```php
 <?php
 namespace Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @Gedmo\Tree(type="nested")
@@ -124,36 +79,51 @@ use Doctrine\ORM\Mapping as ORM;
  * use repository for handy tree functions
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
+#[Gedmo\Tree(type: 'nested')]
+#[ORM\Table(name: 'categories')]
+#[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 class Category
 {
     /**
+     * @var int|null
+     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private $title;
 
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
+    #[Gedmo\TreeLeft]
+    #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     private $lft;
 
     /**
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
+    #[Gedmo\TreeLevel]
+    #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     private $lvl;
 
     /**
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */
+    #[Gedmo\TreeRight]
+    #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     private $rgt;
 
     /**
@@ -161,6 +131,9 @@ class Category
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
+    #[Gedmo\TreeRoot]
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(name: 'tree_root', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $root;
 
     /**
@@ -168,12 +141,17 @@ class Category
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
+    #[Gedmo\TreeParent]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      * @ORM\OrderBy({"lft" = "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'parent')]
+    #[ORM\OrderBy(['lft' => 'ASC'])]
     private $children;
 
     public function getId()
@@ -210,9 +188,11 @@ class Category
 
 <a name="annotations"></a>
 
-### Tree annotations:
+### Tree annotations and attributes:
 
-- **@Gedmo\Mapping\Annotation\Tree(type="strategy")** this **class annotation** sets the tree strategy by using the **type** parameter.
+These classes can be used either as annotation or as attribute:
+
+- **@Gedmo\Mapping\Annotation\Tree(type="strategy")** this **class annotation/attribute** sets the tree strategy by using the **type** parameter.
 Currently **nested**, **closure** or **materializedPath** strategies are supported. An additional "activateLocking" parameter
 is available if you use the "Materialized Path" strategy with MongoDB. It's used to activate the locking mechanism (more on that
 in the corresponding section).
@@ -295,7 +275,7 @@ Entity\Category:
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -350,7 +330,7 @@ Entity\Category:
 
 ### To save some **Categories** and generate tree:
 
-``` php
+```php
 <?php
 $food = new Category();
 $food->setTitle('Food');
@@ -385,7 +365,7 @@ The result after flush will generate the food tree:
 
 ### Using repository functions
 
-``` php
+```php
 <?php
 $repo = $em->getRepository('Entity\Category');
 
@@ -430,7 +410,7 @@ $repo->reorder($food, 'title');
 
 ### Inserting node in different positions
 
-``` php
+```php
 <?php
 $food = new Category();
 $food->setTitle('Food');
@@ -471,7 +451,7 @@ Tree example:
 
 Now move **carrots** up by one position
 
-``` php
+```php
 <?php
 $repo = $em->getRepository('Entity\Category');
 $carrots = $repo->findOneByTitle('Carrots');
@@ -493,7 +473,7 @@ Tree after moving the Carrots up:
 
 Moving **carrots** down to the last position
 
-``` php
+```php
 <?php
 $repo = $em->getRepository('Entity\Category');
 $carrots = $repo->findOneByTitle('Carrots');
@@ -519,7 +499,7 @@ So after that use **$em->clear();** if you will continue using the nodes after t
 
 ### If you need a repository for your TreeNode Entity simply extend it
 
-``` php
+```php
 <?php
 namespace Entity\Repository;
 
@@ -536,6 +516,8 @@ class CategoryRepository extends NestedTreeRepository
  * @Gedmo\Tree(type="nested")
  * @Entity(repositoryClass="Entity\Repository\CategoryRepository")
  */
+#[Gedmo\Tree(type: 'nested')]
+#[Entity(repositoryClass: \App\Entity\Repository\CategoryRepository::class)]
 class Category
 {
     //...
@@ -550,7 +532,7 @@ class Category
 
 If you would like to load the whole tree as a node array hierarchy use:
 
-``` php
+```php
 <?php
 $repo = $em->getRepository('Entity\Category');
 $arrayTree = $repo->childrenHierarchy();
@@ -562,7 +544,7 @@ All node children are stored under the **__children** key for each node.
 
 To load a tree as a **ul - li** html tree use:
 
-``` php
+```php
 <?php
 $repo = $em->getRepository('Entity\Category');
 $htmlTree = $repo->childrenHierarchy(
@@ -578,7 +560,7 @@ $htmlTree = $repo->childrenHierarchy(
 
 ### Customize html tree output
 
-``` php
+```php
 <?php
 $repo = $em->getRepository('Entity\Category');
 $options = array(
@@ -601,7 +583,7 @@ $htmlTree = $repo->childrenHierarchy(
 
 ### Generate your own node list
 
-``` php
+```php
 <?php
 $repo = $em->getRepository('Entity\Category');
 $query = $entityManager
@@ -618,7 +600,7 @@ $tree = $repo->buildTree($query->getArrayResult(), $options);
 
 ### Using routes in decorator, show only selected items, return unlimited levels items as 2 levels
 
-``` php
+```php
 <?php
 $controller = $this;
         $tree = $root->childrenHierarchy(null,false,array('decorate' => true,
@@ -679,7 +661,7 @@ If you want to attach **TranslatableListener** and also add it to EventManager a
 the **SluggableListener** and **TreeListener**. It is important because slug must be generated first
 before the creation of it`s translation.
 
-``` php
+```php
 <?php
 $evm = new \Doctrine\Common\EventManager();
 $treeListener = new \Gedmo\Tree\TreeListener();
@@ -694,24 +676,32 @@ $evm->addEventSubscriber($translatableListener);
 
 And the Entity should look like:
 
-``` php
+```php
 <?php
 namespace Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
+#[Gedmo\Tree(type: 'nested')]
+#[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 class Category
 {
     /**
+     * @var int|null
+     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
@@ -719,24 +709,33 @@ class Category
      * @Gedmo\Sluggable
      * @ORM\Column(name="title", type="string", length=64)
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    #[Gedmo\Sluggable]
+    #[Gedmo\Translatable]
     private $title;
 
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
+    #[Gedmo\TreeLeft]
+    #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     private $lft;
 
     /**
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */
+    #[Gedmo\TreeRight]
+    #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     private $rgt;
 
     /**
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
+    #[Gedmo\TreeLevel]
+    #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     private $lvl;
 
     /**
@@ -744,6 +743,9 @@ class Category
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
+    #[Gedmo\TreeRoot]
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(name: 'tree_root', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $root;
 
     /**
@@ -751,11 +753,15 @@ class Category
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
+    #[Gedmo\TreeParent]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
+    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'parent')]
     private $children;
 
     /**
@@ -763,6 +769,9 @@ class Category
      * @Gedmo\Slug
      * @ORM\Column(name="slug", type="string", length=128)
      */
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 128)]
+    #[Gedmo\Translatable]
+    #[Gedmo\Slug]
     private $slug;
 
     public function getId()
@@ -896,7 +905,7 @@ variations of the field types, including the ORM and ODM for MongoDB ones).
 
 ### ORM Entity example (Annotations)
 
-``` php
+```php
 <?php
 
 namespace Entity;
@@ -993,7 +1002,7 @@ class Category
 
 ### MongoDB example (Annotations)
 
-``` php
+```php
 <?php
 
 namespace Document;
@@ -1147,7 +1156,7 @@ YourNamespace\Document\Category:
 When an entity is inserted, a path is generated using the value of the field configured as the TreePathSource.
 For example:
 
-``` php
+```php
 $food = new Category();
 $food->setTitle('Food');
 
@@ -1190,11 +1199,11 @@ You must pass a value in seconds to this parameter.
 ## Closure Table
 
 To be able to use this strategy, you'll need an additional entity which represents the closures. We already provide you an abstract
-entity, so you only need to extend it.
+entity, so you need to extend from it and add mapping information for ancestor and descendant.
 
 ### Closure Entity
 
-``` php
+```php
 <?php
 
 namespace YourNamespace\Entity;
@@ -1204,9 +1213,29 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\UniqueConstraint(name="closure_unique_idx", columns={"ancestor", "descendant"})
+ * @ORM\Index(name="closure_depth_idx", columns={"depth"})
  */
+#[ORM\Entity]
+#[ORM\UniqueConstraint(name: 'closure_unique_idx', columns: ['ancestor', 'descendant'])]
+#[ORM\Index(name: 'closure_depth_idx', columns: ['depth'])]
 class CategoryClosure extends AbstractClosure
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="YourNamespace\Entity\Category")
+     * @ORM\JoinColumn(name="ancestor", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    protected $ancestor;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="YourNamespace\Entity\Category")
+     * @ORM\JoinColumn(name="descendant", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    protected $descendant;
 }
 ```
 
@@ -1214,7 +1243,7 @@ Next step, define your entity.
 
 ### ORM Entity example (Annotations)
 
-``` php
+```php
 <?php
 
 namespace YourNamespace\Entity;

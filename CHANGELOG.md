@@ -26,10 +26,26 @@ a release.
 - Sortable: Support to use annotations as attributes on PHP >= 8.0.
 - Sluggable: Support to use annotations as attributes on PHP >= 8.0.
 - Uploadable: Support to use annotations as attributes on PHP >= 8.0.
+- Tree: Support to use annotations as attributes on PHP >= 8.0.
+- References: Support to use annotations as attributes on PHP >= 8.0.
+- ReferenceIntegrity: Support to use annotations as attributes on PHP >= 8.0.
+- SoftDeleteable: Support for custom column types (like Carbon).
+- Timestampable: Support for custom column types (like Carbon).
 
 ### Fixed
 - Blameable, IpTraceable, Timestampable: Type handling for the tracked field values configured in the origin field.
 - Loggable: Using only PHP 8 attributes.
+- References: Avoid deprecations using LazyCollection with PHP 8.1
+- Tree: Association mapping problems using Closure tree strategy (by manually defining mapping on the closure entity).
+- Wrong PHPDoc type declarations.
+- Avoid calling deprecated `AbstractClassMetadataFactory::getCacheDriver()` method.
+
+### Deprecated
+- Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.
+
+### Changed
+- In order to use a custom cache for storing configuration of an extension, the user has to call `setCacheItemPool()`
+  on the extension listener passing an instance of `Psr\Cache\CacheItemPoolInterface`.
 
 ## [3.4.0] - 2021-12-05
 ### Added
