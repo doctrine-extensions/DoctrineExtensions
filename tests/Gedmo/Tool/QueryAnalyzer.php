@@ -7,39 +7,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tool\Logging\DBAL;
+namespace Gedmo\Tests\Tool;
 
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
 /**
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * TODO: Remove it when dropping support of doctrine/dbal 2
  *
- * @deprecated since gedmo/doctrine-extensions 3.x.
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-class QueryAnalyzer implements SQLLogger
+final class QueryAnalyzer implements SQLLogger
 {
     /**
      * Used database platform
      *
      * @var AbstractPlatform
      */
-    protected $platform;
-
-    /**
-     * Start time of currently executed query
-     *
-     * @var float
-     */
-    private $queryStartTime;
-
-    /**
-     * Total execution time of all queries
-     *
-     * @var float
-     */
-    private $totalExecutionTime = 0;
+    private $platform;
 
     /**
      * List of queries executed
@@ -48,139 +34,38 @@ class QueryAnalyzer implements SQLLogger
      */
     private $queries = [];
 
-    /**
-     * Query execution times indexed
-     * in same order as queries
-     *
-     * @var float[]
-     */
-    private $queryExecutionTimes = [];
-
-    /**
-     * Initialize log listener with database
-     * platform, which is needed for parameter
-     * conversion
-     */
     public function __construct(AbstractPlatform $platform)
     {
         $this->platform = $platform;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function startQuery($sql, array $params = null, array $types = null)
     {
-        $this->queryStartTime = microtime(true);
         $this->queries[] = $this->generateSql($sql, $params, $types);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function stopQuery()
+    public function stopQuery(): void
     {
-        $ms = round(microtime(true) - $this->queryStartTime, 4) * 1000;
-        $this->queryExecutionTimes[] = $ms;
-        $this->totalExecutionTime += $ms;
     }
 
-    /**
-     * Clean all collected data
-     *
-     * @return QueryAnalyzer
-     */
-    public function cleanUp()
+    public function cleanUp(): self
     {
         $this->queries = [];
-        $this->queryExecutionTimes = [];
-        $this->totalExecutionTime = 0;
 
         return $this;
     }
 
     /**
-     * Dump the statistics of executed queries
-     *
-     * @param bool $dumpOnlySql
-     *
-     * @return string
-     */
-    public function getOutput($dumpOnlySql = false)
-    {
-        $output = '';
-        if (!$dumpOnlySql) {
-            $output .= 'Platform: '.$this->platform->getName().PHP_EOL;
-            $output .= 'Executed queries: '.count($this->queries).', total time: '.$this->totalExecutionTime.' ms'.PHP_EOL;
-        }
-        foreach ($this->queries as $index => $sql) {
-            if (!$dumpOnlySql) {
-                $output .= 'Query('.($index + 1).') - '.$this->queryExecutionTimes[$index].' ms'.PHP_EOL;
-            }
-            $output .= $sql.';'.PHP_EOL;
-        }
-        $output .= PHP_EOL;
-
-        return $output;
-    }
-
-    /**
-     * Index of the slowest query executed
-     *
-     * @return int
-     */
-    public function getSlowestQueryIndex()
-    {
-        $index = 0;
-        $slowest = 0;
-        foreach ($this->queryExecutionTimes as $i => $time) {
-            if ($time > $slowest) {
-                $slowest = $time;
-                $index = $i;
-            }
-        }
-
-        return $index;
-    }
-
-    /**
-     * Get total execution time of queries
-     *
-     * @return float
-     */
-    public function getTotalExecutionTime()
-    {
-        return $this->totalExecutionTime;
-    }
-
-    /**
-     * Get all queries
-     *
      * @return string[]
      */
-    public function getExecutedQueries()
+    public function getExecutedQueries(): array
     {
         return $this->queries;
     }
 
-    /**
-     * Get number of executed queries
-     *
-     * @return int
-     */
-    public function getNumExecutedQueries()
+    public function getNumExecutedQueries(): int
     {
         return count($this->queries);
-    }
-
-    /**
-     * Get all query execution times
-     *
-     * @return float[]
-     */
-    public function getExecutionTimes()
-    {
-        return $this->queryExecutionTimes;
     }
 
     /**

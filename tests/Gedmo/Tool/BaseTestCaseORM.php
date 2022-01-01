@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -23,10 +24,11 @@ use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
-use Gedmo\Tool\Logging\DBAL\QueryAnalyzer;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * Base test case contains common mock objects
@@ -48,10 +50,16 @@ abstract class BaseTestCaseORM extends TestCase
     protected $queryAnalyzer;
 
     /**
+     * @var MockObject&LoggerInterface
+     */
+    protected $queryLogger;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
+        $this->queryLogger = $this->createMock(LoggerInterface::class);
     }
 
     /**
@@ -81,6 +89,8 @@ abstract class BaseTestCaseORM extends TestCase
     }
 
     /**
+     * TODO: Remove this method when dropping support of doctrine/dbal 2.
+     *
      * Starts query statistic log
      *
      * @throws \RuntimeException
@@ -92,30 +102,6 @@ abstract class BaseTestCaseORM extends TestCase
         }
         $this->queryAnalyzer = new QueryAnalyzer($this->em->getConnection()->getDatabasePlatform());
         $this->em->getConfiguration()->setSQLLogger($this->queryAnalyzer);
-    }
-
-    /**
-     * Stops query statistic log and outputs
-     * the data to screen or file
-     *
-     * @throws \RuntimeException
-     */
-    protected function stopQueryLog(bool $dumpOnlySql = false, bool $writeToLog = false): void
-    {
-        if ($this->queryAnalyzer) {
-            $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
-            if ($writeToLog) {
-                $fileName = TESTS_TEMP_DIR.'/query_debug_'.time().'.log';
-                if (false !== ($file = fopen($fileName, 'w+'))) {
-                    fwrite($file, $output);
-                    fclose($file);
-                } else {
-                    throw new \RuntimeException('Unable to write to the log file');
-                }
-            } else {
-                echo $output;
-            }
-        }
     }
 
     /**
@@ -143,6 +129,13 @@ abstract class BaseTestCaseORM extends TestCase
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Proxy');
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+
+        // TODO: Remove the "if" check when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            $config->setMiddlewares([
+                new Middleware($this->queryLogger),
+            ]);
+        }
 
         return $config;
     }
