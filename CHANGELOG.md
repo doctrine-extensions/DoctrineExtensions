@@ -39,6 +39,7 @@ a release.
 - Tree: Association mapping problems using Closure tree strategy (by manually defining mapping on the closure entity).
 - Wrong PHPDoc type declarations.
 - Avoid calling deprecated `AbstractClassMetadataFactory::getCacheDriver()` method.
+- Avoid deprecations using `doctrine/mongodb-odm` >= 2.2
 
 ### Deprecated
 - Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.

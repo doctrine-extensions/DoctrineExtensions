@@ -89,7 +89,7 @@ class Article
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     #[ODM\Field(type: MongoDBType::BOOL)]
     private $isReady = false;
