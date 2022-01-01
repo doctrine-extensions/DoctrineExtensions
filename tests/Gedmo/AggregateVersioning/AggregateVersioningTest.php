@@ -36,7 +36,7 @@ final class AggregateVersioningTest extends BaseTestCaseORM
         $listener = new AggregateVersionListener();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testUpdateAggregate(): void
