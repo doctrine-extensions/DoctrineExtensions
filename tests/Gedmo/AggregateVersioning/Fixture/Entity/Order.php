@@ -26,7 +26,7 @@ use Gedmo\AggregateVersioning\Traits\AggregateVersioningTrait;
  * @author Maksim Vorozhtsov <myks1992@mail.ru>
  */
 #[ORM\Entity]
-#[ORM\Table(name:'orders')]
+#[ORM\Table(name: 'orders')]
 class Order implements AggregateRoot
 {
     use AggregateVersioningTrait;
