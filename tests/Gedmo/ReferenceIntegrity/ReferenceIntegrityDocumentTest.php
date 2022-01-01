@@ -25,20 +25,20 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 {
-    public const TYPE_ONE_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type::class;
-    public const ARTICLE_ONE_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article::class;
+    public const TYPE_ONE_NULLIFY_CLASS = Fixture\Document\OneNullify\Type::class;
+    public const ARTICLE_ONE_NULLIFY_CLASS = Fixture\Document\OneNullify\Article::class;
 
-    public const TYPE_MANY_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type::class;
-    public const ARTICLE_MANY_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article::class;
+    public const TYPE_MANY_NULLIFY_CLASS = Fixture\Document\ManyNullify\Type::class;
+    public const ARTICLE_MANY_NULLIFY_CLASS = Fixture\Document\ManyNullify\Article::class;
 
-    public const TYPE_ONE_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Type::class;
-    public const ARTICLE_ONE_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article::class;
+    public const TYPE_ONE_PULL_CLASS = Fixture\Document\OnePull\Type::class;
+    public const ARTICLE_ONE_PULL_CLASS = Fixture\Document\OnePull\Article::class;
 
-    public const TYPE_MANY_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type::class;
-    public const ARTICLE_MANY_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article::class;
+    public const TYPE_MANY_PULL_CLASS = Fixture\Document\ManyPull\Type::class;
+    public const ARTICLE_MANY_PULL_CLASS = Fixture\Document\ManyPull\Article::class;
 
-    public const TYPE_ONE_RESTRICT_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Type::class;
-    public const ARTICLE_ONE_RESTRICT_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Article::class;
+    public const TYPE_ONE_RESTRICT_CLASS = Fixture\Document\OneRestrict\Type::class;
+    public const ARTICLE_ONE_RESTRICT_CLASS = Fixture\Document\OneRestrict\Article::class;
 
     public const TYPE_MANY_RESTRICT_CLASS = Type::class;
     public const ARTICLE_MANY_RESTRICT_CLASS = Article::class;
