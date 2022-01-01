@@ -189,7 +189,6 @@ final class SortableGroupTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $this->startQueryLog();
         $repo = $this->em->getRepository(self::ITEM);
         $repoCategory = $this->em->getRepository(self::CATEGORY);
 
@@ -218,7 +217,6 @@ final class SortableGroupTest extends BaseTestCaseORM
         $item->setPosition(4);
         $this->em->persist($item);
         $this->em->flush();
-        $this->stopQueryLog(false, true);
 
         unset($vehicles, $accessories);
 

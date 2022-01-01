@@ -57,11 +57,6 @@ final class SortableTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    protected function tearDown(): void
-    {
-        //$this->stopQueryLog();
-    }
-
     public function testShouldSetSortPositionToInsertedNode(): void
     {
         $node = $this->em->find(self::NODE, $this->nodeId);
