@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\AggregateVersioning\Fixture\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\AggregateVersioning\AggregateEntity;
 use Gedmo\Mapping\Annotation\AggregateVersioning;
@@ -22,6 +23,8 @@ use Gedmo\Mapping\Annotation\AggregateVersioning;
  *
  * @author Maksim Vorozhtsov <myks1992@mail.ru>
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'order_lines')]
 #[AggregateVersioning(aggregateRootMethod: 'getOrder')]
 class OrderLine implements AggregateEntity
 {
@@ -32,6 +35,9 @@ class OrderLine implements AggregateEntity
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\GeneratedValue]
     private $id;
     /**
      * @var Order
@@ -39,12 +45,15 @@ class OrderLine implements AggregateEntity
      * @ORM\ManyToOne(targetEntity="Order", inversedBy="items")
      * @ORM\JoinColumn(name="order_id")
      */
+    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'items')]
+    #[ORM\JoinColumn(name: 'order_id')]
     private $order;
     /**
      * @var Line
      *
      * @ORM\Embedded(class="Line", columnPrefix=false)
      */
+    #[ORM\Embedded(class: Line::class, columnPrefix: false)]
     private $line;
 
     public function __construct(Order $order, Line $line)

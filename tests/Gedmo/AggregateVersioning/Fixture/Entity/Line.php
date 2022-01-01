@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\AggregateVersioning\Fixture\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author Maksim Vorozhtsov <myks1992@mail.ru>
  */
+#[ORM\Embeddable]
 final class Line
 {
     /**
@@ -25,16 +27,19 @@ final class Line
      *
      * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: Types::STRING)]
     private $name;
     /**
      * @var int
      *
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: Types::INTEGER)]
     private $quantity;
     /**
      * @ORM\Column(type="float")
      */
+    #[ORM\Column(type: Types::FLOAT)]
     private $price;
 
     public function __construct(string $name, int $quantity, float $price)

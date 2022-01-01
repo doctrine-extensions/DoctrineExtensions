@@ -13,6 +13,7 @@ namespace Gedmo\Tests\AggregateVersioning\Fixture\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
 use Gedmo\AggregateVersioning\AggregateRoot;
@@ -24,6 +25,8 @@ use Gedmo\AggregateVersioning\Traits\AggregateVersioningTrait;
  *
  * @author Maksim Vorozhtsov <myks1992@mail.ru>
  */
+#[ORM\Entity]
+#[ORM\Table(name:'orders')]
 class Order implements AggregateRoot
 {
     use AggregateVersioningTrait;
@@ -37,17 +40,22 @@ class Order implements AggregateRoot
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\GeneratedValue]
     private $id;
     /**
      * @var string
      *
      * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: Types::STRING)]
     private $status;
     /**
      * @var OrderLine[]|Collection
      * @ORM\OneToMany(targetEntity="OrderLine", mappedBy="order", orphanRemoval=true, cascade={"persist"})
      */
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderLine::class, cascade: ['persist'], orphanRemoval: true)]
     private $items;
 
     public function __construct(int $id)
