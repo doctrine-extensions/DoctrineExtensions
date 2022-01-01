@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * ReferenceIntegrity annotation for ReferenceIntegrity behavioral extension
  *
  * @Annotation
+ * @NamedArgumentConstructor
  * @Target("PROPERTY")
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
@@ -27,9 +28,14 @@ final class ReferenceIntegrity implements GedmoAnnotation
     /** @var string|null */
     public $value;
 
-    public function __construct(array $data = [], ?string $value = null)
+    /**
+     * @param string|array|null $data
+     */
+    public function __construct($data = [], ?string $value = null)
     {
-        if ([] !== $data) {
+        if (is_string($data)) {
+            $data = ['value' => $data];
+        } elseif ([] !== $data) {
             @trigger_error(sprintf(
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
