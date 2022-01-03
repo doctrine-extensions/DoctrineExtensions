@@ -41,9 +41,6 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      */
     protected $validTypes = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function setAnnotationReader($reader)
     {
         $this->reader = $reader;

@@ -81,25 +81,16 @@ abstract class AbstractWrapper implements WrapperInterface
         self::$wrappedObjectReferences = [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getObject()
     {
         return $this->object;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMetadata()
     {
         return $this->meta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function populate(array $data)
     {
         foreach ($data as $field => $value) {

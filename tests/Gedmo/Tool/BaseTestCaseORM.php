@@ -54,9 +54,6 @@ abstract class BaseTestCaseORM extends TestCase
      */
     protected $queryLogger;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->queryLogger = $this->createMock(LoggerInterface::class);

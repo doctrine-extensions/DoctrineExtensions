@@ -33,9 +33,6 @@ class ODM implements AdapterInterface
      */
     private $dm;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __call($method, $args)
     {
         if (null === $this->args) {
@@ -46,33 +43,21 @@ class ODM implements AdapterInterface
         return call_user_func_array([$this->args, $method], $args);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setEventArgs(EventArgs $args)
     {
         $this->args = $args;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainObjectName()
     {
         return 'Document';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getManagerName()
     {
         return 'ODM';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootObjectClass($meta)
     {
         return $meta->rootDocumentName;
@@ -100,41 +85,26 @@ class ODM implements AdapterInterface
         return $this->__call('getDocumentManager', []);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getObjectState($uow, $object)
     {
         return $uow->getDocumentState($object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getObjectChangeSet($uow, $object)
     {
         return $uow->getDocumentChangeSet($object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSingleIdentifierFieldName($meta)
     {
         return $meta->getIdentifier()[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectUpdates($uow)
     {
         $updates = $uow->getScheduledDocumentUpdates();
@@ -143,33 +113,21 @@ class ODM implements AdapterInterface
         return array_merge($updates, $upserts);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectInsertions($uow)
     {
         return $uow->getScheduledDocumentInsertions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledDocumentDeletions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
         $uow->setOriginalDocumentProperty(spl_object_hash($object), $property, $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function clearObjectChangeSet($uow, $object)
     {
         $uow->clearDocumentChangeSet(spl_object_hash($object));

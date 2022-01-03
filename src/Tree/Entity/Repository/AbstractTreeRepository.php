@@ -37,9 +37,6 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      */
     protected $repoUtils;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
@@ -88,9 +85,6 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
         return $this->repoUtils;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function childCount($node = null, $direct = false)
     {
         $meta = $this->getClassMetadata();

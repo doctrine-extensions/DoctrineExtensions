@@ -22,9 +22,6 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
  */
 final class ORM extends BaseAdapterORM implements TimestampableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);

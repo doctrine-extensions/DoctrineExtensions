@@ -71,9 +71,6 @@ class BlameableListener extends AbstractTrackingListener
         $this->user = $user;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

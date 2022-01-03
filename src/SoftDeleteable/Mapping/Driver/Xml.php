@@ -25,9 +25,6 @@ use Gedmo\SoftDeleteable\Mapping\Validator;
  */
 class Xml extends BaseXml
 {
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**

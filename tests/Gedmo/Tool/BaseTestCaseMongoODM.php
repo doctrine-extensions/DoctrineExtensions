@@ -39,9 +39,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
      */
     protected $dm;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         if (!extension_loaded('mongodb')) {
@@ -49,9 +46,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         if (null === $this->dm) {

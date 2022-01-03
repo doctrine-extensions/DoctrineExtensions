@@ -101,9 +101,6 @@ class Annotation extends AbstractAnnotationDriver
         'materializedPath',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $validator = new Validator();

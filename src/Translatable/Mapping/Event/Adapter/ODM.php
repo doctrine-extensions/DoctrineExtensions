@@ -26,9 +26,6 @@ use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
  */
 final class ODM extends BaseAdapterODM implements TranslatableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function usesPersonalTranslation($translationClassName)
     {
         return $this
@@ -39,17 +36,11 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDefaultTranslationClass()
     {
         return Translation::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadTranslations($object, $translationClass, $locale, $objectClass)
     {
         $dm = $this->getObjectManager();
@@ -104,9 +95,6 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)
     {
         $dm = $this->getObjectManager();
@@ -127,9 +115,6 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         return $q->getSingleResult();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)
     {
         $dm = $this->getObjectManager();
@@ -148,9 +133,6 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         return $q->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function insertTranslationRecord($translation)
     {
         $dm = $this->getObjectManager();
@@ -171,9 +153,6 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTranslationValue($object, $field, $value = false)
     {
         $dm = $this->getObjectManager();
@@ -188,9 +167,6 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         return $type->convertToDatabaseValue($value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setTranslationValue($object, $field, $value)
     {
         $dm = $this->getObjectManager();

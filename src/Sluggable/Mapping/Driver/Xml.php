@@ -38,9 +38,6 @@ class Xml extends BaseXml
         'citext',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**

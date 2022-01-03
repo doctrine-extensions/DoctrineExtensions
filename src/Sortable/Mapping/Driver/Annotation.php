@@ -46,9 +46,6 @@ class Annotation extends AbstractAnnotationDriver
         'bigint',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);

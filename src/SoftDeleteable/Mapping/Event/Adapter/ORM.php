@@ -22,9 +22,6 @@ use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
  */
 final class ORM extends BaseAdapterORM implements SoftDeleteableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);

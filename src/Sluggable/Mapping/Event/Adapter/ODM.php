@@ -23,9 +23,6 @@ use MongoDB\BSON\Regex;
  */
 final class ODM extends BaseAdapterODM implements SluggableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $dm = $this->getObjectManager();

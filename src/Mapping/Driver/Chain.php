@@ -75,9 +75,6 @@ class Chain implements Driver
         $this->defaultDriver = $driver;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {

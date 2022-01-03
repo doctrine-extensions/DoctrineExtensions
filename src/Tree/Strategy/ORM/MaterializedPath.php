@@ -20,9 +20,6 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
  */
 class MaterializedPath extends AbstractMaterializedPath
 {
-    /**
-     * {@inheritdoc}
-     */
     public function removeNode($om, $meta, $config, $node)
     {
         $uow = $om->getUnitOfWork();
@@ -54,9 +51,6 @@ class MaterializedPath extends AbstractMaterializedPath
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildren($om, $meta, $config, $path)
     {
         $path = addcslashes($path, '%');

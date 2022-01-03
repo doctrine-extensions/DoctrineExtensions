@@ -20,9 +20,6 @@ use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
  */
 final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);

@@ -24,9 +24,6 @@ use MongoDB\BSON\UTCDateTime;
  */
 class MaterializedPath extends AbstractMaterializedPath
 {
-    /**
-     * {@inheritdoc}
-     */
     public function removeNode($om, $meta, $config, $node)
     {
         $uow = $om->getUnitOfWork();
@@ -44,9 +41,6 @@ class MaterializedPath extends AbstractMaterializedPath
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildren($om, $meta, $config, $originalPath)
     {
         return $om->createQueryBuilder()
@@ -57,9 +51,6 @@ class MaterializedPath extends AbstractMaterializedPath
             ->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function lockTrees(ObjectManager $om, AdapterInterface $ea)
     {
         $uow = $om->getUnitOfWork();
@@ -79,9 +70,6 @@ class MaterializedPath extends AbstractMaterializedPath
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
     {
         $uow = $om->getUnitOfWork();

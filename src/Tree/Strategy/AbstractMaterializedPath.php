@@ -82,25 +82,16 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     protected $pendingObjectsToRemove = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::MATERIALIZED_PATH;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
@@ -114,9 +105,6 @@ abstract class AbstractMaterializedPath implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledUpdate($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
@@ -138,9 +126,6 @@ abstract class AbstractMaterializedPath implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostPersist($om, $node, AdapterInterface $ea)
     {
         $oid = spl_object_id($node);
@@ -162,64 +147,40 @@ abstract class AbstractMaterializedPath implements Strategy
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_INSERT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($om, $node, AdapterInterface $ea)
     {
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_UPDATE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($om, $node, AdapterInterface $ea)
     {
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_REMOVE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($om, AdapterInterface $ea)
     {
         $this->lockTrees($om, $ea);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_REMOVE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_INSERT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_UPDATE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processMetadataLoad($om, $meta)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledDelete($om, $node)
     {
         $meta = $om->getClassMetadata(get_class($node));

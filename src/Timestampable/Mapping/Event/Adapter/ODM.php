@@ -20,9 +20,6 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
  */
 final class ODM extends BaseAdapterODM implements TimestampableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);

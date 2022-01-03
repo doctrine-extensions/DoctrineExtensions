@@ -653,9 +653,6 @@ class SortableListener extends MappedEventSubscriber
         return $groups;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;
