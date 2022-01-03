@@ -182,53 +182,17 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      */
     private function getMockORMConfig(MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
     {
-        $config = $this->getMockBuilder(\Doctrine\ORM\Configuration::class)->getMock();
-        $config->expects(static::once())
-            ->method('getProxyDir')
-            ->willReturn(TESTS_TEMP_DIR);
-
-        $config->expects(static::once())
-            ->method('getProxyNamespace')
-            ->willReturn('Proxy');
-
-        $config
-            ->method('getDefaultQueryHints')
-            ->willReturn([]);
-
-        $config->expects(static::once())
-            ->method('getAutoGenerateProxyClasses')
-            ->willReturn(true);
-
-        $config->expects(static::once())
-            ->method('getClassMetadataFactoryName')
-            ->willReturn(ClassMetadataFactory::class);
-
-        $config
-            ->method('getDefaultRepositoryClassName')
-            ->willReturn(EntityRepository::class)
-        ;
-
-        $config
-            ->method('getQuoteStrategy')
-            ->willReturn(new DefaultQuoteStrategy())
-        ;
-
-        $config
-            ->method('getNamingStrategy')
-            ->willReturn(new DefaultNamingStrategy())
-        ;
-        if (null === $mappingDriver) {
-            $mappingDriver = $this->getORMDriver();
-        }
-
-        $config
-            ->method('getMetadataDriverImpl')
-            ->willReturn($mappingDriver);
-
-        $config
-            ->expects(static::once())
-            ->method('getRepositoryFactory')
-            ->willReturn(new DefaultRepositoryFactoryORM());
+        $config = new \Doctrine\ORM\Configuration();
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setDefaultQueryHints([]);
+        $config->setAutoGenerateProxyClasses(true);
+        $config->setClassMetadataFactoryName(ClassMetadataFactory::class);
+        $config->setDefaultRepositoryClassName(EntityRepository::class);
+        $config->setQuoteStrategy(new DefaultQuoteStrategy());
+        $config->setNamingStrategy(new DefaultNamingStrategy());
+        $config->setMetadataDriverImpl($mappingDriver ?? $this->getORMDriver());
+        $config->setRepositoryFactory(new DefaultRepositoryFactoryORM());
 
         return $config;
     }

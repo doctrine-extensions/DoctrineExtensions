@@ -33,7 +33,7 @@ class ObjectHydrator extends BaseObjectHydrator
     private $savedSkipOnLoad;
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function prepare()
     {
@@ -44,7 +44,7 @@ class ObjectHydrator extends BaseObjectHydrator
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function cleanup()
     {

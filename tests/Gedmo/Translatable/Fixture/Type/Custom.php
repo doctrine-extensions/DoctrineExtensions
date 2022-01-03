@@ -23,11 +23,17 @@ class Custom extends Type
         return $platform->getClobTypeDeclarationSQL($fieldDeclaration);
     }
 
+    /**
+     * @return mixed
+     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         return serialize($value);
     }
 
+    /**
+     * @return mixed
+     */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if (null === $value) {
@@ -43,7 +49,7 @@ class Custom extends Type
         return $val;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }

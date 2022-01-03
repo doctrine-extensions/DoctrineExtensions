@@ -17,7 +17,7 @@ use Gedmo\Mapping\MappedEventSubscriber;
 
 class EncoderListener extends MappedEventSubscriber
 {
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             'onFlush',
@@ -59,7 +59,7 @@ class EncoderListener extends MappedEventSubscriber
         }
     }
 
-    protected function getNamespace()
+    protected function getNamespace(): string
     {
         // mapper must know the namespace of extension
         return __NAMESPACE__;

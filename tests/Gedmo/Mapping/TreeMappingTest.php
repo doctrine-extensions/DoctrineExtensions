@@ -75,6 +75,9 @@ final class TreeMappingTest extends ORMMappingTestCase
         $this->em = EntityManager::create($conn, $config, $evm);
     }
 
+    /**
+     * @group legacy
+     */
     public function testApcCached(): void
     {
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
@@ -109,6 +112,9 @@ final class TreeMappingTest extends ORMMappingTestCase
         static::assertSame('nested', $config['strategy']);
     }
 
+    /**
+     * @group legacy
+     */
     public function testYamlClosureMapping(): void
     {
         $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);

@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\QuoteStrategy;
 use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\DeleteStatement;
+use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
@@ -92,7 +93,7 @@ class SoftDeleteableWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return AbstractSqlExecutor
      */
     public function getExecutor($AST)
     {
