@@ -33,9 +33,6 @@ class TimestampableListener extends AbstractTrackingListener
         return $eventAdapter->getDateValue($meta, $field);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

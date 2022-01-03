@@ -57,9 +57,6 @@ class Annotation extends AbstractAnnotationDriver
         'citext',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);

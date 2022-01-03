@@ -37,9 +37,6 @@ class Annotation extends AbstractAnnotationDriver
     public const UPLOADABLE_FILE_PATH = UploadableFilePath::class;
     public const UPLOADABLE_FILE_SIZE = UploadableFileSize::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);

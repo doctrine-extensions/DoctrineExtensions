@@ -21,25 +21,16 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
  */
 final class ORM extends BaseAdapterORM implements LoggableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDefaultLogEntryClass()
     {
         return LogEntry::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isPostInsertGenerator($meta)
     {
         return $meta->idGenerator->isPostInsertGenerator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNewVersion($meta, $object)
     {
         $em = $this->getObjectManager();

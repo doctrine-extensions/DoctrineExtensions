@@ -48,9 +48,6 @@ class Annotation extends AbstractAnnotationDriver
      */
     public const LANGUAGE = Language::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);

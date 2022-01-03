@@ -35,9 +35,6 @@ class Xml extends BaseXml
         'bigint',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**

@@ -77,9 +77,6 @@ class SoftDeleteableWalker extends SqlWalker
      */
     private $quoteStrategy;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct($query, $parserResult, array $queryComponents)
     {
         parent::__construct($query, $parserResult, $queryComponents);

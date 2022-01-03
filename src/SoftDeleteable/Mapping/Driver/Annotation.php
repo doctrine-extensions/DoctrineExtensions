@@ -30,9 +30,6 @@ class Annotation extends AbstractAnnotationDriver
      */
     public const SOFT_DELETEABLE = SoftDeleteable::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);

@@ -135,9 +135,6 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

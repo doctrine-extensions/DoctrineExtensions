@@ -59,16 +59,10 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      */
     private $dms = [];
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         foreach ($this->dms as $documentManager) {

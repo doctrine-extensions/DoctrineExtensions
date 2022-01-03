@@ -49,23 +49,14 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
         $this->sluggable = $sluggable;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!isset($options['relationClass']) || !strlen($options['relationClass'])) {
@@ -79,9 +70,6 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $this->om = $ea->getObjectManager();
@@ -130,9 +118,6 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handlesUrlization()
     {
         return false;

@@ -63,17 +63,11 @@ class Annotation implements AnnotationDriverInterface
      */
     private $reader;
 
-    /**
-     * {@inheritdoc}
-     */
     public function setAnnotationReader($reader)
     {
         $this->reader = $reader;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $meta->getReflectionClass();

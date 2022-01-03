@@ -36,9 +36,6 @@ class Xml extends BaseXml
         'materializedPath',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**

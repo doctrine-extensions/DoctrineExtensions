@@ -242,9 +242,6 @@ class SluggableListener extends MappedEventSubscriber
         AbstractWrapper::clear();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

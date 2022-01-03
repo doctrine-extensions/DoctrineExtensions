@@ -63,25 +63,16 @@ class Closure implements Strategy
      */
     private $pendingNodesLevelProcess = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::CLOSURE;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processMetadataLoad($em, $meta)
     {
         // TODO: Remove the body of this method in the next major version.
@@ -207,52 +198,31 @@ class Closure implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($em, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($em, $node)
     {
         $this->pendingChildNodeInserts[spl_object_id($em)][spl_object_id($node)] = $node;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledDelete($em, $entity)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($entity));
@@ -264,16 +234,10 @@ class Closure implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($em, $entity, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostPersist($em, $entity, AdapterInterface $ea)
     {
         $uow = $em->getUnitOfWork();
@@ -349,9 +313,6 @@ class Closure implements Strategy
         $this->setLevelFieldOnPendingNodes($em);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));

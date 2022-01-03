@@ -732,9 +732,6 @@ class UploadableListener extends MappedEventSubscriber
         return $this->getPropertyValueFromObject($meta, $config['fileNameField'], $object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

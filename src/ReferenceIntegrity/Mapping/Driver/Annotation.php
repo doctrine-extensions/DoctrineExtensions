@@ -34,9 +34,6 @@ class Annotation extends AbstractAnnotationDriver
      */
     public const ACTION = 'Gedmo\\Mapping\\Annotation\\ReferenceIntegrityAction';
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $validator = new Validator();

@@ -544,9 +544,6 @@ class TranslatableListener extends MappedEventSubscriber
         return array_key_exists($oid, $this->translationInDefaultLocale);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

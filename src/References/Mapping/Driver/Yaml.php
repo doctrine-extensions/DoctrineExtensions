@@ -36,9 +36,6 @@ class Yaml extends File implements Driver
         'referenceManyEmbed' => [],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $mapping = $this->_getMapping($meta->getName());
@@ -73,9 +70,6 @@ class Yaml extends File implements Driver
         $config = array_merge($this->validReferences, $config);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse($file);

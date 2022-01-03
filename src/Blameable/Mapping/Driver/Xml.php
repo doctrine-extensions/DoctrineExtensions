@@ -34,9 +34,6 @@ class Xml extends BaseXml
         'int',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**

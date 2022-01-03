@@ -36,9 +36,6 @@ class TranslationRepository extends DocumentRepository
      */
     private $listener;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(DocumentManager $dm, UnitOfWork $uow, ClassMetadata $class)
     {
         if ($class->getReflectionClass()->isSubclassOf(AbstractPersonalTranslation::class)) {

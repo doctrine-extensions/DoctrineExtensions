@@ -57,9 +57,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $this->meta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $meta = $this->getClassMetadata();
@@ -84,9 +81,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $this->repo->buildTree($nodes, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTree(array $nodes, array $options = [])
     {
         $meta = $this->getClassMetadata();
@@ -140,9 +134,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $build($nestedTree);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
@@ -181,17 +172,11 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $nestedTree;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setChildrenIndex($childrenIndex)
     {
         $this->childrenIndex = $childrenIndex;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildrenIndex()
     {
         return $this->childrenIndex;

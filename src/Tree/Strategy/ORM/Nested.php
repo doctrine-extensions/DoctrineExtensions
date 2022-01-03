@@ -80,17 +80,11 @@ class Nested implements Strategy
      */
     private $delayedNodes = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::NESTED;
@@ -118,9 +112,6 @@ class Nested implements Strategy
         $this->nodePositions[$oid] = $position;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
         /** @var ClassMetadata $meta */
@@ -141,9 +132,6 @@ class Nested implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
@@ -182,9 +170,6 @@ class Nested implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostPersist($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
@@ -194,9 +179,6 @@ class Nested implements Strategy
         $this->updateNode($em, $node, $parent, self::LAST_CHILD);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledDelete($em, $node)
     {
         $meta = $em->getClassMetadata(get_class($node));
@@ -233,53 +215,32 @@ class Nested implements Strategy
         $this->shiftRL($em, $config['useObjectClass'], $rightValue + 1, -$diff, $rootId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($em, AdapterInterface $ea)
     {
         // reset values
         $this->treeEdges = [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processMetadataLoad($em, $meta)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($em, $entity, AdapterInterface $ea)
     {
     }

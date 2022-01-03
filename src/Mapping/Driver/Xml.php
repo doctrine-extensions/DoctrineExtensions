@@ -84,9 +84,6 @@ abstract class Xml extends File
         return isset($attributes[$attributeName]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         $result = [];

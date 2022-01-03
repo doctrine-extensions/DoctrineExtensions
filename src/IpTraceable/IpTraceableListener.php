@@ -59,9 +59,6 @@ class IpTraceableListener extends AbstractTrackingListener
         $this->ip = $ip;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

@@ -35,9 +35,6 @@ class TranslationRepository extends EntityRepository
      */
     private $listener;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
         if ($class->getReflectionClass()->isSubclassOf(AbstractPersonalTranslation::class)) {

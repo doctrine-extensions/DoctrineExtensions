@@ -21,25 +21,16 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
  */
 final class ODM extends BaseAdapterODM implements LoggableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDefaultLogEntryClass()
     {
         return LogEntry::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isPostInsertGenerator($meta)
     {
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNewVersion($meta, $object)
     {
         $dm = $this->getObjectManager();

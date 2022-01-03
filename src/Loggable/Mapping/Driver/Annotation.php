@@ -36,9 +36,6 @@ class Annotation extends AbstractAnnotationDriver
      */
     public const VERSIONED = Versioned::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         if ($config && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
@@ -49,9 +46,6 @@ class Annotation extends AbstractAnnotationDriver
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);
