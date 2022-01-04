@@ -11,6 +11,7 @@ namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
@@ -22,6 +23,9 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
  */
 final class ORM extends BaseAdapterORM implements TimestampableAdapter
 {
+    /**
+     * @param ClassMetadata $meta
+     */
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);

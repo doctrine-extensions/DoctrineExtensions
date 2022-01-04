@@ -12,6 +12,7 @@ namespace Gedmo\Tree\Strategy\ORM;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -73,11 +74,15 @@ class Closure implements Strategy
         return Strategy::CLOSURE;
     }
 
+    /**
+     * @param EntityManagerInterface $em
+     */
     public function processMetadataLoad($em, $meta)
     {
         // TODO: Remove the body of this method in the next major version.
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $closureMetadata = $em->getClassMetadata($config['closure']);
+
         $cmf = $em->getMetadataFactory();
 
         $hasTheUserExplicitlyDefinedMapping = true;
@@ -238,6 +243,9 @@ class Closure implements Strategy
     {
     }
 
+    /**
+     * @param EntityManagerInterface $em
+     */
     public function processPostPersist($em, $entity, AdapterInterface $ea)
     {
         $uow = $em->getUnitOfWork();
@@ -313,6 +321,9 @@ class Closure implements Strategy
         $this->setLevelFieldOnPendingNodes($em);
     }
 
+    /**
+     * @param EntityManagerInterface $em
+     */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
@@ -421,6 +432,8 @@ class Closure implements Strategy
     /**
      * Process pending entities to set their "level" value
      *
+     * @param EntityManagerInterface $em
+     *
      * @return void
      */
     protected function setLevelFieldOnPendingNodes(ObjectManager $em)
@@ -482,6 +495,9 @@ class Closure implements Strategy
         }
     }
 
+    /**
+     * @param ORMClassMetadata $closureMetadata
+     */
     private function hasClosureTableUniqueConstraint(ClassMetadata $closureMetadata): bool
     {
         if (!isset($closureMetadata->table['uniqueConstraints'])) {
@@ -497,6 +513,9 @@ class Closure implements Strategy
         return false;
     }
 
+    /**
+     * @param ORMClassMetadata $closureMetadata
+     */
     private function hasClosureTableDepthIndex(ClassMetadata $closureMetadata): bool
     {
         if (!isset($closureMetadata->table['indexes'])) {

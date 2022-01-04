@@ -9,6 +9,7 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
@@ -26,6 +27,9 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
         return LogEntry::class;
     }
 
+    /**
+     * @param ClassMetadata $meta
+     */
     public function isPostInsertGenerator($meta)
     {
         return $meta->idGenerator->isPostInsertGenerator();
