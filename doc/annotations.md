@@ -92,7 +92,7 @@ $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
     $cachedAnnotationReader, // our cached annotation reader
     array(__DIR__.'/app/Entity') // paths to look in
 );
-// NOTE: driver for application Entity can be different, Yaml, Xml or whatever
+// NOTE: driver for application Entity can be different, Attribute, Xml or whatever
 // register annotation driver for our application Entity namespace
 $driverChain->addDriver($annotationDriver, 'Entity');
 

@@ -1,7 +1,7 @@
 # Mapping extension for Doctrine2
 
 **Mapping** extension makes it easy to map additional metadata for event listeners.
-It supports **Yaml**, **Xml** and **Annotation** drivers which will be chosen depending on
+It supports **Attribute**, **Xml** and **Annotation** drivers which will be chosen depending on
 currently used mapping driver for your domain objects. **Mapping** extension also
 provides abstraction layer of **EventArgs** to make it possible to use single listener
 for different object managers like **ODM** and **ORM**.

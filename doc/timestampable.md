@@ -11,7 +11,7 @@ Features:
 - Specific annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
-- Attribute, Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation and Xml mapping support for extensions
 
 This article will cover the basic installation and functionality of **Timestampable** behavior
 
