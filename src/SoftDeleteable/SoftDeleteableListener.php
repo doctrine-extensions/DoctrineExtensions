@@ -11,6 +11,7 @@ namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 
 /**
@@ -101,6 +102,8 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */

@@ -10,6 +10,7 @@
 namespace Gedmo\Uploadable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
 use Gedmo\Exception\UploadableCantWriteException;
@@ -507,6 +508,8 @@ class UploadableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
@@ -25,7 +26,7 @@ class EncoderListener extends MappedEventSubscriber
         ];
     }
 
-    public function loadClassMetadata(EventArgs $args): void
+    public function loadClassMetadata(LoadClassMetadataEventArgs $args): void
     {
         $ea = $this->getEventAdapter($args);
         // this will check for our metadata
