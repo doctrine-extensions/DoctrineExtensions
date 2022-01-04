@@ -9,7 +9,7 @@ Features:
 - ORM and ODM support using same listener
 - Slugs can be unique and styled, even with prefixes and/or suffixes
 - Can be nested with other behaviors
-- Attribute, Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation and Xml mapping support for extensions
 - Multiple slugs, different slugs can link to same fields
 
 **Note:**

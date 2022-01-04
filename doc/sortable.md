@@ -6,7 +6,7 @@ Features:
 - Automatic handling of position index
 - Group entity ordering by one or more fields
 - Can be nested with other behaviors
-- Annotation, Attribute, Yaml and Xml mapping support for extensions
+- Annotation, Attribute and Xml mapping support for extensions
 
 Contents:
 - [Setup and autoloading](#setup-and-autoloading)
@@ -29,7 +29,6 @@ on how to setup and use the extensions in most optimized way.
 |-------------|---------------------------------------------|------------------------------------------------|
 | Annotations | `@Gedmo\Mapping\Annotation\SortableGroup`   | `@Gedmo\Mapping\Annotation\SortablePosition`   |
 | Attributes  | `#[Gedmo\Mapping\Annotation\SortableGroup]` | `#[Gedmo\Mapping\Annotation\SortablePosition]` |
-| Yaml        | `gedmo: [sortableGroup]`                    | `gedmo: [sortablePosition]`                    |
 | Xml         | `<gedmo:sortable-group />`                  | `<gedmo:sortable-position />`                  |
 
 > Implementing **[Sortable interface](../src/Sortable/Sortable.php) is optional**, except in cases there you need to identify entity as being Sortable.

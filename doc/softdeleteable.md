@@ -9,7 +9,7 @@ Features:
 - All SELECT queries will be filtered, not matter from where they are executed (Repositories, DQL SELECT queries, etc).
 - For now, it works only with the ORM
 - Can be nested with other behaviors
-- Attribute, Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation and Xml mapping support for extensions
 - Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.
 - Support for 'hardDelete' option: When deleting a second time it allows to disable hard delete.
 
