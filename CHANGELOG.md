@@ -42,6 +42,8 @@ a release.
 - Wrong PHPDoc type declarations.
 - Avoid calling deprecated `AbstractClassMetadataFactory::getCacheDriver()` method.
 - Avoid deprecations using `doctrine/mongodb-odm` >= 2.2
+- Translatable: `Gedmo\Translatable\Document\Repository\TranslationRepository::findObjectByTranslatedField()`
+  method accessing a non-existing key.
 
 ### Deprecated
 - Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.
