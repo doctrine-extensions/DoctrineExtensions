@@ -10,7 +10,7 @@
 namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
 use Doctrine\Common\Util\ClassUtils;
-use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 

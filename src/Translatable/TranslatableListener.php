@@ -12,6 +12,7 @@ namespace Gedmo\Translatable;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -190,6 +191,8 @@ class TranslatableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */

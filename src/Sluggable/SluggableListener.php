@@ -10,6 +10,7 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Handler\SlugHandlerInterface;
@@ -171,6 +172,8 @@ class SluggableListener extends MappedEventSubscriber
 
     /**
      * Mapps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */

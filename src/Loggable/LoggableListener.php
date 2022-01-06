@@ -10,6 +10,7 @@
 namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -99,6 +100,8 @@ class LoggableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */

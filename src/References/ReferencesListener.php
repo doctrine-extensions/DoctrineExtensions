@@ -11,6 +11,7 @@ namespace Gedmo\References;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 
@@ -39,6 +40,8 @@ class ReferencesListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)

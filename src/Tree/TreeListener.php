@@ -10,6 +10,7 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 
@@ -246,6 +247,8 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Mapps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */

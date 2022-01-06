@@ -132,6 +132,9 @@ class Nested implements Strategy
         }
     }
 
+    /**
+     * @param EntityManagerInterface $em
+     */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
@@ -170,6 +173,9 @@ class Nested implements Strategy
         }
     }
 
+    /**
+     * @param EntityManagerInterface $em
+     */
     public function processPostPersist($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
@@ -179,6 +185,9 @@ class Nested implements Strategy
         $this->updateNode($em, $node, $parent, self::LAST_CHILD);
     }
 
+    /**
+     * @param EntityManagerInterface $em
+     */
     public function processScheduledDelete($em, $node)
     {
         $meta = $em->getClassMetadata(get_class($node));

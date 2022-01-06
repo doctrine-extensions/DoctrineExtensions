@@ -9,6 +9,7 @@
 
 namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
@@ -20,6 +21,9 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
  */
 final class ODM extends BaseAdapterODM implements TimestampableAdapter
 {
+    /**
+     * @param ClassMetadata $meta
+     */
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
