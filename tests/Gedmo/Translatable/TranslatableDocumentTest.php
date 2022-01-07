@@ -113,6 +113,33 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         static::assertCount(0, $translations);
     }
 
+    public function testFindObjectByTranslatedField(): void
+    {
+        $repo = $this->dm->getRepository(self::ARTICLE);
+        $article = $repo->findOneBy(['title' => 'Title EN']);
+        static::assertInstanceOf(self::ARTICLE, $article);
+
+        $this->translatableListener->setTranslatableLocale('de_de');
+        $article->setTitle('Title DE');
+        $article->setCode('Code DE');
+
+        $this->dm->persist($article);
+        $this->dm->flush();
+        $this->dm->clear();
+
+        $transRepo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $transRepo);
+
+        $articleFound = $transRepo->findObjectByTranslatedField(
+            'title',
+            'Title DE',
+            self::ARTICLE
+        );
+        static::assertInstanceOf(self::ARTICLE, $articleFound);
+
+        static::assertSame($article->getId(), $articleFound->getId());
+    }
+
     private function populate(): void
     {
         $art0 = new Article();

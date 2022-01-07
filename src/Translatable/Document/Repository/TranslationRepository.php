@@ -167,27 +167,32 @@ class TranslationRepository extends DocumentRepository
      */
     public function findObjectByTranslatedField($field, $value, $class)
     {
-        $document = null;
         $meta = $this->dm->getClassMetadata($class);
-        if ($meta->hasField($field)) {
-            $qb = $this->createQueryBuilder();
-            $q = $qb->field('field')->equals($field)
-                ->field('objectClass')->equals($meta->rootDocumentName)
-                ->field('content')->equals($value)
-                ->getQuery();
 
-            $q->setHydrate(false);
-            $result = $q->execute();
-            if ($result instanceof Iterator) {
-                $result = $result->toArray();
-            }
-            $id = count($result) ? $result[0]['foreignKey'] : null;
-            if ($id) {
-                $document = $this->dm->find($class, $id);
-            }
+        if (!$meta->hasField($field)) {
+            return null;
         }
 
-        return $document;
+        $qb = $this->createQueryBuilder();
+        $q = $qb->field('field')->equals($field)
+            ->field('objectClass')->equals($meta->rootDocumentName)
+            ->field('content')->equals($value)
+            ->getQuery();
+
+        $q->setHydrate(false);
+        $result = $q->execute();
+
+        if ($result instanceof Iterator) {
+            $result = $result->toArray();
+        }
+
+        $id = $result[0]['foreign_key'] ?? null;
+
+        if (null === $id) {
+            return null;
+        }
+
+        return $this->dm->find($class, $id);
     }
 
     /**
