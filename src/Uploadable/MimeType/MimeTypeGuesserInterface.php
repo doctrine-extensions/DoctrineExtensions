@@ -20,7 +20,7 @@ interface MimeTypeGuesserInterface
     /**
      * @param string $filePath
      *
-     * @return string|false|null
+     * @return string|null
      */
     public function guess($filePath);
 }
