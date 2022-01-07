@@ -27,7 +27,7 @@ use Doctrine\Persistence\ObjectManager;
 interface AdapterInterface
 {
     /**
-     * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
+     * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
      *
      * Calls a method on the event args object.
      *

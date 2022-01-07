@@ -37,7 +37,7 @@ class ODM implements AdapterInterface
     public function __call($method, $args)
     {
         @trigger_error(sprintf(
-            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
             __METHOD__
         ), E_USER_DEPRECATED);
 

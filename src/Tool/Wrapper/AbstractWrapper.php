@@ -72,7 +72,7 @@ abstract class AbstractWrapper implements WrapperInterface
     public static function clear()
     {
         @trigger_error(sprintf(
-            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
             __METHOD__
         ), E_USER_DEPRECATED);
     }
@@ -90,7 +90,7 @@ abstract class AbstractWrapper implements WrapperInterface
     public function populate(array $data)
     {
         @trigger_error(sprintf(
-            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
             __METHOD__
         ), E_USER_DEPRECATED);
 
