@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.5.0] - 2022-01-10
 ### Added
 - SoftDeleteable: Support to use annotations as attributes on PHP >= 8.0.
 - Blameable: Support to use annotations as attributes on PHP >= 8.0.
