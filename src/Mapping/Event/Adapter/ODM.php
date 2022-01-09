@@ -36,6 +36,11 @@ class ODM implements AdapterInterface
 
     public function __call($method, $args)
     {
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
         if (null === $this->args) {
             throw new RuntimeException('Event args must be set before calling its methods');
         }
@@ -86,7 +91,20 @@ class ODM implements AdapterInterface
             return $this->dm;
         }
 
-        return $this->__call('getDocumentManager', []);
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getDocumentManager();
+    }
+
+    public function getObject(): object
+    {
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getDocument();
     }
 
     public function getObjectState($uow, $object)
