@@ -22,10 +22,13 @@ use Doctrine\Persistence\ObjectManager;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
  * @method LifecycleEventArgs createLifecycleEventArgsInstance(object $object, ObjectManager $manager)
+ * @method object             getObject()
  */
 interface AdapterInterface
 {
     /**
+     * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
+     *
      * Calls a method on the event args object.
      *
      * @param string $method

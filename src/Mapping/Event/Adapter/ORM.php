@@ -36,6 +36,11 @@ class ORM implements AdapterInterface
 
     public function __call($method, $args)
     {
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
         if (null === $this->args) {
             throw new RuntimeException('Event args must be set before calling its methods');
         }
@@ -86,7 +91,20 @@ class ORM implements AdapterInterface
             return $this->em;
         }
 
-        return $this->__call('getEntityManager', []);
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getEntityManager();
+    }
+
+    public function getObject(): object
+    {
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getEntity();
     }
 
     public function getObjectState($uow, $object)

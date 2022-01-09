@@ -55,7 +55,8 @@ final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
             ->method('getEntityManager');
 
         $eventArgsMock->expects(static::once())
-            ->method('getEntity');
+            ->method('getEntity')
+            ->willReturn(new \stdClass());
 
         $eventAdapter = new EventAdapterORM();
         $eventAdapter->setEventArgs($eventArgsMock);

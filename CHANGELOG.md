@@ -33,6 +33,7 @@ a release.
 - Timestampable: Support for custom column types (like Carbon).
 - Translatable: Added an index to `Translation` entity to speed up searches using 
   `Gedmo\Translatable\Entity\Repository\TranslationRepository::findTranslations()` method. 
+- `Gedmo\Mapping\Event\AdapterInterface::getObject()` method.
 
 ### Fixed
 - Blameable, IpTraceable, Timestampable: Type handling for the tracked field values configured in the origin field.
@@ -49,6 +50,7 @@ a release.
 - Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.
 - `Gedmo\Tool\Logging\DBAL\QueryAnalizer` class without replacement.
 - Using YAML mapping is deprecated, you SHOULD migrate to attributes, annotations or XML.
+- `Gedmo\Mapping\Event\AdapterInterface::__call()` method.
 
 ### Changed
 - In order to use a custom cache for storing configuration of an extension, the user has to call `setCacheItemPool()`
