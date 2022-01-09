@@ -46,13 +46,6 @@ abstract class AbstractWrapper implements WrapperInterface
     protected $om;
 
     /**
-     * List of wrapped object references
-     *
-     * @var array
-     */
-    private static $wrappedObjectReferences;
-
-    /**
      * Wrap object factory method
      *
      * @param object $object
@@ -78,7 +71,10 @@ abstract class AbstractWrapper implements WrapperInterface
      */
     public static function clear()
     {
-        self::$wrappedObjectReferences = [];
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
     }
 
     public function getObject()
