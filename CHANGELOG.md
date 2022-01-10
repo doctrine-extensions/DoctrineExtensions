@@ -52,6 +52,7 @@ a release.
 - Using YAML mapping is deprecated, you SHOULD migrate to attributes, annotations or XML.
 - `Gedmo\Mapping\Event\AdapterInterface::__call()` method.
 - `Gedmo\Tool\Wrapper\AbstractWrapper::clear()` method.
+- `Gedmo\Tool\Wrapper\WrapperInterface::populate()` method.
 
 ### Changed
 - In order to use a custom cache for storing configuration of an extension, the user has to call `setCacheItemPool()`
