@@ -88,7 +88,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         $test = new Article();
         $wrapped = new EntityWrapper($test, $this->em);
 
-        $wrapped->populate(['title' => 'test']);
+        $test->setTitle('test');
         static::assertSame('test', $wrapped->getPropertyValue('title'));
 
         static::assertFalse($wrapped->hasValidIdentifier());

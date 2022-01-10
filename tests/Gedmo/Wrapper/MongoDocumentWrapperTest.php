@@ -86,7 +86,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         $test = new Article();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        $wrapped->populate(['title' => 'test']);
+        $test->setTitle('test');
         static::assertSame('test', $wrapped->getPropertyValue('title'));
 
         static::assertFalse($wrapped->hasValidIdentifier());
