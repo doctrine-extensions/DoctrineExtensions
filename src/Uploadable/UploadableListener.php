@@ -10,6 +10,7 @@
 namespace Gedmo\Uploadable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
@@ -325,7 +326,12 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         if ($config['fileSizeField']) {
-            $this->updateField($object, $uow, $ea, $meta, $config['fileSizeField'], $info['fileSize']);
+            $typeOfSizeField = Type::getType($meta->getTypeOfField($config['fileSizeField']));
+            $value = $typeOfSizeField->convertToPHPValue(
+                $info['fileSize'],
+                $om->getConnection()->getDatabasePlatform()
+            );
+            $this->updateField($object, $uow, $ea, $meta, $config['fileSizeField'], $value);
         }
 
         $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);

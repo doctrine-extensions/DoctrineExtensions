@@ -119,7 +119,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     /** @var false|string */
     private $testFilenameWithSpaces;
 
-    /** @var string */
+    /** @var int */
     private $testFileSize;
 
     /** @var string */
@@ -152,7 +152,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->testFilename3 = substr($this->testFile3, strrpos($this->testFile3, '/') + 1);
         $this->testFilenameWithoutExt = substr($this->testFileWithoutExt, strrpos($this->testFileWithoutExt, '/') + 1);
         $this->testFilenameWithSpaces = substr($this->testFileWithSpaces, strrpos($this->testFileWithSpaces, '/') + 1);
-        $this->testFileSize = '4';
+        $this->testFileSize = 4;
         $this->testFileMimeType = 'text/plain';
 
         $this->clearFilesAndDirectories();
@@ -197,7 +197,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->assertPathEquals($image2->getPath().'/'.$fileInfo['name'], $image2->getFilePath());
         static::assertTrue(is_file($firstFile));
-        static::assertSame($fileInfo['size'], $image2->getSize());
+        static::assertSame((string) $fileInfo['size'], $image2->getSize());
         static::assertSame($fileInfo['type'], $image2->getMime());
 
         // UPDATE of an Uploadable Entity
@@ -251,7 +251,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->assertPathEquals($image2->getPath($this->destinationTestDir).'/'.$fileInfo['name'], $image2->getFilePath());
         static::assertTrue(is_file($firstFile));
-        static::assertSame($fileInfo['size'], $image2->getSize());
+        static::assertSame((string) $fileInfo['size'], $image2->getSize());
         static::assertSame($fileInfo['type'], $image2->getMime());
 
         // UPDATE of an Uploadable Entity
@@ -596,7 +596,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->listener->setDefaultPath($this->destinationTestDir);
 
         $file = new FileWithMaxSize();
-        $size = '0.0001';
+        $size = 1;
         $fileInfo = $this->generateUploadedFile(false, false, ['size' => $size]);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
@@ -606,7 +606,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        static::assertSame($size, $file->getFileSize());
+        static::assertSame((string) $size, $file->getFileSize());
     }
 
     public function testIfMimeTypeGuesserCantResolveTypeThrowException(): void
