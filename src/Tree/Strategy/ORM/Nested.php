@@ -387,7 +387,7 @@ class Nested implements Strategy
             }
             $newRoot = $parentRoot;
         } elseif (!isset($config['root']) ||
-            ($meta->isSingleValuedAssociation($config['root']) && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
+            ($meta->isSingleValuedAssociation($config['root']) && null !== $parent && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
             if (!isset($this->treeEdges[$meta->getName()])) {
                 $this->treeEdges[$meta->getName()] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
             }
