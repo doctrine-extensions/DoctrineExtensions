@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Uploadable: `FileInfoInterface::getSize()` return type declaration (#2413).
 
 ## [3.5.0] - 2022-01-10
 ### Added
