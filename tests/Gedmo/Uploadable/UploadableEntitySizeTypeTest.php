@@ -18,7 +18,7 @@ use Gedmo\Tests\Uploadable\Stub\MimeTypeGuesserStub;
 use Gedmo\Tests\Uploadable\Stub\UploadableListenerStub;
 
 /**
- * These are tests for Uploadable behavior with different size types
+ * This test is for Uploadable behavior with typed properties
  *
  * @requires PHP >= 7.4
  */
@@ -34,27 +34,7 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
     /**
      * @var string
      */
-    private $testFile;
-
-    /**
-     * @var string
-     */
     private $destinationTestDir;
-
-    /**
-     * @var string
-     */
-    private $testFilename;
-
-    /**
-     * @var string
-     */
-    private $testFileSize;
-
-    /**
-     * @var string
-     */
-    private $testFileMimeType;
 
     protected function setUp(): void
     {
@@ -67,11 +47,8 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
         $evm->addEventSubscriber($this->listener);
         $config = $this->getDefaultConfiguration();
         $this->em = $this->getDefaultMockSqliteEntityManager($evm, $config);
-        $this->testFile = TESTS_PATH.'/data/test_for_typed_properties.txt';
+
         $this->destinationTestDir = TESTS_TEMP_DIR.'/uploadable';
-        $this->testFilename = substr($this->testFile, strrpos($this->testFile, '/') + 1);
-        $this->testFileSize = '4';
-        $this->testFileMimeType = 'text/plain';
 
         $this->clearFilesAndDirectories();
 
@@ -87,7 +64,18 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
 
     public function testUploadableEntity(): void
     {
-        $fileInfo = $this->generateUploadedFile();
+        $testFile = TESTS_PATH.'/data/test_for_typed_properties.txt';
+        $testFilename = substr($testFile, strrpos($testFile, '/') + 1);
+        $testFileSize = '4';
+        $testFileMimeType = 'text/plain';
+
+        $fileInfo = [
+            'tmp_name' => $testFile,
+            'name' => $testFilename,
+            'size' => $testFileSize,
+            'type' => $testFileMimeType,
+            'error' => 0,
+        ];
 
         $image = new ImageWithTypedProperties();
         $image->setTitle('456');
@@ -100,10 +88,10 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
 
         $file = $image->getFilePath();
 
-        $this->assertPathEquals($image->getPath().'/'.$fileInfo['name'], $image->getFilePath());
+        $this->assertPathEquals($image->getPath().'/'.$testFilename, $image->getFilePath());
         static::assertTrue(is_file($file));
-        static::assertSame($fileInfo['size'], $image->getSize());
-        static::assertSame($fileInfo['type'], $image->getMime());
+        static::assertSame($testFileSize, $image->getSize());
+        static::assertSame($testFileMimeType, $image->getMime());
 
         $this->em->remove($image);
         $this->em->flush();
@@ -121,21 +109,6 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
     protected function assertPathEquals(string $expected, string $path, string $message = ''): void
     {
         static::assertSame($expected, $path, $message);
-    }
-
-    // Util
-
-    private function generateUploadedFile($filePath = false, $filename = false, array $info = []): array
-    {
-        $defaultInfo = [
-            'tmp_name' => !$filePath ? $this->testFile : $filePath,
-            'name' => !$filename ? $this->testFilename : $filename,
-            'size' => $this->testFileSize,
-            'type' => $this->testFileMimeType,
-            'error' => 0,
-        ];
-
-        return array_merge($defaultInfo, $info);
     }
 
     private function clearFilesAndDirectories(): void
