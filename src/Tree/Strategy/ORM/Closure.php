@@ -198,7 +198,12 @@ class Closure implements Strategy
             $cacheDriver = $cmf->getCacheDriver();
 
             if ($cacheDriver instanceof Cache) {
+                /* @see https://github.com/doctrine/persistence/pull/144 */
                 /* @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey */
+                $cacheDriver->save(
+                    $closureMetadata->getName().'$CLASSMETADATA',
+                    $closureMetadata
+                );
                 $cacheDriver->save(
                     str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__',
                     $closureMetadata
