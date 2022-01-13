@@ -67,6 +67,7 @@ one of them, not both.
 <?php
 namespace Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -75,7 +76,6 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="categories")
- * use repository for handy tree functions
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 #[Gedmo\Tree(type: 'nested')]
@@ -96,12 +96,16 @@ class Category
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private $title;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
@@ -110,6 +114,8 @@ class Category
     private $lft;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
@@ -118,6 +124,8 @@ class Category
     private $lvl;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */
@@ -126,6 +134,8 @@ class Category
     private $rgt;
 
     /**
+     * @var self|null
+     *
      * @Gedmo\TreeRoot
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
@@ -136,6 +146,8 @@ class Category
     private $root;
 
     /**
+     * @var self|null
+     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -146,6 +158,8 @@ class Category
     private $parent;
 
     /**
+     * @var Collection<int, Category>
+     *
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      * @ORM\OrderBy({"lft" = "ASC"})
      */
@@ -153,32 +167,32 @@ class Category
     #[ORM\OrderBy(['lft' => 'ASC'])]
     private $children;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getRoot()
+    public function getRoot(): ?self
     {
         return $this->root;
     }
 
-    public function setParent(Category $parent = null)
+    public function setParent(self $parent = null): void
     {
         $this->parent = $parent;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }
@@ -304,7 +318,7 @@ The result after flush will generate the food tree:
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
+$repo = $em->getRepository(Category::class);
 
 $food = $repo->findOneByTitle('Food');
 echo $repo->childCount($food);
@@ -390,7 +404,7 @@ Now move **carrots** up by one position
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
+$repo = $em->getRepository(Category::class);
 $carrots = $repo->findOneByTitle('Carrots');
 // move it up by one position
 $repo->moveUp($carrots, 1);
@@ -412,7 +426,7 @@ Moving **carrots** down to the last position
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
+$repo = $em->getRepository(Category::class);
 $carrots = $repo->findOneByTitle('Carrots');
 // move it down to the end
 $repo->moveDown($carrots, true);
@@ -471,7 +485,7 @@ If you would like to load the whole tree as a node array hierarchy use:
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
+$repo = $em->getRepository(Category::class);
 $arrayTree = $repo->childrenHierarchy();
 ```
 
@@ -483,15 +497,15 @@ To load a tree as a **ul - li** html tree use:
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
+$repo = $em->getRepository(Category::class);
 $htmlTree = $repo->childrenHierarchy(
     null, /* starting from root nodes */
     false, /* true: load all children, false: only direct */
-    array(
+    [
         'decorate' => true,
         'representationField' => 'slug',
         'html' => true
-    )
+    ]
 );
 ```
 
@@ -499,8 +513,8 @@ $htmlTree = $repo->childrenHierarchy(
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
-$options = array(
+$repo = $em->getRepository(Category::class);
+$options = [
     'decorate' => true,
     'rootOpen' => '<ul>',
     'rootClose' => '</ul>',
@@ -509,7 +523,7 @@ $options = array(
     'nodeDecorator' => function($node) {
         return '<a href="/page/'.$node['slug'].'">'.$node[$field].'</a>';
     }
-);
+];
 $htmlTree = $repo->childrenHierarchy(
     null, /* starting from root nodes */
     false, /* true: load all children, false: only direct */
@@ -522,16 +536,16 @@ $htmlTree = $repo->childrenHierarchy(
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
+$repo = $em->getRepository(Category::class);
 $query = $entityManager
     ->createQueryBuilder()
     ->select('node')
-    ->from('Entity\Category', 'node')
+    ->from(Category::class, 'node')
     ->orderBy('node.root, node.lft', 'ASC')
     ->where('node.root = 1')
     ->getQuery()
 ;
-$options = array('decorate' => true);
+$options = ['decorate' => true];
 $tree = $repo->buildTree($query->getArrayResult(), $options);
 ```
 
@@ -540,27 +554,36 @@ $tree = $repo->buildTree($query->getArrayResult(), $options);
 ```php
 <?php
 $controller = $this;
-        $tree = $root->childrenHierarchy(null,false,array('decorate' => true,
-            'rootOpen' => function($tree) {
-                if(count($tree) && ($tree[0]['lvl'] == 0)){
-                        return '<div class="catalog-list">';
-                }
-            },
-            'rootClose' => function($child) {
-                if(count($child) && ($child[0]['lvl'] == 0)){
-                                return '</div>';
-                }
-             },
-            'childOpen' => '',
-            'childClose' => '',
-            'nodeDecorator' => function($node) use (&$controller) {
-                if($node['lvl'] == 1) {
-                    return '<h1>'.$node['title'].'</h1>';
-                }elseif($node["isVisibleOnHome"]) {
-                    return '<a href="'.$controller->generateUrl("wareTree",array("id"=>$node['id'])).'">'.$node['title'].'</a>&nbsp;';
-                }
-            }
-        ));
+$tree = $root->childrenHierarchy(null, false, [
+    'decorate' => true,
+    'rootOpen' => static function (array $tree): ?string {
+        if ([] !== $tree && 0 == $tree[0]['lvl']) {
+            return '<div class="catalog-list">';
+        }
+
+        return null;
+    },
+    'rootClose' => static function (array $child): ?string {
+        if ([] !== $child && 0 == $child[0]['lvl']) {
+            return '</div>';
+        }
+
+        return null;
+     },
+    'childOpen' => '',
+    'childClose' => '',
+    'nodeDecorator' => static function (array $node) use (&$controller): ?string {
+        if (1 == $node['lvl']) {
+            return '<h1>'.$node['title'].'</h1>';
+        }
+
+        if ($node["isVisibleOnHome"]) {
+            return '<a href="'.$controller->generateUrl("wareTree", ["id"=>$node['id']]).'">'.$node['title'].'</a>&nbsp;';
+        }
+
+        return null;
+    }
+]);
 ```
 
 <a name="advanced-examples"></a>
@@ -583,7 +606,7 @@ Other than that, the usage is straight-forward.
 
 ```php
 <?php
-$repo = $em->getRepository('Entity\Category');
+$repo = $em->getRepository(Category::class);
 
 $tree = $repo->createQueryBuilder('node')->getQuery()
     ->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true)
@@ -617,6 +640,7 @@ And the Entity should look like:
 <?php
 namespace Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -642,6 +666,8 @@ class Category
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @Gedmo\Sluggable
      * @ORM\Column(name="title", type="string", length=64)
@@ -652,6 +678,8 @@ class Category
     private $title;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
@@ -660,6 +688,8 @@ class Category
     private $lft;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */
@@ -668,6 +698,8 @@ class Category
     private $rgt;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
@@ -676,6 +708,8 @@ class Category
     private $lvl;
 
     /**
+     * @var self|null
+     *
      * @Gedmo\TreeRoot
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
@@ -686,6 +720,8 @@ class Category
     private $root;
 
     /**
+     * @var self|null
+     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -696,12 +732,16 @@ class Category
     private $parent;
 
     /**
+     * @var Collection<int, self>
+     *
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'parent')]
     private $children;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @Gedmo\Slug
      * @ORM\Column(name="slug", type="string", length=128)
@@ -711,37 +751,37 @@ class Category
     #[Gedmo\Slug]
     private $slug;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getRoot()
+    public function getRoot(): ?self
     {
         return $this->root;
     }
 
-    public function setParent(Category $parent)
+    public function setParent(self $parent = null): void
     {
         $this->parent = $parent;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }

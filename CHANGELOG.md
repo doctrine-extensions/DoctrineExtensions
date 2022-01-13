@@ -21,6 +21,7 @@ a release.
 ## [Unreleased]
 ### Fixed
 - Uploadable: `FileInfoInterface::getSize()` return type declaration (#2413).
+- Tree: Setting a new Tree Root when Tree Parent is `null`.
 
 ## [3.5.0] - 2022-01-10
 ### Added
