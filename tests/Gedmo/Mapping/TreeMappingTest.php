@@ -87,13 +87,6 @@ final class TreeMappingTest extends ORMMappingTestCase
         $this->em->getClassMetadata(CategoryClosureWithoutMapping::class);
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
-            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosureWithoutMapping$CLASSMETADATA'
-        );
-        static::assertNotFalse($meta);
-        static::assertTrue($meta->hasAssociation('ancestor'));
-        static::assertTrue($meta->hasAssociation('descendant'));
-
-        $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
             'Gedmo__Tests__Tree__Fixture__Closure__CategoryClosureWithoutMapping__CLASSMETADATA__'
         );
         static::assertNotFalse($meta);
