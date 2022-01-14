@@ -50,7 +50,7 @@ abstract class BaseTestCaseORM extends TestCase
     protected $queryAnalyzer;
 
     /**
-     * @var MockObject&LoggerInterface
+     * @var MockObject|LoggerInterface
      */
     protected $queryLogger;
 
