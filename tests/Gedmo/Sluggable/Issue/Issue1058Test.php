@@ -1,25 +1,31 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue1058\Page;
-use Sluggable\Fixture\Issue1058\User;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue1058\Page;
+use Gedmo\Tests\Sluggable\Fixture\Issue1058\User;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue1058Test extends BaseTestCaseORM
+final class Issue1058Test extends BaseTestCaseORM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Issue1058\\Page';
-    const USER = 'Sluggable\\Fixture\\Issue1058\\User';
+    public const ARTICLE = Page::class;
+    public const USER = User::class;
 
     protected function setUp(): void
     {
@@ -28,14 +34,13 @@ class Issue1058Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
-     * @test
      * @group issue1058
      */
-    public function shouldHandleUniqueConstraintsBasedOnRelation()
+    public function testShouldHandleUniqueConstraintsBasedOnRelation(): void
     {
         $userFoo = new User();
         $this->em->persist($userFoo);
@@ -51,7 +56,7 @@ class Issue1058Test extends BaseTestCaseORM
 
         $this->em->persist($page);
         $this->em->flush();
-        $this->assertEquals('the-title', $page->getSlug());
+        static::assertSame('the-title', $page->getSlug());
 
         $page = new Page();
         $page->setTitle('the title');
@@ -59,7 +64,7 @@ class Issue1058Test extends BaseTestCaseORM
 
         $this->em->persist($page);
         $this->em->flush();
-        $this->assertEquals('the-title', $page->getSlug());
+        static::assertSame('the-title', $page->getSlug());
 
         $page = new Page();
         $page->setTitle('the title');
@@ -67,7 +72,7 @@ class Issue1058Test extends BaseTestCaseORM
 
         $this->em->persist($page);
         $this->em->flush();
-        $this->assertEquals('the-title-1', $page->getSlug());
+        static::assertSame('the-title-1', $page->getSlug());
 
         $page = new Page();
         $page->setTitle('the title');
@@ -77,10 +82,10 @@ class Issue1058Test extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals('the-title-1', $page->getSlug());
+        static::assertSame('the-title-1', $page->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

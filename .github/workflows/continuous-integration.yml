@@ -1,0 +1,99 @@
+name: "Continuous Integration"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  MONGODB_SERVER: mongodb://127.0.0.1:27017
+
+jobs:
+  phpunit:
+    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.dbal-version && format(' - DBAL {0}', matrix.dbal-version) || '' }}"
+    runs-on: "ubuntu-20.04"
+
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+          - "8.1"
+        deps:
+          - "highest"
+        dbal-version:
+          - ""
+        include:
+          - deps: "lowest"
+            php-version: "7.2"
+          - deps: "highest"
+            php-version: "8.0"
+            dbal-version: "^2.13.1"
+          - deps: "highest"
+            php-version: "8.0"
+            dbal-version: "^3.2"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+        with:
+          fetch-depth: 2
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: mongodb
+          coverage: "pcov"
+
+      - name: "Restrict DBAL version"
+        if: "${{ matrix.dbal-version }}"
+        run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "${{ matrix.deps }}"
+
+      - name: "Run PHPUnit"
+        run: "bin/phpunit -c tests --coverage-clover=coverage.xml"
+
+      - name: "Send coverage to Codecov"
+        uses: "codecov/codecov-action@v2"
+        with:
+          file: "coverage.xml"
+
+  lint-doctrine-xml-schema:
+    name: Lint Doctrine XML schemas
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "8.0"
+          extensions: mongodb
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "highest"
+
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install libxml2-utils
+
+      - name: Lint xml files
+        run: make lint-doctrine-xml-schema

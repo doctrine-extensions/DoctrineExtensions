@@ -7,23 +7,17 @@ fields on creation, update, property subset update, or even on specific property
 This is very similar to Timestampable but sets a string.
 
 Note that you need to set the IP on the IpTraceableListener (unless you use the
-Symfony2 extension which does automatically assign the current request IP).
+Symfony extension which does automatically assign the current request IP).
 
 
 Features:
 
 - Automatic predefined ip field update on creation, update, property subset update, and even on record property changes
 - ORM and ODM support using same listener
-- Specific annotations for properties, and no interface required
+- Specific attributes and annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
-
-
-**Symfony:**
-
-- **IpTraceable** is not yet available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony2**, together with all other extensions
+- Attribute, Annotation and Xml mapping support for extensions
 
 This article will cover the basic installation and functionality of **IpTraceable** behavior
 
@@ -32,7 +26,6 @@ Content:
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Advanced usage [examples](#advanced-examples)
 - Using [Traits](#traits)
@@ -41,8 +34,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -52,6 +45,10 @@ on how to setup and use the extensions in most optimized way.
 ### IpTraceable annotations:
 - **@Gedmo\Mapping\Annotation\IpTraceable** this annotation tells that this column is ipTraceable
 by default it updates this column on update. If column is not a string field it will trigger an exception.
+
+### IpTraceable attributes:
+- **\#[Gedmo\Mapping\Annotation\IpTraceable]** this attribute tells that this column is ipTraceable
+  by default it updates this column on update. If column is not a string field it will trigger an exception.
 
 Available configuration options:
 
@@ -65,55 +62,76 @@ then it updates the trace
 you need to identify entity as being IpTraceable. The metadata is loaded only once then
 cache is activated
 
+**Note:** these examples are using annotations and attributes for mapping, you should use
+one of them, not both.
+
 Column is a string field:
 
-``` php
+```php
 <?php
 namespace Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Article
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @var int|null
+     * @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+ *   * @var string|null
      * @ORM\Column(type="string", length=128)
      */
+    #[ORM\Column(type: Types::STRING, length: 128)]
     private $title;
 
     /**
+     * @var string|null
      * @ORM\Column(name="body", type="string")
      */
+    #[ORM\Column(name: 'body', type: Types::STRING)]
     private $body;
 
     /**
-     * @var string $createdFromIp
+     * @var string|null
      *
      * @Gedmo\IpTraceable(on="create")
      * @ORM\Column(type="string", length=45, nullable=true)
      */
+    #[ORM\Column(type: Types::STRING, length: 45, nullable: true)]
+    #[Gedmo\IpTraceable(on: 'create')]
     private $createdFromIp;
 
     /**
-     * @var string $updatedFromIp
+     * @var string|null
      *
      * @Gedmo\IpTraceable(on="update")
      * @ORM\Column(type="string", length=45, nullable=true)
      */
+    #[ORM\Column(type: Types::STRING, length: 45, nullable: true)]
+    #[Gedmo\IpTraceable(on: 'update')]
     private $updatedFromIp;
 
     /**
-     * @var datetime $contentChangedFromIp
+     * @var string|null
      *
      * @ORM\Column(name="content_changed_by", type="string", nullable=true, length=45)
      * @Gedmo\IpTraceable(on="change", field={"title", "body"})
      */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\IpTraceable(on: 'change', field: ['title', 'body'])]
     private $contentChangedFromIp;
 
     public function getId()
@@ -163,40 +181,48 @@ class Article
 
 ## IpTraceable Document example:
 
-``` php
+```php
 <?php
 namespace Document;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
     /** @ODM\Id */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private $title;
 
     /**
-     * @var string $createdFromIp
+     * @var string|null
      *
      * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="create")
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\IpTraceable(on: 'create')]
     private $createdFromIp;
 
     /**
-     * @var string $updatedFromIp
+     * @var string|null
      *
      * @ODM\Field(type="string")
      * @Gedmo\IpTraceable
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\IpTraceable]
     private $updatedFromIp;
 
     public function getId()
@@ -228,47 +254,11 @@ class Article
 
 Now on update and creation these annotated fields will be automatically updated
 
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    createdFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: create
-    updatedFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: update
-```
-
 <a name="xml-mapping"></a>
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -304,7 +294,7 @@ Entity\Article:
 
 Add another entity which would represent Article Type:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -347,7 +337,7 @@ class Type
 
 Now update the Article Entity to reflect publishedFromIp on Type change:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -433,54 +423,9 @@ class Article
 }
 ```
 
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    createdFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: create
-    updatedFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: update
-    publishedFromIp:
-      type: string
-      length: 45
-      nullable: true
-      gedmo:
-        ipTraceable:
-          on: change
-          field: type.title
-          value: Published
-  manyToOne:
-    type:
-      targetEntity: Entity\Type
-      inversedBy: articles
-```
-
 Now few operations to get it all done:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');
@@ -517,7 +462,7 @@ There is also a trait without annotations for easy integration purposes.
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
 
-``` php
+```php
 <?php
 namespace IpTraceable\Fixture;
 
@@ -553,13 +498,13 @@ The Traits are very simplistic - if you use different field names it is recommen
 own Traits specific to your project. The ones provided by this bundle can be used as example.
 
 
-## Example of implementation in Symfony2
+## Example of implementation in Symfony
 
 In your Sf2 application, declare an event subscriber that automatically set IP value on IpTraceableListener.
 
 ### Code of subscriber class
 
-``` php
+```php
 <?php
 
 namespace Acme\DemoBundle\EventListener;
@@ -626,7 +571,7 @@ class IpTraceSubscriber implements EventSubscriberInterface
 
 ### Configuration for services.xml
 
-``` xml
+```xml
 <?xml version="1.0" ?>
 
 <container xmlns="http://symfony.com/schema/dic/services"

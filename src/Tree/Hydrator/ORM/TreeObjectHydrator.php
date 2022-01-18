@@ -1,21 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Hydrator\ORM;
 
-use Doctrine\Common\Collections\AbstractLazyCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
+use Doctrine\ORM\PersistentCollection;
 use Gedmo\Tree\TreeListener;
 
 /**
  * Automatically maps the parent and children properties of Tree nodes
  *
  * @author Ilija Tovilo <ilija.tovilo@me.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeObjectHydrator extends ObjectHydrator
 {
@@ -40,9 +43,22 @@ class TreeObjectHydrator extends ObjectHydrator
     private $childrenField;
 
     /**
+     * @param object $object
+     * @param string $property
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function setPropertyValue($object, $property, $value)
+    {
+        $meta = $this->_em->getClassMetadata(get_class($object));
+        $meta->getReflectionProperty($property)->setValue($object, $value);
+    }
+
+    /**
      * We hook into the `hydrateAllData` to map the children collection of the entity
      *
-     * {@inheritdoc}
+     * @return mixed[]
      */
     protected function hydrateAllData()
     {
@@ -99,6 +115,8 @@ class TreeObjectHydrator extends ObjectHydrator
     /**
      * @param array $nodes
      * @param array $childrenHashmap
+     *
+     * @return void
      */
     protected function populateChildrenArray($nodes, $childrenHashmap)
     {
@@ -111,8 +129,8 @@ class TreeObjectHydrator extends ObjectHydrator
                 $this->setPropertyValue($node, $this->childrenField, $childrenCollection);
             }
 
-            // Mark all children collections as initialized to avoid select queries
-            if ($childrenCollection instanceof AbstractLazyCollection) {
+            // Initialize all the children collections in order to avoid "SELECT" queries.
+            if ($childrenCollection instanceof PersistentCollection && !$childrenCollection->isInitialized()) {
                 $childrenCollection->setInitialized(true);
             }
 
@@ -146,7 +164,7 @@ class TreeObjectHydrator extends ObjectHydrator
                 $parentId = $this->getPropertyValue($parentProxy, $this->idField);
             }
 
-            if (null === $parentId || !key_exists($parentId, $idHashmap)) {
+            if (null === $parentId || !array_key_exists($parentId, $idHashmap)) {
                 $rootNodes[] = $node;
             }
         }
@@ -176,6 +194,9 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
+     * @param string $entityClass
+     * @phpstan-param class-string $entityClass
+     *
      * @return string
      */
     protected function getIdField($entityClass)
@@ -198,6 +219,9 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
+     * @param string $entityClass
+     * @phpstan-param class-string $entityClass
+     *
      * @return string
      */
     protected function getChildrenField($entityClass)
@@ -252,16 +276,16 @@ class TreeObjectHydrator extends ObjectHydrator
         return $this->_em->getClassMetadata(get_class($firstMappedEntity))->rootEntityName;
     }
 
+    /**
+     * @param object $object
+     * @param string $property
+     *
+     * @return mixed
+     */
     protected function getPropertyValue($object, $property)
     {
         $meta = $this->_em->getClassMetadata(get_class($object));
 
         return $meta->getReflectionProperty($property)->getValue($object);
-    }
-
-    public function setPropertyValue($object, $property, $value)
-    {
-        $meta = $this->_em->getClassMetadata(get_class($object));
-        $meta->getReflectionProperty($property)->setValue($object, $value);
     }
 }

@@ -1,64 +1,61 @@
 <?php
 
-namespace Translator\Fixture;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translator\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class PersonCustom
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="name", type="string", length=128)
      */
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
     private $name;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="desc", type="string", length=128)
      */
+    #[ORM\Column(name: 'desc', type: Types::STRING, length: 128)]
     private $description;
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    //
-    // TRANSLATIONS DEFINITION:
-    //
-
     /**
+     * @var Collection<int, PersonCustomTranslation>
+     *
      * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: PersonCustomTranslation::class, mappedBy: 'translatable', cascade: ['persist'])]
     private $translations;
 
     public function __construct()
@@ -66,7 +63,32 @@ class PersonCustom
         $this->translations = new ArrayCollection();
     }
 
-    public function translate($locale = null)
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function translate(string $locale = null)
     {
         if (null === $locale) {
             return $this;
@@ -75,7 +97,7 @@ class PersonCustom
         return new CustomProxy($this,
         /* Locale                            */ $locale,
         /* List of translatable properties:  */ ['name'],
-        /* Translation entity class:         */ 'Translator\Fixture\PersonCustomTranslation',
+        /* Translation entity class:         */ PersonCustomTranslation::class,
         /* Translations collection property: */ $this->translations
         );
     }

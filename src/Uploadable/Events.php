@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Uploadable;
 
 /**
@@ -7,14 +14,9 @@ namespace Gedmo\Uploadable;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class Events
 {
-    private function __construct()
-    {
-    }
-
     /**
      * The uploadablePreFileProcess event occurs before a file is processed inside
      * the Uploadable listener. This means it happens before the file is validated and moved
@@ -22,7 +24,7 @@ final class Events
      *
      * @var string
      */
-    const uploadablePreFileProcess = 'uploadablePreFileProcess';
+    public const uploadablePreFileProcess = 'uploadablePreFileProcess';
     /**
      * The uploadablePostFileProcess event occurs after a file is processed inside
      * the Uploadable listener. This means it happens after the file is validated and moved
@@ -30,5 +32,9 @@ final class Events
      *
      * @var string
      */
-    const uploadablePostFileProcess = 'uploadablePostFileProcess';
+    public const uploadablePostFileProcess = 'uploadablePostFileProcess';
+
+    private function __construct()
+    {
+    }
 }

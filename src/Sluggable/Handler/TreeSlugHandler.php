@@ -1,9 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Sluggable\SluggableListener;
@@ -15,11 +23,10 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * category tree slug could look like "food/fruits/apples"
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
 {
-    const SEPARATOR = '/';
+    public const SEPARATOR = '/';
 
     /**
      * @var ObjectManager
@@ -62,26 +69,20 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
      */
     private $usedPathSeparator;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(SluggableListener $sluggable)
     {
         $this->sluggable = $sluggable;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
         $this->om = $ea->getObjectManager();
         $this->isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
-        $options = $config['handlers'][get_called_class()];
+        $options = $config['handlers'][static::class];
 
-        $this->usedPathSeparator = isset($options['separator']) ? $options['separator'] : self::SEPARATOR;
-        $this->prefix = isset($options['prefix']) ? $options['prefix'] : '';
-        $this->suffix = isset($options['suffix']) ? $options['suffix'] : '';
+        $this->usedPathSeparator = $options['separator'] ?? self::SEPARATOR;
+        $this->prefix = $options['prefix'] ?? '';
+        $this->suffix = $options['suffix'] ?? '';
 
         if (!$this->isInsert && !$needToChangeSlug) {
             $changeSet = $ea->getObjectChangeSet($this->om->getUnitOfWork(), $object);
@@ -91,12 +92,9 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
-        $options = $config['handlers'][get_called_class()];
+        $options = $config['handlers'][static::class];
         $this->parentSlug = '';
 
         $wrapped = AbstractWrapper::wrap($object, $this->om);
@@ -115,27 +113,18 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!$meta->isSingleValuedAssociation($options['parentRelationField'])) {
-            throw new InvalidMappingException("Unable to find tree parent slug relation through field - [{$options['parentRelationField']}] in class - {$meta->name}");
+            throw new InvalidMappingException("Unable to find tree parent slug relation through field - [{$options['parentRelationField']}] in class - {$meta->getName()}");
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function beforeMakingUnique(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $slug = $this->transliterate($slug, $config['separator'], $object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         if (!$this->isInsert) {
@@ -152,15 +141,16 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
                     continue;
                 }
                 foreach ($objects as $object) {
-                    if (property_exists($object, '__isInitialized__') && !$object->__isInitialized__) {
+                    // @todo: Remove the check against `method_exists()` in the next major release.
+                    if (($object instanceof Proxy || method_exists($object, '__isInitialized')) && !$object->__isInitialized()) {
                         continue;
                     }
-                    $oid = spl_object_hash($object);
+
                     $objectSlug = $meta->getReflectionProperty($config['slug'])->getValue($object);
                     if (preg_match("@^{$target}{$config['pathSeparator']}@smi", $objectSlug)) {
                         $objectSlug = str_replace($target, $slug, $objectSlug);
                         $meta->getReflectionProperty($config['slug'])->setValue($object, $objectSlug);
-                        $ea->setOriginalObjectProperty($uow, $oid, $config['slug'], $objectSlug);
+                        $ea->setOriginalObjectProperty($uow, $object, $config['slug'], $objectSlug);
                     }
                 }
             }
@@ -191,9 +181,6 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
         return $slug;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handlesUrlization()
     {
         return false;

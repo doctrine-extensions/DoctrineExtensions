@@ -1,20 +1,29 @@
 <?php
 
-namespace Gedmo\Blameable;
+declare(strict_types=1);
 
-use Blameable\Fixture\Document\Article;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Blameable;
+
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Document\Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for Blameable behavior, when no user is available
  *
  * @author Kévin Gomez <contact@kevingomez.fr>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NoUserTest extends BaseTestCaseMongoODM
+final class NoUserTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Blameable\Fixture\Document\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {
@@ -26,10 +35,10 @@ class NoUserTest extends BaseTestCaseMongoODM
         $evm->addEventSubscriber($listener);
 
         // create the document manager
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
-    public function testWhenNoUserIsAvailable()
+    public function testWhenNoUserIsAvailable(): void
     {
         $sport = new Article();
         $sport->setTitle('sport no user');
@@ -40,7 +49,7 @@ class NoUserTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport no user']);
-        $this->assertEmpty($sport->getCreated());
-        $this->assertEmpty($sport->getUpdated());
+        static::assertEmpty($sport->getCreated());
+        static::assertEmpty($sport->getUpdated());
     }
 }

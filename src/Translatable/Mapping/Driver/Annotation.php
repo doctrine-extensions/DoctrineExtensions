@@ -1,8 +1,19 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Language;
+use Gedmo\Mapping\Annotation\Locale;
+use Gedmo\Mapping\Annotation\Translatable;
+use Gedmo\Mapping\Annotation\TranslationEntity;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -12,35 +23,31 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation to identity translation entity to be used for translation storage
      */
-    const ENTITY_CLASS = 'Gedmo\\Mapping\\Annotation\\TranslationEntity';
+    public const ENTITY_CLASS = TranslationEntity::class;
 
     /**
      * Annotation to identify field as translatable
      */
-    const TRANSLATABLE = 'Gedmo\\Mapping\\Annotation\\Translatable';
+    public const TRANSLATABLE = Translatable::class;
 
     /**
      * Annotation to identify field which can store used locale or language
      * alias is LANGUAGE
      */
-    const LOCALE = 'Gedmo\\Mapping\\Annotation\\Locale';
+    public const LOCALE = Locale::class;
 
     /**
      * Annotation to identify field which can store used locale or language
      * alias is LOCALE
      */
-    const LANGUAGE = 'Gedmo\\Mapping\\Annotation\\Language';
+    public const LANGUAGE = Language::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);
@@ -64,7 +71,7 @@ class Annotation extends AbstractAnnotationDriver
             if ($translatable = $this->reader->getPropertyAnnotation($property, self::TRANSLATABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find translatable [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find translatable [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
@@ -76,13 +83,13 @@ class Annotation extends AbstractAnnotationDriver
             if ($this->reader->getPropertyAnnotation($property, self::LOCALE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
-                    throw new InvalidMappingException("Locale field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sense");
+                    throw new InvalidMappingException("Locale field [{$field}] should not be mapped as column property in entity - {$meta->getName()}, since it makes no sense");
                 }
                 $config['locale'] = $field;
             } elseif ($this->reader->getPropertyAnnotation($property, self::LANGUAGE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
-                    throw new InvalidMappingException("Language field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sense");
+                    throw new InvalidMappingException("Language field [{$field}] should not be mapped as column property in entity - {$meta->getName()}, since it makes no sense");
                 }
                 $config['locale'] = $field;
             }
@@ -109,8 +116,8 @@ class Annotation extends AbstractAnnotationDriver
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->getName()}");
             }
         }
     }

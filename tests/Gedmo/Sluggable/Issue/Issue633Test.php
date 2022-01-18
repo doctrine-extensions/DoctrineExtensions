@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue633\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue633\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Derek Clapham <derek.clapham@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue633Test extends BaseTestCaseORM
+final class Issue633Test extends BaseTestCaseORM
 {
-    const TARGET = 'Sluggable\\Fixture\\Issue633\\Article';
+    public const TARGET = Article::class;
 
     protected function setUp(): void
     {
@@ -26,13 +32,10 @@ class Issue633Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleUniqueBasedSlug()
+    public function testShouldHandleUniqueBasedSlug(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');
@@ -41,7 +44,7 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code', $test->getSlug());
+        static::assertSame('unique-to-code', $test->getSlug());
 
         $test2 = new Article();
         $test2->setTitle('Unique to code');
@@ -50,7 +53,7 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test2);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code', $test2->getSlug());
+        static::assertSame('unique-to-code', $test2->getSlug());
 
         $test3 = new Article();
         $test3->setTitle('Unique to code');
@@ -59,13 +62,10 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test3);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code-1', $test3->getSlug());
+        static::assertSame('unique-to-code-1', $test3->getSlug());
     }
 
-    /**
-     * @test
-     */
-    public function handlePersistedSlugsForUniqueBased()
+    public function testHandlePersistedSlugsForUniqueBased(): void
     {
         $test = new Article();
         $test->setTitle('Unique to code');
@@ -86,12 +86,12 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test3);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code', $test->getSlug());
-        $this->assertEquals('unique-to-code', $test2->getSlug());
-        $this->assertEquals('unique-to-code-1', $test3->getSlug());
+        static::assertSame('unique-to-code', $test->getSlug());
+        static::assertSame('unique-to-code', $test2->getSlug());
+        static::assertSame('unique-to-code-1', $test3->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

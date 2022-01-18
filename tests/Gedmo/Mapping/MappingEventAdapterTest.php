@@ -1,51 +1,62 @@
 <?php
 
-namespace Gedmo\Mapping;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
+
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Gedmo\Mapping\Event\Adapter\ORM as EventAdapterORM;
-use Gedmo\Mapping\Mock\EventSubscriberCustomMock;
-use Gedmo\Mapping\Mock\EventSubscriberMock;
-use Gedmo\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
+use Gedmo\Tests\Mapping\Mock\EventSubscriberCustomMock;
+use Gedmo\Tests\Mapping\Mock\EventSubscriberMock;
+use Gedmo\Tests\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
 
-class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
+final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 {
-    public function testCustomizedAdapter()
+    public function testCustomizedAdapter(): void
     {
-        $emMock = $this->getMockBuilder('Doctrine\\ORM\\EntityManager')
+        $emMock = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $subscriber = new EventSubscriberCustomMock();
         $args = new LifecycleEventArgs(new \stdClass(), $emMock);
 
         $adapter = $subscriber->getAdapter($args);
-        $this->assertTrue($adapter instanceof CustomizedORMAdapter);
+        static::assertInstanceOf(CustomizedORMAdapter::class, $adapter);
     }
 
-    public function testCorrectAdapter()
+    public function testCorrectAdapter(): void
     {
-        $emMock = $this->getMockBuilder('Doctrine\\ORM\\EntityManager')
+        $emMock = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $subscriber = new EventSubscriberMock();
         $args = new LifecycleEventArgs(new \stdClass(), $emMock);
 
         $adapter = $subscriber->getAdapter($args);
-        $this->assertTrue($adapter instanceof EventAdapterORM);
-        $this->assertTrue($adapter->getObjectManager() === $emMock);
-        $this->assertTrue($adapter->getObject() instanceof \stdClass);
+        static::assertInstanceOf(EventAdapterORM::class, $adapter);
+        static::assertSame($adapter->getObjectManager(), $emMock);
+        static::assertInstanceOf(\stdClass::class, $adapter->getObject());
     }
 
-    public function testAdapterBehavior()
+    public function testAdapterBehavior(): void
     {
-        $eventArgsMock = $this->getMockBuilder('Doctrine\\ORM\\Event\\LifecycleEventArgs')
+        $eventArgsMock = $this->getMockBuilder(LifecycleEventArgs::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $eventArgsMock->expects($this->once())
+        $eventArgsMock->expects(static::once())
             ->method('getEntityManager');
 
-        $eventArgsMock->expects($this->once())
-            ->method('getEntity');
+        $eventArgsMock->expects(static::once())
+            ->method('getEntity')
+            ->willReturn(new \stdClass());
 
         $eventAdapter = new EventAdapterORM();
         $eventAdapter->setEventArgs($eventArgsMock);

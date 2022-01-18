@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Uploadable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver;
@@ -14,7 +21,8 @@ use Gedmo\Uploadable\Mapping\Validator;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
  */
 class Yaml extends File implements Driver
 {
@@ -25,12 +33,9 @@ class Yaml extends File implements Driver
      */
     protected $_extension = '.dcm.yml';
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
@@ -43,25 +48,19 @@ class Yaml extends File implements Driver
                     (bool) $uploadable['allowOverwrite'] : false;
                 $config['appendNumber'] = isset($uploadable['appendNumber']) ?
                     (bool) $uploadable['appendNumber'] : false;
-                $config['path'] = isset($uploadable['path']) ? $uploadable['path'] : '';
-                $config['pathMethod'] = isset($uploadable['pathMethod']) ? $uploadable['pathMethod'] : '';
-                $config['callback'] = isset($uploadable['callback']) ? $uploadable['callback'] : '';
+                $config['path'] = $uploadable['path'] ?? '';
+                $config['pathMethod'] = $uploadable['pathMethod'] ?? '';
+                $config['callback'] = $uploadable['callback'] ?? '';
                 $config['fileMimeTypeField'] = false;
                 $config['fileNameField'] = false;
                 $config['filePathField'] = false;
                 $config['fileSizeField'] = false;
-                $config['filenameGenerator'] = isset($uploadable['filenameGenerator']) ?
-                    $uploadable['filenameGenerator'] :
-                    Validator::FILENAME_GENERATOR_NONE;
+                $config['filenameGenerator'] = $uploadable['filenameGenerator'] ?? Validator::FILENAME_GENERATOR_NONE;
                 $config['maxSize'] = isset($uploadable['maxSize']) ?
                     (float) $uploadable['maxSize'] :
                     (float) 0;
-                $config['allowedTypes'] = isset($uploadable['allowedTypes']) ?
-                    $uploadable['allowedTypes'] :
-                    '';
-                $config['disallowedTypes'] = isset($uploadable['disallowedTypes']) ?
-                    $uploadable['disallowedTypes'] :
-                    '';
+                $config['allowedTypes'] = $uploadable['allowedTypes'] ?? '';
+                $config['disallowedTypes'] = $uploadable['disallowedTypes'] ?? '';
 
                 if (isset($mapping['fields'])) {
                     foreach ($mapping['fields'] as $field => $info) {
@@ -84,9 +83,6 @@ class Yaml extends File implements Driver
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));

@@ -1,30 +1,38 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue173\Article;
+use Gedmo\Tests\Translatable\Fixture\Issue173\Category;
+use Gedmo\Tests\Translatable\Fixture\Issue173\Product;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue173\Article;
-use Translatable\Fixture\Issue173\Category;
-use Translatable\Fixture\Issue173\Product;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @contributor Oscar Balladares liebegrube@gmail.com https://github.com/oscarballadares
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue173Test extends BaseTestCaseORM
+final class Issue173Test extends BaseTestCaseORM
 {
-    const CATEGORY = 'Translatable\\Fixture\\Issue173\\Category';
-    const ARTICLE = 'Translatable\\Fixture\\Issue173\\Article';
-    const PRODUCT = 'Translatable\\Fixture\\Issue173\\Product';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const CATEGORY = Category::class;
+    public const ARTICLE = Article::class;
+    public const PRODUCT = Product::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
 
@@ -38,20 +46,20 @@ class Issue173Test extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $this->populate();
     }
 
-    public function testIssue173()
+    public function testIssue173(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $categories = $this->getCategoriesThatHasNoAssociations();
-        $this->assertEquals(count($categories), 1, '$category3 has no associations');
+        static::assertCount(1, $categories, '$category3 has no associations');
     }
 
     public function getCategoriesThatHasNoAssociations()
@@ -63,13 +71,13 @@ class Issue173Test extends BaseTestCaseORM
             ->select('c1')
             ->from(self::CATEGORY, 'c1')
             ->join('c1.products', 'p')
-            ->getDql()
+            ->getDQL()
         ;
         $dql2 = $query3
             ->select('c2')
             ->from(self::CATEGORY, 'c2')
             ->join('c2.articles', 'a')
-            ->getDql()
+            ->getDQL()
         ;
         $query
             ->select('c')
@@ -80,11 +88,21 @@ class Issue173Test extends BaseTestCaseORM
 
         return $query->getQuery()->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+            TranslationWalker::class
         )->getResult();
     }
 
-    private function populate()
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::CATEGORY,
+            self::ARTICLE,
+            self::PRODUCT,
+            self::TRANSLATION,
+        ];
+    }
+
+    private function populate(): void
     {
         //Categories
         $category1 = new Category();
@@ -132,15 +150,5 @@ class Issue173Test extends BaseTestCaseORM
         $this->em->persist($product1);
 
         $this->em->flush();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::PRODUCT,
-            self::TRANSLATION,
-        ];
     }
 }

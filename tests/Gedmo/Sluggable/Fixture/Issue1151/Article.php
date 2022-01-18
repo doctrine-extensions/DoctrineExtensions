@@ -1,101 +1,84 @@
 <?php
 
-namespace Sluggable\Fixture\Issue1151;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Fixture\Issue1151;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Sluggable\Fixture\Issue1151\Article
- *
  * @ODM\Document
  */
+#[ODM\Document]
 class Article
 {
     /**
+     * @var string|null
+     *
      * @ODM\Id(strategy="NONE")
      */
-    protected $id;
+    #[ODM\Id(strategy: 'NONE')]
+    private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
-    protected $title;
+    #[ODM\Field(type: Type::STRING)]
+    private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(separator="-", updatable=true, fields={"title"})
      * @ODM\Field(type="string")
      */
-    protected $slug;
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
+    #[ODM\Field(type: Type::STRING)]
+    private $slug;
 
-    /**
-     * Setter of Id
-     *
-     * @param string $id
-     *
-     * @return static
-     */
-    public function setId($id)
+    public function setId(?string $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * Getter of Id
-     *
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * Setter of Slug
-     *
-     * @param string $slug
-     *
-     * @return static
-     */
-    public function setSlug($slug)
+    public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    /**
-     * Getter of Slug
-     *
-     * @return string
-     */
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    /**
-     * Setter of Title
-     *
-     * @param string $title
-     *
-     * @return static
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Getter of Title
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

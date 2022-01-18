@@ -1,28 +1,44 @@
 <?php
 
-namespace Translatable\Fixture\Document;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @MongoODM\Document(collection="articles")
  */
+#[MongoODM\Document(collection: 'articles')]
 class Article
 {
     /** @MongoODM\Id */
+    #[MongoODM\Id]
     private $id;
 
     /**
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
+    #[Gedmo\Translatable]
+    #[MongoODM\Field(type: Type::STRING)]
     private $title;
 
     /**
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
+    #[Gedmo\Translatable]
+    #[MongoODM\Field(type: Type::STRING)]
     private $code;
 
     /**
@@ -30,6 +46,9 @@ class Article
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
+    #[Gedmo\Translatable]
+    #[MongoODM\Field(type: Type::STRING)]
+    #[Gedmo\Slug(fields: ['title', 'code'])]
     private $slug;
 
     public function getId()
@@ -37,7 +56,7 @@ class Article
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -47,7 +66,7 @@ class Article
         return $this->title;
     }
 
-    public function setCode($code)
+    public function setCode($code): void
     {
         $this->code = $code;
     }

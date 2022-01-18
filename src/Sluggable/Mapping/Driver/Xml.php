@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sluggable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
@@ -13,7 +21,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Xml extends BaseXml
 {
@@ -31,15 +38,12 @@ class Xml extends BaseXml
         'citext',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
 
         if (isset($xml->field)) {
             foreach ($xml->field as $mapping) {
@@ -56,7 +60,22 @@ class Xml extends BaseXml
         }
     }
 
-    private function buildFieldConfiguration($meta, $field, \SimpleXMLElement $mapping, array &$config)
+    /**
+     * Checks if $field type is valid as Sluggable field
+     *
+     * @param ClassMetadata $meta
+     * @param string        $field
+     *
+     * @return bool
+     */
+    protected function isValidField($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+    }
+
+    private function buildFieldConfiguration(ClassMetadata $meta, string $field, \SimpleXMLElement $mapping, array &$config): void
     {
         /**
          * @var \SimpleXmlElement
@@ -69,15 +88,15 @@ class Xml extends BaseXml
              */
             $slug = $mapping->slug;
             if (!$this->isValidField($meta, $field)) {
-                throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
+                throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->getName()}");
             }
             $fields = array_map('trim', explode(',', (string) $this->_getAttribute($slug, 'fields')));
             foreach ($fields as $slugField) {
                 if (!$meta->hasField($slugField)) {
-                    throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->getName()}");
                 }
                 if (!$this->isValidField($meta, $slugField)) {
-                    throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                    throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->getName()}");
                 }
             }
 
@@ -118,30 +137,15 @@ class Xml extends BaseXml
                 'handlers' => $handlers,
             ];
             if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
-                throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
+                throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->getName()}");
             }
             $ubase = $config['slugs'][$field]['unique_base'];
             if (false === $config['slugs'][$field]['unique'] && $ubase) {
                 throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
             }
             if ($ubase && !$meta->hasField($ubase) && !$meta->hasAssociation($ubase)) {
-                throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->name}");
+                throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->getName()}");
             }
         }
-    }
-
-    /**
-     * Checks if $field type is valid as Sluggable field
-     *
-     * @param object $meta
-     * @param string $field
-     *
-     * @return bool
-     */
-    protected function isValidField($meta, $field)
-    {
-        $mapping = $meta->getFieldMapping($field);
-
-        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

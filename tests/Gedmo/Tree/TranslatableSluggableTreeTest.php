@@ -1,31 +1,42 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Article;
+use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
+use Gedmo\Tests\Tree\Fixture\Comment;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\BehavioralCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableSluggableTreeTest extends BaseTestCaseORM
+final class TranslatableSluggableTreeTest extends BaseTestCaseORM
 {
-    const CATEGORY = 'Tree\\Fixture\\BehavioralCategory';
-    const ARTICLE = 'Tree\\Fixture\\Article';
-    const COMMENT = 'Tree\\Fixture\\Comment';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const CATEGORY = BehavioralCategory::class;
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -39,22 +50,22 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testNestedBehaviors()
+    public function testNestedBehaviors(): void
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Vegitables']);
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount($vegies);
-        $this->assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         // test slug
 
-        $this->assertEquals('vegitables', $vegies->getSlug());
+        static::assertSame('vegitables', $vegies->getSlug());
 
         // run second translation test
 
@@ -72,39 +83,41 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $translations = $this->em->getRepository(self::TRANSLATION)
             ->findTranslations($vegies);
 
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_DE', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_DE', $translations);
 
-        $this->assertArrayHasKey('title', $translations['de_DE']);
-        $this->assertEquals('Deutschebles', $translations['de_DE']['title']);
+        static::assertArrayHasKey('title', $translations['de_DE']);
+        static::assertSame('Deutschebles', $translations['de_DE']['title']);
 
-        $this->assertArrayHasKey('slug', $translations['de_DE']);
-        $this->assertEquals('deutschebles', $translations['de_DE']['slug']);
+        static::assertArrayHasKey('slug', $translations['de_DE']);
+        static::assertSame('deutschebles', $translations['de_DE']['slug']);
     }
 
-    public function testTranslations()
+    public function testTranslations(): void
     {
         $this->populateDeTranslations();
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->find(4);
 
-        $this->assertEquals('Vegitables', $vegies->getTitle());
+        static::assertSame('Vegitables', $vegies->getTitle());
         $food = $vegies->getParent();
         // test if proxy triggers postLoad event
-        $this->assertTrue($food instanceof Proxy);
-        $this->assertEquals('Food', $food->getTitle());
+        static::assertInstanceOf(Proxy::class, $food);
+        static::assertInstanceOf(BehavioralCategory::class, $food);
+        static::assertSame('Food', $food->getTitle());
 
         $this->em->clear();
         $this->translatableListener->setTranslatableLocale('de_DE');
 
         $vegies = $repo->find(4);
-        $this->assertEquals('Gemüse', $vegies->getTitle());
+        static::assertSame('Gemüse', $vegies->getTitle());
         $food = $vegies->getParent();
-        $this->assertTrue($food instanceof Proxy);
-        $this->assertEquals('Lebensmittel', $food->getTitle());
+        static::assertInstanceOf(Proxy::class, $food);
+        static::assertInstanceOf(BehavioralCategory::class, $food);
+        static::assertSame('Lebensmittel', $food->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,
@@ -114,7 +127,7 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         ];
     }
 
-    private function populateDeTranslations()
+    private function populateDeTranslations(): void
     {
         $this->translatableListener->setTranslatableLocale('de_DE');
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -131,7 +144,7 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_US');
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new BehavioralCategory();
         $root->setTitle('Food');

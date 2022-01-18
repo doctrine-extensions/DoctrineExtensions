@@ -1,6 +1,15 @@
 <?php
 
-namespace Entity;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,8 +18,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="ext_categories")
- * @ORM\Entity(repositoryClass="Entity\Repository\CategoryRepository")
- * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
+ * @ORM\Entity(repositoryClass="App\Entity\Repository\CategoryRepository")
+ * @Gedmo\TranslationEntity(class="App\Entity\CategoryTranslation")
  */
 class Category
 {
@@ -115,6 +124,11 @@ class Category
         $this->translations = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
+
     public function getTranslations()
     {
         return $this->translations;
@@ -211,10 +225,5 @@ class Category
     public function getUpdatedBy()
     {
         return $this->updatedBy;
-    }
-
-    public function __toString()
-    {
-        return $this->getTitle();
     }
 }

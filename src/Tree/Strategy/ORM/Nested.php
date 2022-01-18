@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\Common\Collections\Criteria;
@@ -19,36 +26,35 @@ use Gedmo\Tree\TreeListener;
  * since nested set trees are slow on inserts and updates.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Nested implements Strategy
 {
     /**
      * Previous sibling position
      */
-    const PREV_SIBLING = 'PrevSibling';
+    public const PREV_SIBLING = 'PrevSibling';
 
     /**
      * Next sibling position
      */
-    const NEXT_SIBLING = 'NextSibling';
+    public const NEXT_SIBLING = 'NextSibling';
 
     /**
      * Last child position
      */
-    const LAST_CHILD = 'LastChild';
+    public const LAST_CHILD = 'LastChild';
 
     /**
      * First child position
      */
-    const FIRST_CHILD = 'FirstChild';
+    public const FIRST_CHILD = 'FirstChild';
 
     /**
      * TreeListener
      *
      * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * The max number of "right" field of the
@@ -61,7 +67,7 @@ class Nested implements Strategy
 
     /**
      * Stores a list of node position strategies
-     * for each node by object hash
+     * for each node by object id
      *
      * @var array
      */
@@ -74,17 +80,11 @@ class Nested implements Strategy
      */
     private $delayedNodes = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::NESTED;
@@ -93,8 +93,10 @@ class Nested implements Strategy
     /**
      * Set node position strategy
      *
-     * @param string $oid
+     * @param int    $oid
      * @param string $position
+     *
+     * @return void
      */
     public function setNodePosition($oid, $position)
     {
@@ -110,14 +112,11 @@ class Nested implements Strategy
         $this->nodePositions[$oid] = $position;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
         /** @var ClassMetadata $meta */
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
 
         $meta->getReflectionProperty($config['left'])->setValue($node, 0);
         $meta->getReflectionProperty($config['right'])->setValue($node, 0);
@@ -126,27 +125,29 @@ class Nested implements Strategy
         }
         if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !isset($config['rootIdentifierMethod'])) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
-        } elseif (isset($config['rootIdentifierMethod']) && is_null($meta->getReflectionProperty($config['root'])->getValue($node))) {
+        } elseif (isset($config['rootIdentifierMethod']) && null === $meta->getReflectionProperty($config['root'])->getValue(
+                $node
+            )) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         }
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
         $changeSet = $uow->getEntityChangeSet($node);
-        if (isset($config['root']) && isset($changeSet[$config['root']])) {
+        if (isset($config['root'], $changeSet[$config['root']])) {
             throw new \Gedmo\Exception\UnexpectedValueException('Root cannot be changed manually, change parent instead');
         }
 
-        $oid = spl_object_hash($node);
-        if (isset($changeSet[$config['left']]) && isset($this->nodePositions[$oid])) {
+        $oid = spl_object_id($node);
+        if (isset($changeSet[$config['left']], $this->nodePositions[$oid])) {
             $wrapped = AbstractWrapper::wrap($node, $em);
             $parent = $wrapped->getPropertyValue($config['parent']);
             // revert simulated changeset
@@ -173,24 +174,24 @@ class Nested implements Strategy
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processPostPersist($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
 
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
         $this->updateNode($em, $node, $parent, self::LAST_CHILD);
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processScheduledDelete($em, $node)
     {
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
         $wrapped = AbstractWrapper::wrap($node, $em);
@@ -223,53 +224,32 @@ class Nested implements Strategy
         $this->shiftRL($em, $config['useObjectClass'], $rightValue + 1, -$diff, $rootId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($em, AdapterInterface $ea)
     {
         // reset values
         $this->treeEdges = [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processMetadataLoad($em, $meta)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($em, $entity, AdapterInterface $ea)
     {
     }
@@ -278,11 +258,13 @@ class Nested implements Strategy
      * Update the $node with a diferent $parent
      * destination
      *
-     * @param object $node     - target node
-     * @param object $parent   - destination node
+     * @param object $node     target node
+     * @param object $parent   destination node
      * @param string $position
      *
      * @throws \Gedmo\Exception\UnexpectedValueException
+     *
+     * @return void
      */
     public function updateNode(EntityManagerInterface $em, $node, $parent, $position = 'FirstChild')
     {
@@ -290,7 +272,7 @@ class Nested implements Strategy
 
         /** @var ClassMetadata $meta */
         $meta = $wrapped->getMetadata();
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
 
         $root = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
         $identifierField = $meta->getSingleIdentifierFieldName();
@@ -305,7 +287,7 @@ class Nested implements Strategy
             $right = 2;
         }
 
-        $oid = spl_object_hash($node);
+        $oid = spl_object_id($node);
         if (isset($this->nodePositions[$oid])) {
             $position = $this->nodePositions[$oid];
         }
@@ -316,7 +298,7 @@ class Nested implements Strategy
             $wrappedParent = AbstractWrapper::wrap($parent, $em);
 
             $parentRoot = isset($config['root']) ? $wrappedParent->getPropertyValue($config['root']) : null;
-            $parentOid = spl_object_hash($parent);
+            $parentOid = spl_object_id($parent);
             $parentLeft = $wrappedParent->getPropertyValue($config['left']);
             $parentRight = $wrappedParent->getPropertyValue($config['right']);
             if (empty($parentLeft) && empty($parentRight)) {
@@ -344,9 +326,10 @@ class Nested implements Strategy
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
 
-                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
+                        if (null === $newParent && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
-                        } elseif (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                        }
+                        if (null === $newParent && (isset($config['root']) || $isNewNode)) {
                             // root is a different column from parent (pointing to another table?), do nothing
                         } else {
                             $wrapped->setPropertyValue($config['parent'], $newParent);
@@ -355,6 +338,7 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentLeft;
                     }
+
                     break;
 
                 case self::NEXT_SIBLING:
@@ -364,9 +348,10 @@ class Nested implements Strategy
                         ++$level;
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
+                        if (null === $newParent && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
-                        } elseif (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                        }
+                        if (null === $newParent && (isset($config['root']) || $isNewNode)) {
                             // root is a different column from parent (pointing to another table?), do nothing
                         } else {
                             $wrapped->setPropertyValue($config['parent'], $newParent);
@@ -375,17 +360,20 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentRight + 1;
                     }
+
                     break;
 
                 case self::LAST_CHILD:
                     $start = $parentRight;
                     ++$level;
+
                     break;
 
                 case self::FIRST_CHILD:
                 default:
                     $start = $parentLeft + 1;
                     ++$level;
+
                     break;
             }
             $this->shiftRL($em, $config['useObjectClass'], $start, $treeSize, $parentRoot);
@@ -399,15 +387,15 @@ class Nested implements Strategy
             }
             $newRoot = $parentRoot;
         } elseif (!isset($config['root']) ||
-            ($meta->isSingleValuedAssociation($config['root']) && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
-            if (!isset($this->treeEdges[$meta->name])) {
-                $this->treeEdges[$meta->name] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
+            ($meta->isSingleValuedAssociation($config['root']) && null !== $parent && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
+            if (!isset($this->treeEdges[$meta->getName()])) {
+                $this->treeEdges[$meta->getName()] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
             }
 
             $level = 0;
             $parentLeft = 0;
-            $parentRight = $this->treeEdges[$meta->name];
-            $this->treeEdges[$meta->name] += 2;
+            $parentRight = $this->treeEdges[$meta->getName()];
+            $this->treeEdges[$meta->getName()] += 2;
 
             switch ($position) {
                 case self::PREV_SIBLING:
@@ -419,6 +407,7 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentLeft + 1;
                     }
+
                     break;
 
                 case self::NEXT_SIBLING:
@@ -430,15 +419,18 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentRight;
                     }
+
                     break;
 
                 case self::LAST_CHILD:
                     $start = $parentRight;
+
                     break;
 
                 case self::FIRST_CHILD:
                 default:
                     $start = $parentLeft + 1;
+
                     break;
             }
 
@@ -460,7 +452,7 @@ class Nested implements Strategy
                 $repo = $em->getRepository($config['useObjectClass']);
 
                 $criteria = new Criteria();
-                $criteria->andWhere(Criteria::expr()->notIn($wrapped->getMetadata()->identifier[0], [$wrapped->getIdentifier()]));
+                $criteria->andWhere(Criteria::expr()->notIn($wrapped->getMetadata()->getIdentifier()[0], [$wrapped->getIdentifier()]));
                 $criteria->andWhere(Criteria::expr()->eq($config['root'], $node->$method()));
                 $criteria->andWhere(Criteria::expr()->isNull($config['parent']));
                 $criteria->andWhere(Criteria::expr()->eq($config['level'], 0));
@@ -542,7 +534,7 @@ class Nested implements Strategy
     public function max(EntityManagerInterface $em, $class, $rootId = 0)
     {
         $meta = $em->getClassMetadata($class);
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $qb = $em->createQueryBuilder();
         $qb->select($qb->expr()->max('node.'.$config['right']))
             ->from($config['useObjectClass'], 'node');
@@ -554,20 +546,21 @@ class Nested implements Strategy
         $query = $qb->getQuery();
         $right = $query->getSingleScalarResult();
 
-        return intval($right);
+        return (int) $right;
     }
 
     /**
      * Shift tree left and right values by delta
      *
-     * @param EntityManager $em
-     * @param string        $class
-     * @param int           $first
-     * @param int           $delta
-     * @param string        $class
-     * @param int           $first
-     * @param int           $delta
-     * @param int|string    $root
+     * @param string     $class
+     * @param int        $first
+     * @param int        $delta
+     * @param string     $class
+     * @param int        $first
+     * @param int        $delta
+     * @param int|string $root
+     *
+     * @return void
      */
     public function shiftRL(EntityManagerInterface $em, $class, $first, $delta, $root = null)
     {
@@ -603,7 +596,7 @@ class Nested implements Strategy
                 continue;
             }
             foreach ($nodes as $node) {
-                if ($node instanceof Proxy && !$node->__isInitialized__) {
+                if ($node instanceof Proxy && !$node->__isInitialized()) {
                     continue;
                 }
 
@@ -613,7 +606,7 @@ class Nested implements Strategy
                     continue;
                 }
 
-                $oid = spl_object_hash($node);
+                $oid = spl_object_id($node);
                 $left = $meta->getReflectionProperty($config['left'])->getValue($node);
                 $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
                 if ($currentRoot === $root && $left >= $first) {
@@ -640,6 +633,8 @@ class Nested implements Strategy
      * @param int|string $root
      * @param int|string $destRoot
      * @param int        $levelDelta
+     *
+     * @return void
      */
     public function shiftRangeRL(EntityManagerInterface $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {
@@ -674,7 +669,7 @@ class Nested implements Strategy
                 continue;
             }
             foreach ($nodes as $node) {
-                if ($node instanceof Proxy && !$node->__isInitialized__) {
+                if ($node instanceof Proxy && !$node->__isInitialized()) {
                     continue;
                 }
 
@@ -688,7 +683,7 @@ class Nested implements Strategy
                 $right = $meta->getReflectionProperty($config['right'])->getValue($node);
                 $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
                 if ($currentRoot === $root && $left >= $first && $right <= $last) {
-                    $oid = spl_object_hash($node);
+                    $oid = spl_object_id($node);
                     $uow = $em->getUnitOfWork();
 
                     $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);

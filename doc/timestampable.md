@@ -11,28 +11,7 @@ Features:
 - Specific annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
-
-Update **2012-06-26**
-
-- Allow multiple values for on="change"
-
-Update **2012-03-10**
-
-- Add [Timestampable traits](#traits)
-
-Update **2011-04-04**
-
-- Made single listener, one instance can be used for any object manager
-and any number of them
-
-**Note:**
-- Last update date: **2012-01-02**
-
-**Portability:**
-
-- **Timestampable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
+- Attribute, Annotation and Xml mapping support for extensions
 
 This article will cover the basic installation and functionality of **Timestampable** behavior
 
@@ -41,7 +20,6 @@ Content:
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Advanced usage [examples](#advanced-examples)
 - Using [Traits](#traits)
@@ -50,8 +28,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -59,9 +37,14 @@ on how to setup and use the extensions in most optimized way.
 ## Timestampable Entity example:
 
 ### Timestampable annotations:
-- **@Gedmo\Mapping\Annotation\Timestampable** this annotation tells that this column is timestampable
-by default it updates this column on update. If column is not date, datetime or time
+- **@Gedmo\Mapping\Annotation\Timestampable** this annotation tells that this column is timestampable.
+By default it updates this column on update. If column is not date, datetime or time
 type it will trigger an exception.
+
+### Timestampable attributes:
+- **@Gedmo\Mapping\Annotation\Timestampable** this attribute tells that this column is timestampable.
+  By default it updates this column on update. If column is not date, datetime or time
+  type it will trigger an exception.
 
 Available configuration options:
 
@@ -74,7 +57,9 @@ should be updated
 you need to identify entity as being Timestampable. The metadata is loaded only once then
 cache is activated
 
-``` php
+### Annotations
+
+```php
 <?php
 namespace Entity;
 
@@ -165,11 +150,94 @@ class Article
 }
 ```
 
+### Attributes
+
+```php
+#[ORM\Entity]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    private $id;
+
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    private $title;
+
+    #[ORM\Column(name: 'body', type: Types::STRING)]
+    private $body;
+
+    /**
+     * @var \DateTime
+     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(name: 'created', type: Types::DATE_MUTABLE)]
+    private $created;
+
+    /**
+     * @var \DateTime
+     */
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable]
+    private $updated;
+
+    /**
+     * @var \DateTime
+     */
+    #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
+    private $contentChanged;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setBody($body)
+    {
+        $this->body = $body;
+    }
+
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    public function getContentChanged()
+    {
+        return $this->contentChanged;
+    }
+}
+```
+
 <a name="document-mapping"></a>
 
 ## Timestampable Document example:
 
-``` php
+**Note:** this example is using annotations and attributes for mapping, you should use
+one of them, not both.
+
+```php
 <?php
 namespace Document;
 
@@ -200,6 +268,7 @@ class Article
      * @ODM\Date
      * @Gedmo\Timestampable(on="create")
      */
+     #[Gedmo\Timestampable(on: 'create')]
     private $created;
 
     /**
@@ -208,6 +277,7 @@ class Article
      * @ODM\Date
      * @Gedmo\Timestampable
      */
+     #[Gedmo\Timestampable]
     private $updated;
 
     /**
@@ -216,6 +286,7 @@ class Article
      * @ODM\Date
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
+     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
     private $contentChanged;
 
     public function getId()
@@ -262,43 +333,11 @@ class Article
 
 Now on update and creation these annotated fields will be automatically updated
 
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```yaml
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    created:
-      type: date
-      gedmo:
-        timestampable:
-          on: create
-    updated:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: update
-```
-
 <a name="xml-mapping"></a>
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -334,7 +373,7 @@ Entity\Article:
 
 Add another entity which would represent Article Type:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -377,7 +416,7 @@ class Type
 
 Now update the Article Entity to reflect published date on Type change:
 
-``` php
+```php
 <?php
 namespace Entity;
 
@@ -466,48 +505,9 @@ class Article
 }
 ```
 
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-``` yaml
----
-Entity\Article:
-  type: entity
-  table: articles
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-    created:
-      type: date
-      gedmo:
-        timestampable:
-          on: create
-    updated:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: update
-    published:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: change
-          field: type.title
-          value: Published
-  manyToOne:
-    type:
-      targetEntity: Entity\Type
-      inversedBy: articles
-```
-
 Now few operations to get it all done:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');
@@ -536,7 +536,7 @@ Easy like that, any suggestions on improvements are very welcome
 
 First, we define our custom data type (note the type name is datetime and the type extends DateTimeType which simply overrides the default Doctrine type):
 
-``` php
+```php
 <?php
 
 namespace Acme\DoctrineExtensions\DBAL\Types;
@@ -585,9 +585,9 @@ class UTCDateTimeType extends DateTimeType
 }
 ```
 
-Now in Symfony2, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
+Now in Symfony, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
 
-``` yaml
+```yaml
 doctrine:
     dbal:
         types:
@@ -596,7 +596,7 @@ doctrine:
 
 And our Entity properties look as expected:
 
-``` php
+```php
 <?php
 /**
  * @var \DateTime $dateCreated
@@ -615,9 +615,9 @@ private $dateCreated;
 private $dateLastModified;
 ```
 
-Now, in our view (suppose we are using Symfony2 and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
+Now, in our view (suppose we are using Symfony and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
 
-``` twig
+```twig
 {{ myEntity.dateCreated | date("d/m/Y g:i a", app.user.timezone) }}
 ```
 
@@ -638,7 +638,7 @@ There is also a trait without annotations for easy integration purposes.
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
 
-``` php
+```php
 <?php
 namespace Timestampable\Fixture;
 

@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Blameable;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
 
@@ -10,17 +18,19 @@ use Gedmo\Exception\InvalidArgumentException;
  * dates on creation and update.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class BlameableListener extends AbstractTrackingListener
 {
+    /**
+     * @var mixed
+     */
     protected $user;
 
     /**
      * Get the user value to set on a blameable field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return mixed
      */
@@ -42,6 +52,7 @@ class BlameableListener extends AbstractTrackingListener
             if (method_exists($this->user, '__toString')) {
                 return $this->user->__toString();
             }
+
             throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUsername or __toString');
         }
 
@@ -52,15 +63,14 @@ class BlameableListener extends AbstractTrackingListener
      * Set a user value to return
      *
      * @param mixed $user
+     *
+     * @return void
      */
     public function setUserValue($user)
     {
         $this->user = $user;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

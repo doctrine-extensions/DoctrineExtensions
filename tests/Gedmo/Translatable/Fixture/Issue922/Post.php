@@ -1,52 +1,76 @@
 <?php
 
-namespace Translatable\Fixture\Issue922;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Fixture\Issue922;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Post
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(type="datetime", nullable=true)
      */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Translatable]
     private $publishedAt;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(type="time")
      */
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Gedmo\Translatable]
     private $timestampAt;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(type="date")
      */
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Gedmo\Translatable]
     private $dateAt;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Gedmo\Translatable]
     private $boolean;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setPublishedAt($publishedAt)
+    public function setPublishedAt($publishedAt): self
     {
         $this->publishedAt = $publishedAt;
 
@@ -58,7 +82,7 @@ class Post
         return $this->publishedAt;
     }
 
-    public function setTimestampAt($timestampAt)
+    public function setTimestampAt($timestampAt): self
     {
         $this->timestampAt = $timestampAt;
 
@@ -70,7 +94,7 @@ class Post
         return $this->timestampAt;
     }
 
-    public function setDateAt($dateAt)
+    public function setDateAt($dateAt): self
     {
         $this->dateAt = $dateAt;
 
@@ -82,7 +106,7 @@ class Post
         return $this->dateAt;
     }
 
-    public function setBoolean($boolean)
+    public function setBoolean($boolean): self
     {
         $this->boolean = $boolean;
 

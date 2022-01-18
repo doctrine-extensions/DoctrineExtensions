@@ -1,23 +1,32 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 class RepositoryUtils implements RepositoryUtilsInterface
 {
-    /** @var \Doctrine\Persistence\Mapping\ClassMetadata */
+    /** @var ClassMetadata */
     protected $meta;
 
-    /** @var \Gedmo\Tree\TreeListener */
+    /** @var TreeListener */
     protected $listener;
 
-    /** @var \Doctrine\Persistence\ObjectManager */
+    /** @var ObjectManager */
     protected $om;
 
-    /** @var \Gedmo\Tree\RepositoryInterface */
+    /** @var RepositoryInterface */
     protected $repo;
 
     /**
@@ -28,6 +37,10 @@ class RepositoryUtils implements RepositoryUtilsInterface
      */
     protected $childrenIndex = '__children';
 
+    /**
+     * @param TreeListener        $listener
+     * @param RepositoryInterface $repo
+     */
     public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
     {
         $this->om = $om;
@@ -36,23 +49,23 @@ class RepositoryUtils implements RepositoryUtilsInterface
         $this->repo = $repo;
     }
 
+    /**
+     * @return ClassMetadata
+     */
     public function getClassMetadata()
     {
         return $this->meta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $meta = $this->getClassMetadata();
 
         if (null !== $node) {
-            if ($node instanceof $meta->name) {
+            if (is_a($node, $meta->getName())) {
                 $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManagerInterface ?
-                    '\Gedmo\Tool\Wrapper\EntityWrapper' :
-                    '\Gedmo\Tool\Wrapper\MongoDocumentWrapper';
+                    EntityWrapper::class :
+                    MongoDocumentWrapper::class;
                 $wrapped = new $wrapperClass($node, $this->om);
                 if (!$wrapped->hasValidIdentifier()) {
                     throw new InvalidArgumentException('Node is not managed by UnitOfWork');
@@ -68,9 +81,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $this->repo->buildTree($nodes, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTree(array $nodes, array $options = [])
     {
         $meta = $this->getClassMetadata();
@@ -82,7 +92,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
             'rootClose' => '</ul>',
             'childOpen' => '<li>',
             'childClose' => '</li>',
-            'nodeDecorator' => function ($node) use ($meta) {
+            'nodeDecorator' => static function ($node) use ($meta) {
                 // override and change it, guessing which field to use
                 if ($meta->hasField('title')) {
                     $field = 'title';
@@ -107,7 +117,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
         $childrenIndex = $this->childrenIndex;
 
-        $build = function ($tree) use (&$build, &$options, $childrenIndex) {
+        $build = static function ($tree) use (&$build, &$options, $childrenIndex) {
             $output = is_string($options['rootOpen']) ? $options['rootOpen'] : $options['rootOpen']($tree);
             foreach ($tree as $node) {
                 $output .= is_string($options['childOpen']) ? $options['childOpen'] : $options['childOpen']($node);
@@ -124,13 +134,10 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $build($nestedTree);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->om, $meta->name);
+        $config = $this->listener->getConfiguration($this->om, $meta->getName());
         $nestedTree = [];
         $l = 0;
 
@@ -165,17 +172,11 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $nestedTree;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setChildrenIndex($childrenIndex)
     {
         $this->childrenIndex = $childrenIndex;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildrenIndex()
     {
         return $this->childrenIndex;

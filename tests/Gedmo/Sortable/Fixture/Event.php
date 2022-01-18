@@ -1,13 +1,25 @@
 <?php
 
-namespace Sortable\Fixture;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sortable\Fixture;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
+#[ORM\Entity(repositoryClass: SortableRepository::class)]
 class Event
 {
     /**
@@ -17,6 +29,9 @@ class Event
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
@@ -25,6 +40,8 @@ class Event
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private $dateTime;
 
     /**
@@ -32,6 +49,7 @@ class Event
      *
      * @ORM\Column(type="string", length=191)
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
     private $name;
 
     /**
@@ -40,39 +58,41 @@ class Event
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     private $position;
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setDateTime(\DateTime $date)
+    public function setDateTime(\DateTime $date): void
     {
         $this->dateTime = $date;
     }
 
-    public function getDateTime()
+    public function getDateTime(): \DateTime
     {
         return $this->dateTime;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }
 
-    public function getPosition()
+    public function getPosition(): int
     {
         return $this->position;
     }

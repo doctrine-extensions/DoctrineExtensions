@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TransliterationTest extends BaseTestCaseORM
+final class TransliterationTest extends BaseTestCaseORM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {
@@ -26,28 +32,35 @@ class TransliterationTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testInsertedNewSlug()
+    public function testInsertedNewSlug(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
 
         $lithuanian = $repo->findOneBy(['code' => 'lt']);
-        $this->assertEquals('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
+        static::assertSame('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
 
         $bulgarian = $repo->findOneBy(['code' => 'bg']);
-        $this->assertEquals('tova-e-testovo-zaglavie-bg', $bulgarian->getSlug());
+        static::assertSame('tova-e-testovo-zaglavie-bg', $bulgarian->getSlug());
 
         $russian = $repo->findOneBy(['code' => 'ru']);
-        $this->assertEquals('eto-testovyi-zagolovok-ru', $russian->getSlug());
+        static::assertSame('eto-testovyi-zagolovok-ru', $russian->getSlug());
 
         $german = $repo->findOneBy(['code' => 'de']);
-        $this->assertEquals('fuhren-aktivitaten-haglofs-de', $german->getSlug());
+        static::assertSame('fuhren-aktivitaten-haglofs-de', $german->getSlug());
     }
 
-    private function populate()
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::ARTICLE,
+        ];
+    }
+
+    private function populate(): void
     {
         $lithuanian = new Article();
         $lithuanian->setTitle('trąnslįteration tėst ųsąge ūž');
@@ -71,12 +84,5 @@ class TransliterationTest extends BaseTestCaseORM
         $this->em->persist($german);
         $this->em->flush();
         $this->em->clear();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-        ];
     }
 }

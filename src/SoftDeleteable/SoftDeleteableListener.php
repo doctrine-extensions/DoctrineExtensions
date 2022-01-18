@@ -1,9 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 
 /**
@@ -11,7 +19,6 @@ use Gedmo\Mapping\MappedEventSubscriber;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SoftDeleteableListener extends MappedEventSubscriber
 {
@@ -20,17 +27,17 @@ class SoftDeleteableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    const PRE_SOFT_DELETE = 'preSoftDelete';
+    public const PRE_SOFT_DELETE = 'preSoftDelete';
 
     /**
      * Post soft-delete event
      *
      * @var string
      */
-    const POST_SOFT_DELETE = 'postSoftDelete';
+    public const POST_SOFT_DELETE = 'postSoftDelete';
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
@@ -49,6 +56,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public function onFlush(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
+        /** @var \Doctrine\ORM\EntityManagerInterface|\Doctrine\ODM\MongoDB\DocumentManager $om */
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
@@ -56,15 +64,14 @@ class SoftDeleteableListener extends MappedEventSubscriber
         //getScheduledDocumentDeletions
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
+            $config = $this->getConfiguration($om, $meta->getName());
 
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);
                 $oldValue = $reflProp->getValue($object);
                 $date = $ea->getDateValue($meta, $config['fieldName']);
 
-                // Remove `$oldValue instanceof \DateTime` check when PHP version is bumped to >=5.5
-                if (isset($config['hardDelete']) && $config['hardDelete'] && ($oldValue instanceof \DateTime || $oldValue instanceof \DateTimeInterface) && $oldValue <= $date) {
+                if (isset($config['hardDelete']) && $config['hardDelete'] && $oldValue instanceof \DateTimeInterface && $oldValue <= $date) {
                     continue; // want to hard delete
                 }
 
@@ -96,6 +103,8 @@ class SoftDeleteableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata
      *
+     * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
@@ -104,9 +113,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

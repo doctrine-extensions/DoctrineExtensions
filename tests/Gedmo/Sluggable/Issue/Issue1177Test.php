@@ -1,23 +1,29 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue1177\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue1177\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue1177Test extends BaseTestCaseORM
+final class Issue1177Test extends BaseTestCaseORM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Issue1177\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {
@@ -26,13 +32,10 @@ class Issue1177Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldTryPreferedSlugFirst()
+    public function testShouldTryPreferedSlugFirst(): void
     {
         $article = new Article();
         $article->setTitle('the title with number 1');
@@ -40,7 +43,7 @@ class Issue1177Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        $this->assertEquals('the-title-with-number-1', $article->getSlug());
+        static::assertSame('the-title-with-number-1', $article->getSlug());
 
         $article = new Article();
         $article->setTitle('the title with number');
@@ -50,7 +53,7 @@ class Issue1177Test extends BaseTestCaseORM
         $this->em->clear();
         // the slug was 'the-title-with-number-2' before the fix here
         // despite the fact that there is no entity with slug 'the-title-with-number'
-        $this->assertEquals('the-title-with-number', $article->getSlug());
+        static::assertSame('the-title-with-number', $article->getSlug());
 
         $article = new Article();
         $article->setTitle('the title with number');
@@ -58,10 +61,10 @@ class Issue1177Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        $this->assertEquals('the-title-with-number-2', $article->getSlug());
+        static::assertSame('the-title-with-number-2', $article->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

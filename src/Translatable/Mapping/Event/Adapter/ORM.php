@@ -1,12 +1,22 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Doctrine\Common\Proxy\Proxy;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
 /**
@@ -14,34 +24,24 @@ use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
  * for Translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class ORM extends BaseAdapterORM implements TranslatableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function usesPersonalTranslation($translationClassName)
     {
         return $this
             ->getObjectManager()
             ->getClassMetadata($translationClassName)
             ->getReflectionClass()
-            ->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation')
+            ->isSubclassOf(AbstractPersonalTranslation::class)
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDefaultTranslationClass()
     {
-        return 'Gedmo\\Translatable\\Entity\\Translation';
+        return Translation::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadTranslations($object, $translationClass, $locale, $objectClass)
     {
         $em = $this->getObjectManager();
@@ -50,7 +50,9 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         if ($this->usesPersonalTranslation($translationClass)) {
             // first try to load it using collection
             $found = false;
-            foreach ($wrapped->getMetadata()->associationMappings as $assoc) {
+            $metadata = $wrapped->getMetadata();
+            assert($metadata instanceof ClassMetadataInfo);
+            foreach ($metadata->getAssociationMappings() as $assoc) {
                 $isRightCollection = $assoc['targetEntity'] === $translationClass
                     && 'object' === $assoc['mappedBy']
                     && ClassMetadataInfo::ONE_TO_MANY === $assoc['type']
@@ -66,6 +68,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                         }
                     }
                     $found = true;
+
                     break;
                 }
             }
@@ -96,33 +99,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return $result;
     }
 
-    /**
-     * Transforms foreigh key of translation to appropriate PHP value
-     * to prevent database level cast
-     *
-     * @param $key - foreign key value
-     * @param $className - translation class name
-     *
-     * @return transformed foreign key
-     */
-    private function foreignKey($key, $className)
-    {
-        $em = $this->getObjectManager();
-        $meta = $em->getClassMetadata($className);
-        $type = Type::getType($meta->getTypeOfField('foreignKey'));
-        switch ($type->getName()) {
-        case Type::BIGINT:
-        case Type::INTEGER:
-        case Type::SMALLINT:
-            return intval($key);
-        default:
-            return (string) $key;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)
     {
         $em = $this->getObjectManager();
@@ -140,7 +116,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                         } else {
                             $objectId = $this->foreignKey($wrapped->getIdentifier(), $translationClass);
                             $isRequestedTranslation = $trans->getForeignKey() === $objectId
-                                && $trans->getObjectClass() === $wrapped->getMetadata()->name
+                                && $trans->getObjectClass() === $wrapped->getMetadata()->getName()
                             ;
                         }
                     }
@@ -184,9 +160,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)
     {
         $qb = $this
@@ -209,9 +182,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function insertTranslationRecord($translation)
     {
         $em = $this->getObjectManager();
@@ -230,9 +200,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTranslationValue($object, $field, $value = false)
     {
         $em = $this->getObjectManager();
@@ -246,9 +213,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return $type->convertToDatabaseValue($value, $em->getConnection()->getDatabasePlatform());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setTranslationValue($object, $field, $value)
     {
         $em = $this->getObjectManager();
@@ -257,5 +221,29 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $type = Type::getType($meta->getTypeOfField($field));
         $value = $type->convertToPHPValue($value, $em->getConnection()->getDatabasePlatform());
         $wrapped->setPropertyValue($field, $value);
+    }
+
+    /**
+     * Transforms foreing key of translation to appropriate PHP value
+     * to prevent database level cast
+     *
+     * @param mixed  $key       foreign key value
+     * @param string $className translation class name
+     *
+     * @return int|string transformed foreign key
+     */
+    private function foreignKey($key, string $className)
+    {
+        $em = $this->getObjectManager();
+        $meta = $em->getClassMetadata($className);
+        $type = Type::getType($meta->getTypeOfField('foreignKey'));
+        switch ($type->getName()) {
+            case Types::BIGINT:
+            case Types::INTEGER:
+            case Types::SMALLINT:
+                return (int) $key;
+            default:
+                return (string) $key;
+        }
     }
 }

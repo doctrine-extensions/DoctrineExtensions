@@ -124,7 +124,6 @@ Content:
 
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Usage [examples](#usage)
 - [Using](#additional-usages) the extension to handle not only uploaded files
@@ -134,8 +133,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 
@@ -143,8 +142,11 @@ on how to setup and use the extensions in most optimized way.
 
 ## Uploadable Entity example:
 
-### Uploadable annotations:
-1. **@Gedmo\Mapping\Annotation\Uploadable** this class annotation tells if a class is Uploadable. Available configuration options:
+### Uploadable annotations and attributes:
+
+These classes can be used either as annotation or as attribute:
+
+1. **@Gedmo\Mapping\Annotation\Uploadable** this class annotation/attribute tells if a class is Uploadable. Available configuration options:
     * **allowOverwrite** - If this option is true, it will overwrite a file if it already exists. If you set "false", an
     exception will be thrown. Default: false
     * **appendNumber** - If this option is true and "allowOverwrite" is false, in the case that the file already exists,
@@ -188,31 +190,36 @@ on how to setup and use the extensions in most optimized way.
     mime types. If the mime type of the file is on this list, n exception of type "UploadableInvalidMimeTypeException" will be thrown. If you
     set this option, you can't set the **allowedTypes** option described above. By default, no validation of mime type
     occurs. If you want to use a custom mime type guesser, see [this](#custom-mime-type-guessers).
-2. **@Gedmo\Mapping\Annotation\UploadableFilePath**: This annotation is used to set which field will receive the path
- to the file. The field MUST be of type "string". Either this one or UploadableFileName annotation is REQUIRED to be set.
-3. **@Gedmo\Mapping\Annotation\UploadableFileName**: This annotation is used to set which field will receive the name
- of the file. The field MUST be of type "string". Either this one or UploadableFilePath annotation is REQUIRED to be set.
-4. **@Gedmo\Mapping\Annotation\UploadableFileMimeType**: This is an optional annotation used to set which field will
+2. **@Gedmo\Mapping\Annotation\UploadableFilePath**: This annotation/attribute is used to set which field will receive the path
+ to the file. The field MUST be of type "string". Either this one or UploadableFileName annotation/attribute is REQUIRED to be set.
+3. **@Gedmo\Mapping\Annotation\UploadableFileName**: This annotation/attribute is used to set which field will receive the name
+ of the file. The field MUST be of type "string". Either this one or UploadableFilePath annotation/attribute is REQUIRED to be set.
+4. **@Gedmo\Mapping\Annotation\UploadableFileMimeType**: This is an optional annotation/attribute used to set which field will
  receive the mime type of the file as its value. This field MUST be of type "string".
-5. **@Gedmo\Mapping\Annotation\UploadableFileSize**: This is an optional annotation used to set which field will
+5. **@Gedmo\Mapping\Annotation\UploadableFileSize**: This is an optional annotation/attribute used to set which field will
  receive the size in bytes of the file as its value. This field MUST be of type "decimal".
+
+**Note:** the examples shown here are using annotations and attributes for mapping, you should use
+one of them, not both.
 
 ### Notes about setting the path where the files will be moved:
 
 You have three choices to configure the path. You can set a default path on the listener, which will be used on every
 entity which doesn't have a path or pathMethod defined:
 
-``` php
+```php
 $listener->setDefaultPath('/my/path');
 ```
 
 You can use the Uploadable "path" option to set the path:
 
-``` php
+```php
 /**
  * @ORM\Entity
  * @Gedmo\Uploadable(path="/my/path")
  */
+#[ORM\Entity]
+#[Gedmo\Uploadable(path: '/my/path')]
 class File
 {
     //...
@@ -221,11 +228,13 @@ class File
 
 Or you can use the Uploadable "pathMethod" option to set the name of the method which will return the path:
 
-``` php
+```php
 /**
  * @ORM\Entity
  * @Gedmo\Uploadable(pathMethod="getPath")
  */
+#[ORM\Entity]
+#[Gedmo\Uploadable(pathMethod: 'getPath')]
 class File
 {
     public function getPath()
@@ -245,10 +254,12 @@ cache is activated
 
 ### Minimum configuration needed:
 
-``` php
+```php
 <?php
+
 namespace Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -258,6 +269,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @Gedmo\Uploadable
  */
+#[ORM\Entity]
+#[Gedmo\Uploadable]
 class File
 {
     // Other fields..
@@ -266,54 +279,76 @@ class File
      * @ORM\Column(name="path", type="string")
      * @Gedmo\UploadableFilePath
      */
+    #[ORM\Column(name: 'path', type: Types::STRING)]
+    #[Gedmo\UploadableFilePath]
     private $path;
 }
 ```
 
 ### Example of an entity with all the configurations set:
 
-``` php
+```php
 <?php
 namespace Entity;
 
+use Doctrine\DBAL\Types\Types;use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * @ORM\Entity
  * @Gedmo\Uploadable(path="/my/path", callback="myCallbackMethod", filenameGenerator="SHA1", allowOverwrite=true, appendNumber=true)
  */
+#[ORM\Entity]
+#[Gedmo\Uploadable(
+    path: '/my/path',
+    callback: 'myCallbackMethod',
+    filenameGenerator: Validator::FILENAME_GENERATOR_SHA1,
+    allowOverwrite: true,
+    appendNumber: true
+)]
 class File
 {
     /**
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="path", type="string")
      * @Gedmo\UploadableFilePath
      */
+    #[ORM\Column(name: 'path', type: Types::STRING)]
+    #[Gedmo\UploadableFilePath]
     private $path;
 
     /**
      * @ORM\Column(name="name", type="string")
      * @Gedmo\UploadableFileName
      */
+    #[ORM\Column(name: 'name', type: Types::STRING)]
+    #[Gedmo\UploadableFileName]
     private $name;
 
     /**
      * @ORM\Column(name="mime_type", type="string")
      * @Gedmo\UploadableFileMimeType
      */
+    #[ORM\Column(name: 'mime_type', type: Types::STRING)]
+    #[Gedmo\UploadableFileMimeType]
     private $mimeType;
 
     /**
      * @ORM\Column(name="size", type="decimal")
      * @Gedmo\UploadableFileSize
      */
+    #[ORM\Column(name: 'size', type: Types::DECIMAL)]
+    #[Gedmo\UploadableFileSize]
     private $size;
 
 
@@ -326,55 +361,11 @@ class File
 }
 ```
 
-
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\File:
-  type: entity
-  table: files
-  gedmo:
-    uploadable:
-      allowOverwrite: true
-      appendNumber: true
-      path: '/my/path'
-      pathMethod: getPath
-      callback: callbackMethod
-      filenameGenerator: SHA1
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    path:
-      type: string
-      gedmo:
-        - uploadableFilePath
-    name:
-      type: string
-      gedmo:
-        - uploadableFileName
-    mimeType:
-      type: string
-      gedmo:
-        - uploadableFileMimeType
-    size:
-      type: decimal
-      gedmo:
-        - uploadableFileSize
-```
-
 <a name="xml-mapping"></a>
 
 ## Xml mapping example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
@@ -419,7 +410,7 @@ Entity\File:
 
 ## Usage:
 
-``` php
+```php
 <?php
 // Example setting the path directly on the listener:
 
@@ -457,7 +448,7 @@ Maybe you want to handle files obtained from an URL, or even files that are alre
 This can be handled in a very simple way. First, you need to create a class that implements the FileInfoInterface
 interface. As an example:
 
-``` php
+```php
 use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 
 class CustomFileInfo implements FileInfoInterface
@@ -517,7 +508,7 @@ class CustomFileInfo implements FileInfoInterface
 
 Or you could simply extend the FileInfoArray class and do the following:
 
-``` php
+```php
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 class CustomFileInfo extends FileInfoArray
@@ -551,7 +542,7 @@ class CustomFileInfo extends FileInfoArray
 
 And that's it. Then, instead of getting the file info from the $_FILES array, you would do:
 
-``` php
+```php
 // We set the default path in the listener again
 $listener->setDefaultPath('/my/path');
 
@@ -571,7 +562,7 @@ If you want to use your own mime type guesser, you need to implement the interfa
 which has only one method: "guess($filePath)". Then, you can set the mime type guesser used on the listener in the following
 way:
 
-``` php
+```php
 $listener->setMimeTypeGuesser(new MyCustomMimeTypeGuesser());
 
 ```

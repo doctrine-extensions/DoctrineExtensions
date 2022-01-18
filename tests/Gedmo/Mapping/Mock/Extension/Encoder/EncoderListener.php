@@ -1,16 +1,24 @@
 <?php
 
-// file: vendor/Extension/Encoder/EncoderListener.php
+declare(strict_types=1);
 
-namespace Gedmo\Mapping\Mock\Extension\Encoder;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
 class EncoderListener extends MappedEventSubscriber
 {
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             'onFlush',
@@ -18,7 +26,7 @@ class EncoderListener extends MappedEventSubscriber
         ];
     }
 
-    public function loadClassMetadata(EventArgs $args)
+    public function loadClassMetadata(LoadClassMetadataEventArgs $args): void
     {
         $ea = $this->getEventAdapter($args);
         // this will check for our metadata
@@ -28,7 +36,7 @@ class EncoderListener extends MappedEventSubscriber
         );
     }
 
-    public function onFlush(EventArgs $args)
+    public function onFlush(EventArgs $args): void
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
@@ -38,7 +46,7 @@ class EncoderListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             // if it has our metadata lets encode the properties
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->encode($ea, $object, $config);
             }
         }
@@ -46,19 +54,19 @@ class EncoderListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             // if it has our metadata lets encode the properties
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->encode($ea, $object, $config);
             }
         }
     }
 
-    protected function getNamespace()
+    protected function getNamespace(): string
     {
         // mapper must know the namespace of extension
         return __NAMESPACE__;
     }
 
-    private function encode(EventAdapterInterface $ea, $object, $config)
+    private function encode(EventAdapterInterface $ea, object $object, array $config): void
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));

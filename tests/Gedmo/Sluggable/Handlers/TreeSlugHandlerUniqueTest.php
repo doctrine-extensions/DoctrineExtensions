@@ -1,15 +1,25 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlug;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\TreeSlug;
-use Tool\BaseTestCaseORM;
 
-class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
+final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 {
-    const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlug';
+    public const TARGET = TreeSlug::class;
 
     protected function setUp(): void
     {
@@ -19,10 +29,10 @@ class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testUniqueRoot()
+    public function testUniqueRoot(): void
     {
         $foo1 = new TreeSlug();
         $foo1->setTitle('Foo');
@@ -35,11 +45,11 @@ class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals('foo', $foo1->getSlug());
-        $this->assertEquals('foo-1', $foo2->getSlug());
+        static::assertSame('foo', $foo1->getSlug());
+        static::assertSame('foo-1', $foo2->getSlug());
     }
 
-    public function testUniqueLeaf()
+    public function testUniqueLeaf(): void
     {
         $root = new TreeSlug();
         $root->setTitle('root');
@@ -58,11 +68,11 @@ class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals('root/foo', $foo1->getSlug());
-        $this->assertEquals('root/foo-1', $foo2->getSlug());
+        static::assertSame('root/foo', $foo1->getSlug());
+        static::assertSame('root/foo-1', $foo2->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

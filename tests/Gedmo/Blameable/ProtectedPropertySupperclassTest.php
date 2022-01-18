@@ -1,25 +1,32 @@
 <?php
 
-namespace Gedmo\Blameable;
+declare(strict_types=1);
 
-use Blameable\Fixture\Entity\SupperClassExtension;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Blameable;
+
 use Doctrine\Common\EventManager;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Entity\SupperClassExtension;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ProtectedPropertySupperclassTest extends BaseTestCaseORM
+final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    const SUPERCLASS = 'Blameable\\Fixture\\Entity\\SupperClassExtension';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const SUPERCLASS = SupperClassExtension::class;
+    public const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {
@@ -33,10 +40,10 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $blameableListener->setUserValue('testuser');
         $evm->addEventSubscriber($blameableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testProtectedProperty()
+    public function testProtectedProperty(): void
     {
         $test = new SupperClassExtension();
         $test->setName('name');
@@ -48,12 +55,12 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($test);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
-        $this->assertEquals('testuser', $test->getCreatedBy());
+        static::assertSame('testuser', $test->getCreatedBy());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TRANSLATION,

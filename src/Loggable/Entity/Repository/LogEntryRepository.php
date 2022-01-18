@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -14,7 +21,6 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  * to interact with log entries.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LogEntryRepository extends EntityRepository
 {
@@ -49,9 +55,9 @@ class LogEntryRepository extends EntityRepository
     public function getLogEntriesQuery($entity)
     {
         $wrapped = new EntityWrapper($entity, $this->_em);
-        $objectClass = $wrapped->getMetadata()->name;
+        $objectClass = $wrapped->getMetadata()->getName();
         $meta = $this->getClassMetadata();
-        $dql = "SELECT log FROM {$meta->name} log";
+        $dql = "SELECT log FROM {$meta->getName()} log";
         $dql .= ' WHERE log.objectId = :objectId';
         $dql .= ' AND log.objectClass = :objectClass';
         $dql .= ' ORDER BY log.version DESC';
@@ -80,9 +86,9 @@ class LogEntryRepository extends EntityRepository
     {
         $wrapped = new EntityWrapper($entity, $this->_em);
         $objectMeta = $wrapped->getMetadata();
-        $objectClass = $objectMeta->name;
+        $objectClass = $objectMeta->getName();
         $meta = $this->getClassMetadata();
-        $dql = "SELECT log FROM {$meta->name} log";
+        $dql = "SELECT log FROM {$meta->getName()} log";
         $dql .= ' WHERE log.objectId = :objectId';
         $dql .= ' AND log.objectClass = :objectClass';
         $dql .= ' AND log.version <= :version';
@@ -94,16 +100,16 @@ class LogEntryRepository extends EntityRepository
         $logs = $q->getResult();
 
         if ($logs) {
-            $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->name);
+            $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->getName());
             $fields = $config['versioned'];
             $filled = false;
             while (($log = array_pop($logs)) && !$filled) {
                 if ($data = $log->getData()) {
                     foreach ($data as $field => $value) {
-                        if (in_array($field, $fields)) {
+                        if (in_array($field, $fields, true)) {
                             $this->mapValue($objectMeta, $field, $value);
                             $wrapped->setPropertyValue($field, $value);
-                            unset($fields[array_search($field, $fields)]);
+                            unset($fields[array_search($field, $fields, true)]);
                         }
                     }
                 }
@@ -120,6 +126,8 @@ class LogEntryRepository extends EntityRepository
     /**
      * @param string $field
      * @param mixed  $value
+     *
+     * @return void
      */
     protected function mapValue(ClassMetadata $objectMeta, $field, &$value)
     {
@@ -134,26 +142,22 @@ class LogEntryRepository extends EntityRepository
     /**
      * Get the currently used LoggableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
-     *
-     * @return LoggableListener
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      */
-    private function getLoggableListener()
+    private function getLoggableListener(): LoggableListener
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
-                        break;
+
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
             }
         }

@@ -1,27 +1,33 @@
 <?php
 
-namespace Gedmo\Mapping;
+declare(strict_types=1);
 
-use Tree\Fixture\BehavioralCategory;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
+
+use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
+use Gedmo\Translatable\Entity\Translation;
 
 /**
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MappingTest extends \PHPUnit\Framework\TestCase
+final class MappingTest extends \PHPUnit\Framework\TestCase
 {
-    const TEST_ENTITY_CATEGORY = "Tree\Fixture\BehavioralCategory";
-    const TEST_ENTITY_TRANSLATION = "Gedmo\Translatable\Entity\Translation";
+    public const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
+    public const TEST_ENTITY_TRANSLATION = Translation::class;
 
     private $em;
     private $timestampable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
@@ -50,7 +56,7 @@ class MappingTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testNoCacheImplementationMapping()
+    public function testNoCacheImplementationMapping(): void
     {
         $food = new BehavioralCategory();
         $food->setTitle('Food');
@@ -61,6 +67,6 @@ class MappingTest extends \PHPUnit\Framework\TestCase
             $this->em,
             self::TEST_ENTITY_CATEGORY
         );
-        $this->assertCount(0, $conf);
+        static::assertCount(0, $conf);
     }
 }

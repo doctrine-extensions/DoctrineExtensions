@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 
@@ -12,7 +20,6 @@ use Gedmo\Mapping\MappedEventSubscriber;
  * strategies on handling the tree.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeListener extends MappedEventSubscriber
 {
@@ -40,7 +47,7 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Specifies the list of events to listen
      *
-     * @return array
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
@@ -93,6 +100,8 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Looks for Tree objects being updated
      * for further processing
+     *
+     * @return void
      */
     public function onFlush(EventArgs $args)
     {
@@ -103,26 +112,26 @@ class TreeListener extends MappedEventSubscriber
         // check all scheduled updates for TreeNodes
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($this->getConfiguration($om, $meta->name)) {
-                $this->usedClassesOnFlush[$meta->name] = null;
-                $this->getStrategy($om, $meta->name)->processScheduledInsertion($om, $object, $ea);
+            if ($this->getConfiguration($om, $meta->getName())) {
+                $this->usedClassesOnFlush[$meta->getName()] = null;
+                $this->getStrategy($om, $meta->getName())->processScheduledInsertion($om, $object, $ea);
                 $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
             }
         }
 
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($this->getConfiguration($om, $meta->name)) {
-                $this->usedClassesOnFlush[$meta->name] = null;
-                $this->getStrategy($om, $meta->name)->processScheduledUpdate($om, $object, $ea);
+            if ($this->getConfiguration($om, $meta->getName())) {
+                $this->usedClassesOnFlush[$meta->getName()] = null;
+                $this->getStrategy($om, $meta->getName())->processScheduledUpdate($om, $object, $ea);
             }
         }
 
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($this->getConfiguration($om, $meta->name)) {
-                $this->usedClassesOnFlush[$meta->name] = null;
-                $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
+            if ($this->getConfiguration($om, $meta->getName())) {
+                $this->usedClassesOnFlush[$meta->getName()] = null;
+                $this->getStrategy($om, $meta->getName())->processScheduledDelete($om, $object);
             }
         }
 
@@ -133,6 +142,8 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Updates tree on Node removal
+     *
+     * @return void
      */
     public function preRemove(EventArgs $args)
     {
@@ -141,13 +152,15 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPreRemove($om, $object);
+        if ($this->getConfiguration($om, $meta->getName())) {
+            $this->getStrategy($om, $meta->getName())->processPreRemove($om, $object);
         }
     }
 
     /**
      * Checks for persisted Nodes
+     *
+     * @return void
      */
     public function prePersist(EventArgs $args)
     {
@@ -156,13 +169,15 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPrePersist($om, $object);
+        if ($this->getConfiguration($om, $meta->getName())) {
+            $this->getStrategy($om, $meta->getName())->processPrePersist($om, $object);
         }
     }
 
     /**
      * Checks for updated Nodes
+     *
+     * @return void
      */
     public function preUpdate(EventArgs $args)
     {
@@ -171,14 +186,16 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPreUpdate($om, $object);
+        if ($this->getConfiguration($om, $meta->getName())) {
+            $this->getStrategy($om, $meta->getName())->processPreUpdate($om, $object);
         }
     }
 
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
+     *
+     * @return void
      */
     public function postPersist(EventArgs $args)
     {
@@ -187,14 +204,16 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPostPersist($om, $object, $ea);
+        if ($this->getConfiguration($om, $meta->getName())) {
+            $this->getStrategy($om, $meta->getName())->processPostPersist($om, $object, $ea);
         }
     }
 
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
+     *
+     * @return void
      */
     public function postUpdate(EventArgs $args)
     {
@@ -203,14 +222,16 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPostUpdate($om, $object, $ea);
+        if ($this->getConfiguration($om, $meta->getName())) {
+            $this->getStrategy($om, $meta->getName())->processPostUpdate($om, $object, $ea);
         }
     }
 
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
+     *
+     * @return void
      */
     public function postRemove(EventArgs $args)
     {
@@ -219,13 +240,17 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPostRemove($om, $object, $ea);
+        if ($this->getConfiguration($om, $meta->getName())) {
+            $this->getStrategy($om, $meta->getName())->processPostRemove($om, $object, $ea);
         }
     }
 
     /**
      * Mapps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
+     *
+     * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
@@ -233,14 +258,11 @@ class TreeListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $meta = $eventArgs->getClassMetadata();
         $this->loadMetadataForObjectClass($om, $meta);
-        if (isset(self::$configurations[$this->name][$meta->name]) && self::$configurations[$this->name][$meta->name]) {
-            $this->getStrategy($om, $meta->name)->processMetadataLoad($om, $meta);
+        if (isset(self::$configurations[$this->name][$meta->getName()]) && self::$configurations[$this->name][$meta->getName()]) {
+            $this->getStrategy($om, $meta->getName())->processMetadataLoad($om, $meta);
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

@@ -1,30 +1,49 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyPull;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
+     * @var string|null
+     *
      * @ODM\Id
      */
+    #[ODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $title;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
+     * @var Collection<int, Type>
      *
-     * @var ArrayCollection
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
      */
+    #[ODM\ReferenceMany(targetDocument: Type::class, inversedBy: 'articles')]
     private $types;
 
     public function __construct()
@@ -32,44 +51,30 @@ class Article
         $this->types = new ArrayCollection();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * Add types
-     */
-    public function addType(Type $type)
+    public function addType(Type $type): void
     {
         $this->types[] = $type;
     }
 
     /**
-     * Get posts
-     *
-     * @return ArrayCollection $types
+     * @return Collection<int, Type>
      */
-    public function getTypes()
+    public function getTypes(): Collection
     {
         return $this->types;
     }

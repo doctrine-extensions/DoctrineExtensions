@@ -1,7 +1,17 @@
 <?php
 
-namespace Timestampable\Fixture;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Timestampable\Fixture;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
@@ -9,28 +19,39 @@ use Gedmo\Timestampable\Timestampable;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class TitledArticle implements Timestampable
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string", length=128)
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private $title;
 
     /**
      * @ORM\Column(name="text", type="string", length=128)
      */
+    #[ORM\Column(name: 'text', type: Types::STRING, length: 128)]
     private $text;
 
     /**
      * @ORM\Column(name="state", type="string", length=128)
      */
+    #[ORM\Column(name: 'state', type: Types::STRING, length: 128)]
     private $state;
 
     /**
@@ -39,7 +60,9 @@ class TitledArticle implements Timestampable
      * @ORM\Column(name="chtext", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="text")
      */
-    private $chtext;
+    #[ORM\Column(name: 'chtext', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'text')]
+    private $chText;
 
     /**
      * @var \DateTime
@@ -47,7 +70,9 @@ class TitledArticle implements Timestampable
      * @ORM\Column(name="chtitle", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="title")
      */
-    private $chtitle;
+    #[ORM\Column(name: 'chtitle', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'title')]
+    private $chTitle;
 
     /**
      * @var \DateTime
@@ -55,67 +80,60 @@ class TitledArticle implements Timestampable
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="state", value={"Published", "Closed"})
      */
+    #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'state', value: ['Published', 'Closed'])]
     private $closed;
 
     /**
-     * @param \DateTime $chtext
+     * @param \DateTime $chText
      */
-    public function setChtext($chtext)
+    public function setChText($chText): void
     {
-        $this->chtext = $chtext;
+        $this->chText = $chText;
+    }
+
+    public function getChText(): \DateTime
+    {
+        return $this->chText;
     }
 
     /**
-     * @return \DateTime
+     * @param \DateTime $chTitle
      */
-    public function getChtext()
+    public function setChTitle($chTitle): void
     {
-        return $this->chtext;
+        $this->chTitle = $chTitle;
     }
 
-    /**
-     * @param \DateTime $chtitle
-     */
-    public function setChtitle($chtitle)
+    public function getChTitle(): \DateTime
     {
-        $this->chtitle = $chtitle;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getChtitle()
-    {
-        return $this->chtitle;
+        return $this->chTitle;
     }
 
     /**
      * @param \DateTime $closed
      */
-    public function setClosed($closed)
+    public function setClosed($closed): void
     {
         $this->closed = $closed;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getClosed()
+    public function getClosed(): \DateTime
     {
         return $this->closed;
     }
 
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setText($text)
+    public function setText($text): void
     {
         $this->text = $text;
     }
@@ -125,17 +143,17 @@ class TitledArticle implements Timestampable
         return $this->text;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setState($state)
+    public function setState($state): void
     {
         $this->state = $state;
     }

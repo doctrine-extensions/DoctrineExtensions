@@ -1,6 +1,17 @@
 <?php
 
-namespace Mapping\Fixture\Yaml;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping\Fixture\Yaml;
+
+use Doctrine\Common\Collections\Collection;
 
 class MaterializedPathCategory
 {
@@ -23,47 +34,33 @@ class MaterializedPathCategory
      *
      * @return int $id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set title
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * Get title
-     *
-     * @return string $title
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
      * Add children
-     *
-     * @param Entity\Category $children
      */
-    public function addChildren(Category $children)
+    public function addChildren(Category $children): void
     {
         $this->children[] = $children;
     }
 
     /**
-     * Get children
-     *
-     * @return Doctrine\Common\Collections\Collection $children
+     * @return Collection $children
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -71,9 +68,9 @@ class MaterializedPathCategory
     /**
      * Set parent
      *
-     * @param Entity\Category $parent
+     * @param Category $parent
      */
-    public function setParent($parent)
+    public function setParent($parent): void
     {
         $this->parent = $parent;
     }
@@ -81,14 +78,14 @@ class MaterializedPathCategory
     /**
      * Get parent
      *
-     * @return Entity\Category $parent
+     * @return Category $parent
      */
-    public function getParent()
+    public function getParent(): Category
     {
         return $this->parent;
     }
 
-    public function setLevel($level)
+    public function setLevel($level): void
     {
         $this->level = $level;
     }
@@ -98,7 +95,7 @@ class MaterializedPathCategory
         return $this->level;
     }
 
-    public function setPath($path)
+    public function setPath($path): void
     {
         $this->path = $path;
     }
@@ -108,7 +105,7 @@ class MaterializedPathCategory
         return $this->path;
     }
 
-    public function setLockTime($lockTime)
+    public function setLockTime($lockTime): void
     {
         $this->lockTime = $lockTime;
     }

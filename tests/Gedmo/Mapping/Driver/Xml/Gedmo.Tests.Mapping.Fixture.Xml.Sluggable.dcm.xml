@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\Sluggable" table="sluggables">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="title" type="string" length="128"/>
+        <field name="code" type="string" length="16"/>
+        <field name="ean" type="string" length="13"/>
+        <field name="slug" type="string" length="156" unique="true">
+            <gedmo:slug unique="true" style="camel" updatable="false" separator="_" fields="title, ean, code">
+                <gedmo:handler class="Gedmo\Sluggable\Handler\TreeSlugHandler">
+                    <gedmo:handler-option name="parentRelationField" value="parent"/>
+                    <gedmo:handler-option name="separator" value="/"/>
+                </gedmo:handler>
+                <gedmo:handler class="Gedmo\Sluggable\Handler\RelativeSlugHandler">
+                    <gedmo:handler-option name="relationField" value="parent"/>
+                    <gedmo:handler-option name="relationSlugField" value="test"/>
+                    <gedmo:handler-option name="separator" value="-"/>
+                </gedmo:handler>
+            </gedmo:slug>
+        </field>
+        <many-to-one field="parent" target-entity="Sluggable">
+            <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

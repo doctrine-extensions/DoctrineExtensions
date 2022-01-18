@@ -1,41 +1,57 @@
 <?php
 
-namespace Gedmo\Uploadable\Mapping;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Uploadable\Mapping;
+
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Exception\UploadableInvalidPathException;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorSha1;
+use Gedmo\Uploadable\Mapping\Validator;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These are tests for the Mapping Validator of the Uploadable behavior
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ValidatorTest extends \PHPUnit\Framework\TestCase
+final class ValidatorTest extends TestCase
 {
+    /**
+     * @var ClassMetadata&MockObject
+     */
     protected $meta;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->meta = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
+        $this->meta = $this->getMockBuilder(ClassMetadata::class)
             ->setConstructorArgs(['', null])
             ->getMock();
 
         Validator::$enableMimeTypesConfigException = false;
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         Validator::$enableMimeTypesConfigException = true;
     }
 
-    public function test_validateField_ifFieldIsNotOfAValidTypeThrowException()
+    public function testValidateFieldIfFieldIsNotOfAValidTypeThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $this->meta->expects($this->once())
+        $this->expectException(InvalidMappingException::class);
+        $this->meta->expects(static::once())
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'someType']));
+            ->willReturn(['type' => 'someType']);
 
         Validator::validateField(
             $this->meta,
@@ -45,35 +61,35 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validatePath_ifPathIsNotAStringOrIsAnEmptyStringThrowException()
+    public function testValidatePathIfPathIsNotAStringOrIsAnEmptyStringThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\UploadableInvalidPathException');
+        $this->expectException(UploadableInvalidPathException::class);
         Validator::validatePath('');
     }
 
-    public function test_validatePathCreatesNewDirectoryWhenItNotExists()
+    public function testValidatePathCreatesNewDirectoryWhenItNotExists(): void
     {
-        $dir = sys_get_temp_dir().'/new/directory-12312432423';
+        $dir = TESTS_TEMP_DIR.'/new/directory-12312432423';
         Validator::validatePath($dir);
-        $this->assertTrue(is_dir($dir));
+        static::assertDirectoryExists($dir);
         rmdir($dir);
         rmdir(dirname($dir));
     }
 
-    public function test_validateConfiguration_ifNeitherFilePathFieldNorFileNameFieldIsNotDefinedThrowException()
+    public function testValidateConfigurationIfNeitherFilePathFieldNorFileNameFieldIsNotDefinedThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
+        $this->expectException(InvalidMappingException::class);
         $config = ['filePathField' => false, 'fileNameField' => false];
 
         Validator::validateConfiguration($this->meta, $config);
     }
 
-    public function test_validateConfiguration_ifPathMethodIsNotAValidMethodThrowException()
+    public function testValidateConfigurationIfPathMethodIsNotAValidMethodThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $this->meta->expects($this->once())
+        $this->expectException(InvalidMappingException::class);
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         $config = ['filePathField' => 'someField', 'pathMethod' => 'invalidMethod'];
 
@@ -83,12 +99,12 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validateConfiguration_ifCallbackMethodIsNotAValidMethodThrowException()
+    public function testValidateConfigurationIfCallbackMethodIsNotAValidMethodThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $this->meta->expects($this->once())
+        $this->expectException(InvalidMappingException::class);
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         $config = ['filePathField' => 'someField', 'pathMethod' => '', 'callback' => 'invalidMethod'];
 
@@ -98,15 +114,15 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validateConfiguration_ifFilenameGeneratorValueIsNotValidThrowException()
+    public function testValidateConfigurationIfFilenameGeneratorValueIsNotValidThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $this->meta->expects($this->once())
+        $this->expectException(InvalidMappingException::class);
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'someType']));
+            ->willReturn(['type' => 'someType']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -127,15 +143,15 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validateConfiguration_ifFilenameGeneratorValueIsValidButDoesntImplementNeededInterfaceThrowException()
+    public function testValidateConfigurationIfFilenameGeneratorValueIsValidButDoesntImplementNeededInterfaceThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $this->meta->expects($this->once())
+        $this->expectException(InvalidMappingException::class);
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'someType']));
+            ->willReturn(['type' => 'someType']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -156,14 +172,14 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validateConfiguration_ifFilenameGeneratorValueIsValidThenDontThrowException()
+    public function testValidateConfigurationIfFilenameGeneratorValueIsValidThenDontThrowException(): void
     {
-        $this->meta->expects($this->once())
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'string']));
+            ->willReturn(['type' => 'string']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -184,14 +200,14 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validateConfiguration_ifFilenameGeneratorValueIsAValidClassThenDontThrowException()
+    public function testValidateConfigurationIfFilenameGeneratorValueIsAValidClassThenDontThrowException(): void
     {
-        $this->meta->expects($this->once())
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'string']));
+            ->willReturn(['type' => 'string']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -200,7 +216,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'filePathField' => 'someField',
             'pathMethod' => '',
             'callback' => '',
-            'filenameGenerator' => 'Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorSha1',
+            'filenameGenerator' => FilenameGeneratorSha1::class,
             'maxSize' => 0,
             'allowedTypes' => '',
             'disallowedTypes' => '',
@@ -212,12 +228,12 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validateConfiguration_ifMaxSizeIsLessThanZeroThenThrowException()
+    public function testValidateConfigurationIfMaxSizeIsLessThanZeroThenThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $this->meta->expects($this->once())
+        $this->expectException(InvalidMappingException::class);
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         $config = [
             'fileMimeTypeField' => 'someField',
@@ -236,12 +252,12 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function test_validateConfiguration_ifAllowedTypesAndDisallowedTypesAreSetThenThrowException()
+    public function testValidateConfigurationIfAllowedTypesAndDisallowedTypesAreSetThenThrowException(): void
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $this->meta->expects($this->once())
+        $this->expectException(InvalidMappingException::class);
+        $this->meta->expects(static::once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         Validator::$enableMimeTypesConfigException = true;
 

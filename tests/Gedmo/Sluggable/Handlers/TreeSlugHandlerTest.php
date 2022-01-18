@@ -1,24 +1,30 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlug;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\TreeSlug;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeSlugHandlerTest extends BaseTestCaseORM
+final class TreeSlugHandlerTest extends BaseTestCaseORM
 {
-    const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlug';
+    public const TARGET = TreeSlug::class;
 
     protected function setUp(): void
     {
@@ -28,37 +34,37 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
 
         $food = $repo->findOneBy(['title' => 'Food']);
-        $this->assertEquals('food', $food->getSlug());
+        static::assertSame('food', $food->getSlug());
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
-        $this->assertEquals('food/fruits', $fruits->getSlug());
+        static::assertSame('food/fruits', $fruits->getSlug());
 
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
-        $this->assertEquals('food/fruits/oranges', $oranges->getSlug());
+        static::assertSame('food/fruits/oranges', $oranges->getSlug());
 
         $citrons = $repo->findOneBy(['title' => 'Citrons']);
-        $this->assertEquals('food/fruits/citrons', $citrons->getSlug());
+        static::assertSame('food/fruits/citrons', $citrons->getSlug());
 
         $apple = $repo->findOneBy(['title' => 'Apple']);
-        $this->assertEquals('food/fruits/apple', $apple->getSlug());
+        static::assertSame('food/fruits/apple', $apple->getSlug());
 
         $kiwi = $repo->findOneBy(['title' => 'Kiwi']);
-        $this->assertEquals('food/fruits/kiwi', $kiwi->getSlug());
+        static::assertSame('food/fruits/kiwi', $kiwi->getSlug());
 
         $banana = $repo->findOneBy(['title' => 'Banana']);
-        $this->assertEquals('food/fruits/banana', $banana->getSlug());
+        static::assertSame('food/fruits/banana', $banana->getSlug());
     }
 
-    public function testSlugUpdates()
+    public function testSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
@@ -69,13 +75,13 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($fruits);
         $this->em->flush();
 
-        $this->assertEquals('food/fructis', $fruits->getSlug());
+        static::assertSame('food/fructis', $fruits->getSlug());
 
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
-        $this->assertEquals('food/fructis/oranges', $oranges->getSlug());
+        static::assertSame('food/fructis/oranges', $oranges->getSlug());
 
         $citrons = $repo->findOneBy(['title' => 'Citrons']);
-        $this->assertEquals('food/fructis/citrons', $citrons->getSlug());
+        static::assertSame('food/fructis/citrons', $citrons->getSlug());
 
         $food = $repo->findOneBy(['title' => 'Food']);
         $food->setTitle('Foodissimo');
@@ -83,12 +89,12 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($food);
         $this->em->flush();
 
-        $this->assertEquals('foodissimo', $food->getSlug());
-        $this->assertEquals('foodissimo/fructis/oranges', $oranges->getSlug());
-        $this->assertEquals('foodissimo/fructis/citrons', $citrons->getSlug());
+        static::assertSame('foodissimo', $food->getSlug());
+        static::assertSame('foodissimo/fructis/oranges', $oranges->getSlug());
+        static::assertSame('foodissimo/fructis/citrons', $citrons->getSlug());
     }
 
-    public function testMoreSlugUpdates()
+    public function testMoreSlugUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
@@ -99,13 +105,13 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $repo->persistAsFirstChildOf($fruits, $milk);
         $this->em->flush();
 
-        $this->assertEquals('food/milk/fructis', $fruits->getSlug());
+        static::assertSame('food/milk/fructis', $fruits->getSlug());
 
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
-        $this->assertEquals('food/milk/fructis/oranges', $oranges->getSlug());
+        static::assertSame('food/milk/fructis/oranges', $oranges->getSlug());
 
         $citrons = $repo->findOneBy(['title' => 'Citrons']);
-        $this->assertEquals('food/milk/fructis/citrons', $citrons->getSlug());
+        static::assertSame('food/milk/fructis/citrons', $citrons->getSlug());
 
         $food = $repo->findOneBy(['title' => 'Food']);
         $food->setTitle('Foodissimo');
@@ -113,25 +119,25 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($food);
         $this->em->flush();
 
-        $this->assertEquals('foodissimo', $food->getSlug());
-        $this->assertEquals('foodissimo/milk/fructis/oranges', $oranges->getSlug());
-        $this->assertEquals('foodissimo/milk/fructis/citrons', $citrons->getSlug());
+        static::assertSame('foodissimo', $food->getSlug());
+        static::assertSame('foodissimo/milk/fructis/oranges', $oranges->getSlug());
+        static::assertSame('foodissimo/milk/fructis/citrons', $citrons->getSlug());
 
         $repo->persistAsFirstChildOf($fruits, $food);
         $this->em->flush();
 
-        $this->assertEquals('foodissimo/fructis/oranges', $oranges->getSlug());
-        $this->assertEquals('foodissimo/fructis/citrons', $citrons->getSlug());
+        static::assertSame('foodissimo/fructis/oranges', $oranges->getSlug());
+        static::assertSame('foodissimo/fructis/citrons', $citrons->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::TARGET);
 

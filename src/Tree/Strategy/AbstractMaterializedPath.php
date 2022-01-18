@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Strategy;
 
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\TreeLockingException;
@@ -10,6 +18,7 @@ use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
 use MongoDB\BSON\UTCDateTime;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -17,20 +26,17 @@ use MongoDB\BSON\UTCDateTime;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author <rocco@roccosportal.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class AbstractMaterializedPath implements Strategy
 {
-    const ACTION_INSERT = 'insert';
-    const ACTION_UPDATE = 'update';
-    const ACTION_REMOVE = 'remove';
+    public const ACTION_INSERT = 'insert';
+    public const ACTION_UPDATE = 'update';
+    public const ACTION_REMOVE = 'remove';
 
     /**
-     * TreeListener
-     *
-     * @var AbstractTreeListener
+     * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * Array of objects which were scheduled for path processes
@@ -76,45 +82,33 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     protected $pendingObjectsToRemove = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::MATERIALIZED_PATH;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
         if ($meta->isIdentifier($config['path_source']) || 'string' === $fieldMapping['type']) {
-            $this->scheduledForPathProcess[spl_object_hash($node)] = $node;
+            $this->scheduledForPathProcess[spl_object_id($node)] = $node;
         } else {
             $this->updateNode($om, $node, $ea);
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledUpdate($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $node);
 
@@ -132,12 +126,9 @@ abstract class AbstractMaterializedPath implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostPersist($om, $node, AdapterInterface $ea)
     {
-        $oid = spl_object_hash($node);
+        $oid = spl_object_id($node);
 
         if ($this->scheduledForPathProcess && array_key_exists($oid, $this->scheduledForPathProcess)) {
             $this->scheduledForPathProcessWithIdSet[$oid] = $node;
@@ -156,68 +147,44 @@ abstract class AbstractMaterializedPath implements Strategy
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_INSERT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($om, $node, AdapterInterface $ea)
     {
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_UPDATE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($om, $node, AdapterInterface $ea)
     {
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_REMOVE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($om, AdapterInterface $ea)
     {
         $this->lockTrees($om, $ea);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_REMOVE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_INSERT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_UPDATE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processMetadataLoad($om, $meta)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledDelete($om, $node)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
 
         $this->removeNode($om, $meta, $config, $node);
     }
@@ -225,16 +192,15 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * Update the $node
      *
-     * @param object           $node - target node
-     * @param AdapterInterface $ea   - event adapter
+     * @param object           $node target node
+     * @param AdapterInterface $ea   event adapter
      *
      * @return void
      */
     public function updateNode(ObjectManager $om, $node, AdapterInterface $ea)
     {
-        $oid = spl_object_hash($node);
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $parentProp = $meta->getReflectionProperty($config['parent']);
         $parentProp->setAccessible(true);
@@ -304,6 +270,8 @@ abstract class AbstractMaterializedPath implements Strategy
             $config['path'] => [null, $path],
         ];
 
+        $pathHash = null;
+
         if (isset($config['path_hash'])) {
             $pathHash = md5($path);
             $pathHashProp = $meta->getReflectionProperty($config['path_hash']);
@@ -342,13 +310,13 @@ abstract class AbstractMaterializedPath implements Strategy
         }
 
         if (!$uow instanceof MongoDBUnitOfWork) {
-            $ea->setOriginalObjectProperty($uow, $oid, $config['path'], $path);
+            $ea->setOriginalObjectProperty($uow, $node, $config['path'], $path);
             $uow->scheduleExtraUpdate($node, $changes);
         } else {
             $ea->recomputeSingleObjectChangeSet($uow, $meta, $node);
         }
         if (isset($config['path_hash'])) {
-            $ea->setOriginalObjectProperty($uow, $oid, $config['path_hash'], $pathHash);
+            $ea->setOriginalObjectProperty($uow, $node, $config['path_hash'], $pathHash);
         }
     }
 
@@ -363,7 +331,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function updateChildren(ObjectManager $om, $node, AdapterInterface $ea, $originalPath)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $children = $this->getChildren($om, $meta, $config, $originalPath);
 
         foreach ($children as $child) {
@@ -383,25 +351,22 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processPreLockingActions($om, $node, $action)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
 
         if ($config['activate_locking']) {
             $parentProp = $meta->getReflectionProperty($config['parent']);
             $parentProp->setAccessible(true);
             $parentNode = $node;
 
-            while (!is_null($parent = $parentProp->getValue($parentNode))) {
+            while (($parent = $parentProp->getValue($parentNode)) !== null) {
                 $parentNode = $parent;
             }
 
             // In some cases, the parent could be a not initialized proxy. In this case, the
             // "lockTime" field may NOT be loaded yet and have null instead of the date.
             // We need to be sure that this field has its real value
-            if ($parentNode !== $node && $parentNode instanceof \Doctrine\ODM\MongoDB\Proxy\Proxy) {
-                $reflMethod = new \ReflectionMethod(get_class($parentNode), '__load');
-                $reflMethod->setAccessible(true);
-
-                $reflMethod->invoke($parentNode);
+            if ($parentNode !== $node && $parentNode instanceof GhostObjectInterface) {
+                $parentNode->initializeProxy();
             }
 
             // If tree is already locked, we throw an exception
@@ -409,20 +374,20 @@ abstract class AbstractMaterializedPath implements Strategy
             $lockTimeProp->setAccessible(true);
             $lockTime = $lockTimeProp->getValue($parentNode);
 
-            if (!is_null($lockTime)) {
+            if (null !== $lockTime) {
                 $lockTime = $lockTime instanceof UTCDateTime ? $lockTime->toDateTime()->getTimestamp() : $lockTime->getTimestamp();
             }
 
-            if (!is_null($lockTime) && ($lockTime >= (time() - $config['locking_timeout']))) {
+            if (null !== $lockTime && ($lockTime >= (time() - $config['locking_timeout']))) {
                 $msg = 'Tree with root id "%s" is locked.';
                 $id = $meta->getIdentifierValue($parentNode);
 
                 throw new TreeLockingException(sprintf($msg, $id));
             }
 
-            $this->rootsOfTreesWhichNeedsLocking[spl_object_hash($parentNode)] = $parentNode;
+            $this->rootsOfTreesWhichNeedsLocking[spl_object_id($parentNode)] = $parentNode;
 
-            $oid = spl_object_hash($node);
+            $oid = spl_object_id($node);
 
             switch ($action) {
                 case self::ACTION_INSERT:
@@ -454,20 +419,20 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processPostEventsActions(ObjectManager $om, AdapterInterface $ea, $node, $action)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
 
         if ($config['activate_locking']) {
             switch ($action) {
                 case self::ACTION_INSERT:
-                    unset($this->pendingObjectsToInsert[spl_object_hash($node)]);
+                    unset($this->pendingObjectsToInsert[spl_object_id($node)]);
 
                     break;
                 case self::ACTION_UPDATE:
-                    unset($this->pendingObjectsToUpdate[spl_object_hash($node)]);
+                    unset($this->pendingObjectsToUpdate[spl_object_id($node)]);
 
                     break;
                 case self::ACTION_REMOVE:
-                    unset($this->pendingObjectsToRemove[spl_object_hash($node)]);
+                    unset($this->pendingObjectsToRemove[spl_object_id($node)]);
 
                     break;
                 default:
@@ -480,6 +445,30 @@ abstract class AbstractMaterializedPath implements Strategy
             }
         }
     }
+
+    /**
+     * Remove node and its children
+     *
+     * @param ObjectManager $om
+     * @param ClassMetadata $meta   Metadata
+     * @param object        $config config
+     * @param object        $node   node to remove
+     *
+     * @return void
+     */
+    abstract public function removeNode($om, $meta, $config, $node);
+
+    /**
+     * Returns children of the node with its original path
+     *
+     * @param ObjectManager $om
+     * @param ClassMetadata $meta         Metadata
+     * @param object        $config       config
+     * @param string        $originalPath original path of object
+     *
+     * @return array|\Traversable
+     */
+    abstract public function getChildren($om, $meta, $config, $originalPath);
 
     /**
      * Locks all needed trees
@@ -500,28 +489,4 @@ abstract class AbstractMaterializedPath implements Strategy
     {
         // Do nothing by default
     }
-
-    /**
-     * Remove node and its children
-     *
-     * @param ObjectManager $om
-     * @param object        $meta   - Metadata
-     * @param object        $config - config
-     * @param object        $node   - node to remove
-     *
-     * @return void
-     */
-    abstract public function removeNode($om, $meta, $config, $node);
-
-    /**
-     * Returns children of the node with its original path
-     *
-     * @param ObjectManager $om
-     * @param object        $meta         - Metadata
-     * @param object        $config       - config
-     * @param string        $originalPath - original path of object
-     *
-     * @return array|\Traversable
-     */
-    abstract public function getChildren($om, $meta, $config, $originalPath);
 }

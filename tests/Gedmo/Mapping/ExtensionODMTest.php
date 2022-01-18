@@ -1,16 +1,26 @@
 <?php
 
-namespace Gedmo\Mapping;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Event\LoadClassMetadataEventArgs;
-use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
-use Mapping\Fixture\Document\User;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Tests\Mapping\Fixture\Document\User;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
-class ExtensionODMTest extends BaseTestCaseMongoODM
+final class ExtensionODMTest extends BaseTestCaseMongoODM
 {
-    const USER = 'Mapping\\Fixture\\Document\\User';
+    public const USER = User::class;
 
     private $encoderListener;
 
@@ -18,7 +28,6 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
 
-        require_once __DIR__.'/Mock/Extension/Encoder/Mapping/Annotations.php';
         $evm = new EventManager();
         $this->encoderListener = new EncoderListener();
         $evm->addEventSubscriber($this->encoderListener);
@@ -26,25 +35,25 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
         $this->getMockDocumentManager($evm);
     }
 
-    public function testExtensionMetadata()
+    public function testExtensionMetadata(): void
     {
         $meta = $this->dm->getClassMetadata(self::USER);
         $config = $this->encoderListener->getConfiguration($this->dm, self::USER);
-        $this->assertArrayHasKey('encode', $config);
-        $this->assertCount(2, $config['encode']);
+        static::assertArrayHasKey('encode', $config);
+        static::assertCount(2, $config['encode']);
 
-        $this->assertArrayHasKey('name', $config['encode']);
+        static::assertArrayHasKey('name', $config['encode']);
         $options = $config['encode']['name'];
-        $this->assertEquals('sha1', $options['type']);
-        $this->assertEquals('xxx', $options['secret']);
+        static::assertSame('sha1', $options['type']);
+        static::assertSame('xxx', $options['secret']);
 
-        $this->assertArrayHasKey('password', $config['encode']);
+        static::assertArrayHasKey('password', $config['encode']);
         $options = $config['encode']['password'];
-        $this->assertEquals('md5', $options['type']);
-        $this->assertEmpty($options['secret']);
+        static::assertSame('md5', $options['type']);
+        static::assertEmpty($options['secret']);
     }
 
-    public function testGeneratedValues()
+    public function testGeneratedValues(): void
     {
         $user = new User();
         $user->setName('encode me');
@@ -52,13 +61,13 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
         $this->dm->persist($user);
         $this->dm->flush();
 
-        $this->assertEquals('c12fead75b49a41d43804e8229cb049d3b91bf42', $user->getName());
-        $this->assertEquals('5ebe2294ecd0e0f08eab7690d2a6ee69', $user->getPassword());
+        static::assertSame('c12fead75b49a41d43804e8229cb049d3b91bf42', $user->getName());
+        static::assertSame('5ebe2294ecd0e0f08eab7690d2a6ee69', $user->getPassword());
     }
 
-    public function testEventAdapterUsed()
+    public function testEventAdapterUsed(): void
     {
-        $mappedSubscriberClass = new \ReflectionClass('Gedmo\\Mapping\\MappedEventSubscriber');
+        $mappedSubscriberClass = new \ReflectionClass(MappedEventSubscriber::class);
         $getEventAdapterMethod = $mappedSubscriberClass->getMethod('getEventAdapter');
         $getEventAdapterMethod->setAccessible(true);
 
@@ -70,6 +79,6 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
             $this->encoderListener,
             $loadClassMetadataEventArgs
         );
-        $this->assertEquals('Gedmo\\Mapping\\Mock\\Extension\\Encoder\\Mapping\\Event\\Adapter\\ODM', get_class($eventAdapter));
+        static::assertInstanceOf(\Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ODM::class, $eventAdapter);
     }
 }

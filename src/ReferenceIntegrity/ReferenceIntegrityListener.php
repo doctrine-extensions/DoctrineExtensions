@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\ReferenceIntegrity;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -12,12 +20,11 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * The ReferenceIntegrity listener handles the reference integrity on related documents
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ReferenceIntegrityListener extends MappedEventSubscriber
 {
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
@@ -29,6 +36,8 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata for the Document
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */
@@ -52,7 +61,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         $class = get_class($object);
         $meta = $om->getClassMetadata($class);
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['referenceIntegrity'] as $property => $action) {
                 $reflProp = $meta->getReflectionProperty($property);
                 $refDoc = $reflProp->getValue($object);
@@ -61,7 +70,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                 switch ($action) {
                     case Validator::NULLIFY:
                         if (!isset($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->name));
+                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->getName()));
                         }
 
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
@@ -85,7 +94,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         break;
                     case Validator::PULL:
                         if (!isset($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->name));
+                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->getName()));
                         }
 
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
@@ -119,7 +128,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
                             throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' collection is restricted", $fieldMapping['targetDocument']));
                         }
-                        if ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
+                        if ($meta->isSingleValuedReference($property) && null !== $refDoc) {
                             throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' document is restricted", $fieldMapping['targetDocument']));
                         }
 
@@ -129,9 +138,6 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

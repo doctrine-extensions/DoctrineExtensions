@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 
@@ -10,12 +18,11 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPath extends AbstractMaterializedPath
 {
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $om
      */
     public function removeNode($om, $meta, $config, $node)
     {
@@ -25,7 +32,7 @@ class MaterializedPath extends AbstractMaterializedPath
         $path = addcslashes($wrapped->getPropertyValue($config['path']), '%');
 
         $separator = $config['path_ends_with_separator'] ? null : $config['path_separator'];
-        
+
         // Remove node's children
         $qb = $om->createQueryBuilder();
         $qb->select('e')
@@ -49,12 +56,12 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $om
      */
     public function getChildren($om, $meta, $config, $path)
     {
         $path = addcslashes($path, '%');
-        $qb = $om->createQueryBuilder($config['useObjectClass']);
+        $qb = $om->createQueryBuilder();
         $qb->select('e')
             ->from($config['useObjectClass'], 'e')
             ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')))

@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
@@ -13,7 +20,8 @@ use Gedmo\Mapping\Driver\File;
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
  */
 class Yaml extends File implements Driver
 {
@@ -24,12 +32,9 @@ class Yaml extends File implements Driver
      */
     protected $_extension = '.dcm.yml';
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
@@ -60,24 +65,21 @@ class Yaml extends File implements Driver
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->getName()}");
             }
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 
-    private function buildFieldConfiguration($field, $fieldMapping, array &$config)
+    private function buildFieldConfiguration(string $field, array $fieldMapping, array &$config): void
     {
-        if (is_array($fieldMapping) && isset($fieldMapping['gedmo'])) {
-            if (in_array('translatable', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['translatable'])) {
+        if (isset($fieldMapping['gedmo'])) {
+            if (in_array('translatable', $fieldMapping['gedmo'], true) || isset($fieldMapping['gedmo']['translatable'])) {
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
                 if (isset($fieldMapping['gedmo']['translatable']['fallback'])) {

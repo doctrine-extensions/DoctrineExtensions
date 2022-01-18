@@ -1,20 +1,29 @@
 <?php
 
-namespace Gedmo\Sortable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sortable;
 
 use Doctrine\Common\EventManager;
-use Sortable\Fixture\Document\Article;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Sortable\SortableListener;
+use Gedmo\Tests\Sortable\Fixture\Document\Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sortable behavior
  *
  * @author http://github.com/vetalt
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableDocumentTest extends BaseTestCaseMongoODM
+final class SortableDocumentTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Sortable\\Fixture\\Document\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {
@@ -26,27 +35,16 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
     }
 
-    private function populate()
-    {
-        for ($i = 0; $i <= 4; ++$i) {
-            $article = new Article();
-            $article->setTitle('article'.$i);
-            $this->dm->persist($article);
-        }
-        $this->dm->flush();
-        $this->dm->clear();
-    }
-
-    public function testInitialPositions()
+    public function testInitialPositions(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         for ($i = 0; $i <= 4; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.$i, $article->getTitle());
+            static::assertSame('article'.$i, $article->getTitle());
         }
     }
 
-    public function testMovePositions()
+    public function testMovePositions(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
@@ -56,11 +54,11 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
         for ($i = 1; $i <= 4; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i - 1), $article->getTitle());
+            static::assertSame('article'.($i - 1), $article->getTitle());
         }
     }
 
-    public function testMoveLastPositions()
+    public function testMoveLastPositions(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
@@ -70,13 +68,13 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i <= 3; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i + 1), $article->getTitle());
+            static::assertSame('article'.($i + 1), $article->getTitle());
         }
         $article = $repo->findOneBy(['position' => 4]);
-        $this->assertEquals('article0', $article->getTitle());
+        static::assertSame('article0', $article->getTitle());
     }
 
-    public function testDeletePositions()
+    public function testDeletePositions(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
@@ -86,7 +84,18 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i <= 3; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i + 1), $article->getTitle());
+            static::assertSame('article'.($i + 1), $article->getTitle());
         }
+    }
+
+    private function populate(): void
+    {
+        for ($i = 0; $i <= 4; ++$i) {
+            $article = new Article();
+            $article->setTitle('article'.$i);
+            $this->dm->persist($article);
+        }
+        $this->dm->flush();
+        $this->dm->clear();
     }
 }

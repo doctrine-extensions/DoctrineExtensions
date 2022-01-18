@@ -1,37 +1,45 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Tests\Mapping\Fixture\Xml\Translatable;
+use Gedmo\Tests\Mapping\Fixture\Xml\TranslatableWithEmbedded;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseOM;
 
 /**
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableMappingTest extends BaseTestCaseOM
+final class TranslatableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\Translatable\TranslatableListener
+     * @var TranslatableListener
      */
     private $translatable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -40,45 +48,45 @@ class TranslatableMappingTest extends BaseTestCaseOM
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Translatable');
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         $this->translatable = new TranslatableListener();
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->translatable);
 
-        $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Translatable\Entity\Translation',
-            'Mapping\Fixture\Xml\Translatable',
+        $this->em = $this->getDefaultMockSqliteEntityManager([
+            Translation::class,
+            Translatable::class,
         ], $chain);
     }
 
-    public function testTranslatableMetadata()
+    public function testTranslatableMetadata(): void
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Translatable');
-        $config = $this->translatable->getConfiguration($this->em, $meta->name);
+        $meta = $this->em->getClassMetadata(Translatable::class);
+        $config = $this->translatable->getConfiguration($this->em, $meta->getName());
 
-        $this->assertArrayHasKey('translationClass', $config);
-        $this->assertEquals('Gedmo\Translatable\Entity\Translation', $config['translationClass']);
-        $this->assertArrayHasKey('locale', $config);
-        $this->assertEquals('locale', $config['locale']);
+        static::assertArrayHasKey('translationClass', $config);
+        static::assertSame(Translation::class, $config['translationClass']);
+        static::assertArrayHasKey('locale', $config);
+        static::assertSame('locale', $config['locale']);
 
-        $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(4, $config['fields']);
-        $this->assertTrue(in_array('title', $config['fields']));
-        $this->assertTrue(in_array('content', $config['fields']));
-        $this->assertTrue(in_array('author', $config['fields']));
-        $this->assertTrue(in_array('views', $config['fields']));
-        $this->assertTrue($config['fallback']['author']);
-        $this->assertFalse($config['fallback']['views']);
+        static::assertArrayHasKey('fields', $config);
+        static::assertCount(4, $config['fields']);
+        static::assertContains('title', $config['fields']);
+        static::assertContains('content', $config['fields']);
+        static::assertContains('author', $config['fields']);
+        static::assertContains('views', $config['fields']);
+        static::assertTrue($config['fallback']['author']);
+        static::assertFalse($config['fallback']['views']);
     }
 
-    public function testTranslatableMetadataWithEmbedded()
+    public function testTranslatableMetadataWithEmbedded(): void
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\TranslatableWithEmbedded');
-        $config = $this->translatable->getConfiguration($this->em, $meta->name);
+        $meta = $this->em->getClassMetadata(TranslatableWithEmbedded::class);
+        $config = $this->translatable->getConfiguration($this->em, $meta->getName());
 
-        $this->assertContains('embedded.subtitle', $config['fields']);
+        static::assertContains('embedded.subtitle', $config['fields']);
     }
 }

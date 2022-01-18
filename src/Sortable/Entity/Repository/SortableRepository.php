@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sortable\Entity\Repository;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,7 +18,6 @@ use Gedmo\Sortable\SortableListener;
  * Sortable Repository
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SortableRepository extends EntityRepository
 {
@@ -20,10 +26,17 @@ class SortableRepository extends EntityRepository
      *
      * @var SortableListener
      */
-    protected $listener = null;
+    protected $listener;
 
-    protected $config = null;
-    protected $meta = null;
+    /**
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * @var ClassMetadata
+     */
+    protected $meta;
 
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
@@ -33,34 +46,38 @@ class SortableRepository extends EntityRepository
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof SortableListener) {
                     $sortableListener = $listener;
-                    break;
+
+                    break 2;
                 }
-            }
-            if ($sortableListener) {
-                break;
             }
         }
 
-        if (is_null($sortableListener)) {
+        if (null === $sortableListener) {
             throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ORM sortable listener');
         }
 
         $this->listener = $sortableListener;
         $this->meta = $this->getClassMetadata();
-        $this->config = $this->listener->getConfiguration($this->_em, $this->meta->name);
+        $this->config = $this->listener->getConfiguration($this->_em, $this->meta->getName());
     }
 
+    /**
+     * @return \Doctrine\ORM\Query
+     */
     public function getBySortableGroupsQuery(array $groupValues = [])
     {
         return $this->getBySortableGroupsQueryBuilder($groupValues)->getQuery();
     }
 
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     public function getBySortableGroupsQueryBuilder(array $groupValues = [])
     {
         $groups = isset($this->config['groups']) ? array_combine(array_values($this->config['groups']), array_keys($this->config['groups'])) : [];
         foreach ($groupValues as $name => $value) {
-            if (!in_array($name, $this->config['groups'])) {
-                throw new \InvalidArgumentException('Sortable group "'.$name.'" is not defined in Entity '.$this->meta->name);
+            if (!in_array($name, $this->config['groups'], true)) {
+                throw new \InvalidArgumentException('Sortable group "'.$name.'" is not defined in Entity '.$this->meta->getName());
             }
             unset($groups[$name]);
         }
@@ -80,6 +97,9 @@ class SortableRepository extends EntityRepository
         return $qb;
     }
 
+    /**
+     * @return array
+     */
     public function getBySortableGroups(array $groupValues = [])
     {
         $query = $this->getBySortableGroupsQuery($groupValues);

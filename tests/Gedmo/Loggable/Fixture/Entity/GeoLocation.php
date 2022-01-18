@@ -1,7 +1,17 @@
 <?php
 
-namespace Loggable\Fixture\Entity;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Loggable\Fixture\Entity;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -12,6 +22,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Embeddable()
  */
+#[ORM\Embeddable]
 class GeoLocation
 {
     /**
@@ -19,30 +30,21 @@ class GeoLocation
      * @ORM\Column(type="string")
      * @Gedmo\Versioned()
      */
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\Versioned]
     protected $location;
 
-    /**
-     * Geo constructor.
-     *
-     * @param string $location
-     */
-    public function __construct($location)
+    public function __construct(string $location)
     {
         $this->location = $location;
     }
 
-    /**
-     * @return string
-     */
-    public function getLocation()
+    public function getLocation(): string
     {
         return $this->location;
     }
 
-    /**
-     * @param string $location
-     */
-    public function setLocation($location)
+    public function setLocation(string $location): void
     {
         $this->location = $location;
     }

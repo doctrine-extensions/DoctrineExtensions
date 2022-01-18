@@ -1,7 +1,7 @@
 # Reference Integrity behavior extension for Doctrine 2
 
 **ReferenceIntegrity** behavior will automate the reference integrity for referenced documents.
-It works through annotations and yaml, and supports 'nullify', 'pull' and 'restrict' which throws an exception.
+It works through annotations and attributes, and supports 'nullify', 'pull' and 'restrict' which throws an exception.
 
 So let's say you have a Type which is referenced to multiple Articles, when deleting the Type, by default the Article
 would still have a reference to Type, since Mongo doesn't care. When setting the ReferenceIntegrity to 'nullify' it
@@ -15,13 +15,7 @@ Features:
 - ODM only
 - ReferenceOne and ReferenceMany support
 - 'nullify', 'pull' and 'restrict' support
-- Annotation and Yaml mapping support for extensions
-
-
-**Symfony:**
-
-- **ReferenceIntegrity** is available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
-for **Symfony2**, together with all other extensions
+- Attribute and Annotation mapping support for extensions
 
 This article will cover the basic installation and functionality of **ReferenceIntegrity** behavior
 
@@ -29,41 +23,44 @@ Content:
 
 - [Including](#including-extension) the extension
 - Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
 - Usage [examples](#advanced-examples)
 
 <a name="including-extension"></a>
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="document-mapping"></a>
 
 ## ReferenceIntegrity Document example:
 
-``` php
+```php
 <?php
 namespace Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="types")
  */
+#[ODM\Document(collection: 'types')]
 class Type
 {
     /**
      * @ODM\Id
      */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private $title;
 
     /**
@@ -71,6 +68,8 @@ class Type
      * @Gedmo\ReferenceIntegrity("nullify")
      * @var Article
      */
+    #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'type')]
+    #[Gedmo\ReferenceIntegrity(value: 'nullify')]
     protected $article;
 
     // ...
@@ -80,32 +79,6 @@ class Type
 It is necessary to have the 'mappedBy' option set, to be able to access the referenced documents.
 On removal of Type, on the referenced Article the Type reference will be nullified (removed)
 
-<a name="yaml-mapping"></a>
-
-## Yaml mapping example:
-
-Yaml mapped Article: **/mapping/yaml/Documents.Article.dcm.yml**
-
-```
----
-Document\Type:
-  type: document
-  collection: types
-  fields:
-      id:
-          id:     true
-      title:
-          type:   string
-      article:
-          reference: true
-          type: one
-          mappedBy: type
-          targetDocument: Document\Article
-          gedmo:
-              referenceIntegrity: nullify   # or pull or restrict
-
-```
-
 It is necessary to have the 'mappedBy' option set, to be able to access the referenced documents.
 
 <a name="advanced-examples"></a>
@@ -114,7 +87,7 @@ It is necessary to have the 'mappedBy' option set, to be able to access the refe
 
 Few operations to see 'nullify' in action:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');
@@ -138,7 +111,7 @@ $article->getType(); // won't be referenced to Type anymore
 
 Few operations to see 'pull' in action:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');

@@ -1,119 +1,97 @@
 <?php
 
-namespace Mapping\Fixture\Yaml;
+declare(strict_types=1);
 
-/**
- * @Table(name="categories")
- * @Entity
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
+namespace Gedmo\Tests\Mapping\Fixture\Yaml;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 class Category extends BaseCategory
 {
     /**
      * @var int
-     *
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
      * @var string
-     *
-     * @Column(name="slug", type="string", length=64)
      */
     private $slug;
 
     /**
-     * @var Entity\Category
-     *
-     * @OneToMany(targetEntity="Category", mappedBy="parent")
+     * @var Collection<int, Category>
      */
     private $children;
 
     /**
-     * @var Entity\Category
-     *
-     * @ManyToOne(targetEntity="Category", inversedBy="children")
-     * @JoinColumns({
-     *   @JoinColumn(name="parent_id", referencedColumnName="id")
-     * })
+     * @var Category
      */
     private $parent;
 
     private $changed;
 
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
     /**
-     * Get id
-     *
      * @return int $id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set title
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * Get title
-     *
-     * @return string $title
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * Set slug
-     *
      * @param string $slug
      */
-    public function setSlug($slug)
+    public function setSlug($slug): void
     {
         $this->slug = $slug;
     }
 
     /**
-     * Get slug
-     *
      * @return string $slug
      */
-    public function getSlug()
+    public function getSlug(): string
     {
         return $this->slug;
     }
 
     /**
-     * Add children
-     *
-     * @param Entity\Category $children
+     * @param Category $children
      */
-    public function addChildren(Category $children)
+    public function addChildren(self $children): void
     {
         $this->children[] = $children;
     }
 
     /**
-     * Get children
-     *
-     * @return Doctrine\Common\Collections\Collection $children
+     * @return Collection $children
      */
     public function getChildren()
     {
@@ -121,21 +99,17 @@ class Category extends BaseCategory
     }
 
     /**
-     * Set parent
-     *
-     * @param Entity\Category $parent
+     * @param Category $parent
      */
-    public function setParent($parent)
+    public function setParent($parent): void
     {
         $this->parent = $parent;
     }
 
     /**
-     * Get parent
-     *
-     * @return Entity\Category $parent
+     * @return Category $parent
      */
-    public function getParent()
+    public function getParent(): self
     {
         return $this->parent;
     }

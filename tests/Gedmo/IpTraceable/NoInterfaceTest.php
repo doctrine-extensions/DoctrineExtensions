@@ -1,24 +1,30 @@
 <?php
 
-namespace Gedmo\IpTraceable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use IpTraceable\Fixture\WithoutInterface;
-use Tool\BaseTestCaseORM;
+use Gedmo\IpTraceable\IpTraceableListener;
+use Gedmo\Tests\IpTraceable\Fixture\WithoutInterface;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for IpTraceable behavior
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NoInterfaceTest extends BaseTestCaseORM
+final class NoInterfaceTest extends BaseTestCaseORM
 {
-    const TEST_IP = '34.234.1.10';
-    const FIXTURE = 'IpTraceable\\Fixture\\WithoutInterface';
+    public const TEST_IP = '34.234.1.10';
+    public const FIXTURE = WithoutInterface::class;
 
     protected function setUp(): void
     {
@@ -29,10 +35,10 @@ class NoInterfaceTest extends BaseTestCaseORM
         $ipTraceableListener->setIpValue(self::TEST_IP);
         $evm->addEventSubscriber($ipTraceableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIpTraceableNoInterface()
+    public function testIpTraceableNoInterface(): void
     {
         $test = new WithoutInterface();
         $test->setTitle('Test');
@@ -42,11 +48,11 @@ class NoInterfaceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
-        $this->assertEquals(self::TEST_IP, $test->getCreated());
-        $this->assertEquals(self::TEST_IP, $test->getUpdated());
+        static::assertSame(self::TEST_IP, $test->getCreated());
+        static::assertSame(self::TEST_IP, $test->getUpdated());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

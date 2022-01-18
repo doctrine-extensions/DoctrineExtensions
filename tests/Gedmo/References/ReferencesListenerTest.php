@@ -1,32 +1,50 @@
 <?php
 
-namespace Gedmo\References;
+declare(strict_types=1);
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoDBAnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as ORMAnnotationDriver;
-use References\Fixture\ODM\MongoDB\Metadata;
-use References\Fixture\ODM\MongoDB\Product;
-use References\Fixture\ORM\Category;
-use References\Fixture\ORM\StockItem;
-use Tool\BaseTestCaseOM;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-class ReferencesListenerTest extends BaseTestCaseOM
+namespace Gedmo\Tests\References;
+
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
+use Gedmo\References\ReferencesListener;
+use Gedmo\Tests\References\Fixture\ODM\MongoDB\Metadata;
+use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
+use Gedmo\Tests\References\Fixture\ORM\Category;
+use Gedmo\Tests\References\Fixture\ORM\StockItem;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
+
+final class ReferencesListenerTest extends BaseTestCaseOM
 {
+    /**
+     * @var EntityManager
+     */
     private $em;
+
+    /**
+     * @var DocumentManager
+     */
     private $dm;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (!class_exists('Mongo')) {
-            $this->markTestSkipped('Missing Mongo extension.');
+        if (!extension_loaded('mongodb')) {
+            static::markTestSkipped('Missing Mongo extension.');
         }
 
-        $reader = new AnnotationReader();
-
-        $this->dm = $this->getMockDocumentManager('test', new MongoDBAnnotationDriver($reader, __DIR__.'/Fixture/ODM/MongoDB'));
+        $this->dm = $this->getMockDocumentManager(
+            'test',
+            $this->getMongoDBDriver([__DIR__.'/Fixture/ODM/MongoDB'])
+        );
 
         $listener = new ReferencesListener([
             'document' => $this->dm,
@@ -34,19 +52,17 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->evm->addEventSubscriber($listener);
 
-        $reader = new AnnotationReader();
-
-        $this->em = $this->getMockSqliteEntityManager(
+        $this->em = $this->getDefaultMockSqliteEntityManager(
             [
-                'References\Fixture\ORM\StockItem',
-                'References\Fixture\ORM\Category',
+                StockItem::class,
+                Category::class,
             ],
-            new ORMAnnotationDriver($reader, __DIR__.'/Fixture/ORM')
+            $this->getORMDriver([__DIR__.'/Fixture/ORM'])
         );
         $listener->registerManager('entity', $this->em);
     }
 
-    public function testShouldPersistReferencedIdentifiersIntoIdentifierField()
+    public function testShouldPersistReferencedIdentifiersIntoIdentifierField(): void
     {
         $stockItem = new StockItem();
         $stockItem->setName('Apple TV');
@@ -63,10 +79,10 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->em->persist($stockItem);
 
-        $this->assertEquals($product->getId(), $stockItem->getProductId());
+        static::assertSame($product->getId(), $stockItem->getProductId());
     }
 
-    public function testShouldPopulateReferenceOneWithProxyFromIdentifierField()
+    public function testShouldPopulateReferenceOneWithProxyFromIdentifierField(): void
     {
         $product = new Product();
         $product->setName('Apple TV');
@@ -86,10 +102,10 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $stockItem = $this->em->find(get_class($stockItem), $stockItem->getId());
 
-        $this->assertSame($product, $stockItem->getProduct());
+        static::assertSame($product, $stockItem->getProduct());
     }
 
-    public function testShouldPopulateReferenceManyWithLazyCollectionInstance()
+    public function testShouldPopulateReferenceManyWithLazyCollectionInstance(): void
     {
         $product = new Product();
         $product->setName('Apple TV');
@@ -117,21 +133,21 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $product = $this->dm->find(get_class($product), $product->getId());
 
-        $this->assertInstanceOf('Doctrine\Common\Collections\Collection', $product->getStockItems());
-        $this->assertEquals(2, $product->getStockItems()->count());
+        static::assertInstanceOf(Collection::class, $product->getStockItems());
+        static::assertSame(2, $product->getStockItems()->count());
 
         $first = $product->getStockItems()->first();
 
-        $this->assertInstanceOf(get_class($stockItem), $first);
-        $this->assertEquals('APP-TV', $first->getSku());
+        static::assertInstanceOf(get_class($stockItem), $first);
+        static::assertSame('APP-TV', $first->getSku());
 
         $last = $product->getStockItems()->last();
 
-        $this->assertInstanceOf(get_class($stockItem), $last);
-        $this->assertEquals('AMZN-APP-TV', $last->getSku());
+        static::assertInstanceOf(get_class($stockItem), $last);
+        static::assertSame('AMZN-APP-TV', $last->getSku());
     }
 
-    public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
+    public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance(): void
     {
         $tvCategory = new Category();
         $tvCategory->setName('Television');
@@ -166,10 +182,13 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $this->dm->persist($appleTV);
         $this->dm->flush();
 
-        $this->assertEquals($appleTV->getMetadatas()->first(), $tvMetadata);
-        $this->assertEquals($samsungTV->getMetadatas()->first(), $tvMetadata);
+        static::assertSame($appleTV->getMetadatas()->first()->getCategoryId(), $tvMetadata->getCategoryId());
+        static::assertSame($appleTV->getMetadatas()->first()->getCategory()->getName(), $tvMetadata->getCategory()->getName());
+        static::assertSame($samsungTV->getMetadatas()->first()->getCategoryId(), $tvMetadata->getCategoryId());
+        static::assertSame($samsungTV->getMetadatas()->first()->getCategory()->getName(), $tvMetadata->getCategory()->getName());
 
         $tvs = $tvCategory->getProducts();
-        $this->assertNotNull($tvs);
+        static::assertNotNull($tvs);
+        static::assertContainsOnlyInstancesOf(Product::class, $tvs);
     }
 }

@@ -1,28 +1,38 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Types\Type as TypeODM;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\NotifyPropertyChanged;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
 /**
- * The Timestampable listener handles the update of
- * dates on creation and update.
+ * The AbstractTrackingListener provides generic functions for all listeners.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class AbstractTrackingListener extends MappedEventSubscriber
 {
     /**
-     * Specifies the list of events to listen
+     * Specifies the list of events to listen on.
      *
-     * @return array
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
@@ -34,7 +44,9 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     }
 
     /**
-     * Maps additional metadata for the Entity
+     * Maps additional metadata for the object.
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */
@@ -45,8 +57,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     }
 
     /**
-     * Looks for Timestampable objects being updated
-     * to update modification date
+     * Processes object updates when the manager is flushed.
      *
      * @return void
      */
@@ -59,7 +70,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         $all = array_merge($ea->getScheduledObjectInsertions($uow), $ea->getScheduledObjectUpdates($uow));
         foreach ($all as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if (!$config = $this->getConfiguration($om, $meta->name)) {
+            if (!$config = $this->getConfiguration($om, $meta->getName())) {
                 continue;
             }
             $changeSet = $ea->getObjectChangeSet($uow, $object);
@@ -67,7 +78,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
 
             if ($uow->isScheduledForInsert($object) && isset($config['create'])) {
                 foreach ($config['create'] as $field) {
-                    // Field can not exist in change set, when persisting embedded document without parent for example
+                    // Field can not exist in change set, i.e. when persisting an embedded object without a parent
                     $new = array_key_exists($field, $changeSet) ? $changeSet[$field][1] : false;
                     if (null === $new) { // let manual values
                         $needChanges = true;
@@ -121,7 +132,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                             if (isset($trackedChild)) {
                                 $changingObject = $changes[1];
                                 if (!is_object($changingObject)) {
-                                    throw new UnexpectedValueException("Field - [{$tracked}] is expected to be object in class - {$meta->name}");
+                                    throw new UnexpectedValueException("Field - [{$tracked}] is expected to be object in class - {$meta->getName()}");
                                 }
                                 $objectMeta = $om->getClassMetadata(get_class($changingObject));
                                 $om->initializeObject($changingObject);
@@ -130,7 +141,9 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                                 $value = $changes[1];
                             }
 
-                            if (($singleField && in_array($value, (array) $options['value'])) || null === $options['value']) {
+                            $configuredValues = $this->getPhpValues($options['value'], $meta->getTypeOfField($tracked), $om);
+
+                            if (null === $configuredValues || ($singleField && in_array($value, $configuredValues, true))) {
                                 $needChanges = true;
                                 $this->updateField($object, $ea, $meta, $options['field']);
                             }
@@ -146,8 +159,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     }
 
     /**
-     * Checks for persisted Timestampable objects
-     * to update creation and modification dates
+     * Processes updates when an object is persisted in the manager.
      *
      * @return void
      */
@@ -176,25 +188,28 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     }
 
     /**
-     * Get value for update field
+     * Get the value for an updated field.
      *
      * @param ClassMetadata    $meta
      * @param string           $field
      * @param AdapterInterface $eventAdapter
+     *
+     * @return mixed
      */
     abstract protected function getFieldValue($meta, $field, $eventAdapter);
 
     /**
-     * Updates a field
+     * Updates a field.
      *
      * @param object           $object
      * @param AdapterInterface $eventAdapter
      * @param ClassMetadata    $meta
      * @param string           $field
+     *
+     * @return void
      */
     protected function updateField($object, $eventAdapter, $meta, $field)
     {
-        /** @var \Doctrine\Orm\Mapping\ClassMetadata|\Doctrine\ODM\MongoDB\Mapping\ClassMetadata $meta */
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
         $newValue = $this->getFieldValue($meta, $field, $eventAdapter);
@@ -203,7 +218,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         if ($meta->hasAssociation($field) && is_object($newValue) && !$eventAdapter->getObjectManager()->contains($newValue)) {
             $uow = $eventAdapter->getObjectManager()->getUnitOfWork();
 
-            // Check to persist only when the entity isn't already managed, persists always for MongoDB
+            // Check to persist only when the object isn't already managed, always persists for MongoDB
             if (!($uow instanceof UnitOfWork) || UnitOfWork::STATE_MANAGED !== $uow->getEntityState($newValue)) {
                 $eventAdapter->getObjectManager()->persist($newValue);
             }
@@ -215,5 +230,39 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             $uow = $eventAdapter->getObjectManager()->getUnitOfWork();
             $uow->propertyChanged($object, $field, $oldValue, $newValue);
         }
+    }
+
+    /**
+     * @param mixed $values
+     *
+     * @return mixed[]|null
+     */
+    private function getPhpValues($values, ?string $type, ObjectManager $om): ?array
+    {
+        if (null === $values) {
+            return null;
+        }
+
+        if (!is_array($values)) {
+            $values = [$values];
+        }
+
+        if (null !== $type) {
+            foreach ($values as $i => $value) {
+                if ($om instanceof DocumentManager) {
+                    if (TypeODM::hasType($type)) {
+                        $values[$i] = TypeODM::getType($type)
+                            ->convertToPHPValue($value);
+                    } else {
+                        $values[$i] = $value;
+                    }
+                } elseif (Type::hasType($type)) {
+                    $values[$i] = Type::getType($type)
+                        ->convertToPHPValue($value, $om->getConnection()->getDatabasePlatform());
+                }
+            }
+        }
+
+        return $values;
     }
 }

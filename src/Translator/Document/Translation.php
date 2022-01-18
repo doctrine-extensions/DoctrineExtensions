@@ -1,52 +1,62 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translator\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Translator\Translation as BaseTranslation;
 
 /**
  * Document translation class.
  *
- * @author  Konstantin Kudryashov <ever.zet@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @author Konstantin Kudryashov <ever.zet@gmail.com>
  *
- * @MappedSuperclass
+ * @ODM\MappedSuperclass
  */
+#[ODM\MappedSuperclass]
 abstract class Translation extends BaseTranslation
 {
     /**
-     * @Id
+     * @var string|null
+     *
+     * @ODM\Id
      */
+    #[ODM\Id]
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $property;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $value;
 
     /**
-     * Get id
-     *
-     * @return int $id
+     * @return string|null $id
      */
     public function getId()
     {

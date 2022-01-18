@@ -1,6 +1,15 @@
 <?php
 
-namespace Mapping\Fixture\Yaml;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class User
 {
@@ -19,7 +28,7 @@ class User
      *
      * @return int $id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -29,7 +38,7 @@ class User
      *
      * @param string $password
      */
-    public function setPassword($password)
+    public function setPassword($password): void
     {
         $this->password = $password;
     }
@@ -39,7 +48,7 @@ class User
      *
      * @return string $password
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -49,7 +58,7 @@ class User
      *
      * @param string $username
      */
-    public function setUsername($username)
+    public function setUsername($username): void
     {
         $this->username = $username;
     }
@@ -59,7 +68,7 @@ class User
      *
      * @return string $username
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -67,9 +76,9 @@ class User
     /**
      * Set company
      *
-     * @param $company
+     * @param string $company
      */
-    public function setCompany($company)
+    public function setCompany($company): void
     {
         $this->company = $company;
     }
@@ -79,7 +88,7 @@ class User
      *
      * @return string $company
      */
-    public function getCompany()
+    public function getCompany(): string
     {
         return $this->company;
     }

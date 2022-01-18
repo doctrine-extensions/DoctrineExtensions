@@ -1,25 +1,31 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Category;
-use Tree\Fixture\RootCategory;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tests\Tree\Fixture\RootCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NestedTreePositionTest extends BaseTestCaseORM
+final class NestedTreePositionTest extends BaseTestCaseORM
 {
-    const CATEGORY = 'Tree\\Fixture\\Category';
-    const ROOT_CATEGORY = 'Tree\\Fixture\\RootCategory';
+    public const CATEGORY = Category::class;
+    public const ROOT_CATEGORY = RootCategory::class;
 
     protected function setUp(): void
     {
@@ -28,13 +34,10 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFailToPersistRootSibling()
+    public function testShouldFailToPersistRootSibling(): void
     {
         $food = new Category();
         $food->setTitle('Food');
@@ -48,15 +51,12 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $repo->persistAsNextSiblingOf($sport, $food);
 
         $this->em->flush();
-        $this->assertSame(0, $sport->getLevel());
-        $this->assertSame(3, $sport->getLeft());
-        $this->assertSame(4, $sport->getRight());
+        static::assertSame(0, $sport->getLevel());
+        static::assertSame(3, $sport->getLeft());
+        static::assertSame(4, $sport->getRight());
     }
 
-    /**
-     * @test
-     */
-    public function shouldFailToPersistRootAsSiblingForRootBasedTree()
+    public function testShouldFailToPersistRootAsSiblingForRootBasedTree(): void
     {
         $this->expectException('UnexpectedValueException');
         $food = new RootCategory();
@@ -73,7 +73,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    public function testTreeChildPositionMove2()
+    public function testTreeChildPositionMove2(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -81,9 +81,9 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $meat = $repo->findOneBy(['title' => 'Meat']);
 
-        $this->assertEquals(2, $oranges->getLevel());
-        $this->assertEquals(7, $oranges->getLeft());
-        $this->assertEquals(8, $oranges->getRight());
+        static::assertSame(2, $oranges->getLevel());
+        static::assertSame(7, $oranges->getLeft());
+        static::assertSame(8, $oranges->getRight());
 
         $repo->persistAsNextSiblingOf($meat, $oranges);
         $this->em->flush();
@@ -91,24 +91,24 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $meat = $repo->findOneBy(['title' => 'Meat']);
 
-        $this->assertEquals(7, $oranges->getLeft());
-        $this->assertEquals(8, $oranges->getRight());
+        static::assertSame(7, $oranges->getLeft());
+        static::assertSame(8, $oranges->getRight());
 
         //Normal test that pass
-        $this->assertEquals(9, $meat->getLeft());
-        $this->assertEquals(10, $meat->getRight());
+        static::assertSame(9, $meat->getLeft());
+        static::assertSame(10, $meat->getRight());
 
         // Raw query to show the issue #108 with wrong left value by Doctrine
         $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c';
         $dql .= ' WHERE c.id = 5'; //5 == meat
         $meat_array = $this->em->createQuery($dql)->getScalarResult();
 
-        $this->assertEquals(9, $meat_array[0]['c_lft']);
-        $this->assertEquals(10, $meat_array[0]['c_rgt']);
-        $this->assertEquals(2, $meat_array[0]['c_level']);
+        static::assertSame(9, $meat_array[0]['c_lft']);
+        static::assertSame(10, $meat_array[0]['c_rgt']);
+        static::assertSame(2, $meat_array[0]['c_level']);
     }
 
-    public function testTreeChildPositionMove3()
+    public function testTreeChildPositionMove3(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -116,30 +116,30 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $milk = $repo->findOneBy(['title' => 'Milk']);
 
-        $this->assertEquals(2, $oranges->getLevel());
-        $this->assertEquals(7, $oranges->getLeft());
-        $this->assertEquals(8, $oranges->getRight());
+        static::assertSame(2, $oranges->getLevel());
+        static::assertSame(7, $oranges->getLeft());
+        static::assertSame(8, $oranges->getRight());
 
         $repo->persistAsNextSiblingOf($milk, $oranges);
         $this->em->flush();
 
-        $this->assertEquals(7, $oranges->getLeft());
-        $this->assertEquals(8, $oranges->getRight());
+        static::assertSame(7, $oranges->getLeft());
+        static::assertSame(8, $oranges->getRight());
 
         //Normal test that pass
-        $this->assertEquals(9, $milk->getLeft());
-        $this->assertEquals(10, $milk->getRight());
+        static::assertSame(9, $milk->getLeft());
+        static::assertSame(10, $milk->getRight());
 
         // Raw query to show the issue #108 with wrong left value by Doctrine
         $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c';
         $dql .= ' WHERE c.id = 4 '; //4 == Milk
         $milk_array = $this->em->createQuery($dql)->getScalarResult();
-        $this->assertEquals(9, $milk_array[0]['c_lft']);
-        $this->assertEquals(10, $milk_array[0]['c_rgt']);
-        $this->assertEquals(2, $milk_array[0]['c_level']);
+        static::assertSame(9, $milk_array[0]['c_lft']);
+        static::assertSame(10, $milk_array[0]['c_rgt']);
+        static::assertSame(2, $milk_array[0]['c_level']);
     }
 
-    public function testPositionedUpdates()
+    public function testPositionedUpdates(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -150,26 +150,26 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $repo->persistAsNextSiblingOf($vegitables, $citrons);
         $this->em->flush();
 
-        $this->assertEquals(5, $vegitables->getLeft());
-        $this->assertEquals(6, $vegitables->getRight());
-        $this->assertEquals(2, $vegitables->getParent()->getId());
+        static::assertSame(5, $vegitables->getLeft());
+        static::assertSame(6, $vegitables->getRight());
+        static::assertSame(2, $vegitables->getParent()->getId());
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
-        $this->assertEquals(2, $fruits->getLeft());
-        $this->assertEquals(9, $fruits->getRight());
+        static::assertSame(2, $fruits->getLeft());
+        static::assertSame(9, $fruits->getRight());
 
         $milk = $repo->findOneBy(['title' => 'Milk']);
         $repo->persistAsFirstChildOf($milk, $fruits);
         $this->em->flush();
 
-        $this->assertEquals(3, $milk->getLeft());
-        $this->assertEquals(4, $milk->getRight());
+        static::assertSame(3, $milk->getLeft());
+        static::assertSame(4, $milk->getRight());
 
-        $this->assertEquals(2, $fruits->getLeft());
-        $this->assertEquals(11, $fruits->getRight());
+        static::assertSame(2, $fruits->getLeft());
+        static::assertSame(11, $fruits->getRight());
     }
 
-    public function testTreeChildPositionMove()
+    public function testTreeChildPositionMove(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -177,25 +177,25 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
-        $this->assertEquals(2, $oranges->getLevel());
+        static::assertSame(2, $oranges->getLevel());
 
         $repo->persistAsNextSiblingOf($oranges, $fruits);
         $this->em->flush();
 
-        $this->assertEquals(1, $oranges->getLevel());
-        $this->assertCount(1, $repo->children($fruits, true));
+        static::assertSame(1, $oranges->getLevel());
+        static::assertCount(1, $repo->children($fruits, true));
 
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
-        $this->assertEquals(2, $vegies->getLeft());
+        static::assertSame(2, $vegies->getLeft());
         $repo->persistAsNextSiblingOf($vegies, $fruits);
         $this->em->flush();
 
-        $this->assertEquals(6, $vegies->getLeft());
+        static::assertSame(6, $vegies->getLeft());
         $this->em->flush();
-        $this->assertEquals(6, $vegies->getLeft());
+        static::assertSame(6, $vegies->getLeft());
     }
 
-    public function testOnRootCategory()
+    public function testOnRootCategory(): void
     {
         // need to check if this does not produce errors
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -232,7 +232,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $dql = 'SELECT COUNT(c) FROM '.self::ROOT_CATEGORY.' c';
         $dql .= ' WHERE c.lft = 1 AND c.rgt = 2 AND c.parent IS NULL AND c.level = 0';
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
-        $this->assertEquals(6, $count);
+        static::assertSame(6, (int) $count);
 
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -269,10 +269,10 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $dql .= ' WHERE c.parentId IS NULL AND c.level = 0';
         $dql .= ' AND c.lft BETWEEN 1 AND 11';
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
-        $this->assertEquals(6, $count);
+        static::assertSame(6, (int) $count);
     }
 
-    public function testRootTreePositionedInserts()
+    public function testRootTreePositionedInserts(): void
     {
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
@@ -301,17 +301,17 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(4, $fruits->getLeft());
-        $this->assertEquals(5, $fruits->getRight());
+        static::assertSame(4, $fruits->getLeft());
+        static::assertSame(5, $fruits->getRight());
 
-        $this->assertEquals(2, $vegitables->getLeft());
-        $this->assertEquals(3, $vegitables->getRight());
+        static::assertSame(2, $vegitables->getLeft());
+        static::assertSame(3, $vegitables->getRight());
 
-        $this->assertEquals(6, $milk->getLeft());
-        $this->assertEquals(7, $milk->getRight());
+        static::assertSame(6, $milk->getLeft());
+        static::assertSame(7, $milk->getRight());
 
-        $this->assertEquals(8, $meat->getLeft());
-        $this->assertEquals(9, $meat->getRight());
+        static::assertSame(8, $meat->getLeft());
+        static::assertSame(9, $meat->getRight());
 
         // test sibling positioned inserts
         $cookies = new RootCategory();
@@ -326,16 +326,16 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(6, $drinks->getLeft());
-        $this->assertEquals(7, $drinks->getRight());
+        static::assertSame(6, $drinks->getLeft());
+        static::assertSame(7, $drinks->getRight());
 
-        $this->assertEquals(10, $cookies->getLeft());
-        $this->assertEquals(11, $cookies->getRight());
+        static::assertSame(10, $cookies->getLeft());
+        static::assertSame(11, $cookies->getRight());
 
-        $this->assertTrue($repo->verify());
+        static::assertTrue($repo->verify());
     }
 
-    public function testRootlessTreeTopLevelInserts()
+    public function testRootlessTreeTopLevelInserts(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -360,17 +360,17 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(3, $fruits->getLeft());
-        $this->assertEquals(4, $fruits->getRight());
+        static::assertSame(3, $fruits->getLeft());
+        static::assertSame(4, $fruits->getRight());
 
-        $this->assertEquals(1, $vegetables->getLeft());
-        $this->assertEquals(2, $vegetables->getRight());
+        static::assertSame(1, $vegetables->getLeft());
+        static::assertSame(2, $vegetables->getRight());
 
-        $this->assertEquals(5, $milk->getLeft());
-        $this->assertEquals(6, $milk->getRight());
+        static::assertSame(5, $milk->getLeft());
+        static::assertSame(6, $milk->getRight());
 
-        $this->assertEquals(7, $meat->getLeft());
-        $this->assertEquals(8, $meat->getRight());
+        static::assertSame(7, $meat->getLeft());
+        static::assertSame(8, $meat->getRight());
 
         // test sibling positioned inserts
         $cookies = new Category();
@@ -385,16 +385,16 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(5, $drinks->getLeft());
-        $this->assertEquals(6, $drinks->getRight());
+        static::assertSame(5, $drinks->getLeft());
+        static::assertSame(6, $drinks->getRight());
 
-        $this->assertEquals(9, $cookies->getLeft());
-        $this->assertEquals(10, $cookies->getRight());
+        static::assertSame(9, $cookies->getLeft());
+        static::assertSame(10, $cookies->getRight());
 
-        $this->assertTrue($repo->verify());
+        static::assertTrue($repo->verify());
     }
 
-    public function testSimpleTreePositionedInserts()
+    public function testSimpleTreePositionedInserts(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -425,17 +425,17 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(4, $fruits->getLeft());
-        $this->assertEquals(5, $fruits->getRight());
+        static::assertSame(4, $fruits->getLeft());
+        static::assertSame(5, $fruits->getRight());
 
-        $this->assertEquals(2, $vegitables->getLeft());
-        $this->assertEquals(3, $vegitables->getRight());
+        static::assertSame(2, $vegitables->getLeft());
+        static::assertSame(3, $vegitables->getRight());
 
-        $this->assertEquals(6, $milk->getLeft());
-        $this->assertEquals(7, $milk->getRight());
+        static::assertSame(6, $milk->getLeft());
+        static::assertSame(7, $milk->getRight());
 
-        $this->assertEquals(8, $meat->getLeft());
-        $this->assertEquals(9, $meat->getRight());
+        static::assertSame(8, $meat->getLeft());
+        static::assertSame(9, $meat->getRight());
 
         // test sibling positioned inserts
         $cookies = new Category();
@@ -450,16 +450,24 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(6, $drinks->getLeft());
-        $this->assertEquals(7, $drinks->getRight());
+        static::assertSame(6, $drinks->getLeft());
+        static::assertSame(7, $drinks->getRight());
 
-        $this->assertEquals(10, $cookies->getLeft());
-        $this->assertEquals(11, $cookies->getRight());
+        static::assertSame(10, $cookies->getLeft());
+        static::assertSame(11, $cookies->getRight());
 
-        $this->assertTrue($repo->verify());
+        static::assertTrue($repo->verify());
     }
 
-    private function populate()
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::CATEGORY,
+            self::ROOT_CATEGORY,
+        ];
+    }
+
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
@@ -494,13 +502,5 @@ class NestedTreePositionTest extends BaseTestCaseORM
             ->persistAsFirstChildOf($citrons, $fruits);
 
         $this->em->flush();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-            self::ROOT_CATEGORY,
-        ];
     }
 }

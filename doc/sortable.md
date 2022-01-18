@@ -1,68 +1,51 @@
 # Sortable behavior extension for Doctrine2
 
-**Sortable** behavior will maintain a position field for ordering
-entities.
+**Sortable** behavior will maintain a position field for ordering entities.
 
 Features:
-
 - Automatic handling of position index
 - Group entity ordering by one or more fields
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
+- Annotation, Attribute and Xml mapping support for extensions
 
-**Note:**
-
-- Public [Sortable repository](http://github.com/Atlantic18/DoctrineExtensions "Sortable extension on Github") is available on github
-- Last update date: **2012-01-02**
-
-**Portability:**
-
-- **Sortable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
-
-This article will cover the basic installation and functionality of **Sortable**
-behavior
-
-Content:
-
-- [Including](#including-extension) the extension
-- Entity [example](#entity-mapping)
-- [Yaml](#yaml-mapping) mapping example
-- [Xml](#xml-mapping) mapping example
-- Basic usage [examples](#basic-examples)
-- Custom comparison [method](#custom-comparisons)
-
-
-<a name="including-extension"></a>
+Contents:
+- [Setup and autoloading](#setup-and-autoloading)
+- [Sortable mapping](#sortable-mapping)
+  - [Annotations](#annotation-mapping-example)
+  - [Attributes](#attribute-mapping-example)
+  - [Xml](#xml-mapping-example)
+- [Basic usage examples](#basic-usage-examples)
+- [Custom comparison method](#custom-comparison)
 
 ## Setup and autoloading
-
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup) or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
-<a name="entity-mapping"></a>
+## Sortable mapping
+- [SortableGroup](../src/Mapping/Annotation/SortableGroup.php) - used to specify property for **grouping**
+- [SortablePosition](../src/Mapping/Annotation/SortablePosition.php) - used to specify property to store **position** index
 
-## Sortable Entity example:
+|             | SortableGroup                               | SortablePosition                               |
+|-------------|---------------------------------------------|------------------------------------------------|
+| Annotations | `@Gedmo\Mapping\Annotation\SortableGroup`   | `@Gedmo\Mapping\Annotation\SortablePosition`   |
+| Attributes  | `#[Gedmo\Mapping\Annotation\SortableGroup]` | `#[Gedmo\Mapping\Annotation\SortablePosition]` |
+| Xml         | `<gedmo:sortable-group />`                  | `<gedmo:sortable-position />`                  |
 
-### Sortable annotations:
+> Implementing **[Sortable interface](../src/Sortable/Sortable.php) is optional**, except in cases there you need to identify entity as being Sortable.
+> The metadata is loaded only once then cache is activated.
 
-- **@Gedmo\Mapping\Annotation\SortableGroup** it will use this field for **grouping**
-- **@Gedmo\Mapping\Annotation\SortablePosition** it will use this column to store **position** index
-
-**Note:** that Sortable interface is not necessary, except in cases there
-you need to identify entity as being Sortable. The metadata is loaded only once then
-cache is activated
-
-**Note:** that you should register SortableRepository (or a subclass) as the repository in the Entity
+> You **should register [SortableRepository](../src/Sortable/Entity/Repository/SortableRepository.php)** (or a subclass) as the repository in the Entity
 annotation to benefit from its query methods.
 
-``` php
+### Annotation mapping example
+
+```php
 <?php
+
 namespace Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="items")
@@ -127,42 +110,77 @@ class Item
 }
 ```
 
-<a name="yaml-mapping"></a>
+### Attribute mapping example
 
-## Yaml mapping example
+```php
+<?php
 
-Yaml mapped Item: **/mapping/yaml/Entity.Item.dcm.yml**
+namespace Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sortable\Entity\Repository\SortableRepository;
+
+#[ORM\Table(name: 'items')]
+#[ORM\Entity(repositoryClass: SortableRepository::class)]
+class Item
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
+
+    #[ORM\Column(name: 'name', type: 'integer', length: 64)]
+    private string $name;
+
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(name: 'position', type: 'integer')]
+    private int $position;
+
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(name: 'category', type: 'string', length: 128)]
+    private string $category;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setPosition(int $position): void
+    {
+        $this->position = $position;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setCategory(string $category): void
+    {
+        $this->category = $category;
+    }
+
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
+}
 ```
----
-Entity\Item:
-  type: entity
-  table: items
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    name:
-      type: string
-      length: 64
-    position:
-      type: integer
-      gedmo:
-        - sortablePosition
-    category:
-      type: string
-      length: 128
-      gedmo:
-        - sortableGroup
-```
 
-<a name="xml-mapping"></a>
+### Xml mapping example
 
-## Xml mapping example
-
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -184,13 +202,11 @@ Entity\Item:
 </doctrine-mapping>
 ```
 
-<a name="basic-examples"></a>
-
-## Basic usage examples:
+## Basic usage examples
 
 ### To save **Items** at the end of the sorting list simply do:
 
-``` php
+```php
 <?php
 // By default, items are appended to the sorting list
 $item1 = new Item();
@@ -211,9 +227,9 @@ echo $item2->getPosition();
 // prints: 1
 ```
 
-### Save **Item** at a given position:
+### Save **Item** at a given position
 
-``` php
+```php
 <?php
 $item1 = new Item();
 $item1->setName('item 1');
@@ -244,9 +260,9 @@ foreach ($items as $item) {
 // 2: item 2
 ```
 
-### Reordering the sorted list:
+### Reordering the sorted list
 
-``` php
+```php
 <?php
 $item1 = new Item();
 $item1->setName('item 1');
@@ -290,25 +306,23 @@ If you want to use a foreign key / relation as sortable group, you have to put @
 private $parent;
 ```
 
-
 To move an item at the end of the list, you can set the position to `-1`:
 
 ```
 $item2->setPosition(-1);
 ```
 
-<a name="custom-comparisons"></a>
-
-## Custom comparison:
+## Custom comparison
 
 Sortable works by comparing objects in the same group to see how they should be positioned. From time to time you may want to customize the way these
 objects are compared by simply implementing the Doctrine\Common\Comparable interface
 
-``` php
+```php
 <?php
 namespace Entity;
 
 use Doctrine\Common\Comparable;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="items")

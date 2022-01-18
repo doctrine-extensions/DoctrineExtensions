@@ -1,24 +1,32 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Person;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Person;
+use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class EntityTranslationTableTest extends BaseTestCaseORM
+final class EntityTranslationTableTest extends BaseTestCaseORM
 {
-    const PERSON = 'Translatable\\Fixture\\Person';
-    const TRANSLATION = 'Translatable\\Fixture\\PersonTranslation';
+    public const PERSON = Person::class;
+    public const TRANSLATION = PersonTranslation::class;
 
     private $translatableListener;
 
@@ -32,10 +40,10 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testFixtureGeneratedTranslations()
+    public function testFixtureGeneratedTranslations(): void
     {
         $person = new Person();
         $person->setName('name in en');
@@ -45,11 +53,11 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
         //As Translate locale and Default locale are the same, no records should be present in translations table
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         // test second translations
         $person = $this->em->find(self::PERSON, $person->getId());
@@ -62,21 +70,19 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($person);
         //Only one translation should be present
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_de', $translations);
 
-        $this->assertArrayHasKey('name', $translations['de_de']);
-        $this->assertEquals('name in de', $translations['de_de']['name']);
+        static::assertArrayHasKey('name', $translations['de_de']);
+        static::assertSame('name in de', $translations['de_de']['name']);
 
         $this->translatableListener->setTranslatableLocale('en_us');
     }
 
     /**
      * Covers issue #438
-     *
-     * @test
      */
-    public function shouldPersistDefaultLocaleValue()
+    public function testShouldPersistDefaultLocaleValue(): void
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $this->translatableListener->setTranslatableLocale('de');
@@ -93,15 +99,15 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $articles = $this->em->createQuery('SELECT p FROM '.self::PERSON.' p')->getArrayResult();
-        $this->assertEquals('en_us', $articles[0]['name']);
+        static::assertSame('en_us', $articles[0]['name']);
         $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
-        $this->assertCount(2, $trans);
+        static::assertCount(2, $trans);
         foreach ($trans as $item) {
-            $this->assertEquals($item['locale'], $item['content']);
+            static::assertSame($item['locale'], $item['content']);
         }
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::PERSON,

@@ -1,6 +1,6 @@
 # Install Gedmo Doctrine2 extensions in Symfony 4
 
-Configure full featured [Doctrine2 extensions](http://github.com/Atlantic18/DoctrineExtensions) for your symfony 4 project.
+Configure full featured [Doctrine2 extensions](https://github.com/doctrine-extensions/DoctrineExtensions) for your symfony 4 project.
 This post will show you - how to create a simple configuration file to manage extensions with
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
@@ -54,11 +54,11 @@ doctrine:
 # only these lines are added additionally
         mappings:
             translatable:
-                type: annotation
+                type: annotation # or attribute
                 alias: Gedmo
                 prefix: Gedmo\Translatable\Entity
                 # make sure vendor library location is correct
-                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
 ```
 
 After that, running **php bin/console doctrine:mapping:info** you should see the output:
@@ -79,11 +79,11 @@ to you also. To skip mapping of these entities, you can map **only superclasses*
 ```yaml
 mappings:
     translatable:
-        type: annotation
+        type: annotation # or attribute
         alias: Gedmo
         prefix: Gedmo\Translatable\Entity
         # make sure vendor library location is correct
-        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity/MappedSuperclass"
+        dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity/MappedSuperclass"
 ```
 
 The configuration above, adds a **/MappedSuperclass** into directory depth, after running
@@ -106,21 +106,21 @@ orm:
 # only these lines are added additionally
     mappings:
         translatable:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Translatable\Entity
             # make sure vendor library location is correct
-            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
+            dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
         loggable:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Loggable\Entity
-            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
+            dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
         tree:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Tree\Entity
-            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Tree/Entity"
+            dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
 ```
 <a name="ext-filtering"></a>
 ## Filters
@@ -138,7 +138,7 @@ doctrine:
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
-```     
+```    
 <a name="ext-listeners"></a>
 
 ## Doctrine extension listener services
@@ -164,7 +164,7 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
-            - [ setDefaultLocale, [ %locale% ] ]
+            - [ setDefaultLocale, [ "%locale%" ] ]
             - [ setTranslationFallback, [ false ] ]
 
     gedmo.listener.timestampable:
@@ -217,6 +217,17 @@ sets the default locale to the value of your `%locale%` parameter, you can confi
 You will need to create this subscriber class if you use **loggable** , **translatable** or **blameable**
 behaviors. This listener will set the **locale used** from request and **username** to
 loggable and blameable. So, to finish the setup create **EventSubscriber\DoctrineExtensionSubscriber**
+
+## Register event subscriber for [Symfony Doctrine MongoDB Bundle](https://github.com/doctrine/DoctrineMongoDBBundle)
+
+Because DoctrineExtensions does not implement `EventSubscriberInterface` from MongoDBBundle, you need to manually tag 
+the listeners. Otherwise, the listeners will not be listening to the triggered events of Doctrine.
+
+```yaml
+Gedmo\Loggable\LoggableListener:
+    tags:
+        - { name: doctrine_mongodb.odm.event_subscriber }
+```
 
 ```php
 <?php
@@ -446,25 +457,25 @@ doctrine_mongodb:
             auto_mapping: true
             mappings:
                 translatable:
-                    type: annotation
+                    type: annotation # or attribute
                     alias: GedmoDocument
                     prefix: Gedmo\Translatable\Document
                     # make sure vendor library location is correct
-                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Document"
+                    dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Document"
 ```
 
 This also shows, how to make mappings based on single manager. All what differs is that **Document**
 instead of **Entity** is used. I haven't tested it with mongo though.
 
-**Note:** [extension repository](http://github.com/Atlantic18/DoctrineExtensions) contains all
-[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc) you may need
+**Note:** [extension repository](https://github.com/doctrine-extensions/DoctrineExtensions) contains all
+[documentation](../doc) you may need
 to understand how you can use it in your projects.
 
 <a name="alternative"></a>
 
 ## Alternative over configuration
 
-You can use [StofDoctrineExtensionsBundle](http://github.com/stof/StofDoctrineExtensionsBundle) which is a wrapper of these extensions
+You can use [StofDoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle) which is a wrapper of these extensions
 
 ## Troubleshooting
 

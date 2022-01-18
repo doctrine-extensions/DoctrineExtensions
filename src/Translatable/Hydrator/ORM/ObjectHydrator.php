@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Hydrator\ORM;
 
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator as BaseObjectHydrator;
@@ -12,7 +19,6 @@ use Gedmo\Translatable\TranslatableListener;
  * of the fields
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ObjectHydrator extends BaseObjectHydrator
 {
@@ -27,7 +33,7 @@ class ObjectHydrator extends BaseObjectHydrator
     private $savedSkipOnLoad;
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function prepare()
     {
@@ -38,19 +44,19 @@ class ObjectHydrator extends BaseObjectHydrator
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function cleanup()
     {
         parent::cleanup();
         $listener = $this->getTranslatableListener();
-        $listener->setSkipOnLoad(null !== $this->savedSkipOnLoad ? $this->savedSkipOnLoad : false);
+        $listener->setSkipOnLoad($this->savedSkipOnLoad ?? false);
     }
 
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      *
      * @return TranslatableListener
      */
@@ -61,15 +67,13 @@ class ObjectHydrator extends BaseObjectHydrator
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof TranslatableListener) {
                     $translatableListener = $listener;
-                    break;
+
+                    break 2;
                 }
-            }
-            if ($translatableListener) {
-                break;
             }
         }
 
-        if (is_null($translatableListener)) {
+        if (null === $translatableListener) {
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
 

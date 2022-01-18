@@ -25,6 +25,7 @@
   <xs:element name="translation" type="gedmo:translation"/>
   <xs:element name="tree" type="gedmo:tree"/>
   <xs:element name="tree-closure" type="gedmo:tree-closure"/>
+  <xs:element name="tree-path" type="gedmo:tree-path"/>
   <xs:element name="loggable" type="gedmo:loggable"/>
   <xs:element name="soft-deleteable" type="gedmo:soft-deleteable"/>
   <xs:element name="uploadable" type="gedmo:uploadable"/>
@@ -42,6 +43,7 @@
   <xs:element name="tree-parent" type="gedmo:emptyType"/>
   <xs:element name="tree-path-source" type="gedmo:emptyType"/>
   <xs:element name="tree-lock-time" type="gedmo:emptyType"/>
+  <xs:element name="tree-path-hash" type="gedmo:emptyType"/>
   <xs:element name="sortable-group" type="gedmo:emptyType"/>
   <xs:element name="sortable-position" type="gedmo:emptyType"/>
   <xs:element name="uploadable-file-mime-type" type="gedmo:emptyType"/>
@@ -104,6 +106,8 @@
 
   <xs:complexType name="soft-deleteable">
     <xs:attribute name="field-name" type="xs:string" use="required" />
+    <xs:attribute name="hard-delete" type="xs:boolean" use="optional" />
+    <xs:attribute name="time-aware" type="xs:boolean" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="handler">

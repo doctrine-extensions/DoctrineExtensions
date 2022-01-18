@@ -1,7 +1,17 @@
 <?php
 
-namespace Translatable\Fixture;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Fixture;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
@@ -9,33 +19,51 @@ use Gedmo\Translatable\Translatable;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Article implements Translatable
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
+    #[Gedmo\Translatable]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private $title;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(name="content", type="text", nullable=true)
      */
+    #[Gedmo\Translatable]
+    #[ORM\Column(name: 'content', type: Types::TEXT, nullable: true)]
     private $content;
 
     /**
      * @Gedmo\Translatable(fallback=false)
      * @ORM\Column(name="views", type="integer", nullable=true)
      */
+    #[Gedmo\Translatable(fallback: false)]
+    #[ORM\Column(name: 'views', type: Types::INTEGER, nullable: true)]
     private $views;
 
     /**
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="author", type="string", nullable=true)
      */
+    #[Gedmo\Translatable(fallback: true)]
+    #[ORM\Column(name: 'author', type: Types::STRING, nullable: true)]
     private $author;
 
     /**
@@ -43,19 +71,21 @@ class Article implements Translatable
      *
      * @Gedmo\Locale
      */
+    #[Gedmo\Locale]
     private $locale;
 
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private $comments;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addComment(Comment $comment)
+    public function addComment(Comment $comment): void
     {
         $comment->setArticle($this);
         $this->comments[] = $comment;
@@ -66,7 +96,7 @@ class Article implements Translatable
         return $this->comments;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -76,7 +106,7 @@ class Article implements Translatable
         return $this->title;
     }
 
-    public function setContent($content)
+    public function setContent($content): void
     {
         $this->content = $content;
     }
@@ -86,12 +116,12 @@ class Article implements Translatable
         return $this->content;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): void
     {
         $this->locale = $locale;
     }
 
-    public function setViews($views)
+    public function setViews($views): void
     {
         $this->views = $views;
     }
@@ -101,7 +131,7 @@ class Article implements Translatable
         return $this->views;
     }
 
-    public function setAuthor($author)
+    public function setAuthor($author): void
     {
         $this->author = $author;
     }
