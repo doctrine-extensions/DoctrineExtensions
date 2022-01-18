@@ -90,65 +90,41 @@ class EntityWithMultipleFiles
         return $this->filePath2;
     }
 
-    /**
-     * @return mixed
-     */
     public function getFileName1()
     {
         return $this->fileName1;
     }
 
-    /**
-     * @param mixed $fileName1
-     */
     public function setFileName1($fileName1)
     {
         $this->fileName1 = $fileName1;
     }
 
-    /**
-     * @return mixed
-     */
     public function getFileName2()
     {
         return $this->fileName2;
     }
 
-    /**
-     * @param mixed $fileName2
-     */
     public function setFileName2($fileName2)
     {
         $this->fileName2 = $fileName2;
     }
 
-    /**
-     * @return boolean
-     */
     public function isCallback1WasCalled()
     {
         return $this->callback1WasCalled;
     }
 
-    /**
-     * @param boolean $callback1WasCalled
-     */
     public function setCallback1WasCalled($callback1WasCalled)
     {
         $this->callback1WasCalled = $callback1WasCalled;
     }
 
-    /**
-     * @return boolean
-     */
     public function isCallback2WasCalled()
     {
         return $this->callback2WasCalled;
     }
 
-    /**
-     * @param boolean $callback2WasCalled
-     */
     public function setCallback2WasCalled($callback2WasCalled)
     {
         $this->callback2WasCalled = $callback2WasCalled;
@@ -166,6 +142,6 @@ class EntityWithMultipleFiles
 
     public function getPath()
     {
-        return __DIR__.'/../../../../temp/uploadable';
+        return TESTS_TEMP_DIR.'/uploadable';
     }
 }
