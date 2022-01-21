@@ -175,7 +175,7 @@ class Validator
         }
 
         if (!is_writable($path)) {
-            throw new UploadableCantWriteException(sprintf('Directory "%s" does is not writable.', $path));
+            throw new UploadableCantWriteException(sprintf('Directory "%s" is not writable.', $path));
         }
     }
 
