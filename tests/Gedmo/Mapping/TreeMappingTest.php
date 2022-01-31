@@ -79,7 +79,7 @@ final class TreeMappingTest extends ORMMappingTestCase
      * @group legacy
      *
      * @see https://github.com/doctrine/persistence/pull/144
-     * @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey
+     * @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey()
      */
     public function testApcCached(): void
     {
