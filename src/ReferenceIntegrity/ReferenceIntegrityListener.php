@@ -24,9 +24,9 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
 class ReferenceIntegrityListener extends MappedEventSubscriber
 {
     /**
-     * @return string[]
+     * @return array
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents():array
     {
         return [
             'loadClassMetadata',
