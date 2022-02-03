@@ -89,7 +89,7 @@ class LoggableListener extends MappedEventSubscriber
     /**
      * @return string[]
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents():array
     {
         return [
             'onFlush',
