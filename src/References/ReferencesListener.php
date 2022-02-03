@@ -135,9 +135,9 @@ class ReferencesListener extends MappedEventSubscriber
     }
 
     /**
-     * @return string[]
+     * @return array
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents():array
     {
         return [
             'postLoad',
