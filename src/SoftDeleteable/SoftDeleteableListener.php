@@ -37,9 +37,9 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public const POST_SOFT_DELETE = 'postSoftDelete';
 
     /**
-     * @return string[]
+     * @return array
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents():array
     {
         return [
             'loadClassMetadata',
