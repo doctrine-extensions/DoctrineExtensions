@@ -43,9 +43,9 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Specifies the list of events to listen
      *
-     * @return string[]
+     * @return array
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents():array
     {
         return [
             'onFlush',
