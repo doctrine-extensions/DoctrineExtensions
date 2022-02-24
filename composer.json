@@ -46,7 +46,6 @@
         "doctrine/event-manager": "^1.2 || ^2.0",
         "doctrine/persistence": "^2.2 || ^3.0",
         "psr/cache": "^1 || ^2 || ^3",
-        "symfony/cache": "^4.4 || ^5.3 || ^6.0",
         "symfony/deprecation-contracts": "^2.1 || ^3.0"
     },
     "require-dev": {
@@ -61,6 +60,7 @@
         "phpstan/phpstan-doctrine": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^8.5 || ^9.5",
+        "symfony/cache": "^4.4 || ^5.3 || ^6.0",
         "symfony/console": "^4.4 || ^5.3 || ^6.0",
         "symfony/phpunit-bridge": "^6.0",
         "symfony/yaml": "^4.4 || ^5.3 || ^6.0"
@@ -73,6 +73,7 @@
         "sebastian/comparator": "<2.0"
     },
     "suggest": {
+        "doctrine/cache": "to cache parsed annotations",
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
         "doctrine/orm": "to use the extensions with the ORM",
         "symfony/cache": "to cache parsed annotations"
