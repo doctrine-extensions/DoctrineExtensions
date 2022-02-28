@@ -44,8 +44,11 @@ class BlameableListener extends AbstractTrackingListener
             return $this->user;
         }
 
-        // ok so its not an association, then it is a string
+        // ok so it's not an association, then it is a string, or an object
         if (is_object($this->user)) {
+            if (method_exists($this->user, 'getUserIdentifier')) {
+                return (string) $this->user->getUserIdentifier();
+            }
             if (method_exists($this->user, 'getUsername')) {
                 return (string) $this->user->getUsername();
             }
@@ -53,7 +56,7 @@ class BlameableListener extends AbstractTrackingListener
                 return $this->user->__toString();
             }
 
-            throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUsername or __toString');
+            throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUserIdentifier, getUsername or __toString');
         }
 
         return $this->user;
