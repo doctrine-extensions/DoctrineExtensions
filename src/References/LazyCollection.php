@@ -221,7 +221,7 @@ class LazyCollection implements Collection
     }
 
     /**
-     * @return Collection
+     * @return Collection<mixed>[]
      */
     public function partition(\Closure $p)
     {

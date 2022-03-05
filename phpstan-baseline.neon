@@ -791,6 +791,11 @@ parameters:
 			path: src/Uploadable/UploadableListener.php
 
 		-
+			message: "#^Method Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Entity\\\\Geo\\:\\:parseFloatToString\\(\\) should return numeric\\-string but returns non\\-empty\\-string\\.$#"
+			count: 1
+			path: tests/Gedmo/Loggable/Fixture/Entity/Geo.php
+
+		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<T of object\\>\\:\\:mapField\\(\\)\\.$#"
 			count: 2
 			path: tests/Gedmo/Mapping/MetadataFactory/CustomDriverTest.php
@@ -829,4 +834,14 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
 			count: 1
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Timestampable\\\\Fixture\\\\ArticleCarbon\\:\\:getCreated\\(\\) should return Carbon\\\\Carbon\\|null but returns DateTime\\|null\\.$#"
+			count: 1
+			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
+
+		-
+			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
 

@@ -77,7 +77,7 @@ interface TranslatableAdapter extends AdapterInterface
      * @phpstan-param class-string $transClass
      * @phpstan-param class-string $objectClass
      *
-     * @return void
+     * @return int
      */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass);
 
