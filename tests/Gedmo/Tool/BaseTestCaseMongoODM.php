@@ -35,7 +35,7 @@ use MongoDB\Client;
 abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DocumentManager
+     * @var DocumentManager|null
      */
     protected $dm;
 

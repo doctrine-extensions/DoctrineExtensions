@@ -101,7 +101,7 @@ abstract class Person
         return $this->name;
     }
 
-    public function setParent(Category $parent = null): void
+    public function setParent(self $parent = null): void
     {
         $this->parent = $parent;
     }

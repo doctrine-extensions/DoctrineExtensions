@@ -163,7 +163,7 @@ class TranslationRepository extends DocumentRepository
      * @param string $value
      * @param string $class
      *
-     * @return object instance of $class or null if not found
+     * @return object|null instance of $class or null if not found
      */
     public function findObjectByTranslatedField($field, $value, $class)
     {
