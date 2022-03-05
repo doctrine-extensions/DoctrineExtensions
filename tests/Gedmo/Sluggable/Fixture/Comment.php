@@ -41,7 +41,7 @@ class Comment
     private $message;
 
     /**
-     * @var Article|null
+     * @var TranslatableArticle|null
      *
      * @ORM\ManyToOne(targetEntity="TranslatableArticle", inversedBy="comments")
      */

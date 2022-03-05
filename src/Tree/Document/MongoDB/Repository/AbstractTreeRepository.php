@@ -32,7 +32,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Repository utils
      *
-     * @var RepositoryUtils
+     * @var RepositoryUtilsInterface
      */
     protected $repoUtils;
 

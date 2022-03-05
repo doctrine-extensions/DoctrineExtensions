@@ -9,7 +9,7 @@
 
 namespace Gedmo\References\Mapping\Driver;
 
-use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Mapping\Annotation\ReferenceMany;
 use Gedmo\Mapping\Annotation\ReferenceManyEmbed;
 use Gedmo\Mapping\Annotation\ReferenceOne;

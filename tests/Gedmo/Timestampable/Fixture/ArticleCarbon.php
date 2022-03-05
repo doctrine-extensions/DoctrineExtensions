@@ -68,7 +68,7 @@ class ArticleCarbon implements Timestampable
     private $author;
 
     /**
-     * @var \Carbon\Carbon|null
+     * @var \DateTime|\Carbon\Carbon|null
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="date")
@@ -78,7 +78,7 @@ class ArticleCarbon implements Timestampable
     private $created;
 
     /**
-     * @var \Carbon\CarbonImmutable|null
+     * @var \DateTime|\Carbon\CarbonImmutable|null
      *
      * @ORM\Column(name="updated", type="datetime")
      * @Gedmo\Timestampable
@@ -88,7 +88,7 @@ class ArticleCarbon implements Timestampable
     private $updated;
 
     /**
-     * @var \Carbon\CarbonImmutable|null
+     * @var \DateTime|\Carbon\CarbonImmutable|null
      *
      * @ORM\Column(name="published", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
@@ -98,7 +98,7 @@ class ArticleCarbon implements Timestampable
     private $published;
 
     /**
-     * @var \Carbon\CarbonImmutable|null
+     * @var \DateTime|\Carbon\CarbonImmutable|null
      *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})

@@ -33,7 +33,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Repository utils
      *
-     * @var RepositoryUtils
+     * @var RepositoryUtilsInterface
      */
     protected $repoUtils;
 
