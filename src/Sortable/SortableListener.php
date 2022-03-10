@@ -528,6 +528,7 @@ class SortableListener extends MappedEventSubscriber
                     continue;
                 }
                 $ea->updatePositions($relocation, $delta, $config);
+                unset($this->relocations[$hash]['deltas'][$deltaKey]);
             }
         }
 
