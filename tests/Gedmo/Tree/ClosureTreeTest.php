@@ -309,6 +309,48 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertNotNull($categoryTwo->getId());
     }
 
+    /**
+     * @dataProvider provideNodeOrders
+     *
+     * @param bool $rootFirst
+     */
+    public function testClosuresCreatedMustNotBeAffectedByPersistOrder($rootFirst): void
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber($this->listener);
+
+        $this->getDefaultMockSqliteEntityManager($evm);
+
+        $root = new Category();
+        $root->setTitle('ancestor_first_root');
+
+        $node = new Category();
+        $node->setTitle('ancestor_first_node');
+        $node->setParent($root);
+
+        if ($rootFirst) {
+            $this->em->persist($root);
+            $this->em->persist($node);
+        } else {
+            $this->em->persist($node);
+            $this->em->persist($root);
+        }
+        $this->em->flush();
+        $this->em->clear();
+
+        $closures = $this->em->getRepository(CategoryClosure::class)->findAll();
+
+        static::assertCount(3, $closures);
+    }
+
+    public function provideNodeOrders(): array
+    {
+        return [
+            [true],
+            [false],
+        ];
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [
