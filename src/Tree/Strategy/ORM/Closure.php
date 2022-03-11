@@ -288,6 +288,13 @@ class Closure implements Strategy
                 $q->setParameters(compact('parent'));
                 $ancestors = $q->getArrayResult();
 
+                if ([] === $ancestors) {
+                    // The parent has been persisted after the child, postpone the evaluation
+                    $this->pendingChildNodeInserts[$emHash][] = $node;
+
+                    continue;
+                }
+
                 foreach ($ancestors as $ancestor) {
                     $entries[] = [
                         $ancestorColumnName => $ancestor['ancestor'][$identifier],
