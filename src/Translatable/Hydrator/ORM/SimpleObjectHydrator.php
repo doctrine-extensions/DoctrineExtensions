@@ -28,7 +28,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
      * @see SimpleObjectHydrator::prepare()
      * @see SimpleObjectHydrator::cleanup()
      *
-     * @var bool
+     * @var bool|null
      */
     private $savedSkipOnLoad;
 
