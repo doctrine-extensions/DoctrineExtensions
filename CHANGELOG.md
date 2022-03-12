@@ -23,6 +23,7 @@ a release.
 - Uploadable: `FileInfoInterface::getSize()` return type declaration (#2413).
 - Tree: Setting a new Tree Root when Tree Parent is `null`.
 - Tree: update cache key used by Closure to match Doctrine's one (#2416).
+- Tree: persist order does not affect entities on Closure (#2432)
 
 ## [3.5.0] - 2022-01-10
 ### Added
