@@ -335,9 +335,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $config = $this->listener->getConfiguration($this->_em, $meta->getName());
 
         if (isset($config['root']) && null === $root) {
-            if (null === $root) {
-                throw new InvalidArgumentException('If tree has root, getLeafs method requires any node of this tree');
-            }
+            throw new InvalidArgumentException('If tree has root, getLeafs method requires any node of this tree');
         }
 
         $qb = $this->getQueryBuilder();
