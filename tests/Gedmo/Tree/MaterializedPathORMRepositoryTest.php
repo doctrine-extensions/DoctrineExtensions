@@ -38,11 +38,6 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
      */
     private $listener;
 
-    /**
-     * @var array
-     */
-    private $config = [];
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -55,7 +50,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
+        $this->listener->getConfiguration($this->em, $meta->getName());
         $this->populate();
 
         $this->repo = $this->em->getRepository(self::CATEGORY);

@@ -92,18 +92,6 @@ final class UploadableEntityTest extends BaseTestCaseORM
     /** @var string */
     private $destinationTestFile;
 
-    /** @var string */
-    private $destinationTestFile2;
-
-    /** @var string */
-    private $destinationTestFile3;
-
-    /** @var string */
-    private $destinationTestFileWithoutExt;
-
-    /** @var string */
-    private $destinationTestFileWithSpaces;
-
     /** @var false|string */
     private $testFilename;
 
@@ -143,10 +131,6 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->testFileWithSpaces = TESTS_PATH.'/data/test with spaces.txt';
         $this->destinationTestDir = TESTS_TEMP_DIR.'/uploadable';
         $this->destinationTestFile = $this->destinationTestDir.'/test.txt';
-        $this->destinationTestFile2 = $this->destinationTestDir.'/test2.txt';
-        $this->destinationTestFile3 = $this->destinationTestDir.'/test_3.txt';
-        $this->destinationTestFileWithoutExt = $this->destinationTestDir.'/test4';
-        $this->destinationTestFileWithSpaces = $this->destinationTestDir.'/test with spaces';
         $this->testFilename = substr($this->testFile, strrpos($this->testFile, '/') + 1);
         $this->testFilename2 = substr($this->testFile2, strrpos($this->testFile2, '/') + 1);
         $this->testFilename3 = substr($this->testFile3, strrpos($this->testFile3, '/') + 1);

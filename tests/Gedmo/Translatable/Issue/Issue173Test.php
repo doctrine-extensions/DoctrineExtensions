@@ -25,7 +25,7 @@ use Gedmo\Translatable\TranslatableListener;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @contributor Oscar Balladares liebegrube@gmail.com https://github.com/oscarballadares
+ * @author Oscar Balladares liebegrube@gmail.com https://github.com/oscarballadares
  */
 final class Issue173Test extends BaseTestCaseORM
 {
