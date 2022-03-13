@@ -131,6 +131,11 @@ parameters:
 			path: src/Mapping/Driver/AbstractAnnotationDriver.php
 
 		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Mapping/Driver/AbstractAnnotationDriver.php
+
+		-
 			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getDocument\\(\\)\\.$#"
 			count: 1
 			path: src/Mapping/Event/Adapter/ODM.php
@@ -321,6 +326,11 @@ parameters:
 			path: src/References/ReferencesListener.php
 
 		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 2
+			path: src/References/ReferencesListener.php
+
+		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
 			count: 2
 			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
@@ -409,6 +419,11 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
 			path: src/Sluggable/SluggableListener.php
+
+		-
+			message: "#^Offset 'type' on array\\{type\\: string, fieldName\\: string, columnName\\: string, length\\?\\: int, id\\?\\: bool, nullable\\?\\: bool, notInsertable\\?\\: bool, notUpdatable\\?\\: bool, \\.\\.\\.\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: src/SoftDeleteable/Mapping/Event/Adapter/ORM.php
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
@@ -516,6 +531,11 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
+			message: "#^Offset 'type' on array\\{type\\: string, fieldName\\: string, columnName\\: string, length\\?\\: int, id\\?\\: bool, nullable\\?\\: bool, notInsertable\\?\\: bool, notUpdatable\\?\\: bool, \\.\\.\\.\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Event/Adapter/ORM.php
+
+		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$identifier\\.$#"
 			count: 1
 			path: src/Tool/Wrapper/EntityWrapper.php
@@ -564,6 +584,21 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 2
+			path: src/Translatable/Document/Repository/TranslationRepository.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Translatable/Entity/Repository/TranslationRepository.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 2
+			path: src/Translatable/Entity/Repository/TranslationRepository.php
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
@@ -661,6 +696,11 @@ parameters:
 			path: src/Translatable/TranslatableListener.php
 
 		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
 			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
 			count: 1
 			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
@@ -688,6 +728,11 @@ parameters:
 		-
 			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
 			count: 2
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
@@ -756,9 +801,29 @@ parameters:
 			path: src/Tree/Strategy/ORM/Closure.php
 
 		-
+			message: "#^Offset 'indexes' on array\\{name\\: string, schema\\: string, indexes\\: array, uniqueConstraints\\: array, options\\: array\\<string, mixed\\>, quoted\\?\\: bool\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: src/Tree/Strategy/ORM/Closure.php
+
+		-
+			message: "#^Offset 'uniqueConstraints' on array\\{name\\: string, schema\\: string, indexes\\: array, uniqueConstraints\\: array, options\\: array\\<string, mixed\\>, quoted\\?\\: bool\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: src/Tree/Strategy/ORM/Closure.php
+
+		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 1
 			path: src/Tree/TreeListener.php
+
+		-
+			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config is never read, only written\\.$#"
+			count: 1
+			path: src/Uploadable/Event/UploadableBaseEventArgs.php
+
+		-
+			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration is never written, only read\\.$#"
+			count: 1
+			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
@@ -769,6 +834,11 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/Uploadable/Mapping/Validator.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Uploadable/MimeType/MimeTypeGuesser.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
@@ -794,6 +864,11 @@ parameters:
 			message: "#^Method Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Entity\\\\Geo\\:\\:parseFloatToString\\(\\) should return numeric\\-string but returns non\\-empty\\-string\\.$#"
 			count: 1
 			path: tests/Gedmo/Loggable/Fixture/Entity/Geo.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Loggable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\LogEntryRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Document\\\\Log\\\\Comment\\> will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Loggable/LoggableDocumentTest.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<T of object\\>\\:\\:mapField\\(\\)\\.$#"
@@ -836,12 +911,72 @@ parameters:
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
 
 		-
+			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$dm is never written, only read\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
+
+		-
+			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$referenceIntegrity is never written, only read\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
+
+		-
+			message: "#^Dead catch \\- Doctrine\\\\DBAL\\\\Exception\\\\ForeignKeyConstraintViolationException is never thrown in the try block\\.$#"
+			count: 1
+			path: tests/Gedmo/Sortable/SortableTest.php
+
+		-
 			message: "#^Method Gedmo\\\\Tests\\\\Timestampable\\\\Fixture\\\\ArticleCarbon\\:\\:getCreated\\(\\) should return Carbon\\\\Carbon\\|null but returns DateTime\\|null\\.$#"
 			count: 1
 			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
 
 		-
+			message: "#^Strict comparison using \\=\\=\\= between null and Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseORM.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Translatable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\TranslationRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Translatable\\\\Document\\\\Translation\\> will always evaluate to false\\.$#"
+			count: 4
+			path: tests/Gedmo/Translatable/TranslatableDocumentCollectionTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Translatable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\TranslationRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Translatable\\\\Document\\\\Translation\\> will always evaluate to false\\.$#"
+			count: 2
+			path: tests/Gedmo/Translatable/TranslatableDocumentTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Doctrine\\\\\\\\ODM\\\\\\\\MongoDB\\\\\\\\Iterator\\\\\\\\Iterator' and array will always evaluate to false\\.$#"
+			count: 2
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Doctrine\\\\\\\\ODM\\\\\\\\MongoDB\\\\\\\\Iterator\\\\\\\\Iterator' and array\\|null will always evaluate to false\\.$#"
+			count: 2
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
+
+		-
 			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
 			count: 1
 			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBTreeLockingTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertIsArray\\(\\) with true will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/NestedTreeRootRepositoryTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertIsArray\\(\\) with true will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/RepositoryTest.php
 
