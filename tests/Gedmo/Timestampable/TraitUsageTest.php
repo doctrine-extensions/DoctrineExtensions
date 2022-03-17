@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Timestampable;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Timestampable\Fixture\UsingTrait;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * These are tests for Timestampable behavior
@@ -52,6 +57,28 @@ final class TraitUsageTest extends BaseTestCaseORM
         $sport = new UsingTrait();
         static::assertInstanceOf(UsingTrait::class, $sport->setCreatedAt(new \DateTime()));
         static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedAt(new \DateTime()));
+    }
+
+    public function testShouldBeSerializedUsingTrait(): void
+    {
+        $person = new UsingTrait();
+
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizers = [new ObjectNormalizer($classMetadataFactory)];
+        $serializer = new Serializer($normalizers);
+
+        $serializedWithGlobalGroups = $serializer->normalize($person, null, ['groups' => 'gedmo.doctrine_extentions.traits']);
+        $serializedWithTraitGroups = $serializer->normalize($person, null, ['groups' => 'gedmo.doctrine_extentions.trait.timestampable']);
+        $serializedWithoutGroups = $serializer->normalize($person);
+
+        self::assertCount(4, $serializedWithoutGroups);
+        self::assertNotEquals($serializedWithGlobalGroups, $serializedWithoutGroups);
+
+        self::assertCount(2, $serializedWithGlobalGroups);
+        self::assertArrayHasKey('createdAt', $serializedWithGlobalGroups);
+        self::assertArrayHasKey('updatedAt', $serializedWithGlobalGroups);
+
+        self::assertEquals($serializedWithGlobalGroups, $serializedWithTraitGroups);
     }
 
     protected function getUsedEntityFixtures(): array

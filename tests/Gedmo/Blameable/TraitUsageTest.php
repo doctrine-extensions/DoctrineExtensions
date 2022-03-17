@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Blameable;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Gedmo\Blameable\BlameableListener;
 use Gedmo\Tests\Blameable\Fixture\Entity\UsingTrait;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * These are tests for Blameable behavior
@@ -47,6 +52,28 @@ final class TraitUsageTest extends BaseTestCaseORM
 
         static::assertNotNull($sport->getCreatedBy());
         static::assertNotNull($sport->getUpdatedBy());
+    }
+
+    public function testShouldBeSerializedUsingTrait(): void
+    {
+        $sport = new UsingTrait();
+
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizers = [new ObjectNormalizer($classMetadataFactory)];
+        $serializer = new Serializer($normalizers);
+
+        $serializedWithGlobalGroups = $serializer->normalize($sport, null, ['groups' => 'gedmo.doctrine_extentions.traits']);
+        $serializedWithTraitGroups = $serializer->normalize($sport, null, ['groups' => 'gedmo.doctrine_extentions.trait.blameable']);
+        $serializedWithoutGroups = $serializer->normalize($sport);
+
+        self::assertCount(4, $serializedWithoutGroups);
+        self::assertNotEquals($serializedWithGlobalGroups, $serializedWithoutGroups);
+
+        self::assertCount(2, $serializedWithGlobalGroups);
+        self::assertArrayHasKey('createdBy', $serializedWithGlobalGroups);
+        self::assertArrayHasKey('updatedBy', $serializedWithGlobalGroups);
+
+        self::assertEquals($serializedWithGlobalGroups, $serializedWithTraitGroups);
     }
 
     public function testTraitMethodthShouldReturnObject(): void

@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\IpTraceable;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Gedmo\IpTraceable\IpTraceableListener;
 use Gedmo\Tests\IpTraceable\Fixture\UsingTrait;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * These are tests for IpTraceable behavior
@@ -48,6 +53,28 @@ final class TraitUsageTest extends BaseTestCaseORM
 
         static::assertNotNull($sport->getCreatedFromIp());
         static::assertNotNull($sport->getUpdatedFromIp());
+    }
+
+    public function testShouldBeSerializedUsingTrait(): void
+    {
+        $sport = new UsingTrait();
+
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizers = [new ObjectNormalizer($classMetadataFactory)];
+        $serializer = new Serializer($normalizers);
+
+        $serializedWithGlobalGroups = $serializer->normalize($sport, null, ['groups' => 'gedmo.doctrine_extentions.traits']);
+        $serializedWithTraitGroups = $serializer->normalize($sport, null, ['groups' => 'gedmo.doctrine_extentions.trait.ip_traceable']);
+        $serializedWithoutGroups = $serializer->normalize($sport);
+
+        self::assertCount(4, $serializedWithoutGroups);
+        self::assertNotEquals($serializedWithGlobalGroups, $serializedWithoutGroups);
+
+        self::assertCount(2, $serializedWithGlobalGroups);
+        self::assertArrayHasKey('createdFromIp', $serializedWithGlobalGroups);
+        self::assertArrayHasKey('updatedFromIp', $serializedWithGlobalGroups);
+
+        self::assertEquals($serializedWithGlobalGroups, $serializedWithTraitGroups);
     }
 
     public function testTraitMethodShouldReturnObject(): void
