@@ -12,6 +12,7 @@ namespace Gedmo\SoftDeleteable\Traits;
 use DateTime;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * A soft deletable trait you can apply to your MongoDB entities.
@@ -23,10 +24,16 @@ trait SoftDeleteableDocument
 {
     /**
      * @ODM\Field(type="date")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.soft_deleteable_document",
+     *     "gedmo.doctrine_extentions.trait.soft_deleteable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      *
      * @var DateTime|null
      */
     #[ODM\Field(type: Type::DATE)]
+    #[Groups(["gedmo.doctrine_extentions.trait.soft_deleteable_document", "gedmo.doctrine_extentions.trait.soft_deleteable", "gedmo.doctrine_extentions.traits"])]
     protected $deletedAt;
 
     /**

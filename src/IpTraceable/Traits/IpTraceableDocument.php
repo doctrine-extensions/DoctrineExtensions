@@ -12,6 +12,7 @@ namespace Gedmo\IpTraceable\Traits;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * IpTraceable Trait, usable with PHP >= 5.4
@@ -24,18 +25,30 @@ trait IpTraceableDocument
      * @var string
      * @Gedmo\IpTraceable(on="create")
      * @ODM\Field(type="string")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.ip_traceable_document",
+     *     "gedmo.doctrine_extentions.trait.ip_traceable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\IpTraceable(on: 'create')]
+    #[Groups(["gedmo.doctrine_extentions.trait.ip_traceable_document", "gedmo.doctrine_extentions.trait.ip_traceable", "gedmo.doctrine_extentions.traits"])]
     protected $createdFromIp;
 
     /**
      * @var string
      * @Gedmo\IpTraceable(on="update")
      * @ODM\Field(type="string")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.ip_traceable_document",
+     *     "gedmo.doctrine_extentions.trait.ip_traceable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\IpTraceable(on: 'update')]
+    #[Groups(["gedmo.doctrine_extentions.trait.ip_traceable_document", "gedmo.doctrine_extentions.trait.ip_traceable", "gedmo.doctrine_extentions.traits"])]
     protected $updatedFromIp;
 
     /**

@@ -11,6 +11,7 @@ namespace Gedmo\IpTraceable\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * IpTraceable Trait, usable with PHP >= 5.4
@@ -23,18 +24,30 @@ trait IpTraceableEntity
      * @var string
      * @Gedmo\IpTraceable(on="create")
      * @ORM\Column(length=45, nullable=true)
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.ip_traceable_entity",
+     *     "gedmo.doctrine_extentions.trait.ip_traceable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ORM\Column(length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'create')]
+    #[Groups(["gedmo.doctrine_extentions.trait.ip_traceable_entity", "gedmo.doctrine_extentions.trait.ip_traceable", "gedmo.doctrine_extentions.traits"])]
     protected $createdFromIp;
 
     /**
      * @var string
      * @Gedmo\IpTraceable(on="update")
      * @ORM\Column(length=45, nullable=true)
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.ip_traceable_entity",
+     *     "gedmo.doctrine_extentions.trait.ip_traceable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ORM\Column(length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'update')]
+    #[Groups(["gedmo.doctrine_extentions.trait.ip_traceable_entity", "gedmo.doctrine_extentions.trait.ip_traceable", "gedmo.doctrine_extentions.traits"])]
     protected $updatedFromIp;
 
     /**

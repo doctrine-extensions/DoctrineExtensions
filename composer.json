@@ -47,7 +47,8 @@
         "doctrine/event-manager": "^1.0",
         "doctrine/persistence": "^2.2",
         "psr/cache": "^1 || ^2 || ^3",
-        "symfony/cache": "^4.4 || ^5.3 || ^6.0"
+        "symfony/cache": "^4.4 || ^5.3 || ^6.0",
+        "symfony/serializer-pack": "^1.1"
     },
     "require-dev": {
         "doctrine/dbal": "^2.13.1 || ^3.2",

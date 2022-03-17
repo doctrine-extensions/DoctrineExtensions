@@ -12,6 +12,7 @@ namespace Gedmo\Timestampable\Traits;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Timestampable Trait, usable with PHP >= 5.4
@@ -24,18 +25,30 @@ trait TimestampableEntity
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.timestampable_entity",
+     *     "gedmo.doctrine_extentions.trait.timestampable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["gedmo.doctrine_extentions.trait.timestampable_entity", "gedmo.doctrine_extentions.trait.timestampable", "gedmo.doctrine_extentions.traits"])]
     protected $createdAt;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.timestampable_entity",
+     *     "gedmo.doctrine_extentions.trait.timestampable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups([ "gedmo.doctrine_extentions.trait.timestampable_entity", "gedmo.doctrine_extentions.trait.timestampable", "gedmo.doctrine_extentions.traits"])]
     protected $updatedAt;
 
     /**

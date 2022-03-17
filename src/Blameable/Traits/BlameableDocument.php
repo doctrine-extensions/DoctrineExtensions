@@ -12,6 +12,7 @@ namespace Gedmo\Blameable\Traits;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Blameable Trait, usable with PHP >= 5.4
@@ -24,18 +25,30 @@ trait BlameableDocument
      * @var string
      * @Gedmo\Blameable(on="create")
      * @ODM\Field(type="string")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.blameable_document",
+     *     "gedmo.doctrine_extentions.trait.blameable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Blameable(on: 'create')]
+    #[Groups(["gedmo.doctrine_extentions.trait.blameable_document", "gedmo.doctrine_extentions.trait.blameable", "gedmo.doctrine_extentions.traits"])]
     protected $createdBy;
 
     /**
      * @var string
      * @Gedmo\Blameable(on="update")
      * @ODM\Field(type="string")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.blameable_document",
+     *     "gedmo.doctrine_extentions.trait.blameable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Blameable(on: 'update')]
+    #[Groups(["gedmo.doctrine_extentions.trait.blameable_document", "gedmo.doctrine_extentions.trait.blameable", "gedmo.doctrine_extentions.traits"])]
     protected $updatedBy;
 
     /**

@@ -12,6 +12,7 @@ namespace Gedmo\Timestampable\Traits;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Timestampable Trait, usable with PHP >= 5.4
@@ -24,18 +25,30 @@ trait TimestampableDocument
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ODM\Field(type="date")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.timestampable_document",
+     *     "gedmo.doctrine_extentions.trait.timestampable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ODM\Field(type: Type::DATE)]
+    #[Groups(["gedmo.doctrine_extentions.trait.timestampable_document", "gedmo.doctrine_extentions.trait.timestampable", "gedmo.doctrine_extentions.traits"])]
     protected $createdAt;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ODM\Field(type="date")
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.timestampable_document",
+     *     "gedmo.doctrine_extentions.trait.timestampable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[Gedmo\Timestampable(on: 'update')]
     #[ODM\Field(type: Type::DATE)]
+    #[Groups(["gedmo.doctrine_extentions.trait.timestampable_document", "gedmo.doctrine_extentions.trait.timestampable", "gedmo.doctrine_extentions.traits"])]
     protected $updatedAt;
 
     /**

@@ -11,6 +11,7 @@ namespace Gedmo\Blameable\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Blameable Trait, usable with PHP >= 5.4
@@ -23,18 +24,30 @@ trait BlameableEntity
      * @var string
      * @Gedmo\Blameable(on="create")
      * @ORM\Column(nullable=true)
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.blameable_entity",
+     *     "gedmo.doctrine_extentions.trait.blameable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ORM\Column(nullable: true)]
     #[Gedmo\Blameable(on: 'create')]
+    #[Groups(["gedmo.doctrine_extentions.trait.blameable_entity", "gedmo.doctrine_extentions.trait.blameable", "gedmo.doctrine_extentions.traits"])]
     protected $createdBy;
 
     /**
      * @var string
      * @Gedmo\Blameable(on="update")
      * @ORM\Column(nullable=true)
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.blameable_entity",
+     *     "gedmo.doctrine_extentions.trait.blameable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      */
     #[ORM\Column(nullable: true)]
     #[Gedmo\Blameable(on: 'update')]
+    #[Groups(["gedmo.doctrine_extentions.trait.blameable_entity", "gedmo.doctrine_extentions.trait.blameable", "gedmo.doctrine_extentions.traits"])]
     protected $updatedBy;
 
     /**

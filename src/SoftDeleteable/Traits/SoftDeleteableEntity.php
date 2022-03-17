@@ -12,6 +12,7 @@ namespace Gedmo\SoftDeleteable\Traits;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * A soft deletable trait you can apply to your Doctrine ORM entities.
@@ -23,10 +24,16 @@ trait SoftDeleteableEntity
 {
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.soft_deleteable_entity",
+     *     "gedmo.doctrine_extentions.trait.soft_deleteable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      *
      * @var DateTime|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(["gedmo.doctrine_extentions.trait.soft_deleteable_entity", "gedmo.doctrine_extentions.trait.soft_deleteable", "gedmo.doctrine_extentions.traits"])]
     protected $deletedAt;
 
     /**
