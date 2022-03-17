@@ -62,8 +62,14 @@ trait SoftDeleteableEntity
     /**
      * Check if the entity has been soft deleted.
      *
+     * @Groups({
+     *     "gedmo.doctrine_extentions.trait.soft_deleteable_entity",
+     *     "gedmo.doctrine_extentions.trait.soft_deleteable",
+     *     "gedmo.doctrine_extentions.traits",
+     * })
      * @return bool
      */
+    #[Groups(["gedmo.doctrine_extentions.trait.soft_deleteable_entity", "gedmo.doctrine_extentions.trait.soft_deleteable", "gedmo.doctrine_extentions.traits"])]
     public function isDeleted()
     {
         return null !== $this->deletedAt;
