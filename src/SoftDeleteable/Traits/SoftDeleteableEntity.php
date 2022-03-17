@@ -67,6 +67,7 @@ trait SoftDeleteableEntity
      *     "gedmo.doctrine_extentions.trait.soft_deleteable",
      *     "gedmo.doctrine_extentions.traits",
      * })
+     *
      * @return bool
      */
     #[Groups(["gedmo.doctrine_extentions.trait.soft_deleteable_entity", "gedmo.doctrine_extentions.trait.soft_deleteable", "gedmo.doctrine_extentions.traits"])]

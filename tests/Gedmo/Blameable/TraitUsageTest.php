@@ -66,14 +66,14 @@ final class TraitUsageTest extends BaseTestCaseORM
         $serializedWithTraitGroups = $serializer->normalize($sport, null, ['groups' => 'gedmo.doctrine_extentions.trait.blameable']);
         $serializedWithoutGroups = $serializer->normalize($sport);
 
-        self::assertCount(4, $serializedWithoutGroups);
-        self::assertNotEquals($serializedWithGlobalGroups, $serializedWithoutGroups);
+        static::assertCount(4, $serializedWithoutGroups);
+        static::assertNotSame($serializedWithGlobalGroups, $serializedWithoutGroups);
 
-        self::assertCount(2, $serializedWithGlobalGroups);
-        self::assertArrayHasKey('createdBy', $serializedWithGlobalGroups);
-        self::assertArrayHasKey('updatedBy', $serializedWithGlobalGroups);
+        static::assertCount(2, $serializedWithGlobalGroups);
+        static::assertArrayHasKey('createdBy', $serializedWithGlobalGroups);
+        static::assertArrayHasKey('updatedBy', $serializedWithGlobalGroups);
 
-        self::assertEquals($serializedWithGlobalGroups, $serializedWithTraitGroups);
+        static::assertSame($serializedWithGlobalGroups, $serializedWithTraitGroups);
     }
 
     public function testTraitMethodthShouldReturnObject(): void

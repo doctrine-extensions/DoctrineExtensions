@@ -71,14 +71,14 @@ final class TraitUsageTest extends BaseTestCaseORM
         $serializedWithTraitGroups = $serializer->normalize($person, null, ['groups' => 'gedmo.doctrine_extentions.trait.timestampable']);
         $serializedWithoutGroups = $serializer->normalize($person);
 
-        self::assertCount(4, $serializedWithoutGroups);
-        self::assertNotEquals($serializedWithGlobalGroups, $serializedWithoutGroups);
+        static::assertCount(4, $serializedWithoutGroups);
+        static::assertNotSame($serializedWithGlobalGroups, $serializedWithoutGroups);
 
-        self::assertCount(2, $serializedWithGlobalGroups);
-        self::assertArrayHasKey('createdAt', $serializedWithGlobalGroups);
-        self::assertArrayHasKey('updatedAt', $serializedWithGlobalGroups);
+        static::assertCount(2, $serializedWithGlobalGroups);
+        static::assertArrayHasKey('createdAt', $serializedWithGlobalGroups);
+        static::assertArrayHasKey('updatedAt', $serializedWithGlobalGroups);
 
-        self::assertEquals($serializedWithGlobalGroups, $serializedWithTraitGroups);
+        static::assertSame($serializedWithGlobalGroups, $serializedWithTraitGroups);
     }
 
     protected function getUsedEntityFixtures(): array

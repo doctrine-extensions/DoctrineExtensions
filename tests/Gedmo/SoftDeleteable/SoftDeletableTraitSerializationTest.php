@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tests\SoftDeleteable;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -23,13 +30,13 @@ class SoftDeletableTraitSerializationTest extends \PHPUnit\Framework\TestCase
         $serializedWithTraitGroups = $serializer->normalize($person, null, ['groups' => 'gedmo.doctrine_extentions.trait.soft_deleteable']);
         $serializedWithoutGroups = $serializer->normalize($person);
 
-        self::assertCount(5, $serializedWithoutGroups);
-        self::assertNotEquals($serializedWithGlobalGroups, $serializedWithoutGroups);
+        static::assertCount(5, $serializedWithoutGroups);
+        static::assertNotSame($serializedWithGlobalGroups, $serializedWithoutGroups);
 
-        self::assertCount(2, $serializedWithGlobalGroups);
-        self::assertArrayHasKey('deletedAt', $serializedWithGlobalGroups);
-        self::assertArrayHasKey('deleted', $serializedWithGlobalGroups);
+        static::assertCount(2, $serializedWithGlobalGroups);
+        static::assertArrayHasKey('deletedAt', $serializedWithGlobalGroups);
+        static::assertArrayHasKey('deleted', $serializedWithGlobalGroups);
 
-        self::assertEquals($serializedWithGlobalGroups, $serializedWithTraitGroups);
+        static::assertSame($serializedWithGlobalGroups, $serializedWithTraitGroups);
     }
 }
