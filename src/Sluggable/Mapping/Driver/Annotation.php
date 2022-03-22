@@ -52,8 +52,12 @@ class Annotation extends AbstractAnnotationDriver
         'text',
         'integer',
         'int',
+        'date',
+        'date_immutable',
         'datetime',
+        'datetime_immutable',
         'datetimetz',
+        'datetimetz_immutable',
         'citext',
     ];
 
