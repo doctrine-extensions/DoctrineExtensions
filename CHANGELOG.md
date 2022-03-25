@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+###
+- Sortable: Fix duplicated positions when manually updating position on more than one object
 
 ### Fixed
 - Tree: Allow sorting children by a ManyToOne relation (#2492)
