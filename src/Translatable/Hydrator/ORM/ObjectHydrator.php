@@ -28,7 +28,7 @@ class ObjectHydrator extends BaseObjectHydrator
      * @see ObjectHydrator::prepare()
      * @see ObjectHydrator::cleanup()
      *
-     * @var bool
+     * @var bool|null
      */
     private $savedSkipOnLoad;
 

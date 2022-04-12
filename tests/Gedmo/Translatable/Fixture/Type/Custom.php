@@ -43,7 +43,7 @@ class Custom extends Type
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
         $val = unserialize($value);
         if (false === $val && 'b:0;' !== $value) {
-            new \Exception('Conversion failed');
+            throw new \Exception('Conversion failed');
         }
 
         return $val;

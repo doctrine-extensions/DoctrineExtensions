@@ -77,6 +77,9 @@ final class TreeMappingTest extends ORMMappingTestCase
 
     /**
      * @group legacy
+     *
+     * @see https://github.com/doctrine/persistence/pull/144
+     * @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey()
      */
     public function testApcCached(): void
     {
@@ -84,8 +87,9 @@ final class TreeMappingTest extends ORMMappingTestCase
         $this->em->getClassMetadata(CategoryClosureWithoutMapping::class);
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
-            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosureWithoutMapping$CLASSMETADATA'
+            'Gedmo__Tests__Tree__Fixture__Closure__CategoryClosureWithoutMapping__CLASSMETADATA__'
         );
+        static::assertNotFalse($meta);
         static::assertTrue($meta->hasAssociation('ancestor'));
         static::assertTrue($meta->hasAssociation('descendant'));
     }

@@ -609,6 +609,15 @@ $translatableListener->setPersistDefaultLocaleTranslation(true); // default is f
 This would always store translations in all locales, also keeping original record
 translated field values in default locale set.
 
+To set a default translation value upon a missing translation:
+
+``` php
+<?php
+$translatableListener->setDefaultTranslationValue(''); // default is null
+```
+
+**Note**: By default the value is null, but it may cause a Type error for non-nullable getter upon a missing translation.
+
 ### Translation Entity
 
 In some cases if there are thousands of records or even more.. we would like to

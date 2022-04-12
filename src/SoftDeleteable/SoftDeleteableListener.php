@@ -84,7 +84,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $om->persist($object);
                 $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
-                if ($uow instanceof MongoDBUnitOfWork && !method_exists($uow, 'scheduleExtraUpdate')) {
+                if ($uow instanceof MongoDBUnitOfWork) {
                     $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
                 } else {
                     $uow->scheduleExtraUpdate($object, [

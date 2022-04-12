@@ -54,7 +54,7 @@ class Annotation extends AbstractAnnotationDriver
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find ipTraceable [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
-                if ($meta->hasField($field) && !$this->isValidField($meta, $field)) {
+                if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->getName()}");
                 }
                 if (!in_array($ipTraceable->on, ['update', 'create', 'change'], true)) {

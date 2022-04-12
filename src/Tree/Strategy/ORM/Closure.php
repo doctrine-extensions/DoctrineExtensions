@@ -198,7 +198,12 @@ class Closure implements Strategy
             $cacheDriver = $cmf->getCacheDriver();
 
             if ($cacheDriver instanceof Cache) {
-                $cacheDriver->save($closureMetadata->getName().'$CLASSMETADATA', $closureMetadata);
+                // @see https://github.com/doctrine/persistence/pull/144
+                // @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey()
+                $cacheDriver->save(
+                    str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__',
+                    $closureMetadata
+                );
             }
         }
     }
@@ -282,6 +287,13 @@ class Closure implements Strategy
                 $q = $em->createQuery($dql);
                 $q->setParameters(compact('parent'));
                 $ancestors = $q->getArrayResult();
+
+                if ([] === $ancestors) {
+                    // The parent has been persisted after the child, postpone the evaluation
+                    $this->pendingChildNodeInserts[$emHash][] = $node;
+
+                    continue;
+                }
 
                 foreach ($ancestors as $ancestor) {
                     $entries[] = [

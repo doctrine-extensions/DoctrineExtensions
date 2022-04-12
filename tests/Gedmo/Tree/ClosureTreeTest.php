@@ -309,6 +309,50 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertNotNull($categoryTwo->getId());
     }
 
+    /**
+     * @dataProvider provideNodeOrders
+     */
+    public function testClosuresCreatedMustNotBeAffectedByPersistOrder(Category $firstToPersist, Category $secondToPersist, Category $thirdToPersist): void
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber($this->listener);
+
+        $this->getDefaultMockSqliteEntityManager($evm);
+
+        $this->em->persist($firstToPersist);
+        $this->em->persist($secondToPersist);
+        $this->em->persist($thirdToPersist);
+        $this->em->flush();
+        $this->em->clear();
+
+        $closures = $this->em->getRepository(CategoryClosure::class)->findAll();
+
+        static::assertCount(6, $closures);
+    }
+
+    public function provideNodeOrders(): array
+    {
+        $grandpa = new Category();
+        $grandpa->setTitle('grandpa');
+
+        $father = new Category();
+        $father->setTitle('father');
+        $father->setParent($grandpa);
+
+        $son = new Category();
+        $son->setTitle('son');
+        $son->setParent($father);
+
+        return [
+            'order-123' => [$grandpa, $father, $son],
+            'order-132' => [$grandpa, $son, $father],
+            'order-213' => [$father, $grandpa, $son],
+            'order-231' => [$father, $son, $grandpa],
+            'order-312' => [$son, $grandpa, $father],
+            'order-321' => [$son, $father, $grandpa],
+        ];
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [

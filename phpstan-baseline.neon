@@ -1,12 +1,982 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 1
+			path: src/AbstractTrackingListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 3
+			path: src/AbstractTrackingListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getConnection\\(\\)\\.$#"
+			count: 1
+			path: src/AbstractTrackingListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 3
+			path: src/AbstractTrackingListener.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Blameable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Blameable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
+			count: 1
+			path: src/Blameable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/Blameable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Blameable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Blameable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/IpTraceable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/IpTraceable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
+			count: 1
+			path: src/IpTraceable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/IpTraceable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/IpTraceable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/IpTraceable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Loggable/Document/Repository/LogEntryRepository.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 1
+			path: src/Loggable/LoggableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:newInstance\\(\\)\\.$#"
+			count: 1
+			path: src/Loggable/LoggableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 4
+			path: src/Loggable/LoggableListener.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$embeddedClasses\\.$#"
+			count: 1
+			path: src/Loggable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 2
+			path: src/Loggable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Loggable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Loggable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Loggable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/Driver/AbstractAnnotationDriver.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Mapping/Driver/AbstractAnnotationDriver.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getDocument\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getDocumentManager\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getEntity\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getEntityManager\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Mapping/ExtensionMetadataFactory.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$reflClass\\.$#"
+			count: 1
+			path: src/Mapping/ExtensionMetadataFactory.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver\\:\\:getDefaultDriver\\(\\)\\.$#"
+			count: 2
+			path: src/Mapping/ExtensionMetadataFactory.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver\\:\\:getDrivers\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/ExtensionMetadataFactory.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver\\:\\:getLocator\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/ExtensionMetadataFactory.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getConfiguration\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/ExtensionMetadataFactory.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/MappedEventSubscriber.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadataFactory\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\>\\:\\:getCacheDriver\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/MappedEventSubscriber.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 1
+			path: src/Mapping/MappedEventSubscriber.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/ReferenceIntegrity/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 3
+			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isCollectionValuedReference\\(\\)\\.$#"
+			count: 4
+			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isSingleValuedReference\\(\\)\\.$#"
+			count: 1
+			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/References/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/References/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isInheritanceTypeNone\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getReference\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 2
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isInheritanceTypeNone\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getReference\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to method getClassMetadata\\(\\) on an unknown class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
 			message: "#^Class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager not found\\.$#"
 			count: 2
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
+			message: "#^Parameter \\$dm of method Gedmo\\\\References\\\\Mapping\\\\Event\\\\Adapter\\\\ORM\\:\\:throwIfNotDocumentManager\\(\\) has invalid type Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager\\.$#"
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:\\$reflClass\\.$#"
+			count: 4
+			path: src/References/ReferencesListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldValue\\(\\)\\.$#"
+			count: 1
+			path: src/References/ReferencesListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:setFieldValue\\(\\)\\.$#"
+			count: 1
+			path: src/References/ReferencesListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:extractIdentifier\\(\\)\\.$#"
+			count: 2
+			path: src/References/ReferencesListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getIdentifier\\(\\)\\.$#"
+			count: 1
+			path: src/References/ReferencesListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getSingleReference\\(\\)\\.$#"
+			count: 1
+			path: src/References/ReferencesListener.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 2
+			path: src/References/ReferencesListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 2
+			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 2
+			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 2
+			path: src/Sluggable/Handler/RelativeSlugHandler.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 2
+			path: src/Sluggable/Handler/TreeSlugHandler.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 3
+			path: src/Sluggable/Handler/TreeSlugHandler.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Part \\$option \\(array\\{string, mixed\\}\\) of encapsed string cannot be cast to string\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getAssociationMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getAssociationMappings\\(\\)\\.$#"
+			count: 1
+			path: src/Sluggable/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 2
+			path: src/Sluggable/SluggableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 7
+			path: src/Sluggable/SluggableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 2
+			path: src/Sluggable/SluggableListener.php
+
+		-
+			message: "#^Offset 'type' on array\\{type\\: string, fieldName\\: string, columnName\\: string, length\\?\\: int, id\\?\\: bool, nullable\\?\\: bool, notInsertable\\?\\: bool, notUpdatable\\?\\: bool, \\.\\.\\.\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: src/SoftDeleteable/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/SoftDeleteable/Mapping/Validator.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/SoftDeleteable/Mapping/Validator.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getDateValue\\(\\)\\.$#"
+			count: 1
+			path: src/SoftDeleteable/SoftDeleteableListener.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Sortable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 2
+			path: src/Sortable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/Sortable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Sortable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Sortable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Sortable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Sortable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 5
+			path: src/Sortable/SortableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 3
+			path: src/Sortable/SortableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 4
+			path: src/Sortable/SortableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Sortable\\\\Mapping\\\\Event\\\\SortableAdapter\\:\\:getMaxPosition\\(\\)\\.$#"
+			count: 1
+			path: src/Sortable/SortableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Sortable\\\\Mapping\\\\Event\\\\SortableAdapter\\:\\:updatePositions\\(\\)\\.$#"
+			count: 1
+			path: src/Sortable/SortableListener.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Offset 'type' on array\\{type\\: string, fieldName\\: string, columnName\\: string, length\\?\\: int, id\\?\\: bool, nullable\\?\\: bool, notInsertable\\?\\: bool, notUpdatable\\?\\: bool, \\.\\.\\.\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$identifier\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/EntityWrapper.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$rootEntityName\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/EntityWrapper.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 2
+			path: src/Tool/Wrapper/EntityWrapper.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/EntityWrapper.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$identifier\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$rootDocumentName\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
 			message: "#^Access to an undefined property ProxyManager\\\\Proxy\\\\GhostObjectInterface\\:\\:\\$identifier\\.$#"
 			count: 1
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 2
+			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isSingleValuedEmbed\\(\\)\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 2
+			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 2
+			path: src/Translatable/Document/Repository/TranslationRepository.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Translatable/Entity/Repository/TranslationRepository.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 2
+			path: src/Translatable/Entity/Repository/TranslationRepository.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 2
+			path: src/Translatable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedEmbeddedClass\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedEmbeddedClass\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$fieldMappings\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 2
+			path: src/Translatable/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Join\\:\\:\\$aliasIdentificationVariable\\.$#"
+			count: 2
+			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Node\\:\\:\\$aliasIdentificationVariable\\.$#"
+			count: 2
+			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:newInstance\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 4
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:insertTranslationRecord\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:loadTranslations\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:removeAssociatedTranslations\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:setTranslationValue\\(\\)\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:usesPersonalTranslation\\(\\)\\.$#"
+			count: 2
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Translatable/TranslatableListener.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:max\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:setNodePosition\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:shiftRL\\(\\)\\.$#"
+			count: 3
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:shiftRangeRL\\(\\)\\.$#"
+			count: 2
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
+			count: 2
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Tree/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 2
+			path: src/Tree/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Tree/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Tree/Mapping/Driver/Yaml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 6
+			path: src/Tree/Mapping/Validator.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 2
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getIdentifierValue\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 10
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getSingleIdentifierFieldName\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getReference\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 2
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\ORM\\\\EntityRepository\\<object\\>\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/Strategy/ORM/Closure.php
+
+		-
+			message: "#^Offset 'indexes' on array\\{name\\: string, schema\\: string, indexes\\: array, uniqueConstraints\\: array, options\\: array\\<string, mixed\\>, quoted\\?\\: bool\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: src/Tree/Strategy/ORM/Closure.php
+
+		-
+			message: "#^Offset 'uniqueConstraints' on array\\{name\\: string, schema\\: string, indexes\\: array, uniqueConstraints\\: array, options\\: array\\<string, mixed\\>, quoted\\?\\: bool\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: src/Tree/Strategy/ORM/Closure.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 1
+			path: src/Tree/TreeListener.php
+
+		-
+			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config is never read, only written\\.$#"
+			count: 1
+			path: src/Uploadable/Event/UploadableBaseEventArgs.php
+
+		-
+			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration is never written, only read\\.$#"
+			count: 1
+			path: src/Uploadable/Event/UploadableBaseEventArgs.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: src/Uploadable/Mapping/Validator.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: src/Uploadable/Mapping/Validator.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Uploadable/MimeType/MimeTypeGuesser.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 1
+			path: src/Uploadable/UploadableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getConnection\\(\\)\\.$#"
+			count: 1
+			path: src/Uploadable/UploadableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getEventManager\\(\\)\\.$#"
+			count: 1
+			path: src/Uploadable/UploadableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 4
+			path: src/Uploadable/UploadableListener.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Entity\\\\Geo\\:\\:parseFloatToString\\(\\) should return numeric\\-string but returns non\\-empty\\-string\\.$#"
+			count: 1
+			path: tests/Gedmo/Loggable/Fixture/Entity/Geo.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Loggable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\LogEntryRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Document\\\\Log\\\\Comment\\> will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Loggable/LoggableDocumentTest.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<T of object\\>\\:\\:mapField\\(\\)\\.$#"
+			count: 2
+			path: tests/Gedmo/Mapping/MetadataFactory/CustomDriverTest.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<T of object\\>\\:\\:setIdGeneratorType\\(\\)\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/MetadataFactory/CustomDriverTest.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 2
+			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 2
+			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$dm is never written, only read\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
+
+		-
+			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$referenceIntegrity is never written, only read\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
+
+		-
+			message: "#^Dead catch \\- Doctrine\\\\DBAL\\\\Exception\\\\ForeignKeyConstraintViolationException is never thrown in the try block\\.$#"
+			count: 1
+			path: tests/Gedmo/Sortable/SortableTest.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Timestampable\\\\Fixture\\\\ArticleCarbon\\:\\:getCreated\\(\\) should return Carbon\\\\Carbon\\|null but returns DateTime\\|null\\.$#"
+			count: 1
+			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between null and Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseORM.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Translatable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\TranslationRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Translatable\\\\Document\\\\Translation\\> will always evaluate to false\\.$#"
+			count: 4
+			path: tests/Gedmo/Translatable/TranslatableDocumentCollectionTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Translatable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\TranslationRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Translatable\\\\Document\\\\Translation\\> will always evaluate to false\\.$#"
+			count: 2
+			path: tests/Gedmo/Translatable/TranslatableDocumentTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Doctrine\\\\\\\\ODM\\\\\\\\MongoDB\\\\\\\\Iterator\\\\\\\\Iterator' and array will always evaluate to false\\.$#"
+			count: 2
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Doctrine\\\\\\\\ODM\\\\\\\\MongoDB\\\\\\\\Iterator\\\\\\\\Iterator' and array\\|null will always evaluate to false\\.$#"
+			count: 2
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
+
+		-
+			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBTreeLockingTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertIsArray\\(\\) with true will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/NestedTreeRootRepositoryTest.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertIsArray\\(\\) with true will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Gedmo/Tree/RepositoryTest.php
 

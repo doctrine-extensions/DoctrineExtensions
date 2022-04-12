@@ -40,7 +40,7 @@ use Psr\Log\LoggerInterface;
 abstract class BaseTestCaseORM extends TestCase
 {
     /**
-     * @var EntityManager
+     * @var EntityManager|null
      */
     protected $em;
 
@@ -94,7 +94,7 @@ abstract class BaseTestCaseORM extends TestCase
      */
     protected function startQueryLog(): void
     {
-        if (!$this->em || !$this->em->getConnection()->getDatabasePlatform()) {
+        if (null === $this->em || null === $this->em->getConnection()->getDatabasePlatform()) {
             throw new \RuntimeException('EntityManager and database platform must be initialized');
         }
         $this->queryAnalyzer = new QueryAnalyzer($this->em->getConnection()->getDatabasePlatform());

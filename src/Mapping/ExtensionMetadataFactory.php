@@ -175,7 +175,6 @@ class ExtensionMetadataFactory
             $driver = new $driverClassName();
             $driver->setOriginalDriver($omDriver);
             if ($driver instanceof FileDriver) {
-                /* @var $driver FileDriver */
                 if ($omDriver instanceof MappingDriver) {
                     $driver->setLocator($omDriver->getLocator());
                 // BC for Doctrine 2.2

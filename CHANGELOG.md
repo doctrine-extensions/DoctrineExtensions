@@ -19,9 +19,16 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.6.0] - 2022-03-19
+### Added
+- Translatable: Add defaultTranslationValue option to allow null or string value (#2167). TranslatableListener can hydrate object properties with null value, but it may cause a Type error for non-nullable getter upon a missing translation.
+
 ### Fixed
 - Uploadable: `FileInfoInterface::getSize()` return type declaration (#2413).
 - Tree: Setting a new Tree Root when Tree Parent is `null`.
+- Tree: update cache key used by Closure to match Doctrine's one (#2416).
+- Tree: persist order does not affect entities on Closure (#2432)
 
 ## [3.5.0] - 2022-01-10
 ### Added

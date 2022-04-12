@@ -68,9 +68,6 @@ class Xml extends BaseXml
                         }
                         $trackedFieldAttribute = $this->_getAttribute($data, 'field');
                         $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null;
-                        if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException('Blameable extension does not support multiple value changeset detection yet.');
-                        }
                         $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,
@@ -101,9 +98,6 @@ class Xml extends BaseXml
                         }
                         $trackedFieldAttribute = $this->_getAttribute($data, 'field');
                         $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null;
-                        if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException('Blameable extension does not support multiple value changeset detection yet.');
-                        }
                         $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,

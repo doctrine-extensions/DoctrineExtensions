@@ -32,7 +32,7 @@ class TranslationRepository extends DocumentRepository
      * Current TranslatableListener instance used
      * in EntityManager
      *
-     * @var TranslatableListener
+     * @var TranslatableListener|null
      */
     private $listener;
 
@@ -163,7 +163,7 @@ class TranslationRepository extends DocumentRepository
      * @param string $value
      * @param string $class
      *
-     * @return object instance of $class or null if not found
+     * @return object|null instance of $class or null if not found
      */
     public function findObjectByTranslatedField($field, $value, $class)
     {
@@ -236,7 +236,7 @@ class TranslationRepository extends DocumentRepository
      */
     private function getTranslatableListener(): TranslatableListener
     {
-        if (!$this->listener) {
+        if (null === $this->listener) {
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof TranslatableListener) {

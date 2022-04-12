@@ -4,11 +4,14 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 
 parameters:
-    level: 1
+    level: 4
     paths:
         - src
         - tests
     bootstrapFiles:
         - tests/bootstrap.php
-    doctrine:
-        objectManagerLoader: tests/object-manager.php
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is unused\.#'

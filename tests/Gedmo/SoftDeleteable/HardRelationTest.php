@@ -20,17 +20,12 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 final class HardRelationTest extends BaseTestCaseORM
 {
-    /**
-     * @var SoftDeleteableListener
-     */
-    private $softDeleteableListener;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $evm = new EventManager();
-        $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener());
+        $evm->addEventSubscriber(new SoftDeleteableListener());
         $this->getDefaultMockSqliteEntityManager($evm);
         $this->em->getConfiguration()->addFilter('softdelete', SoftDeleteableFilter::class);
         $this->em->getFilters()->enable('softdelete');

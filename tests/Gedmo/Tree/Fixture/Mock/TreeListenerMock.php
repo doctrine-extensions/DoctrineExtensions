@@ -29,7 +29,7 @@ class TreeListenerMock extends TreeListener
     public $releaseLocks = false;
 
     /**
-     * @var Strategy
+     * @var MaterializedPathMock
      */
     protected $strategy;
 
