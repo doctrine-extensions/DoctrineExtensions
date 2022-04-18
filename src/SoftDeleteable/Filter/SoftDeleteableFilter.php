@@ -70,7 +70,7 @@ class SoftDeleteableFilter extends SQLFilter
 
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
         if (isset($config['timeAware']) && $config['timeAware']) {
-            $addCondSql = "({$addCondSql} OR {$targetTableAlias}.{$column} > {$platform->getCurrentTimestampSQL()})";
+            $addCondSql = "({$addCondSql} OR {$targetTableAlias}.{$column} > {$platform->getCurrentTimestampSQL(6)})";
         }
 
         return $addCondSql;
