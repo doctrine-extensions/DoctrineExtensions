@@ -319,6 +319,41 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertSame(9, $onions->getLeft());
         static::assertSame(10, $onions->getRight());
 
+        // reorder (non-recursive)
+
+        $node = $repo->findOneByTitle('Food');
+        $repo->reorder($node, 'title', 'DESC', false, false);
+
+        $node = $repo->findOneByTitle('Vegitables');
+
+        $this->assertEquals(2, $node->getLeft());
+        $this->assertEquals(11, $node->getRight());
+
+        $node = $repo->findOneByTitle('Fruits');
+
+        $this->assertEquals(12, $node->getLeft());
+        $this->assertEquals(13, $node->getRight());
+
+        $node = $repo->findOneByTitle('Carrots');
+
+        $this->assertEquals(3, $node->getLeft());
+        $this->assertEquals(4, $node->getRight());
+
+        $node = $repo->findOneByTitle('Potatoes');
+
+        $this->assertEquals(5, $node->getLeft());
+        $this->assertEquals(6, $node->getRight());
+
+        $node = $repo->findOneByTitle('Onions');
+
+        $this->assertEquals(7, $node->getLeft());
+        $this->assertEquals(8, $node->getRight());
+
+        $node = $repo->findOneByTitle('Cabbages');
+
+        $this->assertEquals(9, $node->getLeft());
+        $this->assertEquals(10, $node->getRight());
+
         // reorder
 
         $node = $repo->findOneBy(['title' => 'Food']);

@@ -647,6 +647,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $left = $wrapped->getPropertyValue($config['left']);
             $rootId = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
 
+            // if node has no children
             if ($right == $left + 1) {
                 $this->removeSingle($wrapped);
                 $this->listener
@@ -671,6 +672,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
                 // in case if root node is removed, children become roots
                 if (isset($config['root']) && !$parent) {
+                    // get node's children
                     $qb = $this->getQueryBuilder();
                     $qb->select('node.'.$pk, 'node.'.$config['left'], 'node.'.$config['right'])
                         ->from($config['useObjectClass'], 'node');
@@ -679,12 +681,14 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $qb->setParameter('pid', $nodeId);
                     $nodes = $qb->getQuery()->getArrayResult();
 
+                    // go through each of the node's children
                     foreach ($nodes as $newRoot) {
                         $left = $newRoot[$config['left']];
                         $right = $newRoot[$config['right']];
                         $rootId = $newRoot[$pk];
                         $shift = -($left - 1);
 
+                        // set the root of this child node and its children to the newly formed tree
                         $qb = $this->getQueryBuilder();
                         $qb->update($config['useObjectClass'], 'node');
                         $qb->set('node.'.$config['root'], ':rid');
@@ -695,6 +699,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $qb->andWhere($qb->expr()->lte('node.'.$config['right'], $right));
                         $qb->getQuery()->getSingleScalarResult();
 
+                        // Set the parent to NULL for this child node, i.e. make it root
                         $qb = $this->getQueryBuilder();
                         $qb->update($config['useObjectClass'], 'node');
                         $qb->set('node.'.$config['parent'], ':pid');
@@ -705,6 +710,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $qb->setParameter('rid', $rootId);
                         $qb->getQuery()->getSingleScalarResult();
 
+                        // fix left, right and level values for the newly formed tree
                         $this->listener
                             ->getStrategy($this->_em, $meta->getName())
                             ->shiftRangeRL($this->_em, $config['useObjectClass'], $left, $right, $shift, $rootId, $rootId, -1);
@@ -713,6 +719,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                             ->shiftRL($this->_em, $config['useObjectClass'], $right, -2, $rootId);
                     }
                 } else {
+                    // set parent of all direct children to be the parent of the node being deleted
                     $qb = $this->getQueryBuilder();
                     $qb->update($config['useObjectClass'], 'node');
                     $qb->set('node.'.$config['parent'], ':pid');
@@ -725,6 +732,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
                     $qb->getQuery()->getSingleScalarResult();
 
+                    // fix left, right and level values for the node's children
                     $this->listener
                         ->getStrategy($this->_em, $meta->getName())
                         ->shiftRangeRL($this->_em, $config['useObjectClass'], $left, $right, $shift, $rootId, $rootId, -1);
@@ -747,17 +755,18 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Reorders $node's sibling nodes and child nodes,
+     * Reorders $node's child nodes,
      * according to the $sortByField and $direction specified
      *
      * @param object|null $node        node from which to start reordering the tree; null will reorder everything
      * @param string      $sortByField field name to sort by
      * @param string      $direction   sort direction : "ASC" or "DESC"
      * @param bool        $verify      true to verify tree first
+     * @param bool        $recursive   true to also reorder further descendants, not just the direct children
      *
      * @return void
      */
-    public function reorder($node, $sortByField = null, $direction = 'ASC', $verify = true)
+    public function reorder($node, $sortByField = null, $direction = 'ASC', $verify = true, $recursive = true)
     {
         $meta = $this->getClassMetadata();
         if (null === $node || is_a($node, $meta->getName())) {
@@ -772,7 +781,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $right = $wrapped->getPropertyValue($config['right']);
                 $left = $wrapped->getPropertyValue($config['left']);
                 $this->moveDown($node, true);
-                if ($left != ($right - 1)) {
+                if ($recursive && $left != ($right - 1)) {
                     $this->reorder($node, $sortByField, $direction, false);
                 }
             }
