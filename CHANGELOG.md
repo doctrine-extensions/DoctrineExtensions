@@ -20,6 +20,10 @@ a release.
 
 ## [Unreleased]
 
+### Tree
+#### Added
+-  [NestedSet] childrenQueryBuilder() to allow specifying sort order separately for each field
+
 ## [3.6.0] - 2022-03-19
 ### Added
 - Translatable: Add defaultTranslationValue option to allow null or string value (#2167). TranslatableListener can hydrate object properties with null value, but it may cause a Type error for non-nullable getter upon a missing translation.
