@@ -176,11 +176,6 @@ parameters:
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadataFactory\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\>\\:\\:getCacheDriver\\(\\)\\.$#"
-			count: 1
-			path: src/Mapping/MappedEventSubscriber.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 1
 			path: src/Mapping/MappedEventSubscriber.php
