@@ -4,6 +4,7 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Tree\Strategy;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
@@ -58,10 +59,10 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * @param string   $name
-     * @param Gedmo\Tree\Strategy $instance
+     * @param Strategy $instance
      * @return self
      */
-    public function addStrategyInstance($name, $instance)
+    public function addStrategyInstance(string $name, Strategy $instance)
     {
         if (!isset($this->strategyInstances[$name])) {
             $this->strategyInstances[$name] = $instance;
