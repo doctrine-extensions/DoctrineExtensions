@@ -19,6 +19,9 @@ a release.
 ---
 
 ## [Unreleased]
+## Added
+- Add support for doctrine/persistence 3
+
 ## Changed
 - Removed call to deprecated `ClassMetadataFactory::getCacheDriver()` method.
 - Dropped support for doctrine/mongodb-odm < 2.3.
