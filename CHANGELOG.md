@@ -25,6 +25,7 @@ a release.
 ## Changed
 - Removed call to deprecated `ClassMetadataFactory::getCacheDriver()` method.
 - Dropped support for doctrine/mongodb-odm < 2.3.
+- Make doctrine/cache an optional dependency.
 
 ## [3.6.0] - 2022-03-19
 ### Added
