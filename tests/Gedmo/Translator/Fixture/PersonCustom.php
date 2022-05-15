@@ -95,9 +95,9 @@ class PersonCustom
         }
 
         return new CustomProxy($this,
-        /* Locale                            */ $locale,
-        /* List of translatable properties:  */ ['name'],
-        /* Translation entity class:         */ PersonCustomTranslation::class,
+        /* Locale */ $locale,
+        /* List of translatable properties: */ ['name'],
+        /* Translation entity class: */ PersonCustomTranslation::class,
         /* Translations collection property: */ $this->translations
         );
     }
