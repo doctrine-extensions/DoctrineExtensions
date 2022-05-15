@@ -563,7 +563,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(1, $author2->getPosition());
         static::assertSame(0, $author3->getPosition());
 
-        //update position
+        // update position
         $author3->setPaper($paper1);
         $author3->setPosition(0); // same as before, no changes
         $this->em->persist($author3);
@@ -614,7 +614,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(0, $author1->getPosition());
         static::assertSame(1, $author2->getPosition());
 
-        //update position
+        // update position
         $author2->setPaper($paper2);
         $author2->setPosition(0); // Position has changed author2 was at position 1 in paper1 and now 0 in paper2, so it can be in changeSets
         $this->em->persist($author2);

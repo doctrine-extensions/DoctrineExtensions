@@ -67,7 +67,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::NODE);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
-        $count = $repo->childCount($vegies, true/*direct*/);
+        $count = $repo->childCount($vegies, true/* direct */);
         static::assertSame(3, $count);
 
         $children = $repo->children($vegies, true);

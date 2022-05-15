@@ -56,7 +56,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         static::assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
-        //As Translate locale and Default locale are the same, no records should be present in translations table
+        // As Translate locale and Default locale are the same, no records should be present in translations table
         static::assertCount(0, $translations);
 
         // test second translations
@@ -69,7 +69,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $translations = $repo->findTranslations($person);
-        //Only one translation should be present
+        // Only one translation should be present
         static::assertCount(1, $translations);
         static::assertArrayHasKey('de_de', $translations);
 

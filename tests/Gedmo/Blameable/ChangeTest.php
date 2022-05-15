@@ -57,7 +57,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed
         static::assertSame('testuser', $test->getChtitle());
 
         $this->listener->setUserValue('otheruser');
@@ -67,7 +67,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Not Changed
+        // Not Changed
         static::assertSame('testuser', $test->getChtitle());
     }
 

@@ -481,7 +481,7 @@ class Closure implements Strategy
 
             $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAllNumeric();
 
-            //create key pair array with resultset
+            // create key pair array with resultset
             $levels = [];
             foreach ($levelsAssoc as $level) {
                 $levels[$level[0]] = $level[1];

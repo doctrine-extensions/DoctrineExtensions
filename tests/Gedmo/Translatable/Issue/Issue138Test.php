@@ -56,7 +56,7 @@ final class Issue138Test extends BaseTestCaseORM
 
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
-        //die($q->getSQL());
+        // die($q->getSQL());
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
         static::assertSame('Food', $result[0]['title']);

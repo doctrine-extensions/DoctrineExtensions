@@ -32,7 +32,7 @@ final class MappingTest extends \PHPUnit\Framework\TestCase
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        //$this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
+        // $this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
         $config->setMetadataDriverImpl(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($_ENV['annotation_reader']));
 
         $conn = [

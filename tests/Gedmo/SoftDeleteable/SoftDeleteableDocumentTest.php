@@ -132,7 +132,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::USER__TIME_AWARE_CLASS);
 
-        //Find entity with deletedAt date in future
+        // Find entity with deletedAt date in future
         $newUser = new User();
         $username = 'test_user';
         $newUser->setUsername($username);
@@ -145,7 +145,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->remove($user);
         $this->dm->flush();
 
-        //Don't find entity with deletedAt date in past
+        // Don't find entity with deletedAt date in past
         $newUser = new User();
         $username = 'test_user';
         $newUser->setUsername($username);
