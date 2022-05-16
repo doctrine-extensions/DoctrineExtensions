@@ -477,7 +477,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         static::assertFalse($this->listener->removeFile('non_existent_file'));
     }
 
-    public function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists()
+    public function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): array
     {
         return [
             'With extension' => [
