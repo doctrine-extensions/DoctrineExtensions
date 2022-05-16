@@ -516,7 +516,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        $this->assertEquals($expectedFilename, basename($file2->getFilePath()));
+        static::assertSame($expectedFilename, basename($file2->getFilePath()));
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath(): void
