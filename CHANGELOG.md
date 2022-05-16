@@ -28,8 +28,7 @@ a release.
 - Make doctrine/cache an optional dependency.
 
 ## Fixed
-### Loggable
-- Fix `appendNumber` renaming for files without extension (#2228)
+- Loggable: Fix `appendNumber` renaming for files without extension (#2228)
 
 ## [3.6.0] - 2022-03-19
 ### Added
