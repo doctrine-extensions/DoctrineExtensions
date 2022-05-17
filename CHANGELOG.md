@@ -10,10 +10,9 @@ changes, in order to more easily recognize how an Extension has changed in
 a release.
 
 ```
-## [2.4.36] - 2018-07-26
-### Sortable
+## [3.6.1] - 2022-07-26
 #### Fixed
-- Fix issue with add+delete position synchronization (#1932)
+- Sortable: Fix issue with add+delete position synchronization (#1932)
 ```
 
 ---
