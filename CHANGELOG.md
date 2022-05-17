@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.7.0] - 2022-05-17
 ## Added
 - Add support for doctrine/persistence 3
 
