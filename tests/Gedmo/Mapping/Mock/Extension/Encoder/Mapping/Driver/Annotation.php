@@ -26,7 +26,7 @@ class Annotation implements Driver
     {
         $reader = new AnnotationReader();
         // set annotation namespace and alias
-        //$reader->setAnnotationNamespaceAlias('Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
+        // $reader->setAnnotationNamespaceAlias('Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
 
         $class = $meta->getReflectionClass();
         // check only property annotations

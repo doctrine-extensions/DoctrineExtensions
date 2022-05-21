@@ -104,7 +104,7 @@ final class Issue173Test extends BaseTestCaseORM
 
     private function populate(): void
     {
-        //Categories
+        // Categories
         $category1 = new Category();
         $category1->setTitle('en category1');
 
@@ -119,12 +119,12 @@ final class Issue173Test extends BaseTestCaseORM
         $this->em->persist($category3);
         $this->em->flush();
 
-        //Articles
+        // Articles
         $article1 = new Article();
         $article1->setTitle('en article1');
         $article1->setCategory($category1);
 
-        //Products
+        // Products
         $product1 = new Product();
         $product1->setTitle('en product1');
         $product1->setCategory($category2);

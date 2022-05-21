@@ -92,7 +92,7 @@ class Chain implements Driver
         }
 
         // commenting it for customized mapping support, debugging of such cases might get harder
-        //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->getName() . ' is not a valid entity or mapped super class.');
+        // throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->getName() . ' is not a valid entity or mapped super class.');
     }
 
     /**
@@ -100,6 +100,6 @@ class Chain implements Driver
      */
     public function setOriginalDriver($driver)
     {
-        //not needed here
+        // not needed here
     }
 }
