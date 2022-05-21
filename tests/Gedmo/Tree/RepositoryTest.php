@@ -99,18 +99,18 @@ final class RepositoryTest extends BaseTestCaseORM
         $children = $this->em->getRepository(self::CATEGORY)
              ->children($food, true, ['title'], 'ASC');
 
-        $this->assertCount(2, $children);
-        $this->assertEquals('Fruits', $children[0]->getTitle());
-        $this->assertEquals('Vegitables', $children[1]->getTitle());
+        static::assertCount(2, $children);
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY)
              ->children($food, false, ['level', 'title'], ['ASC', 'DESC']);
 
-        $this->assertCount(4, $children);
-        $this->assertEquals('Vegitables', $children[0]->getTitle());
-        $this->assertEquals('Fruits', $children[1]->getTitle());
-        $this->assertEquals('Potatoes', $children[2]->getTitle());
-        $this->assertEquals('Carrots', $children[3]->getTitle());
+        static::assertCount(4, $children);
+        static::assertSame('Vegitables', $children[0]->getTitle());
+        static::assertSame('Fruits', $children[1]->getTitle());
+        static::assertSame('Potatoes', $children[2]->getTitle());
+        static::assertSame('Carrots', $children[3]->getTitle());
 
         // path
 
