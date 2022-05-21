@@ -168,7 +168,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->persist($yetAnotherChild);
         $yetAnotherChild->setTitle('yetanotherchild');
         $yetAnotherChild->setParent($root);
-        //$this->em->persist($yetAnotherChild);
+        // $this->em->persist($yetAnotherChild);
         $this->em->flush();
         $this->em->clear();
 
@@ -363,7 +363,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->persist($yetAnotherChild);
         $yetAnotherChild->setTitle('yetanotherchild');
         $yetAnotherChild->setParent($root);
-        //$this->em->persist($yetAnotherChild);
+        // $this->em->persist($yetAnotherChild);
         $this->em->flush();
         $this->em->clear();
 

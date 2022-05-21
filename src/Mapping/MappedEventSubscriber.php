@@ -18,6 +18,8 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -286,16 +288,17 @@ abstract class MappedEventSubscriber implements EventSubscriber
             return $this->cacheItemPool;
         }
 
-        $factory = $objectManager->getMetadataFactory();
-        $cacheDriver = $factory->getCacheDriver();
+        if ($objectManager instanceof EntityManagerInterface || $objectManager instanceof DocumentManager) {
+            $metadataCache = $objectManager->getConfiguration()->getMetadataCache();
 
-        if (null === $cacheDriver) {
-            $this->cacheItemPool = new ArrayAdapter();
+            if (null !== $metadataCache) {
+                $this->cacheItemPool = $metadataCache;
 
-            return $this->cacheItemPool;
+                return $this->cacheItemPool;
+            }
         }
 
-        $this->cacheItemPool = CacheAdapter::wrap($cacheDriver);
+        $this->cacheItemPool = new ArrayAdapter();
 
         return $this->cacheItemPool;
     }

@@ -41,21 +41,20 @@
         "php": "^7.2 || ^8.0",
         "behat/transliterator": "~1.2",
         "doctrine/annotations": "^1.13",
-        "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/collections": "^1.0",
         "doctrine/common": "^2.13 || ^3.0",
         "doctrine/event-manager": "^1.0",
-        "doctrine/persistence": "^2.2",
+        "doctrine/persistence": "^2.2 || ^3.0",
         "psr/cache": "^1 || ^2 || ^3",
         "symfony/cache": "^4.4 || ^5.3 || ^6.0"
     },
     "require-dev": {
+        "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/dbal": "^2.13.1 || ^3.2",
-        "doctrine/deprecations": "^0.5.3",
         "doctrine/doctrine-bundle": "^2.3",
-        "doctrine/mongodb-odm": "^2.2",
+        "doctrine/mongodb-odm": "^2.3",
         "doctrine/orm": "^2.10.2",
-        "friendsofphp/php-cs-fixer": "~3.4.0",
+        "friendsofphp/php-cs-fixer": "^3.4.0",
         "nesbot/carbon": "^2.55",
         "phpstan/phpstan": "^1.1",
         "phpstan/phpstan-doctrine": "^1.0",
@@ -68,7 +67,7 @@
     "conflict": {
         "doctrine/cache": "<1.11",
         "doctrine/dbal": "<2.13.1 || ^3.0 <3.2",
-        "doctrine/mongodb-odm": "<2.2",
+        "doctrine/mongodb-odm": "<2.3",
         "doctrine/orm": "<2.10.2",
         "sebastian/comparator": "<2.0"
     },
@@ -93,7 +92,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.7-dev"
+            "dev-main": "3.8-dev"
         }
     },
     "scripts": {

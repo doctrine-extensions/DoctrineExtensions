@@ -116,7 +116,7 @@ abstract class File implements Driver
      */
     protected function _getMapping($className)
     {
-        //try loading mapping from original driver first
+        // try loading mapping from original driver first
         $mapping = null;
         if (null !== $this->_originalDriver) {
             if ($this->_originalDriver instanceof FileDriver) {
@@ -124,7 +124,7 @@ abstract class File implements Driver
             }
         }
 
-        //if no mapping found try to load mapping file again
+        // if no mapping found try to load mapping file again
         if (null === $mapping) {
             $yaml = $this->_loadMappingFile($this->locator->findMappingFile($className));
             $mapping = $yaml[$className];

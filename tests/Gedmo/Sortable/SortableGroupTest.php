@@ -89,11 +89,11 @@ final class SortableGroupTest extends BaseTestCaseORM
         $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
         static::assertSame(0, $audi80->getSortByEngine());
 
-        //position 1
+        // position 1
         $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
         static::assertSame(1, $audi80s->getSortByEngine());
 
-        //position 2
+        // position 2
         $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
         static::assertSame(2, $icarus->getSortByEngine());
 

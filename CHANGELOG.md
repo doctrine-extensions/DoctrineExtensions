@@ -10,10 +10,9 @@ changes, in order to more easily recognize how an Extension has changed in
 a release.
 
 ```
-## [2.4.36] - 2018-07-26
-### Sortable
+## [3.6.1] - 2022-07-26
 #### Fixed
-- Fix issue with add+delete position synchronization (#1932)
+- Sortable: Fix issue with add+delete position synchronization (#1932)
 ```
 
 ---
@@ -23,6 +22,18 @@ a release.
 ### Tree
 #### Added
 -  [NestedSet] childrenQueryBuilder() to allow specifying sort order separately for each field
+
+## [3.7.0] - 2022-05-17
+## Added
+- Add support for doctrine/persistence 3
+
+## Changed
+- Removed call to deprecated `ClassMetadataFactory::getCacheDriver()` method.
+- Dropped support for doctrine/mongodb-odm < 2.3.
+- Make doctrine/cache an optional dependency.
+
+## Fixed
+- Loggable: Fix `appendNumber` renaming for files without extension (#2228)
 
 ## [3.6.0] - 2022-03-19
 ### Added

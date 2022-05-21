@@ -9,7 +9,6 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
@@ -195,15 +194,16 @@ class Closure implements Strategy
         }
 
         if (!$hasTheUserExplicitlyDefinedMapping) {
-            $cacheDriver = $cmf->getCacheDriver();
+            $cacheDriver = $em->getConfiguration()->getMetadataCache();
 
-            if ($cacheDriver instanceof Cache) {
+            if (null !== $cacheDriver) {
                 // @see https://github.com/doctrine/persistence/pull/144
                 // @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey()
-                $cacheDriver->save(
-                    str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__',
-                    $closureMetadata
-                );
+                $cacheKey = str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__';
+
+                $item = $cacheDriver->getItem($cacheKey);
+
+                $cacheDriver->save($item->set($closureMetadata));
             }
         }
     }
@@ -481,7 +481,7 @@ class Closure implements Strategy
 
             $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAllNumeric();
 
-            //create key pair array with resultset
+            // create key pair array with resultset
             $levels = [];
             foreach ($levelsAssoc as $level) {
                 $levels[$level[0]] = $level[1];

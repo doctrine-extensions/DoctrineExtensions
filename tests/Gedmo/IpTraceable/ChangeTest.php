@@ -59,7 +59,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed
         static::assertSame(self::TEST_IP, $test->getChtitle());
 
         $this->listener->setIpValue('127.0.0.1');
@@ -69,7 +69,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Not Changed
+        // Not Changed
         static::assertSame(self::TEST_IP, $test->getChtitle());
     }
 

@@ -94,13 +94,13 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertSame(7, $oranges->getLeft());
         static::assertSame(8, $oranges->getRight());
 
-        //Normal test that pass
+        // Normal test that pass
         static::assertSame(9, $meat->getLeft());
         static::assertSame(10, $meat->getRight());
 
         // Raw query to show the issue #108 with wrong left value by Doctrine
         $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c';
-        $dql .= ' WHERE c.id = 5'; //5 == meat
+        $dql .= ' WHERE c.id = 5'; // 5 == meat
         $meat_array = $this->em->createQuery($dql)->getScalarResult();
 
         static::assertSame(9, $meat_array[0]['c_lft']);
@@ -126,13 +126,13 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertSame(7, $oranges->getLeft());
         static::assertSame(8, $oranges->getRight());
 
-        //Normal test that pass
+        // Normal test that pass
         static::assertSame(9, $milk->getLeft());
         static::assertSame(10, $milk->getRight());
 
         // Raw query to show the issue #108 with wrong left value by Doctrine
         $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c';
-        $dql .= ' WHERE c.id = 4 '; //4 == Milk
+        $dql .= ' WHERE c.id = 4 '; // 4 == Milk
         $milk_array = $this->em->createQuery($dql)->getScalarResult();
         static::assertSame(9, $milk_array[0]['c_lft']);
         static::assertSame(10, $milk_array[0]['c_rgt']);
