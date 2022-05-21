@@ -193,11 +193,11 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        if null, all tree nodes will be taken
+     * @param bool                 $direct      true to take only direct children
+     * @param string|string[]|null $sortByField field name to sort by
+     * @param string               $direction   sort direction : "ASC" or "DESC"
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
      */
