@@ -193,10 +193,10 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null          $node        if null, all tree nodes will be taken
-     * @param bool                 $direct      true to take only direct children
-     * @param string|string[]|null $sortByField field name to sort by
-     * @param string               $direction   sort direction : "ASC" or "DESC"
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
@@ -262,11 +262,11 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        if null, all tree nodes will be taken
+     * @param bool                 $direct      true to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return Query Query object
      */
@@ -278,8 +278,8 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * @param object|null          $node        The object to fetch children for; if null, all nodes will be retrieved
      * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
-     * @param string|string[]|null $sortByField Field name(s) to sort by
-     * @param string               $direction   Sort direction : "ASC" or "DESC"
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
      * @return array|null List of children or null on failure
@@ -292,11 +292,11 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        if null, all tree nodes will be taken
+     * @param bool                 $direct      true to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder Query object
      */

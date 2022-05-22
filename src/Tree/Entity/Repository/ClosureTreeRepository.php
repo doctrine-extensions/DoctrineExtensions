@@ -101,11 +101,11 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
      */
@@ -150,7 +150,11 @@ class ClosureTreeRepository extends AbstractTreeRepository
         }
 
         if ($sortByField) {
-            if ($meta->hasField($sortByField) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
+            if (is_array($sortByField)) {
+                foreach ($sortByField as $key => $field) {
+                    $qb->addOrderBy('node.'.$field, is_array($direction) ? $direction[$key] : $direction);
+                }
+            } elseif ($meta->hasField($sortByField) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
                 $qb->orderBy('node.'.$sortByField, $direction);
             } else {
                 throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
@@ -165,11 +169,11 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return Query Query object
      */
@@ -179,11 +183,11 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null          $node        The object to fetch children for; if null, all nodes will be retrieved
-     * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
-     * @param string|string[]|null $sortByField Field name(s) to sort by
-     * @param string               $direction   Sort direction : "ASC" or "DESC"
-     * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return array|null List of children or null on failure
      */
