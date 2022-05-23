@@ -35,7 +35,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $qb = $em->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
            ->from($config['useObjectClass'], 'n');
-        $this->addGroupWhere($qb, $groups);
+        $this->addGroupWhere($qb, $meta, $groups);
         $query = $qb->getQuery();
         $query->useQueryCache(false);
         $query->disableResultCache();
@@ -108,7 +108,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $q->getSingleScalarResult();
     }
 
-    private function addGroupWhere(QueryBuilder $qb, iterable $groups): void
+    private function addGroupWhere(QueryBuilder $qb, ClassMetadata $metadata, iterable $groups): void
     {
         $i = 1;
         foreach ($groups as $group => $value) {
@@ -116,7 +116,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
                 $qb->andWhere($qb->expr()->isNull('n.'.$group));
             } else {
                 $qb->andWhere('n.'.$group.' = :group__'.$i);
-                $qb->setParameter('group__'.$i, $value);
+                $qb->setParameter('group__'.$i, $value, $metadata->getTypeOfField($group));
             }
             ++$i;
         }
