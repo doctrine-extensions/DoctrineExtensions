@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tests\Sortable\Fixture;
 
 use Doctrine\DBAL\Types\Types;
@@ -31,7 +38,6 @@ class ItemWithDateColumn
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: 'integer')]
-    //private $position = -1;
     private $position = 0;
 
     /**
@@ -50,33 +56,21 @@ class ItemWithDateColumn
     #[ORM\Column(nullable: false)]
     private $userId;
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     */
     public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
     public function getPosition(): int
     {
         return $this->position;
     }
 
-    /**
-     * @param int $position
-     */
     public function setPosition(int $position): void
     {
         $this->position = $position;

@@ -243,9 +243,9 @@ final class SortableGroupTest extends BaseTestCaseORM
 
     public function testChangePositionWithDateColumn()
     {
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 100; ++$i) {
             $object = new ItemWithDateColumn();
-            $today = new \DateTime( '2022-05-22');
+            $today = new \DateTime('2022-05-22');
             $object->setDate($today);
             $object->setUserId($i < 50 ? 'user-1' : 'user-2');
             $object->setPosition($i < 50 ? $i : $i - 50);
