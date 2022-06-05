@@ -871,6 +871,51 @@ parameters:
 			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
 
 		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseMongoODM\\:\\:getMetadataDefaultDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseMongoODM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseMongoODM\\:\\:getMetadataDefaultDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\Driver\\\\AttributeDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseMongoODM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseMongoODM\\:\\:getMetadataDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseMongoODM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getMongoDBDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseOM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getMongoDBDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\Driver\\\\AttributeDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseOM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getORMDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseOM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getORMDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AttributeDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseOM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseORM\\:\\:getMetadataDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseORM.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseORM\\:\\:getMetadataDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AttributeDriver\\.$#"
+			count: 1
+			path: tests/Gedmo/Tool/BaseTestCaseORM.php
+
+		-
 			message: "#^Strict comparison using \\=\\=\\= between null and Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform will always evaluate to false\\.$#"
 			count: 1
 			path: tests/Gedmo/Tool/BaseTestCaseORM.php
