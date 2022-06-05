@@ -19,6 +19,10 @@ a release.
 
 ## [Unreleased]
 
+### Tree
+#### Added
+- Added option to reorder only direct children in reorder() method
+
 ## [3.7.0] - 2022-05-17
 ## Added
 - Add support for doctrine/persistence 3
