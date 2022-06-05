@@ -30,6 +30,8 @@ class StringIdentifier
     private $uid;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
@@ -60,7 +62,7 @@ class StringIdentifier
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
