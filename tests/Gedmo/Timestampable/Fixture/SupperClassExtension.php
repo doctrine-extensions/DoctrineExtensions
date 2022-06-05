@@ -33,7 +33,7 @@ class SupperClassExtension extends MappedSupperClass
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

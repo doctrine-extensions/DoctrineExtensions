@@ -34,6 +34,8 @@ class Article
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
@@ -42,6 +44,8 @@ class Article
     private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
@@ -59,7 +63,7 @@ class Article
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

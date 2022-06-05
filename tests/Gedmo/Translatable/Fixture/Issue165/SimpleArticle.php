@@ -21,11 +21,17 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[MongoODM\Document(collection: 'articles')]
 class SimpleArticle
 {
-    /** @MongoODM\Id */
+    /**
+     * @var string|null
+     *
+     * @MongoODM\Id
+     */
     #[MongoODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
@@ -34,6 +40,8 @@ class SimpleArticle
     private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
@@ -42,6 +50,8 @@ class SimpleArticle
     private $content;
 
     /**
+     * @var string|null
+     *
      * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
@@ -57,17 +67,17 @@ class SimpleArticle
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setContent($content): void
+    public function setContent(?string $content): void
     {
         $this->content = $content;
     }
 
-    public function getContent()
+    public function getContent(): ?string
     {
         return $this->content;
     }
