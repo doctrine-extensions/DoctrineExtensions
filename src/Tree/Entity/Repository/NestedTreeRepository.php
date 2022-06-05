@@ -193,11 +193,11 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
      */
@@ -247,17 +247,19 @@ class NestedTreeRepository extends AbstractTreeRepository
         if (!$sortByField) {
             $qb->orderBy('node.'.$config['left'], 'ASC');
         } elseif (is_array($sortByField)) {
-            $fields = '';
-            foreach ($sortByField as $field) {
-                $fields .= 'node.'.$field.',';
+            foreach ($sortByField as $key => $field) {
+                $fieldDirection = strtolower(is_array($direction) ? ($direction[$key] ?? 'asc') : $direction);
+                if ($meta->hasField($field) && in_array($fieldDirection, ['asc', 'desc'], true)) {
+                    $qb->addOrderBy('node.'.$field, $fieldDirection);
+                } else {
+                    throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $field, $fieldDirection));
+                }
             }
-            $fields = rtrim($fields, ',');
-            $qb->orderBy($fields, $direction);
         } else {
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
                 $qb->orderBy('node.'.$sortByField, $direction);
             } else {
-                throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
+                throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $sortByField, $direction));
             }
         }
 
@@ -265,11 +267,11 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        if null, all tree nodes will be taken
+     * @param bool                 $direct      true to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return Query Query object
      */
@@ -281,8 +283,8 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * @param object|null          $node        The object to fetch children for; if null, all nodes will be retrieved
      * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
-     * @param string|string[]|null $sortByField Field name(s) to sort by
-     * @param string               $direction   Sort direction : "ASC" or "DESC"
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
      * @return array|null List of children or null on failure
@@ -295,11 +297,11 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        if null, all tree nodes will be taken
+     * @param bool                 $direct      true to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder Query object
      */
