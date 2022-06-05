@@ -24,11 +24,17 @@ use Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation;
 #[MongoODM\Document(collection: 'articles')]
 class Article
 {
-    /** @MongoODM\Id */
+    /**
+     * @var string|null
+     *
+     * @MongoODM\Id
+     */
     #[MongoODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
@@ -75,7 +81,7 @@ class Article
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

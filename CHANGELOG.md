@@ -21,7 +21,8 @@ a release.
 
 ### Tree
 #### Added
--  [NestedSet] childrenQueryBuilder() to allow specifying sort order separately for each field
+- [NestedSet] childrenQueryBuilder() to allow specifying sort order separately for each field
+- [NestedSet] Added option to reorder only direct children in reorder() method
 
 ## [3.7.0] - 2022-05-17
 ## Added
