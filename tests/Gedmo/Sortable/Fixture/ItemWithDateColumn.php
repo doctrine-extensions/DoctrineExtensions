@@ -37,7 +37,7 @@ class ItemWithDateColumn
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $position = 0;
 
     /**
