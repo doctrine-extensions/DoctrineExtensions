@@ -52,16 +52,6 @@ class ItemWithDateColumn
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private $date;
 
-    /**
-     * @var string|null
-     *
-     * @Gedmo\SortableGroup
-     * @ORM\Column(nullable=false)
-     */
-    #[Gedmo\SortableGroup]
-    #[ORM\Column(nullable: false)]
-    private $userId;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -90,15 +80,5 @@ class ItemWithDateColumn
     public function setDate(?\DateTime $date): void
     {
         $this->date = $date;
-    }
-
-    public function getUserId(): ?string
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(?string $userId): void
-    {
-        $this->userId = $userId;
     }
 }
