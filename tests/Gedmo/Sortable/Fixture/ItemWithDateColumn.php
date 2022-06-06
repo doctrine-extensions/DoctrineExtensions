@@ -53,6 +53,8 @@ class ItemWithDateColumn
     private $date;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\SortableGroup
      * @ORM\Column(nullable=false)
      */
