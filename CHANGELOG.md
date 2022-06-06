@@ -24,6 +24,10 @@ a release.
 - [NestedSet] childrenQueryBuilder() to allow specifying sort order separately for each field
 - [NestedSet] Added option to reorder only direct children in reorder() method
 
+### Sortable
+#### Fixed
+- [SortableGroup] Fix sorting date columns in SQLite (#2462).
+
 ## [3.7.0] - 2022-05-17
 ## Added
 - Add support for doctrine/persistence 3
