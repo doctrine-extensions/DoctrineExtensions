@@ -11,17 +11,38 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
+use Doctrine\Common\Collections\Collection;
+use Gedmo\Tests\Mapping\Fixture\SortableGroup;
+
 class Sortable
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var int
+     */
     private $position;
 
+    /**
+     * @var string
+     */
     private $grouping;
 
+    /**
+     * @var SortableGroup
+     */
     private $sortable_group;
 
+    /**
+     * @var Collection<int, SortableGroup>
+     */
     private $sortable_groups;
 }

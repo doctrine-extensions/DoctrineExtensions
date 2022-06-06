@@ -13,11 +13,23 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class ClosureTree
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var ClosureTree|null
+     */
     private $parent;
 
+    /**
+     * @var int
+     */
     private $level;
 }

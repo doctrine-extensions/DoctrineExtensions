@@ -11,7 +11,16 @@ parameters:
     bootstrapFiles:
         - tests/bootstrap.php
     treatPhpDocTypesAsCertain: false
+    checkMissingVarTagTypehint: true
+    checkMissingTypehints: true
     ignoreErrors:
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is unused\.#'
+rules:
+    - PHPStan\Rules\Constants\MissingClassConstantTypehintRule
+    - PHPStan\Rules\Functions\MissingFunctionParameterTypehintRule
+    - PHPStan\Rules\Functions\MissingFunctionReturnTypehintRule
+    - PHPStan\Rules\Methods\MissingMethodParameterTypehintRule
+    - PHPStan\Rules\Methods\MissingMethodReturnTypehintRule
+    - PHPStan\Rules\Properties\MissingPropertyTypehintRule

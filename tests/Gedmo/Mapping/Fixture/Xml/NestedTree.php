@@ -13,17 +13,38 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class NestedTree
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var NestedTree
+     */
     private $parent;
 
+    /**
+     * @var int
+     */
     private $root;
 
+    /**
+     * @var int
+     */
     private $level;
 
+    /**
+     * @var int
+     */
     private $left;
 
+    /**
+     * @var int
+     */
     private $right;
 }

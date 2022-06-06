@@ -38,7 +38,7 @@ final class DoctrineExtensions
      * Hooks all extension metadata mapping drivers into
      * the given driver chain of drivers for the ORM.
      */
-    public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
+    public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
         self::registerAnnotations();
         if (!$reader) {
@@ -56,7 +56,7 @@ final class DoctrineExtensions
      * Hooks only superclass extension metadata mapping drivers into
      * the given driver chain of drivers for the ORM.
      */
-    public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
+    public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
         self::registerAnnotations();
         if (!$reader) {
@@ -74,7 +74,7 @@ final class DoctrineExtensions
      * Hooks all extension metadata mapping drivers into
      * the given driver chain of drivers for the MongoDB ODM.
      */
-    public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
+    public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
         self::registerAnnotations();
         if (!$reader) {
@@ -91,7 +91,7 @@ final class DoctrineExtensions
      * Hooks only superclass extension metadata mapping drivers into
      * the given driver chain of drivers for the MongoDB ODM.
      */
-    public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
+    public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
         self::registerAnnotations();
         if (!$reader) {
@@ -107,7 +107,7 @@ final class DoctrineExtensions
     /**
      * Registers all extension annotations.
      */
-    public static function registerAnnotations()
+    public static function registerAnnotations(): void
     {
         AnnotationRegistry::registerFile(__DIR__.'/Mapping/Annotation/All.php');
     }

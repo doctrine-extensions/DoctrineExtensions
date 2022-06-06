@@ -18,5 +18,8 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
  */
 class Embedded
 {
+    /**
+     * @var string
+     */
     private $subtitle;
 }

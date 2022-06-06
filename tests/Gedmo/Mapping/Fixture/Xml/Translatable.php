@@ -13,15 +13,33 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class Translatable
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var string
+     */
     private $content;
 
+    /**
+     * @var string
+     */
     private $locale;
 
+    /**
+     * @var string
+     */
     private $author;
 
+    /**
+     * @var int
+     */
     private $views;
 }

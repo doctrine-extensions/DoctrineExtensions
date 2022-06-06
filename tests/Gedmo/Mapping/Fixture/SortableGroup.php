@@ -20,6 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
 class SortableGroup
 {
     /**
+     * @var int|null
+     *
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -27,6 +29,8 @@ class SortableGroup
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=64)
      */
     private $name;

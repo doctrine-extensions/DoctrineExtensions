@@ -37,7 +37,7 @@ class Geo
 
     /**
      * @var string|null
-     * @var phpstan-var numeric-string|null
+     * @phpstan-var numeric-string|null
      * @ORM\Column(type="decimal", precision=9, scale=6)
      * @Gedmo\Versioned()
      */
