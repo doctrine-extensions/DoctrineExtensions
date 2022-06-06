@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class AbstractNode
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,12 +34,16 @@ class AbstractNode
     protected $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     protected $name;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="string", length=191)
      */
@@ -46,6 +52,8 @@ class AbstractNode
     protected $path;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
@@ -53,7 +61,7 @@ class AbstractNode
     #[ORM\Column(type: Types::INTEGER)]
     protected $position;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -63,27 +71,27 @@ class AbstractNode
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setPath($path): void
+    public function setPath(?string $path): void
     {
         $this->path = $path;
     }
 
-    public function getPath()
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setPosition($position): void
+    public function setPosition(?int $position): void
     {
         $this->position = $position;
     }
 
-    public function getPosition()
+    public function getPosition(): ?int
     {
         return $this->position;
     }

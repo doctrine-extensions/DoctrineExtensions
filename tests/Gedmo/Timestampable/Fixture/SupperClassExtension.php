@@ -21,6 +21,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class SupperClassExtension extends MappedSupperClass
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      * @Gedmo\Translatable
      */

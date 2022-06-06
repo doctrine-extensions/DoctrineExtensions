@@ -44,6 +44,8 @@ class Vehicle
     private $id;
 
     /**
+     * @var Engine|null
+     *
      * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Engine")
      */
@@ -52,12 +54,16 @@ class Vehicle
     private $engine;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
     private $title;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
@@ -70,12 +76,12 @@ class Vehicle
         return $this->id;
     }
 
-    public function setSortByEngine($sort): void
+    public function setSortByEngine(?int $sort): void
     {
         $this->sortByEngine = $sort;
     }
 
-    public function getSortByEngine()
+    public function getSortByEngine(): ?int
     {
         return $this->sortByEngine;
     }
@@ -85,7 +91,7 @@ class Vehicle
         $this->engine = $engine;
     }
 
-    public function getEngine()
+    public function getEngine(): ?Engine
     {
         return $this->engine;
     }

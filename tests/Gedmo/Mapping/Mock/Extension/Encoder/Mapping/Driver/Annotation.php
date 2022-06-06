@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Mapping\Driver;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Encode;
 
@@ -19,6 +20,8 @@ class Annotation implements Driver
 {
     /**
      * original driver if it is available
+     *
+     * @var MappingDriver
      */
     protected $_originalDriver;
 

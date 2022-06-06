@@ -20,17 +20,23 @@ use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 #[ODM\Document(collection: 'categories')]
 class Category
 {
-    /** @ODM\Id */
+    /**
+     * @var string|null
+     *
+     * @ODM\Id
+     */
     #[ODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
     private $name;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -40,7 +46,7 @@ class Category
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
