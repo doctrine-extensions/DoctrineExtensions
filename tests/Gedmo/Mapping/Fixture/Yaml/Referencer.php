@@ -11,9 +11,17 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
+use Doctrine\Common\Collections\Collection;
+
 class Referencer
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var Collection<int, Referenced>
+     */
     private $referencedDocuments;
 }

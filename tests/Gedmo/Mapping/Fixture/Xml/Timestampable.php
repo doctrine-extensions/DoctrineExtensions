@@ -13,13 +13,28 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class Timestampable
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var \DateTime
+     */
     private $created;
 
+    /**
+     * @var \DateTime
+     */
     private $updated;
 
+    /**
+     * @var \DateTime
+     */
     private $published;
 
+    /**
+     * @var Status
+     */
     private $status;
 }

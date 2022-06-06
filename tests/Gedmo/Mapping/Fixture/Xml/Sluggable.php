@@ -13,15 +13,33 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class Sluggable
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var string
+     */
     private $code;
 
+    /**
+     * @var string
+     */
     private $ean;
 
+    /**
+     * @var string
+     */
     private $slug;
 
+    /**
+     * @var Sluggable
+     */
     private $parent;
 }

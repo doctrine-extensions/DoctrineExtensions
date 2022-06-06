@@ -13,7 +13,13 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class SoftDeleteable
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var \DateTime|null
+     */
     private $deletedAt;
 }

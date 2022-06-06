@@ -15,25 +15,41 @@ use Doctrine\Common\Collections\Collection;
 
 class MaterializedPathCategory
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var string
+     */
     private $path;
 
+    /**
+     * @var int
+     */
     private $level;
 
+    /**
+     * @var Collection<int, Category>
+     */
     private $children;
 
+    /**
+     * @var MaterializedPathCategory
+     */
     private $parent;
 
+    /**
+     * @var \DateTime|null
+     */
     private $lockTime;
 
-    /**
-     * Get id
-     *
-     * @return int $id
-     */
     public function getId(): int
     {
         return $this->id;
@@ -49,66 +65,55 @@ class MaterializedPathCategory
         return $this->title;
     }
 
-    /**
-     * Add children
-     */
     public function addChildren(Category $children): void
     {
         $this->children[] = $children;
     }
 
     /**
-     * @return Collection $children
+     * @return Collection<int, Category>
      */
     public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    /**
-     * Set parent
-     */
-    public function setParent(Category $parent): void
+    public function setParent(self $parent): void
     {
         $this->parent = $parent;
     }
 
-    /**
-     * Get parent
-     *
-     * @return Category $parent
-     */
-    public function getParent(): Category
+    public function getParent(): self
     {
         return $this->parent;
     }
 
-    public function setLevel($level): void
+    public function setLevel(?int $level): void
     {
         $this->level = $level;
     }
 
-    public function getLevel()
+    public function getLevel(): ?int
     {
         return $this->level;
     }
 
-    public function setPath($path): void
+    public function setPath(?string $path): void
     {
         $this->path = $path;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    public function setLockTime($lockTime): void
+    public function setLockTime(?\DateTime $lockTime): void
     {
         $this->lockTime = $lockTime;
     }
 
-    public function getLockTime()
+    public function getLockTime(): ?\DateTime
     {
         return $this->lockTime;
     }

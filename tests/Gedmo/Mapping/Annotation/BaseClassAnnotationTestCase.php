@@ -20,6 +20,8 @@ abstract class BaseClassAnnotationTestCase extends TestCase
     /**
      * @requires PHP 8
      * @dataProvider getValidParameters
+     *
+     * @param mixed $expectedReturn
      */
     public function testLoadFromAttribute(string $annotationProperty, $expectedReturn): void
     {
@@ -29,6 +31,8 @@ abstract class BaseClassAnnotationTestCase extends TestCase
 
     /**
      * @dataProvider getValidParameters
+     *
+     * @param mixed $expectedReturn
      */
     public function testLoadFromDoctrineAnnotation(string $annotationProperty, $expectedReturn): void
     {

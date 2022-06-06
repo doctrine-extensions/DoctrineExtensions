@@ -13,7 +13,13 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class Status
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 }

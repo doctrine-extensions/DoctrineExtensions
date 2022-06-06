@@ -41,6 +41,9 @@ class Category extends BaseCategory
      */
     private $parent;
 
+    /**
+     * @var \DateTime
+     */
     private $changed;
 
     public function __construct()
