@@ -82,34 +82,22 @@ class ItemWithDateColumn
         $this->position = $position;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDate()
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
-    /**
-     * @param mixed $date
-     */
-    public function setDate($date): void
+    public function setDate(?\DateTime $date): void
     {
         $this->date = $date;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUserId()
+    public function getUserId(): ?string
     {
         return $this->userId;
     }
 
-    /**
-     * @param mixed $userId
-     */
-    public function setUserId($userId): void
+    public function setUserId(?string $userId): void
     {
         $this->userId = $userId;
     }
