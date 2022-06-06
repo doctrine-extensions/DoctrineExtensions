@@ -43,6 +43,8 @@ class ItemWithDateColumn
     private $position = 0;
 
     /**
+     * @var \DateTime|null
+     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="date")
      */
