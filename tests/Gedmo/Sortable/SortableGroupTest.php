@@ -241,7 +241,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         static::assertSame(30, $position);
     }
 
-    public function testChangePositionWithDateColumn()
+    public function testChangePositionWithDateColumn(): void
     {
         for ($i = 0; $i < 100; ++$i) {
             $object = new ItemWithDateColumn();
