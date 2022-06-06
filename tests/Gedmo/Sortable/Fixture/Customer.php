@@ -33,12 +33,16 @@ class Customer
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="name", type="string")
      */
     #[ORM\Column(name: 'name', type: Types::STRING)]
     private $name;
 
     /**
+     * @var CustomerType|null
+     *
      * @ORM\ManyToOne(targetEntity="CustomerType", inversedBy="customers")
      */
     #[ORM\ManyToOne(targetEntity: CustomerType::class, inversedBy: 'customers')]
@@ -49,7 +53,7 @@ class Customer
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -59,7 +63,7 @@ class Customer
         $this->name = $name;
     }
 
-    public function getType()
+    public function getType(): ?CustomerType
     {
         return $this->type;
     }

@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
+use Doctrine\ORM\EntityManager;
 use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
+use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\Entity\Translation;
 
 /**
@@ -24,7 +26,14 @@ final class MappingTest extends \PHPUnit\Framework\TestCase
     public const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
     public const TEST_ENTITY_TRANSLATION = Translation::class;
 
+    /**
+     * @var EntityManager
+     */
     private $em;
+
+    /**
+     * @var TimestampableListener
+     */
     private $timestampable;
 
     protected function setUp(): void
@@ -42,11 +51,11 @@ final class MappingTest extends \PHPUnit\Framework\TestCase
 
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new \Gedmo\Translatable\TranslatableListener());
-        $this->timestampable = new \Gedmo\Timestampable\TimestampableListener();
+        $this->timestampable = new TimestampableListener();
         $evm->addEventSubscriber($this->timestampable);
         $evm->addEventSubscriber(new \Gedmo\Sluggable\SluggableListener());
         $evm->addEventSubscriber(new \Gedmo\Tree\TreeListener());
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema([]);

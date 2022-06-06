@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Timestampable\Fixture;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,6 +42,8 @@ class Type
     private $title;
 
     /**
+     * @var Collection<int, Article>
+     *
      * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'type')]

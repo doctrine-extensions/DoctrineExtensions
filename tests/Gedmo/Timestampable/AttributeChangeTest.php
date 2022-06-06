@@ -30,6 +30,9 @@ final class AttributeChangeTest extends BaseTestCaseORM
 {
     public const FIXTURE = TitledArticle::class;
 
+    /**
+     * @var TimestampableListenerStub
+     */
     protected $listener;
 
     protected function setUp(): void

@@ -44,6 +44,9 @@ final class SortableTest extends BaseTestCaseORM
     public const CUSTOMER = Customer::class;
     public const CUSTOMER_TYPE = CustomerType::class;
 
+    /**
+     * @var int|null
+     */
     private $nodeId;
 
     protected function setUp(): void

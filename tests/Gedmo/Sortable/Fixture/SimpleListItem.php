@@ -35,12 +35,16 @@ class SimpleListItem
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     private $name;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
@@ -58,17 +62,17 @@ class SimpleListItem
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setPosition($position): void
+    public function setPosition(?int $position): void
     {
         $this->position = $position;
     }
 
-    public function getPosition()
+    public function getPosition(): ?int
     {
         return $this->position;
     }

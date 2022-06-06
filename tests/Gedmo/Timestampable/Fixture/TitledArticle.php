@@ -43,12 +43,16 @@ class TitledArticle implements Timestampable
     private $title;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="text", type="string", length=128)
      */
     #[ORM\Column(name: 'text', type: Types::STRING, length: 128)]
     private $text;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="state", type="string", length=128)
      */
     #[ORM\Column(name: 'state', type: Types::STRING, length: 128)]
@@ -114,7 +118,7 @@ class TitledArticle implements Timestampable
         return $this->closed;
     }
 
-    public function setId($id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -124,12 +128,12 @@ class TitledArticle implements Timestampable
         return $this->id;
     }
 
-    public function setText($text): void
+    public function setText(?string $text): void
     {
         $this->text = $text;
     }
 
-    public function getText()
+    public function getText(): ?string
     {
         return $this->text;
     }
@@ -144,12 +148,12 @@ class TitledArticle implements Timestampable
         return $this->title;
     }
 
-    public function setState($state): void
+    public function setState(?string $state): void
     {
         $this->state = $state;
     }
 
-    public function getState()
+    public function getState(): ?string
     {
         return $this->state;
     }
