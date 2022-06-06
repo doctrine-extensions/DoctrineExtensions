@@ -29,6 +29,9 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     public const COMMENT = Comment::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void

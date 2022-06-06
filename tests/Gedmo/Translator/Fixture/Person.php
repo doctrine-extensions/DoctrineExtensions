@@ -124,6 +124,9 @@ class Person
         return $this->parent;
     }
 
+    /**
+     * @return self|\Gedmo\Translator\TranslationProxy
+     */
     public function translate(string $locale = 'en')
     {
         if ('en' === $locale) {

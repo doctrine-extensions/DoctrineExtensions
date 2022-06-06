@@ -57,7 +57,7 @@ class SimpleArticle
     #[MongoODM\Field(type: Type::STRING)]
     private $untranslated;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -82,12 +82,12 @@ class SimpleArticle
         return $this->content;
     }
 
-    public function setUntranslated($untranslated): void
+    public function setUntranslated(?string $untranslated): void
     {
         $this->untranslated = $untranslated;
     }
 
-    public function getUntranslated()
+    public function getUntranslated(): ?string
     {
         return $this->untranslated;
     }

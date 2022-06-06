@@ -58,7 +58,7 @@ class AbstractNode
         return $this->id;
     }
 
-    public function setName(?string $name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -68,7 +68,7 @@ class AbstractNode
         return $this->name;
     }
 
-    public function setPath($path)
+    public function setPath($path): void
     {
         $this->path = $path;
     }
@@ -78,7 +78,7 @@ class AbstractNode
         return $this->path;
     }
 
-    public function setPosition($position)
+    public function setPosition($position): void
     {
         $this->position = $position;
     }

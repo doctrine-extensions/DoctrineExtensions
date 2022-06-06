@@ -28,6 +28,9 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
     public const PERSON = Person::class;
     public const TRANSLATION = PersonTranslation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void

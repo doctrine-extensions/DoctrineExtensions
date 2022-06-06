@@ -34,6 +34,8 @@ class Post
     private $id;
 
     /**
+     * @var \DateTime|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -42,6 +44,8 @@ class Post
     private $publishedAt;
 
     /**
+     * @var \DateTime|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(type="time")
      */
@@ -50,6 +54,8 @@ class Post
     private $timestampAt;
 
     /**
+     * @var \DateTime|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(type="date")
      */
@@ -58,6 +64,8 @@ class Post
     private $dateAt;
 
     /**
+     * @var bool|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(type="boolean")
      */
@@ -70,50 +78,50 @@ class Post
         return $this->id;
     }
 
-    public function setPublishedAt($publishedAt): self
+    public function setPublishedAt(?\DateTime $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
 
         return $this;
     }
 
-    public function getPublishedAt()
+    public function getPublishedAt(): ?\DateTime
     {
         return $this->publishedAt;
     }
 
-    public function setTimestampAt($timestampAt): self
+    public function setTimestampAt(?\DateTime $timestampAt): self
     {
         $this->timestampAt = $timestampAt;
 
         return $this;
     }
 
-    public function getTimestampAt()
+    public function getTimestampAt(): ?\DateTime
     {
         return $this->timestampAt;
     }
 
-    public function setDateAt($dateAt): self
+    public function setDateAt(?\DateTime $dateAt): self
     {
         $this->dateAt = $dateAt;
 
         return $this;
     }
 
-    public function getDateAt()
+    public function getDateAt(): ?\DateTime
     {
         return $this->dateAt;
     }
 
-    public function setBoolean($boolean): self
+    public function setBoolean(bool $boolean): self
     {
         $this->boolean = $boolean;
 
         return $this;
     }
 
-    public function getBoolean()
+    public function getBoolean(): ?bool
     {
         return $this->boolean;
     }

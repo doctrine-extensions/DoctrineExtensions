@@ -502,7 +502,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $file->setTitle('test');
         $file2->setTitle('test2');
 
-        $fileInfo = $this->generateUploadedFile(false, $filename);
+        $fileInfo = $this->generateUploadedFile(null, $filename);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -596,7 +596,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $file = new FileWithMaxSize();
         $size = 1;
-        $fileInfo = $this->generateUploadedFile(false, false, ['size' => $size]);
+        $fileInfo = $this->generateUploadedFile(null, null, ['size' => $size]);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -657,6 +657,8 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
+     * @param mixed $class
+     *
      * @dataProvider invalidFileInfoClassesProvider
      */
     public function testSetDefaultFileInfoClassThrowExceptionIfInvalidClassArePassed($class): void
@@ -755,11 +757,11 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     // Util
 
-    private function generateUploadedFile($filePath = false, $filename = false, array $info = []): array
+    private function generateUploadedFile(?string $filePath = null, ?string $filename = null, array $info = []): array
     {
         $defaultInfo = [
-            'tmp_name' => !$filePath ? $this->testFile : $filePath,
-            'name' => !$filename ? $this->testFilename : $filename,
+            'tmp_name' => $filePath ?? $this->testFile,
+            'name' => $filename ?? $this->testFilename,
             'size' => $this->testFileSize,
             'type' => $this->testFileMimeType,
             'error' => 0,

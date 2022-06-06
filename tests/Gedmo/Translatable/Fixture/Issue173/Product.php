@@ -44,6 +44,8 @@ class Product
     private $title;
 
     /**
+     * @var Category|null
+     *
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      */
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
@@ -69,7 +71,7 @@ class Product
         $this->category = $category;
     }
 
-    public function getCategory()
+    public function getCategory(): ?Category
     {
         return $this->category;
     }

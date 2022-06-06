@@ -36,6 +36,9 @@ final class InheritanceTest extends BaseTestCaseORM
 
     public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void

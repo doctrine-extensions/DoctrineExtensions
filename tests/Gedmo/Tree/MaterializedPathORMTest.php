@@ -141,7 +141,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    public function createCategory()
+    public function createCategory(): MPCategory
     {
         $class = self::CATEGORY;
 

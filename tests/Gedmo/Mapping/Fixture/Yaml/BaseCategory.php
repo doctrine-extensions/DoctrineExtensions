@@ -56,10 +56,7 @@ class BaseCategory
         return $this->created;
     }
 
-    /**
-     * @param \DateTime $updated
-     */
-    public function setUpdated($updated): void
+    public function setUpdated(\DateTime $updated): void
     {
         $this->updated = $updated;
     }

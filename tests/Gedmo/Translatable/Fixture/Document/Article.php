@@ -40,6 +40,8 @@ class Article
     private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
@@ -48,6 +50,8 @@ class Article
     private $code;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(fields={"title", "code"})
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
@@ -57,7 +61,7 @@ class Article
     #[Gedmo\Slug(fields: ['title', 'code'])]
     private $slug;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -72,17 +76,17 @@ class Article
         return $this->title;
     }
 
-    public function setCode($code): void
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }
 
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

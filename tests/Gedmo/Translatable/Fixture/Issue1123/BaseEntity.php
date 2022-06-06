@@ -33,6 +33,8 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class BaseEntity
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")

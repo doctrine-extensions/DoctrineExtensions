@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Translatable\Fixture\Issue75;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -44,6 +45,8 @@ class Image
     private $title;
 
     /**
+     * @var Collection<int, Article>
+     *
      * @ORM\ManyToMany(targetEntity="Article", mappedBy="images")
      */
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'images')]
@@ -59,7 +62,10 @@ class Image
         $this->articles[] = $article;
     }
 
-    public function getArticles()
+    /**
+     * @return Collection<int, Article>
+     */
+    public function getArticles(): Collection
     {
         return $this->articles;
     }

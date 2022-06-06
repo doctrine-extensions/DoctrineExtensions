@@ -34,12 +34,16 @@ class WithoutInterface
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     private $title;
 
     /**
+     * @var \DateTime|null
+     *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="date")
      */
@@ -48,6 +52,8 @@ class WithoutInterface
     private $created;
 
     /**
+     * @var \DateTime|null
+     *
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
@@ -70,12 +76,12 @@ class WithoutInterface
         return $this->title;
     }
 
-    public function getCreated()
+    public function getCreated(): ?\DateTime
     {
         return $this->created;
     }
 
-    public function getUpdated()
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }

@@ -68,12 +68,12 @@ class Article
         return $this->title;
     }
 
-    public function setTitleTest($titleTest): void
+    public function setTitleTest(?string $titleTest): void
     {
         $this->titleTest = $titleTest;
     }
 
-    public function getTitleTest()
+    public function getTitleTest(): ?string
     {
         return $this->titleTest;
     }

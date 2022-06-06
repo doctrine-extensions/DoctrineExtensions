@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Translatable\Fixture\Issue75;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -44,6 +46,8 @@ class Article
     private $title;
 
     /**
+     * @var Collection<int, Image>
+     *
      * @ORM\ManyToMany(targetEntity="Image", inversedBy="articles")
      * @ORM\JoinTable(name="article_images",
      *      joinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id")},
@@ -57,6 +61,8 @@ class Article
     private $images;
 
     /**
+     * @var Collection<int, File>
+     *
      * @ORM\ManyToMany(targetEntity="File")
      */
     #[ORM\ManyToMany(targetEntity: File::class)]
@@ -66,7 +72,7 @@ class Article
     {
         // $images is not an array, its a collection
         // if you want to do such operations you have to construct it
-        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,7 +97,10 @@ class Article
         }
     }
 
-    public function getImages(): \Doctrine\Common\Collections\ArrayCollection
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
     {
         return $this->images;
     }
@@ -101,7 +110,10 @@ class Article
         $this->files[] = $file;
     }
 
-    public function getFiles()
+    /**
+     * @return Collection<int, File>
+     */
+    public function getFiles(): Collection
     {
         return $this->files;
     }

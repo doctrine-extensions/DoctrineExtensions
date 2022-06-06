@@ -365,7 +365,14 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    public function createCategory($class = null)
+    /**
+     * @phpstan-param class-string<TCategory>|null $class
+     *
+     * @return MPCategory|TCategory
+     *
+     * @template TCategory of object
+     */
+    public function createCategory(?string $class = null)
     {
         if (!$class) {
             $class = self::CATEGORY;

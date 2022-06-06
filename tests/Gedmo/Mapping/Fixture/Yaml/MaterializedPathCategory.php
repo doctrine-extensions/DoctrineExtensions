@@ -67,10 +67,8 @@ class MaterializedPathCategory
 
     /**
      * Set parent
-     *
-     * @param Category $parent
      */
-    public function setParent($parent): void
+    public function setParent(Category $parent): void
     {
         $this->parent = $parent;
     }

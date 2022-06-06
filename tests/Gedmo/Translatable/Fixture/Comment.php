@@ -34,6 +34,8 @@ class Comment
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="subject", type="string", length=128)
      */
@@ -42,6 +44,8 @@ class Comment
     private $subject;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="message", type="text")
      */
@@ -50,12 +54,16 @@ class Comment
     private $message;
 
     /**
+     * @var Article|null
+     *
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
     private $article;
 
     /**
+     * @var string|null
+     *
      * Used locale to override Translation listener`s locale
      *
      * @Gedmo\Language
@@ -63,7 +71,7 @@ class Comment
     #[Gedmo\Language]
     private $locale;
 
-    public function setArticle($article): void
+    public function setArticle(Article $article): void
     {
         $this->article = $article;
     }
@@ -73,27 +81,27 @@ class Comment
         return $this->id;
     }
 
-    public function setSubject($subject): void
+    public function setSubject(?string $subject): void
     {
         $this->subject = $subject;
     }
 
-    public function getSubject()
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
 
-    public function setMessage($message): void
+    public function setMessage(?string $message): void
     {
         $this->message = $message;
     }
 
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    public function setTranslatableLocale($locale): void
+    public function setTranslatableLocale(?string $locale): void
     {
         $this->locale = $locale;
     }
