@@ -35,10 +35,8 @@ class User
 
     /**
      * Set password
-     *
-     * @param string $password
      */
-    public function setPassword($password): void
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
@@ -55,10 +53,8 @@ class User
 
     /**
      * Set username
-     *
-     * @param string $username
      */
-    public function setUsername($username): void
+    public function setUsername(string $username): void
     {
         $this->username = $username;
     }
@@ -75,10 +71,8 @@ class User
 
     /**
      * Set company
-     *
-     * @param string $company
      */
-    public function setCompany($company): void
+    public function setCompany(string $company): void
     {
         $this->company = $company;
     }

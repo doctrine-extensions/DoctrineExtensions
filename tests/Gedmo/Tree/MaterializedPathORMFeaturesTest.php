@@ -92,7 +92,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         static::assertSame($category4->getTitle(), $category4->getTreeRootValue());
     }
 
-    public function createCategory()
+    public function createCategory(): MPFeaturesCategory
     {
         $class = self::CATEGORY;
 

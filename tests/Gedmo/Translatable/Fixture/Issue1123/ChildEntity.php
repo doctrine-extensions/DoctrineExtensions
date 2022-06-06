@@ -25,6 +25,8 @@ use Gedmo\Translatable\Translatable;
 class ChildEntity extends BaseEntity implements Translatable
 {
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="childTitle", type="string", length=128, nullable=true)
      */
@@ -33,6 +35,8 @@ class ChildEntity extends BaseEntity implements Translatable
     private $childTitle;
 
     /**
+     * @var string
+     *
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -40,17 +44,17 @@ class ChildEntity extends BaseEntity implements Translatable
     #[Gedmo\Locale]
     private $locale = 'en';
 
-    public function getChildTitle()
+    public function getChildTitle(): ?string
     {
         return $this->childTitle;
     }
 
-    public function setChildTitle($childTitle): void
+    public function setChildTitle(?string $childTitle): void
     {
         $this->childTitle = $childTitle;
     }
 
-    public function setTranslatableLocale($locale): void
+    public function setTranslatableLocale(string $locale): void
     {
         $this->locale = $locale;
     }

@@ -46,10 +46,7 @@ class CompanyEmbedLink
         return $this->website;
     }
 
-    /**
-     * @param string $website
-     */
-    public function setWebsite($website): self
+    public function setWebsite(string $website): self
     {
         $this->website = $website;
 
@@ -61,10 +58,7 @@ class CompanyEmbedLink
         return $this->facebook;
     }
 
-    /**
-     * @param string $facebook
-     */
-    public function setFacebook($facebook): self
+    public function setFacebook(string $facebook): self
     {
         $this->facebook = $facebook;
 

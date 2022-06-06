@@ -27,6 +27,9 @@ final class Issue165Test extends BaseTestCaseMongoODM
     public const ARTICLE = SimpleArticle::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void

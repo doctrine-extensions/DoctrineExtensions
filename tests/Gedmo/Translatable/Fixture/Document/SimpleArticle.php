@@ -49,7 +49,7 @@ class SimpleArticle
     #[MongoODM\Field(type: Type::STRING)]
     private $content;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -129,7 +129,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         static::assertSame($category4, $firstResult->getTreeRootEntity());
     }
 
-    public function createCategory()
+    public function createCategory(): MPCategoryWithRootAssociation
     {
         $class = self::CATEGORY;
 

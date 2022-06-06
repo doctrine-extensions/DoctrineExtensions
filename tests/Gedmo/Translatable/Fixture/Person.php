@@ -36,6 +36,8 @@ class Person
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=128)
      */
@@ -53,7 +55,7 @@ class Person
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }

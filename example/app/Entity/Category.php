@@ -31,18 +31,24 @@ class Category
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(length=64)
      */
     private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"created", "title"})
      * @ORM\Column(length=64, unique=true)

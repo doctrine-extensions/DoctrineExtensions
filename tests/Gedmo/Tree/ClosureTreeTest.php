@@ -42,6 +42,9 @@ final class ClosureTreeTest extends BaseTestCaseORM
     public const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
     public const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
 
+    /**
+     * @var TreeListener
+     */
     protected $listener;
 
     protected function setUp(): void

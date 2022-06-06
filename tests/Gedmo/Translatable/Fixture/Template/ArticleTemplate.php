@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class ArticleTemplate
 {
     /**
+     * @var string|null
+     *
      * Used locale to override Translation listener`s locale
      *
      * @Gedmo\Locale
@@ -39,6 +41,8 @@ class ArticleTemplate
     private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="content", type="text")
      */
@@ -66,7 +70,7 @@ class ArticleTemplate
         return $this->content;
     }
 
-    public function setTranslatableLocale($locale): void
+    public function setTranslatableLocale(?string $locale): void
     {
         $this->locale = $locale;
     }

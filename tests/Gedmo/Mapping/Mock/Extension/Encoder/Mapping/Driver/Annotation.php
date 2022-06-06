@@ -66,7 +66,7 @@ class Annotation implements Driver
     /**
      * Passes in the mapping read by original driver
      */
-    public function setOriginalDriver($driver)
+    public function setOriginalDriver($driver): void
     {
         $this->_originalDriver = $driver;
     }

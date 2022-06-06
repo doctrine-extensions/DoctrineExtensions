@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Translatable\Fixture\Document\Personal;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation;
 
 /**
  * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation")
@@ -43,6 +43,8 @@ class Article
     private $title;
 
     /**
+     * @var Collection<int, ArticleTranslation>
+     *
      * @MongoODM\ReferenceMany(targetDocument="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation", mappedBy="object")
      */
     #[MongoODM\ReferenceMany(targetDocument: ArticleTranslation::class, mappedBy: 'object')]
@@ -58,12 +60,15 @@ class Article
      */
     private $slug;
 
-    public function getTranslations()
+    /**
+     * @return Collection<int, ArticleTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }
 
-    public function addTranslation(PersonalArticleTranslation $t): void
+    public function addTranslation(ArticleTranslation $t): void
     {
         if (!$this->translations->contains($t)) {
             $this->translations[] = $t;
@@ -71,7 +76,7 @@ class Article
         }
     }
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -86,7 +91,7 @@ class Article
         return $this->title;
     }
 
-    public function setCode($code): void
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }

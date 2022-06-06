@@ -82,13 +82,13 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
      * DocumentManager mock object with
      * annotation mapping driver
      */
-    protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null): DocumentManager
+    protected function getMockMappedDocumentManager(EventManager $evm = null, Configuration $config = null): DocumentManager
     {
         $conn = $this->createStub(Client::class);
 
-        $config = $config ? $config : $this->getMockAnnotatedConfig();
+        $config = $config ?? $this->getMockAnnotatedConfig();
 
-        $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
+        $this->dm = DocumentManager::create($conn, $config, $evm ?? $this->getEventManager());
 
         return $this->dm;
     }

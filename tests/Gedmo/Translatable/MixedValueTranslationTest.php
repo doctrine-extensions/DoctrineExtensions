@@ -29,6 +29,9 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
     public const MIXED = MixedValue::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void

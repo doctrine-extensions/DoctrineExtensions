@@ -32,6 +32,9 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
     public const TRANSLATION = PersonTranslation::class;
     public const FILE = File::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void

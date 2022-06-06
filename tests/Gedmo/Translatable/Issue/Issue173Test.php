@@ -34,6 +34,9 @@ final class Issue173Test extends BaseTestCaseORM
     public const PRODUCT = Product::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -62,7 +65,7 @@ final class Issue173Test extends BaseTestCaseORM
         static::assertCount(1, $categories, '$category3 has no associations');
     }
 
-    public function getCategoriesThatHasNoAssociations()
+    public function getCategoriesThatHasNoAssociations(): array
     {
         $query = $this->em->createQueryBuilder();
         $query2 = $this->em->createQueryBuilder();

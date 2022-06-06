@@ -88,6 +88,9 @@ class PersonCustom
         return $this->description;
     }
 
+    /**
+     * @return self|CustomProxy
+     */
     public function translate(string $locale = null)
     {
         if (null === $locale) {
