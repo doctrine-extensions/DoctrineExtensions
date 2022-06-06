@@ -243,12 +243,12 @@ final class SortableGroupTest extends BaseTestCaseORM
 
     public function testChangePositionWithDateColumn(): void
     {
-        for ($i = 0; $i < 100; ++$i) {
+        for ($i = 0; $i < 6; ++$i) {
             $object = new ItemWithDateColumn();
             $today = new \DateTime('2022-05-22');
             $object->setDate($today);
-            $object->setUserId($i < 50 ? 'user-1' : 'user-2');
-            $object->setPosition($i < 50 ? $i : $i - 50);
+            $object->setUserId($i < 3 ? 'user-1' : 'user-2');
+            $object->setPosition($i < 3 ? $i : $i - 3);
             $this->em->persist($object);
         }
         $this->em->flush();
@@ -256,14 +256,14 @@ final class SortableGroupTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::ITEM_WITH_DATE_COLUMN);
 
         /** @var ItemWithDateColumn $testItem */
-        $testItem = $repo->findOneBy(['id' => 49, 'userId' => 'user-1']);
+        $testItem = $repo->findOneBy(['id' => 3, 'userId' => 'user-1']);
         $testItem->setPosition(1);
 
         $this->em->persist($testItem);
         $this->em->flush();
 
         /** @var ItemWithDateColumn $freshItem */
-        $freshItem = $repo->findOneBy(['id' => 49, 'userId' => 'user-1']);
+        $freshItem = $repo->findOneBy(['id' => 3, 'userId' => 'user-1']);
         /** @var ItemWithDateColumn $freshPreviousItem */
         $freshPreviousItem = $repo->findOneBy(['id' => 2, 'userId' => 'user-1']);
         static::assertSame(1, $freshItem->getPosition());
