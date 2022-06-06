@@ -45,7 +45,7 @@ class ItemWithDateColumn
      * @ORM\Column(type="date")
      */
     #[Gedmo\SortableGroup]
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private $date;
 
     /**
