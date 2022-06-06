@@ -33,6 +33,8 @@ class ItemWithDateColumn
     private $id;
 
     /**
+     * @var int
+     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
