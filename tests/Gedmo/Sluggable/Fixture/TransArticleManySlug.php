@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sluggable\Fixture;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -36,11 +34,6 @@ class TransArticleManySlug implements Sluggable, Translatable
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private $id;
-
-    /**
-     * @var Collection<int, Comment>
-     */
-    private $comments;
 
     /**
      * @var int|null
@@ -105,25 +98,6 @@ class TransArticleManySlug implements Sluggable, Translatable
      */
     #[Gedmo\Locale]
     private $locale;
-
-    public function __construct()
-    {
-        $this->comments = new ArrayCollection();
-    }
-
-    public function addComment(Comment $comment): void
-    {
-        $comment->setArticle($this);
-        $this->comments[] = $comment;
-    }
-
-    /**
-     * @return Collection<int, Comment>
-     */
-    public function getComments(): Collection
-    {
-        return $this->comments;
-    }
 
     public function setPage(?int $page): void
     {
