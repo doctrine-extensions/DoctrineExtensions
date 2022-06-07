@@ -19,16 +19,16 @@ a release.
 
 ## [Unreleased]
 
-### Tree
 #### Added
-- [NestedSet] childrenQueryBuilder() to allow specifying sort order separately for each field
-- [NestedSet] Added option to reorder only direct children in reorder() method
+- Tree: [NestedSet] `childrenQueryBuilder()` to allow specifying sort order separately for each field
+- Tree: [NestedSet] Added option to reorder only direct children in `reorder()` method
 
 ## Changed
 - Tree: In `ClosureTreeRepository::removeFromTree()` and `NestedTreeRepository::removeFromTree()` when something fails in the transaction, it uses the `code` from the original exception to construct the `\Gedmo\Exception\RuntimeException` instance instead of `null`.
 
 #### Fixed
-- [SortableGroup] Fix sorting date columns in SQLite (#2462).
+- Sortable: [SortableGroup] Fix sorting date columns in SQLite (#2462).
+- PHPDoc of `AbstractMaterializedPath::removeNode()` and `AbstractMaterializedPath::getChildren()`
 
 ## [3.7.0] - 2022-05-17
 ## Added
