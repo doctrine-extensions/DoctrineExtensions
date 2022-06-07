@@ -24,7 +24,9 @@ a release.
 - [NestedSet] childrenQueryBuilder() to allow specifying sort order separately for each field
 - [NestedSet] Added option to reorder only direct children in reorder() method
 
-### Sortable
+## Changed
+- Tree: In `ClosureTreeRepository::removeFromTree()` and `NestedTreeRepository::removeFromTree()` when something fails in the transaction, it uses the `code` from the original exception to construct the `\Gedmo\Exception\RuntimeException` instance instead of `null`.
+
 #### Fixed
 - [SortableGroup] Fix sorting date columns in SQLite (#2462).
 

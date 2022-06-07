@@ -292,7 +292,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             $this->_em->close();
             $this->_em->getConnection()->rollback();
 
-            throw new \Gedmo\Exception\RuntimeException('Transaction failed: '.$e->getMessage(), null, $e);
+            throw new \Gedmo\Exception\RuntimeException('Transaction failed: '.$e->getMessage(), $e->getCode(), $e);
         }
         // remove from identity map
         $this->_em->getUnitOfWork()->removeFromIdentityMap($node);
