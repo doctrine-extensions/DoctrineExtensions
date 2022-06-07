@@ -187,8 +187,10 @@ class LoggableListener extends MappedEventSubscriber
      * Get the LogEntry class
      *
      * @param string $class
+     * @phpstan-param class-string $class
      *
      * @return string
+     * @phpstan-return class-string
      */
     protected function getLogEntryClass(LoggableAdapter $ea, $class)
     {

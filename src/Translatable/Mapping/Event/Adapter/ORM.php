@@ -229,6 +229,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
      *
      * @param mixed  $key       foreign key value
      * @param string $className translation class name
+     * @phpstan-param class-string $className translation class name
      *
      * @return int|string transformed foreign key
      */

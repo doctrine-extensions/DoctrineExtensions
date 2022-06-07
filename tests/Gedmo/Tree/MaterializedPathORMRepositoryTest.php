@@ -366,13 +366,9 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     }
 
     /**
-     * @phpstan-param class-string<TCategory>|null $class
-     *
-     * @return MPCategory|TCategory
-     *
-     * @template TCategory of object
+     * @phpstan-param class-string|null $class
      */
-    public function createCategory(?string $class = null)
+    public function createCategory(?string $class = null): object
     {
         if (!$class) {
             $class = self::CATEGORY;
@@ -389,6 +385,9 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         ];
     }
 
+    /**
+     * @phpstan-param class-string|null $class
+     */
     private function populate(string $class = null): void
     {
         $root = $this->createCategory($class);

@@ -45,6 +45,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * other listener configuration
      *
      * @var array
+     * @phpstan-var array<string, array<class-string, array<string, mixed>>>
      */
     protected static $configurations = [];
 
@@ -98,8 +99,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * if cache driver is present it scans it also
      *
      * @param string $class
+     * @phpstan-param class-string $class
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getConfiguration(ObjectManager $objectManager, $class)
     {

@@ -214,8 +214,10 @@ class TranslatableListener extends MappedEventSubscriber
      * for the object $class
      *
      * @param string $class
+     * @phpstan-param class-string $class
      *
      * @return string
+     * @phpstan-return class-string
      */
     public function getTranslationClass(TranslatableAdapter $ea, $class)
     {

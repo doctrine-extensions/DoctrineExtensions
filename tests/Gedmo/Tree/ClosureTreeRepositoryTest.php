@@ -262,6 +262,9 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     // Utility Methods
 
+    /**
+     * @phpstan-param class-string $class
+     */
     protected function buildTreeTests(string $class): void
     {
         $repo = $this->em->getRepository($class);
