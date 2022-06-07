@@ -449,10 +449,10 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * Remove node and its children
      *
-     * @param ObjectManager $om
-     * @param ClassMetadata $meta   Metadata
-     * @param object        $config config
-     * @param object        $node   node to remove
+     * @param ObjectManager        $om
+     * @param ClassMetadata        $meta   Metadata
+     * @param array<string, mixed> $config config
+     * @param object               $node   node to remove
      *
      * @return void
      */
@@ -461,10 +461,10 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * Returns children of the node with its original path
      *
-     * @param ObjectManager $om
-     * @param ClassMetadata $meta         Metadata
-     * @param object        $config       config
-     * @param string        $originalPath original path of object
+     * @param ObjectManager        $om
+     * @param ClassMetadata        $meta         Metadata
+     * @param array<string, mixed> $config       config
+     * @param string               $originalPath original path of object
      *
      * @return array|\Traversable
      */
