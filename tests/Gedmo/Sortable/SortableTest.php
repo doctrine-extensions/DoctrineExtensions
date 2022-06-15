@@ -158,6 +158,7 @@ final class SortableTest extends BaseTestCaseORM
             static::assertSame($i, $nodes[$i]->getPosition());
         }
     }
+
     public function testShouldShiftPositionsProperlyWhenMoreThenOneWasUpdated(): void
     {
         $node2 = new Node();
