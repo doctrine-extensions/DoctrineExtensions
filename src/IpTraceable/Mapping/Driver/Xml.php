@@ -71,7 +71,7 @@ class Xml extends BaseXml
                         $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,
-                            'value' => $valueAttribute,
+                            'value' => $meta->getTypeOfField($trackedFieldAttribute) === 'integer' ? (int) $valueAttribute : $valueAttribute,
                         ];
                     }
                     $config[$this->_getAttribute($data, 'on')][] = $field;
@@ -105,7 +105,7 @@ class Xml extends BaseXml
                         $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,
-                            'value' => $valueAttribute,
+                            'value' => $meta->getTypeOfField($trackedFieldAttribute) === 'integer' ? (int) $valueAttribute : $valueAttribute,
                         ];
                     }
                     $config[$this->_getAttribute($data, 'on')][] = $field;
