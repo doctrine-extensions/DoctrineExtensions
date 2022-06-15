@@ -12,9 +12,8 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -25,9 +24,11 @@ use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
-use Gedmo\Tool\Logging\DBAL\QueryAnalyzer;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * Base test case contains common mock objects
@@ -36,10 +37,10 @@ use Gedmo\Tree\TreeListener;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
+abstract class BaseTestCaseORM extends TestCase
 {
     /**
-     * @var EntityManager
+     * @var EntityManager|null
      */
     protected $em;
 
@@ -49,64 +50,33 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     protected $queryAnalyzer;
 
     /**
-     * {@inheritdoc}
+     * @var MockObject&LoggerInterface
      */
+    protected $queryLogger;
+
     protected function setUp(): void
     {
+        $this->queryLogger = $this->createMock(LoggerInterface::class);
     }
 
     /**
      * EntityManager mock object together with
      * annotation mapping driver and pdo_sqlite
      * database in memory
-     *
-     * @param EventManager $evm
-     *
-     * @return EntityManager
      */
-    protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null)
+    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
         ];
 
-        $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
+        $config = null === $config ? $this->getDefaultConfiguration() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
         $schema = array_map(static function ($class) use ($em) {
             return $em->getClassMetadata($class);
-        }, (array) $this->getUsedEntityFixtures());
-
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema([]);
-        $schemaTool->createSchema($schema);
-
-        return $this->em = $em;
-    }
-
-    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null): EntityManager
-    {
-        return $this->getMockSqliteEntityManager($evm, $this->getDefaultConfiguration());
-    }
-
-    /**
-     * EntityManager mock object together with
-     * annotation mapping driver and custom
-     * connection
-     *
-     * @param EventManager $evm
-     *
-     * @return EntityManager
-     */
-    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null)
-    {
-        $config = $this->getMockAnnotatedConfig();
-        $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
-
-        $schema = array_map(static function ($class) use ($em) {
-            return $em->getClassMetadata($class);
-        }, (array) $this->getUsedEntityFixtures());
+        }, $this->getUsedEntityFixtures());
 
         $schemaTool = new SchemaTool($em);
         $schemaTool->dropSchema([]);
@@ -116,42 +86,15 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * EntityManager mock object with
-     * annotation mapping driver
+     * TODO: Remove this method when dropping support of doctrine/dbal 2.
      *
-     * @param EventManager $evm
-     *
-     * @return EntityManager
-     */
-    protected function getMockMappedEntityManager(EventManager $evm = null)
-    {
-        $driver = $this->getMockBuilder(Driver::class)->getMock();
-        $driver->expects(static::once())
-            ->method('getDatabasePlatform')
-            ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
-
-        $conn = $this->getMockBuilder(Connection::class)
-            ->setConstructorArgs([[], $driver])
-            ->getMock();
-
-        $conn->expects(static::once())
-            ->method('getEventManager')
-            ->willReturn($evm ?: $this->getEventManager());
-
-        $config = $this->getMockAnnotatedConfig();
-        $this->em = EntityManager::create($conn, $config);
-
-        return $this->em;
-    }
-
-    /**
      * Starts query statistic log
      *
      * @throws \RuntimeException
      */
-    protected function startQueryLog()
+    protected function startQueryLog(): void
     {
-        if (!$this->em || !$this->em->getConnection()->getDatabasePlatform()) {
+        if (null === $this->em || null === $this->em->getConnection()->getDatabasePlatform()) {
             throw new \RuntimeException('EntityManager and database platform must be initialized');
         }
         $this->queryAnalyzer = new QueryAnalyzer($this->em->getConnection()->getDatabasePlatform());
@@ -159,81 +102,39 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Stops query statistic log and outputs
-     * the data to screen or file
-     *
-     * @param bool $dumpOnlySql
-     * @param bool $writeToLog
-     *
-     * @throws \RuntimeException
-     */
-    protected function stopQueryLog($dumpOnlySql = false, $writeToLog = false)
-    {
-        if ($this->queryAnalyzer) {
-            $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
-            if ($writeToLog) {
-                $fileName = TESTS_TEMP_DIR.'/query_debug_'.time().'.log';
-                if (false !== ($file = fopen($fileName, 'w+'))) {
-                    fwrite($file, $output);
-                    fclose($file);
-                } else {
-                    throw new \RuntimeException('Unable to write to the log file');
-                }
-            } else {
-                echo $output;
-            }
-        }
-    }
-
-    /**
      * Creates default mapping driver
-     *
-     * @return MappingDriver
      */
-    protected function getMetadataDriverImplementation()
-    {
-        return new AnnotationDriver($_ENV['annotation_reader']);
-    }
-
-    /**
-     * Get a list of used fixture classes
-     *
-     * @return array
-     */
-    abstract protected function getUsedEntityFixtures();
-
-    /**
-     * Get annotation mapping configuration
-     *
-     * @return \Doctrine\ORM\Configuration
-     */
-    protected function getMockAnnotatedConfig()
-    {
-        $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Proxy');
-        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
-
-        return $config;
-    }
-
-    private function getDefaultConfiguration(): Configuration
-    {
-        $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Proxy');
-        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
-
-        return $config;
-    }
-
-    private function getMetadataDefaultDriverImplementation(): MappingDriver
+    protected function getMetadataDriverImplementation(): MappingDriver
     {
         if (PHP_VERSION_ID >= 80000) {
             return new AttributeDriver([]);
         }
 
         return new AnnotationDriver($_ENV['annotation_reader']);
+    }
+
+    /**
+     * Get a list of used fixture classes
+     *
+     * @phpstan-return list<class-string>
+     */
+    abstract protected function getUsedEntityFixtures(): array;
+
+    protected function getDefaultConfiguration(): Configuration
+    {
+        $config = new Configuration();
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+
+        // TODO: Remove the "if" check when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            $config->setMiddlewares([
+                new Middleware($this->queryLogger),
+            ]);
+        }
+
+        return $config;
     }
 
     /**

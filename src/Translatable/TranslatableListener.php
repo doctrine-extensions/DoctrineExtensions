@@ -12,6 +12,8 @@ namespace Gedmo\Translatable;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
@@ -118,6 +120,13 @@ class TranslatableListener extends MappedEventSubscriber
     private $translationInDefaultLocale = [];
 
     /**
+     * Default translation value upon missing translation
+     *
+     * @var string|null
+     */
+    private $defaultTranslationValue;
+
+    /**
      * Specifies the list of events to listen
      *
      * @return string[]
@@ -177,8 +186,10 @@ class TranslatableListener extends MappedEventSubscriber
      * Add additional $translation for pending $oid object
      * which is being inserted
      *
-     * @param string $oid
+     * @param int    $oid
      * @param object $translation
+     *
+     * @return void
      */
     public function addPendingTranslationInsert($oid, $translation)
     {
@@ -187,6 +198,10 @@ class TranslatableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
+     *
+     * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
@@ -250,6 +265,17 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
+     * Set the default translation value on missing translation
+     *
+     * @deprecated usage of a non nullable value for defaultTranslationValue is deprecated
+     * and will be removed on the next major release which will rely on the expected types
+     */
+    public function setDefaultTranslationValue(?string $defaultTranslationValue): void
+    {
+        $this->defaultTranslationValue = $defaultTranslationValue;
+    }
+
+    /**
      * Sets the default locale, this changes behavior
      * to not update the original record field if locale
      * which is used for updating is not default
@@ -291,9 +317,9 @@ class TranslatableListener extends MappedEventSubscriber
      * Gets the locale to use for translation. Loads object
      * defined locale first..
      *
-     * @param object $object
-     * @param object $meta
-     * @param object $om
+     * @param object        $object
+     * @param ClassMetadata $meta
+     * @param object        $om
      *
      * @throws \Gedmo\Exception\RuntimeException if language or locale property is not
      *                                           found in entity
@@ -336,6 +362,8 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * This has to be done in the preFlush because, when an entity has been loaded
      * in a different locale, no changes will be detected.
+     *
+     * @return void
      */
     public function preFlush(EventArgs $args)
     {
@@ -368,6 +396,8 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Looks for translatable objects being inserted or updated
      * for further processing
+     *
+     * @return void
      */
     public function onFlush(EventArgs $args)
     {
@@ -405,6 +435,8 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Checks for inserted object to update their translation
      * foreign keys
+     *
+     * @return void
      */
     public function postPersist(EventArgs $args)
     {
@@ -436,6 +468,8 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * After object is loaded, listener updates the translations
      * by currently used locale
+     *
+     * @return void
      */
     public function postLoad(EventArgs $args)
     {
@@ -467,7 +501,8 @@ class TranslatableListener extends MappedEventSubscriber
             );
             // translate object's translatable properties
             foreach ($config['fields'] as $field) {
-                $translated = null;
+                $translated = $this->defaultTranslationValue;
+
                 foreach ($result as $entry) {
                     if ($entry['field'] == $field) {
                         $translated = $entry['content'] ?? null;
@@ -475,8 +510,9 @@ class TranslatableListener extends MappedEventSubscriber
                         break;
                     }
                 }
+
                 // update translation
-                if (null !== $translated
+                if ($this->defaultTranslationValue !== $translated
                     || (!$this->translationFallback && (!isset($config['fallback'][$field]) || !$config['fallback'][$field]))
                     || ($this->translationFallback && isset($config['fallback'][$field]) && !$config['fallback'][$field])
                 ) {
@@ -496,9 +532,11 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Sets translation object which represents translation in default language.
      *
-     * @param string $oid   hash of basic entity
+     * @param int    $oid   hash of basic entity
      * @param string $field field of basic entity
      * @param mixed  $trans Translation object
+     *
+     * @return void
      */
     public function setTranslationInDefaultLocale($oid, $field, $trans)
     {
@@ -520,7 +558,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Check if object has any translation object which represents translation in default language.
      * This is for internal use only.
      *
-     * @param string $oid hash of the basic entity
+     * @param int $oid hash of the basic entity
      *
      * @return bool
      */
@@ -529,9 +567,6 @@ class TranslatableListener extends MappedEventSubscriber
         return array_key_exists($oid, $this->translationInDefaultLocale);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;
@@ -543,6 +578,8 @@ class TranslatableListener extends MappedEventSubscriber
      * @param string $locale locale to validate
      *
      * @throws \Gedmo\Exception\InvalidArgumentException if locale is not valid
+     *
+     * @return void
      */
     protected function validateLocale($locale)
     {
@@ -723,10 +760,10 @@ class TranslatableListener extends MappedEventSubscriber
      * Removes translation object which represents translation in default language.
      * This is for internal use only.
      *
-     * @param string $oid   hash of the basic entity
+     * @param int    $oid   hash of the basic entity
      * @param string $field field of basic entity
      */
-    private function removeTranslationInDefaultLocale(string $oid, string $field): void
+    private function removeTranslationInDefaultLocale(int $oid, string $field): void
     {
         if (isset($this->translationInDefaultLocale[$oid])) {
             if (isset($this->translationInDefaultLocale[$oid][$field])) {
@@ -745,12 +782,12 @@ class TranslatableListener extends MappedEventSubscriber
      * Gets translation object which represents translation in default language.
      * This is for internal use only.
      *
-     * @param string $oid   hash of the basic entity
+     * @param int    $oid   hash of the basic entity
      * @param string $field field of basic entity
      *
      * @return mixed Returns translation object if it exists or NULL otherwise
      */
-    private function getTranslationInDefaultLocale(string $oid, string $field)
+    private function getTranslationInDefaultLocale(int $oid, string $field)
     {
         if (array_key_exists($oid, $this->translationInDefaultLocale)) {
             $ret = $this->translationInDefaultLocale[$oid][$field] ?? null;

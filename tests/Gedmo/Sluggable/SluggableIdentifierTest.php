@@ -32,13 +32,10 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBePossibleToSlugIdentifiers()
+    public function testShouldBePossibleToSlugIdentifiers(): void
     {
         $sport = new Identifier();
         $sport->setTitle('Sport');
@@ -48,10 +45,7 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
         static::assertSame('sport', $sport->getId());
     }
 
-    /**
-     * @test
-     */
-    public function shouldPersistMultipleNonConflictingIdentifierSlugs()
+    public function testShouldPersistMultipleNonConflictingIdentifierSlugs(): void
     {
         $sport = new Identifier();
         $sport->setTitle('Sport');
@@ -66,7 +60,7 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
         static::assertSame('sport_1', $sport2->getId());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

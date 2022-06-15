@@ -22,23 +22,23 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id;
 
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    private $name;
+    private ?string $name;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }

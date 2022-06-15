@@ -28,12 +28,12 @@ class ObjectHydrator extends BaseObjectHydrator
      * @see ObjectHydrator::prepare()
      * @see ObjectHydrator::cleanup()
      *
-     * @var bool
+     * @var bool|null
      */
     private $savedSkipOnLoad;
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function prepare()
     {
@@ -44,7 +44,7 @@ class ObjectHydrator extends BaseObjectHydrator
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function cleanup()
     {

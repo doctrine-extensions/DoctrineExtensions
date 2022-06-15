@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Strategy;
 
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\TreeLockingException;
@@ -81,25 +82,16 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     protected $pendingObjectsToRemove = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::MATERIALIZED_PATH;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
@@ -113,9 +105,6 @@ abstract class AbstractMaterializedPath implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledUpdate($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
@@ -137,9 +126,6 @@ abstract class AbstractMaterializedPath implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostPersist($om, $node, AdapterInterface $ea)
     {
         $oid = spl_object_id($node);
@@ -161,64 +147,40 @@ abstract class AbstractMaterializedPath implements Strategy
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_INSERT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($om, $node, AdapterInterface $ea)
     {
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_UPDATE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($om, $node, AdapterInterface $ea)
     {
         $this->processPostEventsActions($om, $ea, $node, self::ACTION_REMOVE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($om, AdapterInterface $ea)
     {
         $this->lockTrees($om, $ea);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_REMOVE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_INSERT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($om, $node)
     {
         $this->processPreLockingActions($om, $node, self::ACTION_UPDATE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processMetadataLoad($om, $meta)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledDelete($om, $node)
     {
         $meta = $om->getClassMetadata(get_class($node));
@@ -488,7 +450,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * Remove node and its children
      *
      * @param ObjectManager $om
-     * @param object        $meta   Metadata
+     * @param ClassMetadata $meta   Metadata
      * @param object        $config config
      * @param object        $node   node to remove
      *
@@ -500,7 +462,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * Returns children of the node with its original path
      *
      * @param ObjectManager $om
-     * @param object        $meta         Metadata
+     * @param ClassMetadata $meta         Metadata
      * @param object        $config       config
      * @param string        $originalPath original path of object
      *

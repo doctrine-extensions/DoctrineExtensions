@@ -23,6 +23,8 @@ use Gedmo\Translatable\Translatable;
 class Company implements Translatable
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,6 +35,8 @@ class Company implements Translatable
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string", length=128)
      * @Gedmo\Translatable
      */
@@ -48,6 +52,8 @@ class Company implements Translatable
     private $link;
 
     /**
+     * @var string|null
+     *
      * Used locale to override Translation listener`s locale
      *
      * @Gedmo\Locale
@@ -60,58 +66,36 @@ class Company implements Translatable
         $this->link = new CompanyEmbedLink();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param mixed $title
-     *
-     * @return Company
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * @return CompanyEmbedLink
-     */
-    public function getLink()
+    public function getLink(): CompanyEmbedLink
     {
         return $this->link;
     }
 
-    /**
-     * @return Company
-     */
-    public function setLink(CompanyEmbedLink $link)
+    public function setLink(CompanyEmbedLink $link): self
     {
         $this->link = $link;
 
         return $this;
     }
 
-    /**
-     * @param mixed $locale
-     *
-     * @return Company
-     */
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale(?string $locale): self
     {
         $this->locale = $locale;
 

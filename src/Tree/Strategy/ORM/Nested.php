@@ -80,17 +80,11 @@ class Nested implements Strategy
      */
     private $delayedNodes = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::NESTED;
@@ -99,8 +93,10 @@ class Nested implements Strategy
     /**
      * Set node position strategy
      *
-     * @param string $oid
+     * @param int    $oid
      * @param string $position
+     *
+     * @return void
      */
     public function setNodePosition($oid, $position)
     {
@@ -116,9 +112,6 @@ class Nested implements Strategy
         $this->nodePositions[$oid] = $position;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
         /** @var ClassMetadata $meta */
@@ -140,7 +133,7 @@ class Nested implements Strategy
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
@@ -181,7 +174,7 @@ class Nested implements Strategy
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processPostPersist($em, $node, AdapterInterface $ea)
     {
@@ -193,7 +186,7 @@ class Nested implements Strategy
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processScheduledDelete($em, $node)
     {
@@ -231,53 +224,32 @@ class Nested implements Strategy
         $this->shiftRL($em, $config['useObjectClass'], $rightValue + 1, -$diff, $rootId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($em, AdapterInterface $ea)
     {
         // reset values
         $this->treeEdges = [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processMetadataLoad($em, $meta)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($em, $entity, AdapterInterface $ea)
     {
     }
@@ -291,6 +263,8 @@ class Nested implements Strategy
      * @param string $position
      *
      * @throws \Gedmo\Exception\UnexpectedValueException
+     *
+     * @return void
      */
     public function updateNode(EntityManagerInterface $em, $node, $parent, $position = 'FirstChild')
     {
@@ -413,7 +387,7 @@ class Nested implements Strategy
             }
             $newRoot = $parentRoot;
         } elseif (!isset($config['root']) ||
-            ($meta->isSingleValuedAssociation($config['root']) && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
+            ($meta->isSingleValuedAssociation($config['root']) && null !== $parent && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
             if (!isset($this->treeEdges[$meta->getName()])) {
                 $this->treeEdges[$meta->getName()] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
             }
@@ -585,6 +559,8 @@ class Nested implements Strategy
      * @param int        $first
      * @param int        $delta
      * @param int|string $root
+     *
+     * @return void
      */
     public function shiftRL(EntityManagerInterface $em, $class, $first, $delta, $root = null)
     {
@@ -657,6 +633,8 @@ class Nested implements Strategy
      * @param int|string $root
      * @param int|string $destRoot
      * @param int        $levelDelta
+     *
+     * @return void
      */
     public function shiftRangeRL(EntityManagerInterface $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {

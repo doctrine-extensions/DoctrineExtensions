@@ -20,23 +20,18 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 final class HardRelationTest extends BaseTestCaseORM
 {
-    private $softDeleteableListener;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $evm = new EventManager();
-        $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener());
-        $this->getMockSqliteEntityManager($evm);
+        $evm->addEventSubscriber(new SoftDeleteableListener());
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->em->getConfiguration()->addFilter('softdelete', SoftDeleteableFilter::class);
         $this->em->getFilters()->enable('softdelete');
     }
 
-    /**
-     * @test
-     */
-    public function shouldCascadeSoftdeleteForHardRelations()
+    public function testShouldCascadeSoftdeleteForHardRelations(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -58,10 +53,7 @@ final class HardRelationTest extends BaseTestCaseORM
         static::assertNull($person, 'Softdelete should cascade to hard relation entity');
     }
 
-    /**
-     * @test
-     */
-    public function shouldCascadeToInversedRelationAsWell()
+    public function testShouldCascadeToInversedRelationAsWell(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -83,10 +75,7 @@ final class HardRelationTest extends BaseTestCaseORM
         static::assertNull($address, 'Softdelete should cascade to hard relation entity');
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleTimeAwareSoftDeleteable()
+    public function testShouldHandleTimeAwareSoftDeleteable(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -113,7 +102,7 @@ final class HardRelationTest extends BaseTestCaseORM
         static::assertNull($person, 'Should be softdeleted');
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             Person::class,

@@ -24,6 +24,7 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use MongoDB\Client;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Base test case contains common mock objects
@@ -35,13 +36,10 @@ use MongoDB\Client;
 abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DocumentManager
+     * @var DocumentManager|null
      */
     protected $dm;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         if (!extension_loaded('mongodb')) {
@@ -49,9 +47,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         if (null === $this->dm) {
@@ -67,8 +62,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 
     /**
      * DocumentManager mock object together with annotation mapping driver and database.
-     *
-     * @param EventManager $evm
      */
     protected function getMockDocumentManager(?EventManager $evm = null, ?Configuration $config = null): DocumentManager
     {
@@ -88,18 +81,14 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     /**
      * DocumentManager mock object with
      * annotation mapping driver
-     *
-     * @param EventManager $evm
-     *
-     * @return DocumentManager
      */
-    protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null)
+    protected function getMockMappedDocumentManager(EventManager $evm = null, Configuration $config = null): DocumentManager
     {
-        $conn = $this->getMockBuilder('Doctrine\\MongoDB\\Connection')->getMock();
+        $conn = $this->createStub(Client::class);
 
-        $config = $config ? $config : $this->getMockAnnotatedConfig();
+        $config = $config ?? $this->getMockAnnotatedConfig();
 
-        $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
+        $this->dm = DocumentManager::create($conn, $config, $evm ?? $this->getEventManager());
 
         return $this->dm;
     }
@@ -127,11 +116,12 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }
 
-    private function getDefaultConfiguration(): Configuration
+    protected function getDefaultConfiguration(): Configuration
     {
         $config = new Configuration();
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
@@ -143,6 +133,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }

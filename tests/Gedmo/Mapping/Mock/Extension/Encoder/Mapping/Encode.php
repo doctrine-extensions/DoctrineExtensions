@@ -18,6 +18,13 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Encode extends Annotation
 {
+    /**
+     * @var string
+     */
     public $type = 'md5';
+
+    /**
+     * @var string|null
+     */
     public $secret;
 }

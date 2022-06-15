@@ -37,6 +37,8 @@ class Chain implements Driver
      * Add a nested driver.
      *
      * @param string $namespace
+     *
+     * @return void
      */
     public function addDriver(Driver $nestedDriver, $namespace)
     {
@@ -65,15 +67,14 @@ class Chain implements Driver
 
     /**
      * Set the default driver.
+     *
+     * @return void
      */
     public function setDefaultDriver(Driver $driver)
     {
         $this->defaultDriver = $driver;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {
@@ -91,7 +92,7 @@ class Chain implements Driver
         }
 
         // commenting it for customized mapping support, debugging of such cases might get harder
-        //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->getName() . ' is not a valid entity or mapped super class.');
+        // throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->getName() . ' is not a valid entity or mapped super class.');
     }
 
     /**
@@ -99,6 +100,6 @@ class Chain implements Driver
      */
     public function setOriginalDriver($driver)
     {
-        //not needed here
+        // not needed here
     }
 }

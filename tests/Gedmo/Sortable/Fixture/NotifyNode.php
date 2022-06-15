@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Sortable\Fixture;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\NotifyPropertyChanged;
 use Doctrine\Persistence\PropertyChangedListener;
+use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 /**
  * @author Charles J. C. Elling, 2017-07-31
@@ -21,6 +22,8 @@ use Doctrine\Persistence\PropertyChangedListener;
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
+#[ORM\Entity(repositoryClass: SortableRepository::class)]
+#[ORM\ChangeTrackingPolicy(value: 'NOTIFY')]
 class NotifyNode extends AbstractNode implements NotifyPropertyChanged
 {
     /**
@@ -34,23 +37,25 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
      * Adds a listener that wants to be notified about property changes.
      *
      * @see \Doctrine\Common\NotifyPropertyChanged::addPropertyChangedListener()
+     *
+     * @return void
      */
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
         $this->_propertyChangedListeners[] = $listener;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->setProperty('name', $name);
     }
 
-    public function setPath($path)
+    public function setPath(?string $path): void
     {
         $this->setProperty('path', $path);
     }
 
-    public function setPosition($position)
+    public function setPosition(?int $position): void
     {
         $this->setProperty('position', $position);
     }
@@ -58,18 +63,20 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
     /**
      * Notify property change event to listeners
      *
-     * @param string $propName
-     * @param mixed  $oldValue
-     * @param mixed  $newValue
+     * @param mixed $oldValue
+     * @param mixed $newValue
      */
-    protected function triggerPropertyChanged($propName, $oldValue, $newValue)
+    protected function triggerPropertyChanged(string $propName, $oldValue, $newValue): void
     {
         foreach ($this->_propertyChangedListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
         }
     }
 
-    protected function setProperty($property, $newValue)
+    /**
+     * @param mixed $newValue
+     */
+    protected function setProperty(string $property, $newValue): void
     {
         $oldValue = $this->{$property};
         if ($oldValue !== $newValue) {

@@ -69,6 +69,8 @@ interface SlugHandlerInterface
      * Validates the options for the handler.
      *
      * @throws InvalidMappingException if the configuration is invalid
+     *
+     * @return void
      */
     public static function validate(array $options, ClassMetadata $meta);
 }

@@ -28,6 +28,9 @@ final class ChangeTest extends BaseTestCaseORM
 {
     public const FIXTURE = TitledArticle::class;
 
+    /**
+     * @var TimestampableListenerStub
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -43,7 +46,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testChange()
+    public function testChange(): void
     {
         $test = new TitledArticle();
         $test->setTitle('Test');
@@ -63,7 +66,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed
         static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
@@ -82,7 +85,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Not Changed
+        // Not Changed
         static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
@@ -97,14 +100,14 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed
         static::assertSame(
             $anotherDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,
@@ -114,9 +117,12 @@ final class ChangeTest extends BaseTestCaseORM
 
 class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
 {
+    /**
+     * @var \DateTime
+     */
     protected $dateTime;
 
-    public function setDateValue(\DateTime $dateTime)
+    public function setDateValue(\DateTime $dateTime): void
     {
         $this->dateTime = $dateTime;
     }
@@ -129,6 +135,9 @@ class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
 
 class TimestampableListenerStub extends TimestampableListener
 {
+    /**
+     * @var EventAdapterORMStub
+     */
     public $eventAdapter;
 
     protected function getEventAdapter(EventArgs $args)

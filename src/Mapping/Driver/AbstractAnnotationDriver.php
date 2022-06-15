@@ -10,6 +10,7 @@
 namespace Gedmo\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
 /**
  * This is an abstract class to implement common functionality
@@ -28,6 +29,8 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
 
     /**
      * Original driver if it is available
+     *
+     * @var MappingDriver
      */
     protected $_originalDriver;
 
@@ -38,9 +41,6 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      */
     protected $validTypes = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function setAnnotationReader($reader)
     {
         $this->reader = $reader;
@@ -49,7 +49,9 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Passes in the mapping read by original driver
      *
-     * @param object $driver
+     * @param MappingDriver $driver
+     *
+     * @return void
      */
     public function setOriginalDriver($driver)
     {
@@ -57,7 +59,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     }
 
     /**
-     * @param object $meta
+     * @param ClassMetadata $meta
      *
      * @return \ReflectionClass
      */
@@ -74,6 +76,9 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
         return $class;
     }
 
+    /**
+     * @return void
+     */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
     }
@@ -81,8 +86,8 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Checks if $field type is valid
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */

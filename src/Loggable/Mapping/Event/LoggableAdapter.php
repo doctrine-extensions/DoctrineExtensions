@@ -30,6 +30,8 @@ interface LoggableAdapter extends AdapterInterface
     /**
      * Checks whether an identifier should be generated post insert.
      *
+     * @param ClassMetadata $meta
+     *
      * @return bool
      */
     public function isPostInsertGenerator($meta);

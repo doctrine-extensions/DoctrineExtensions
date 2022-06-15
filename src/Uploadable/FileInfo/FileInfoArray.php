@@ -17,6 +17,9 @@ namespace Gedmo\Uploadable\FileInfo;
  */
 class FileInfoArray implements FileInfoInterface
 {
+    /**
+     * @var array
+     */
     protected $fileInfo;
 
     public function __construct(array $fileInfo)

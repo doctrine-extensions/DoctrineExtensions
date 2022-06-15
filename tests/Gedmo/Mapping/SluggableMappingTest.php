@@ -9,8 +9,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Mapping;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
@@ -19,33 +22,34 @@ use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Mapping\Fixture\Sluggable;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * These are mapping tests for sluggable extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
+final class SluggableMappingTest extends ORMMappingTestCase
 {
     public const TEST_YAML_ENTITY_CLASS = Category::class;
     public const SLUGGABLE = Sluggable::class;
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     private $em;
 
     protected function setUp(): void
     {
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCache(new ArrayAdapter());
-        $config->setQueryCache(new ArrayAdapter());
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Mapping\Proxy');
+        parent::setUp();
+
+        $config = $this->getBasicConfiguration();
         $chainDriverImpl = new MappingDriverChain();
         $chainDriverImpl->addDriver(
             new YamlDriver([__DIR__.'/Driver/Yaml']),
             'Gedmo\Tests\Mapping\Fixture\Yaml'
         );
-        $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+        $reader = new AnnotationReader();
+        AnnotationRegistry::registerAutoloadNamespace(
             'Gedmo\\Mapping\\Annotation',
             dirname(VENDOR_PATH).'/src'
         );
@@ -60,22 +64,21 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
             'memory' => true,
         ];
 
-        $evm = new \Doctrine\Common\EventManager();
-        $evm->addEventSubscriber(new SluggableListener());
+        $evm = new EventManager();
+        $listener = new SluggableListener();
+        $listener->setCacheItemPool($this->cache);
+        $evm->addEventSubscriber($listener);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableUsingYamlDriver()
+    public function testShouldBeAbleToMapSluggableUsingYamlDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Sluggable'
         );
-        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
+        $config = $this->cache->getItem($cacheId)->get();
 
         static::assertArrayHasKey('slugs', $config);
         static::assertArrayHasKey('slug', $config['slugs']);
@@ -116,17 +119,14 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertSame('/', $second['separator']);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableUsingAnnotationDriver()
+    public function testShouldBeAbleToMapSluggableUsingAnnotationDriver(): void
     {
         $meta = $this->em->getClassMetadata(self::SLUGGABLE);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::SLUGGABLE,
             'Gedmo\Sluggable'
         );
-        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
+        $config = $this->cache->getItem($cacheId)->get();
 
         static::assertArrayHasKey('handlers', $config['slugs']['slug']);
         $handlers = $config['slugs']['slug']['handlers'];

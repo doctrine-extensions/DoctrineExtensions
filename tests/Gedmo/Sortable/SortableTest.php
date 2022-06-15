@@ -44,6 +44,9 @@ final class SortableTest extends BaseTestCaseORM
     public const CUSTOMER = Customer::class;
     public const CUSTOMER_TYPE = CustomerType::class;
 
+    /**
+     * @var int|null
+     */
     private $nodeId;
 
     protected function setUp(): void
@@ -53,25 +56,17 @@ final class SortableTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SortableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    protected function tearDown(): void
-    {
-        //$this->stopQueryLog();
-    }
-
-    /**
-     * @test
-     */
-    public function shouldSetSortPositionToInsertedNode()
+    public function testShouldSetSortPositionToInsertedNode(): void
     {
         $node = $this->em->find(self::NODE, $this->nodeId);
         static::assertSame(0, $node->getPosition());
     }
 
-    public function testMoveLastPosition()
+    public function testMoveLastPosition(): void
     {
         for ($i = 2; $i <= 10; ++$i) {
             $node = new Node();
@@ -98,10 +93,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame('Node1', $node->getName());
     }
 
-    /**
-     * @test
-     */
-    public function shouldSortManyNewNodes()
+    public function testShouldSortManyNewNodes(): void
     {
         for ($i = 2; $i <= 10; ++$i) {
             $node = new Node();
@@ -124,10 +116,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(2, $nodes[2]->getPosition());
     }
 
-    /**
-     * @test
-     */
-    public function shouldShiftPositionForward()
+    public function testShouldShiftPositionForward(): void
     {
         $node2 = new Node();
         $node2->setName('Node2');
@@ -170,10 +159,7 @@ final class SortableTest extends BaseTestCaseORM
         }
     }
 
-    /**
-     * @test
-     */
-    public function shouldShiftPositionBackward()
+    public function testShouldShiftPositionBackward(): void
     {
         $node = new Node();
         $node->setName('Node2');
@@ -217,10 +203,7 @@ final class SortableTest extends BaseTestCaseORM
         }
     }
 
-    /**
-     * @test
-     */
-    public function shouldSyncPositionAfterDelete()
+    public function testShouldSyncPositionAfterDelete(): void
     {
         $repo = $this->em->getRepository(self::NODE);
 
@@ -261,10 +244,8 @@ final class SortableTest extends BaseTestCaseORM
      *            1 | Node2   | delete |
      *            2 | Node3   | delete |
      *            3 | Node4   |        |                 1
-     *
-     * @test
      */
-    public function shouldSyncPositionAfterMultipleDeletes()
+    public function testShouldSyncPositionAfterMultipleDeletes(): void
     {
         $repo = $this->em->getRepository(self::NODE);
 
@@ -313,10 +294,8 @@ final class SortableTest extends BaseTestCaseORM
      *            3 | Node4   |        |                 1
      *              | Node5   | add    |                 2
      *              | Node6   | add    |                 3
-     *
-     * @test
      */
-    public function shouldSyncPositionAfterMultipleAddsAndMultipleDeletes()
+    public function testShouldSyncPositionAfterMultipleAddsAndMultipleDeletes(): void
     {
         $repo = $this->em->getRepository(self::NODE);
 
@@ -377,10 +356,8 @@ final class SortableTest extends BaseTestCaseORM
 
     /**
      * This is a test case for issue #1209
-     *
-     * @test
      */
-    public function shouldRollbackPositionAfterExceptionOnDelete()
+    public function testShouldRollbackPositionAfterExceptionOnDelete(): void
     {
         $repo = $this->em->getRepository(self::CUSTOMER_TYPE);
 
@@ -421,10 +398,7 @@ final class SortableTest extends BaseTestCaseORM
         }
     }
 
-    /**
-     * @test
-     */
-    public function shouldGroupByAssociation()
+    public function testShouldGroupByAssociation(): void
     {
         $category1 = new Category();
         $category1->setName('Category1');
@@ -501,10 +475,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame('Category2', $items[1]->getCategory()->getName());
     }
 
-    /**
-     * @test
-     */
-    public function shouldGroupByNewAssociation()
+    public function testShouldGroupByNewAssociation(): void
     {
         $category1 = new Category();
         $category1->setName('Category1');
@@ -528,10 +499,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame('Category1', $items[0]->getCategory()->getName());
     }
 
-    /**
-     * @test
-     */
-    public function shouldGroupByDateTimeValue()
+    public function testShouldGroupByDateTimeValue(): void
     {
         $event1 = new Event();
         $event1->setDateTime(new \DateTime('2012-09-15 00:00:00'));
@@ -567,10 +535,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(1, $event5->getPosition());
     }
 
-    /**
-     * @test
-     */
-    public function shouldFixIssue226()
+    public function testShouldFixIssue226(): void
     {
         $paper1 = new Paper();
         $paper1->setName('Paper1');
@@ -601,7 +566,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(1, $author2->getPosition());
         static::assertSame(0, $author3->getPosition());
 
-        //update position
+        // update position
         $author3->setPaper($paper1);
         $author3->setPosition(0); // same as before, no changes
         $this->em->persist($author3);
@@ -627,10 +592,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(0, $author3->getPosition());
     }
 
-    /**
-     * @test
-     */
-    public function shouldFixIssue1445()
+    public function testShouldFixIssue1445(): void
     {
         $paper1 = new Paper();
         $paper1->setName('Paper1');
@@ -655,7 +617,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(0, $author1->getPosition());
         static::assertSame(1, $author2->getPosition());
 
-        //update position
+        // update position
         $author2->setPaper($paper2);
         $author2->setPosition(0); // Position has changed author2 was at position 1 in paper1 and now 0 in paper2, so it can be in changeSets
         $this->em->persist($author2);
@@ -674,10 +636,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(0, $author2->getPosition());
     }
 
-    /**
-     * @test
-     */
-    public function shouldFixIssue1462()
+    public function testShouldFixIssue1462(): void
     {
         $paper1 = new Paper();
         $paper1->setName('Paper1');
@@ -750,10 +709,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(0, $author3->getPosition());
     }
 
-    /**
-     * @test
-     */
-    public function positionShouldBeTheSameAfterFlush()
+    public function testPositionShouldBeTheSameAfterFlush(): void
     {
         $nodes = [];
         for ($i = 2; $i <= 10; ++$i) {
@@ -777,7 +733,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(5, $node1->getPosition());
     }
 
-    public function testIncrementPositionOfLastObjectByOne()
+    public function testIncrementPositionOfLastObjectByOne(): void
     {
         $node0 = $this->em->find(self::NODE, $this->nodeId);
 
@@ -805,7 +761,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(4, $nodes[4]->getPosition());
     }
 
-    public function testSetOutOfBoundsHighPosition()
+    public function testSetOutOfBoundsHighPosition(): void
     {
         $node0 = $this->em->find(self::NODE, $this->nodeId);
 
@@ -830,10 +786,7 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame(4, $nodes[4]->getPosition());
     }
 
-    /**
-     * @test
-     */
-    public function shouldFixIssue1809()
+    public function testShouldFixIssue1809(): void
     {
         $manager = $this->em;
         $nodes = [];
@@ -851,7 +804,7 @@ final class SortableTest extends BaseTestCaseORM
         }
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::NODE,

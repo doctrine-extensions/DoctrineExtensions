@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 
@@ -21,7 +22,7 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 class MaterializedPath extends AbstractMaterializedPath
 {
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $om
      */
     public function removeNode($om, $meta, $config, $node)
     {
@@ -55,12 +56,12 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $om
      */
     public function getChildren($om, $meta, $config, $path)
     {
         $path = addcslashes($path, '%');
-        $qb = $om->createQueryBuilder($config['useObjectClass']);
+        $qb = $om->createQueryBuilder();
         $qb->select('e')
             ->from($config['useObjectClass'], 'e')
             ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')))

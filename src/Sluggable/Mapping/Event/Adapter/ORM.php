@@ -23,9 +23,6 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  */
 class ORM extends BaseAdapterORM implements SluggableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $em = $this->getObjectManager();
@@ -81,9 +78,6 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
         return $q->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function replaceRelative($object, array $config, $target, $replacement)
     {
         $em = $this->getObjectManager();
@@ -104,9 +98,6 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
         return $q->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function replaceInverseRelative($object, array $config, $target, $replacement)
     {
         $em = $this->getObjectManager();

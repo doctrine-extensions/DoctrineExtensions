@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -40,14 +40,13 @@ final class Issue827Test extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function shouldHandleForeignKeyUniqueBasedSlug()
+    public function testShouldHandleForeignKeyUniqueBasedSlug(): void
     {
         // Creating categories
 
@@ -100,10 +99,9 @@ final class Issue827Test extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function handlePersistedSlugsForForeignKeyUniqueBased()
+    public function testHandlePersistedSlugsForForeignKeyUniqueBased(): void
     {
         // Creating categories
 
@@ -147,10 +145,9 @@ final class Issue827Test extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function shouldHandleForeignKeyMultipleColumnsUniqueBasedSlug()
+    public function testShouldHandleForeignKeyMultipleColumnsUniqueBasedSlug(): void
     {
         // Creating parents
 
@@ -224,10 +221,9 @@ final class Issue827Test extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group issue827
      */
-    public function handlePersistedForeignKeyMultipleColumnsUniqueBasedSlug()
+    public function testHandlePersistedForeignKeyMultipleColumnsUniqueBasedSlug(): void
     {
         // Creating parents
 
@@ -277,7 +273,7 @@ final class Issue827Test extends BaseTestCaseORM
         static::assertSame('unique-to-post-2-1', $test5->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

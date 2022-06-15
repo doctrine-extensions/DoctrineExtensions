@@ -28,6 +28,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class File
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -38,6 +40,8 @@ class File
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
@@ -46,27 +50,29 @@ class File
     private $name;
 
     /**
+     * @var int|null
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     private $size;
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setSize($size)
+    public function setSize(?int $size): void
     {
         $this->size = $size;
     }
 
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }

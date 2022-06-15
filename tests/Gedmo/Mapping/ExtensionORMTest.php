@@ -22,6 +22,9 @@ final class ExtensionORMTest extends BaseTestCaseORM
 {
     public const USER = User::class;
 
+    /**
+     * @var EncoderListener
+     */
     private $encoderListener;
 
     protected function setUp(): void
@@ -32,10 +35,10 @@ final class ExtensionORMTest extends BaseTestCaseORM
         $this->encoderListener = new EncoderListener();
         $evm->addEventSubscriber($this->encoderListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testExtensionMetadata()
+    public function testExtensionMetadata(): void
     {
         $meta = $this->em->getClassMetadata(self::USER);
         $config = $this->encoderListener->getConfiguration($this->em, self::USER);
@@ -53,7 +56,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
         static::assertEmpty($options['secret']);
     }
 
-    public function testGeneratedValues()
+    public function testGeneratedValues(): void
     {
         $user = new User();
         $user->setName('encode me');
@@ -65,7 +68,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
         static::assertSame('5ebe2294ecd0e0f08eab7690d2a6ee69', $user->getPassword());
     }
 
-    public function testEventAdapterUsed()
+    public function testEventAdapterUsed(): void
     {
         $mappedSubscriberClass = new \ReflectionClass(MappedEventSubscriber::class);
         $getEventAdapterMethod = $mappedSubscriberClass->getMethod('getEventAdapter');
@@ -82,7 +85,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
         static::assertInstanceOf(\Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ORM::class, $eventAdapter);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::USER,

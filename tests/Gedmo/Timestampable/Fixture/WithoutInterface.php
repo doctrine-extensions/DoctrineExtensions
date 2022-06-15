@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class WithoutInterface
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,12 +34,16 @@ class WithoutInterface
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     private $title;
 
     /**
+     * @var \DateTime|null
+     *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="date")
      */
@@ -46,6 +52,8 @@ class WithoutInterface
     private $created;
 
     /**
+     * @var \DateTime|null
+     *
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
@@ -53,27 +61,27 @@ class WithoutInterface
     #[Gedmo\Timestampable(on: 'update')]
     private $updated;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getCreated()
+    public function getCreated(): ?\DateTime
     {
         return $this->created;
     }
 
-    public function getUpdated()
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }

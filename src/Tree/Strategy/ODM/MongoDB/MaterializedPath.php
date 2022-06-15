@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tree\Strategy\ODM\MongoDB;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -25,7 +26,7 @@ use MongoDB\BSON\UTCDateTime;
 class MaterializedPath extends AbstractMaterializedPath
 {
     /**
-     * {@inheritdoc}
+     * @param DocumentManager $om
      */
     public function removeNode($om, $meta, $config, $node)
     {
@@ -45,7 +46,7 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * {@inheritdoc}
+     * @param DocumentManager $om
      */
     public function getChildren($om, $meta, $config, $originalPath)
     {
@@ -58,7 +59,7 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * {@inheritdoc}
+     * @param DocumentManager $om
      */
     protected function lockTrees(ObjectManager $om, AdapterInterface $ea)
     {
@@ -80,7 +81,7 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * {@inheritdoc}
+     * @param DocumentManager $om
      */
     protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
     {

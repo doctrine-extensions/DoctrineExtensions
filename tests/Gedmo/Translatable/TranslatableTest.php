@@ -33,7 +33,14 @@ final class TranslatableTest extends BaseTestCaseORM
     public const COMMENT = Comment::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var int|null
+     */
     private $articleId;
+
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -49,10 +56,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldUpdateTranslationInDefaultLocaleIssue751()
+    public function testShouldUpdateTranslationInDefaultLocaleIssue751(): void
     {
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -89,10 +93,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('test', $entity->getTitle()); // obviously "test" a default en translation
     }
 
-    /**
-     * @test
-     */
-    public function shouldPersistDefaultLocaleTranslationIfRequired()
+    public function testShouldPersistDefaultLocaleTranslationIfRequired(): void
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
 
@@ -110,10 +111,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertArrayHasKey('en_us', $translations);
     }
 
-    /**
-     * @test
-     */
-    public function shouldGenerateTranslations()
+    public function testShouldGenerateTranslations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -233,10 +231,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertCount(0, $translations);
     }
 
-    /**
-     * @test
-     */
-    public function shouldSolveTranslationFallbackGithubIssue9()
+    public function testShouldSolveTranslationFallbackGithubIssue9(): void
     {
         $this->populate();
         $this->translatableListener->setTranslationFallback(false);
@@ -258,10 +253,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('content in en', $article->getContent());
     }
 
-    /**
-     * @test
-     */
-    public function shouldSolveGithubIssue64()
+    public function testShouldSolveGithubIssue64(): void
     {
         $judo = new Sport();
         $judo->setTitle('Judo');
@@ -294,10 +286,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertCount(1, $translations);
     }
 
-    /**
-     * @test
-     */
-    public function shouldRespectFallbackOption()
+    public function testShouldRespectFallbackOption(): void
     {
         $article = new Article();
         $article->setTitle('Euro2012');
@@ -324,7 +313,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertEmpty($article->getViews());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

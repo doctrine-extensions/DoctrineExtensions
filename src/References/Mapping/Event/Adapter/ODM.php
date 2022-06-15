@@ -25,9 +25,6 @@ use ProxyManager\Proxy\GhostObjectInterface;
  */
 final class ODM extends BaseAdapterODM implements ReferencesAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getIdentifier($om, $object, $single = true)
     {
         if ($om instanceof DocumentManager) {
@@ -59,9 +56,6 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSingleReference($om, $class, $identifier)
     {
         $this->throwIfNotEntityManager($om);
@@ -74,9 +68,6 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
         return $om->getReference($class, $identifier);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function extractIdentifier($om, $object, $single = true)
     {
         $meta = $om->getClassMetadata(get_class($object));

@@ -35,10 +35,10 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testPrefix()
+    public function testPrefix(): void
     {
         $foo = new Prefix();
         $foo->setTitle('Foo');
@@ -48,7 +48,7 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         static::assertSame('test-foo', $foo->getSlug());
     }
 
-    public function testSuffix()
+    public function testSuffix(): void
     {
         $foo = new Suffix();
         $foo->setTitle('Foo');
@@ -58,7 +58,7 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         static::assertSame('foo.test', $foo->getSlug());
     }
 
-    public function testNoDuplicateSuffixes()
+    public function testNoDuplicateSuffixes(): void
     {
         $foo = new SuffixWithTreeHandler();
         $foo->setTitle('Foo');
@@ -79,7 +79,7 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         static::assertSame('foo.test/bar.test/baz.test', $baz->getSlug());
     }
 
-    public function testNoDuplicatePrefixes()
+    public function testNoDuplicatePrefixes(): void
     {
         $foo = new PrefixWithTreeHandler();
         $foo->setTitle('Foo');
@@ -102,10 +102,8 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
 
     /**
      * Get a list of used fixture classes
-     *
-     * @return array
      */
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::SUFFIX,

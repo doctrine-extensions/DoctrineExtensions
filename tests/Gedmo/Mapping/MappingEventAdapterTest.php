@@ -20,7 +20,7 @@ use Gedmo\Tests\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
 
 final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 {
-    public function testCustomizedAdapter()
+    public function testCustomizedAdapter(): void
     {
         $emMock = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
@@ -32,7 +32,7 @@ final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
         static::assertInstanceOf(CustomizedORMAdapter::class, $adapter);
     }
 
-    public function testCorrectAdapter()
+    public function testCorrectAdapter(): void
     {
         $emMock = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
@@ -46,7 +46,7 @@ final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
         static::assertInstanceOf(\stdClass::class, $adapter->getObject());
     }
 
-    public function testAdapterBehavior()
+    public function testAdapterBehavior(): void
     {
         $eventArgsMock = $this->getMockBuilder(LifecycleEventArgs::class)
             ->disableOriginalConstructor()
@@ -55,7 +55,8 @@ final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
             ->method('getEntityManager');
 
         $eventArgsMock->expects(static::once())
-            ->method('getEntity');
+            ->method('getEntity')
+            ->willReturn(new \stdClass());
 
         $eventAdapter = new EventAdapterORM();
         $eventAdapter->setEventArgs($eventArgsMock);

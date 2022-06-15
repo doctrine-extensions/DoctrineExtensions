@@ -17,44 +17,56 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Car extends Vehicle
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     protected $title;
+
     /**
-     * @ORM\Column(length=128, nullable=true)
+     * @var string|null
+     *
+     * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     private $description;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=128, unique=true)
      */
+    #[Gedmo\Slug(fields: ['title'])]
+    #[ORM\Column(length: 128, unique: true)]
     private $slug;
 
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

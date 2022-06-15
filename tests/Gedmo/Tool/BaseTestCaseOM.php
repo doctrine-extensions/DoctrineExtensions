@@ -14,13 +14,12 @@ namespace Gedmo\Tests\Tool;
 // common
 use Doctrine\Common\EventManager;
 // orm specific
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
 // odm specific
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 // listeners
@@ -38,6 +37,7 @@ use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
 use MongoDB\Client;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Base test case contains common mock objects
@@ -60,16 +60,10 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      */
     private $dms = [];
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         foreach ($this->dms as $documentManager) {
@@ -79,63 +73,53 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function getMongoDBDriver(array $paths = []): MappingDriver
+    {
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            return new AttributeDriver($paths);
+        }
+
+        return new AnnotationDriverODM($_ENV['annotation_reader'], $paths);
+    }
+
+    public function getORMDriver(array $paths = []): MappingDriver
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            return new \Doctrine\ORM\Mapping\Driver\AttributeDriver($paths);
+        }
+
+        return new AnnotationDriverORM($_ENV['annotation_reader'], $paths);
+    }
+
     /**
      * DocumentManager mock object together with
      * annotation mapping driver and database
-     *
-     * @param string        $dbName
-     * @param MappingDriver $mappingDriver
-     *
-     * @return DocumentManager
      */
-    protected function getMockDocumentManager($dbName, MappingDriver $mappingDriver = null)
+    protected function getMockDocumentManager(string $dbName, MappingDriver $mappingDriver = null): DocumentManager
     {
         if (!extension_loaded('mongodb')) {
             static::markTestSkipped('Missing Mongo extension.');
         }
 
         $client = new Client($_ENV['MONGODB_SERVER'], [], ['typeMap' => DocumentManager::CLIENT_TYPEMAP]);
-        $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
+        $config = $this->getMockODMMongoDBConfig($dbName, $mappingDriver);
 
         return DocumentManager::create($client, $config, $this->getEventManager());
-    }
-
-    /**
-     * DocumentManager mock object with
-     * annotation mapping driver
-     *
-     * @param string        $dbName
-     * @param MappingDriver $mappingDriver
-     *
-     * @return DocumentManager
-     */
-    protected function getMockMappedDocumentManager($dbName, MappingDriver $mappingDriver = null)
-    {
-        $conn = $this->getMockBuilder('Doctrine\\MongoDB\\Connection')->getMock();
-        $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
-
-        $dm = DocumentManager::create($conn, $config, $this->getEventManager());
-
-        return $dm;
     }
 
     /**
      * EntityManager mock object together with
      * annotation mapping driver and pdo_sqlite
      * database in memory
-     *
-     * @param MappingDriver $mappingDriver
-     *
-     * @return EntityManager
      */
-    protected function getMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null)
+    protected function getDefaultMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
         ];
 
-        $config = $this->getMockAnnotatedORMConfig($mappingDriver);
+        $config = $this->getMockORMConfig($mappingDriver);
         $em = EntityManager::create($conn, $config, $this->getEventManager());
 
         $schema = array_map(static function ($class) use ($em) {
@@ -147,59 +131,6 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $schemaTool->createSchema($schema);
 
         return $em;
-    }
-
-    /**
-     * EntityManager mock object with
-     * annotation mapping driver
-     *
-     * @param MappingDriver $mappingDriver
-     *
-     * @return EntityManager
-     */
-    protected function getMockMappedEntityManager(MappingDriver $mappingDriver = null)
-    {
-        $driver = $this->getMockBuilder(Driver::class)->getMock();
-        $driver->expects(static::once())
-            ->method('getDatabasePlatform')
-            ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
-
-        $conn = $this->getMockBuilder(Connection::class)
-            ->setConstructorArgs([[], $driver])
-            ->getMock();
-
-        $conn->expects(static::once())
-            ->method('getEventManager')
-            ->willReturn($this->getEventManager());
-
-        $config = $this->getMockAnnotatedConfig();
-
-        return EntityManager::create($conn, $config);
-    }
-
-    /**
-     * Creates default mapping driver
-     *
-     * @return MappingDriver
-     */
-    protected function getDefaultORMMetadataDriverImplementation()
-    {
-        return new AnnotationDriverORM($_ENV['annotation_reader']);
-    }
-
-    /**
-     * Creates default mapping driver
-     *
-     * @return MappingDriver
-     */
-    protected function getDefaultMongoODMMetadataDriverImplementation()
-    {
-        return new AnnotationDriverODM($_ENV['annotation_reader']);
-    }
-
-    protected function getMockAnnotatedConfig(): object
-    {
-        throw new \BadMethodCallException('Not implemented.');
     }
 
     /**
@@ -221,14 +152,11 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
 
     /**
      * Get annotation mapping configuration
-     *
-     * @param string        $dbName
-     * @param MappingDriver $mappingDriver
      */
-    private function getMockAnnotatedODMMongoDBConfig($dbName, MappingDriver $mappingDriver = null): Configuration
+    private function getMockODMMongoDBConfig(string $dbName, MappingDriver $mappingDriver = null): Configuration
     {
         if (null === $mappingDriver) {
-            $mappingDriver = $this->getDefaultMongoODMMetadataDriverImplementation();
+            $mappingDriver = $this->getMongoDBDriver();
         }
         $config = new Configuration();
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
@@ -240,64 +168,28 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setMetadataDriverImpl($mappingDriver);
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }
 
     /**
      * Get annotation mapping configuration for ORM
-     *
-     * @return \Doctrine\ORM\Configuration
      */
-    private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null)
+    private function getMockORMConfig(MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
     {
-        $config = $this->getMockBuilder(\Doctrine\ORM\Configuration::class)->getMock();
-        $config->expects(static::once())
-            ->method('getProxyDir')
-            ->willReturn(TESTS_TEMP_DIR);
-
-        $config->expects(static::once())
-            ->method('getProxyNamespace')
-            ->willReturn('Proxy');
-
-        $config
-            ->method('getDefaultQueryHints')
-            ->willReturn([]);
-
-        $config->expects(static::once())
-            ->method('getAutoGenerateProxyClasses')
-            ->willReturn(true);
-
-        $config->expects(static::once())
-            ->method('getClassMetadataFactoryName')
-            ->willReturn(ClassMetadataFactory::class);
-
-        $config
-            ->method('getDefaultRepositoryClassName')
-            ->willReturn(EntityRepository::class)
-        ;
-
-        $config
-            ->method('getQuoteStrategy')
-            ->willReturn(new DefaultQuoteStrategy())
-        ;
-
-        $config
-            ->method('getNamingStrategy')
-            ->willReturn(new DefaultNamingStrategy())
-        ;
-        if (null === $mappingDriver) {
-            $mappingDriver = $this->getDefaultORMMetadataDriverImplementation();
-        }
-
-        $config
-            ->method('getMetadataDriverImpl')
-            ->willReturn($mappingDriver);
-
-        $config
-            ->expects(static::once())
-            ->method('getRepositoryFactory')
-            ->willReturn(new DefaultRepositoryFactoryORM());
+        $config = new \Doctrine\ORM\Configuration();
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setDefaultQueryHints([]);
+        $config->setAutoGenerateProxyClasses(true);
+        $config->setClassMetadataFactoryName(ClassMetadataFactory::class);
+        $config->setDefaultRepositoryClassName(EntityRepository::class);
+        $config->setQuoteStrategy(new DefaultQuoteStrategy());
+        $config->setNamingStrategy(new DefaultNamingStrategy());
+        $config->setMetadataDriverImpl($mappingDriver ?? $this->getORMDriver());
+        $config->setRepositoryFactory(new DefaultRepositoryFactoryORM());
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }

@@ -18,8 +18,12 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
@@ -79,8 +83,10 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private static $defaultAnnotationReader;
 
     /**
-     * Constructor
+     * @var CacheItemPoolInterface|null
      */
+    private $cacheItemPool;
+
     public function __construct()
     {
         $parts = explode('\\', $this->getNamespace());
@@ -97,30 +103,31 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function getConfiguration(ObjectManager $objectManager, $class)
     {
-        $config = [];
         if (isset(self::$configurations[$this->name][$class])) {
-            $config = self::$configurations[$this->name][$class];
-        } else {
-            $factory = $objectManager->getMetadataFactory();
-            $cacheDriver = $factory->getCacheDriver();
-            if ($cacheDriver) {
-                $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->getNamespace());
-                if (false !== ($cached = $cacheDriver->fetch($cacheId))) {
-                    self::$configurations[$this->name][$class] = $cached;
-                    $config = $cached;
-                } else {
-                    // re-generate metadata on cache miss
-                    $this->loadMetadataForObjectClass($objectManager, $factory->getMetadataFor($class));
-                    if (isset(self::$configurations[$this->name][$class])) {
-                        $config = self::$configurations[$this->name][$class];
-                    }
-                }
+            return self::$configurations[$this->name][$class];
+        }
 
-                $objectClass = $config['useObjectClass'] ?? $class;
-                if ($objectClass !== $class) {
-                    $this->getConfiguration($objectManager, $objectClass);
-                }
+        $config = [];
+
+        $cacheItemPool = $this->getCacheItemPool($objectManager);
+
+        $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->getNamespace());
+        $cacheItem = $cacheItemPool->getItem($cacheId);
+
+        if ($cacheItem->isHit()) {
+            $config = $cacheItem->get();
+            self::$configurations[$this->name][$class] = $config;
+        } else {
+            // re-generate metadata on cache miss
+            $this->loadMetadataForObjectClass($objectManager, $objectManager->getClassMetadata($class));
+            if (isset(self::$configurations[$this->name][$class])) {
+                $config = self::$configurations[$this->name][$class];
             }
+        }
+
+        $objectClass = $config['useObjectClass'] ?? $class;
+        if ($objectClass !== $class) {
+            $this->getConfiguration($objectManager, $objectClass);
         }
 
         return $config;
@@ -142,7 +149,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
             $this->extensionMetadataFactory[$oid] = new ExtensionMetadataFactory(
                 $objectManager,
                 $this->getNamespace(),
-                $this->annotationReader
+                $this->annotationReader,
+                $this->getCacheItemPool($objectManager)
             );
         }
 
@@ -159,17 +167,24 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
      * @param Reader $reader annotation reader class
+     *
+     * @return void
      */
     public function setAnnotationReader($reader)
     {
         $this->annotationReader = $reader;
     }
 
+    final public function setCacheItemPool(CacheItemPoolInterface $cacheItemPool): void
+    {
+        $this->cacheItemPool = $cacheItemPool;
+    }
+
     /**
      * Scans the objects for extended annotations
      * event subscribers must subscribe to loadClassMetadata event
      *
-     * @param object $metadata
+     * @param ClassMetadata $metadata
      *
      * @return void
      */
@@ -231,6 +246,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @param string $field
      * @param mixed  $oldValue
      * @param mixed  $newValue
+     *
+     * @return void
      */
     protected function setFieldValue(AdapterInterface $adapter, $object, $field, $oldValue, $newValue)
     {
@@ -263,5 +280,26 @@ abstract class MappedEventSubscriber implements EventSubscriber
         }
 
         return self::$defaultAnnotationReader;
+    }
+
+    private function getCacheItemPool(ObjectManager $objectManager): CacheItemPoolInterface
+    {
+        if (null !== $this->cacheItemPool) {
+            return $this->cacheItemPool;
+        }
+
+        if ($objectManager instanceof EntityManagerInterface || $objectManager instanceof DocumentManager) {
+            $metadataCache = $objectManager->getConfiguration()->getMetadataCache();
+
+            if (null !== $metadataCache) {
+                $this->cacheItemPool = $metadataCache;
+
+                return $this->cacheItemPool;
+            }
+        }
+
+        $this->cacheItemPool = new ArrayAdapter();
+
+        return $this->cacheItemPool;
     }
 }

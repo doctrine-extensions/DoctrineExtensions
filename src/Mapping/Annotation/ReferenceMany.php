@@ -9,13 +9,17 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
+
 /**
  * Reference annotation for ORM -> ODM references extension
  * to be user like "@ReferenceMany(type="entity", class="MyEntity", identifier="entity_id")"
  *
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
+ * @NamedArgumentConstructor
  * @Annotation
  */
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class ReferenceMany extends Reference
 {
 }

@@ -37,6 +37,11 @@ class Validator
         'timestamp',
     ];
 
+    /**
+     * @param mixed $field
+     *
+     * @return void
+     */
     public static function validateField(ClassMetadata $meta, $field)
     {
         if ($meta->isMappedSuperclass) {

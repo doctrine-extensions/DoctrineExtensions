@@ -39,9 +39,6 @@ class Xml extends BaseXml
         'referenceManyEmbed',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**

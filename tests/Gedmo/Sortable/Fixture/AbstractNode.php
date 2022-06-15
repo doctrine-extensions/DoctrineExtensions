@@ -11,69 +11,87 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 class AbstractNode
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     protected $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=191)
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
     protected $name;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="string", length=191)
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\Column(type: Types::STRING, length: 191)]
     protected $path;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: Types::INTEGER)]
     protected $position;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setPath($path)
+    public function setPath(?string $path): void
     {
         $this->path = $path;
     }
 
-    public function getPath()
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setPosition($position)
+    public function setPosition(?int $position): void
     {
         $this->position = $position;
     }
 
-    public function getPosition()
+    public function getPosition(): ?int
     {
         return $this->position;
     }

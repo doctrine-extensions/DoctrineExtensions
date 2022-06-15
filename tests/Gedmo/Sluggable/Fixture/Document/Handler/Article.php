@@ -12,27 +12,43 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sluggable\Fixture\Document\Handler;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\InversedRelativeSlugHandler;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
-    /** @ODM\Id */
+    /**
+     * @var string|null
+     *
+     * @ODM\Id
+     */
+    #[ODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private $title;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private $code;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(handlers={
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
      *          @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Document\Handler\RelativeSlug"),
@@ -42,34 +58,37 @@ class Article
      * }, separator="-", updatable=true, fields={"title", "code"})
      * @ODM\Field(type="string")
      */
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
+    #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => RelativeSlug::class, 'mappedBy' => 'article', 'inverseSlugField' => 'alias'])]
+    #[ODM\Field(type: Type::STRING)]
     private $slug;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setCode($code)
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }
 
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

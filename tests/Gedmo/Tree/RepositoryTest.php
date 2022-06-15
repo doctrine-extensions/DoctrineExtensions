@@ -34,11 +34,11 @@ final class RepositoryTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testBasicFunctions()
+    public function testBasicFunctions(): void
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Vegitables']);
@@ -94,6 +94,33 @@ final class RepositoryTest extends BaseTestCaseORM
 
         static::assertCount(6, $children);
 
+        // test children sorting
+
+        $children = $this->em->getRepository(self::CATEGORY)
+             ->children($food, true, ['title'], 'ASC');
+
+        static::assertCount(2, $children);
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY)
+             ->children($food, false, ['level', 'title'], ['ASC', 'DESC']);
+
+        static::assertCount(4, $children);
+        static::assertSame('Vegitables', $children[0]->getTitle());
+        static::assertSame('Fruits', $children[1]->getTitle());
+        static::assertSame('Potatoes', $children[2]->getTitle());
+        static::assertSame('Carrots', $children[3]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY)
+             ->children($food, false, ['level', 'title'], ['ASC']);
+
+        static::assertCount(4, $children);
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[2]->getTitle());
+        static::assertSame('Potatoes', $children[3]->getTitle());
+
         // path
 
         $path = $this->em->getRepository(self::CATEGORY)
@@ -126,7 +153,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertSame('Sports', $leafs[3]->getTitle());
     }
 
-    public function testAdvancedFunctions()
+    public function testAdvancedFunctions(): void
     {
         $this->populateMore();
         $onions = $this->em->getRepository(self::CATEGORY)
@@ -240,7 +267,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertSame('Food', $node->getParent()->getTitle());
     }
 
-    public function testRootRemoval()
+    public function testRootRemoval(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
@@ -270,7 +297,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertNull($node->getParent());
     }
 
-    public function testVerificationAndRecover()
+    public function testVerificationAndRecover(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
@@ -313,7 +340,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
-    public function testMoveRootNode()
+    public function testMoveRootNode(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneBy(['title' => 'Food']);
@@ -332,7 +359,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
-    public function testIssue273()
+    public function testIssue273(): void
     {
         $this->populateUuid();
 
@@ -421,7 +448,7 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertSame('Potatoes', $leafs[2]->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

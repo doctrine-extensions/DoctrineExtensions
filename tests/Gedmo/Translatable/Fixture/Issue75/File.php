@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class File
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,6 +34,8 @@ class File
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
@@ -39,17 +43,17 @@ class File
     #[Gedmo\Translatable]
     private $title;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

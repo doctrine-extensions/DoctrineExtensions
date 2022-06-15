@@ -21,9 +21,14 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
  * @Table(
  *         name="ext_translations",
  *         options={"row_format":"DYNAMIC"},
- *         indexes={@Index(name="translations_lookup_idx", columns={
- *             "locale", "object_class", "foreign_key"
- *         })},
+ *         indexes={
+ *             @Index(name="translations_lookup_idx", columns={
+ *                 "locale", "object_class", "foreign_key"
+ *             }),
+ *             @Index(name="general_translations_lookup_idx", columns={
+ *                 "object_class", "foreign_key"
+ *             })
+ *         },
  *         uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
  *             "locale", "object_class", "field", "foreign_key"
  *         })}
@@ -33,6 +38,7 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 #[Entity(repositoryClass: TranslationRepository::class)]
 #[Table(name: 'ext_translations', options: ['row_format' => 'DYNAMIC'])]
 #[Index(name: 'translations_lookup_idx', columns: ['locale', 'object_class', 'foreign_key'])]
+#[Index(name: 'general_translations_lookup_idx', columns: ['object_class', 'foreign_key'])]
 #[UniqueConstraint(name: 'lookup_unique_idx', columns: ['locale', 'object_class', 'field', 'foreign_key'])]
 class Translation extends MappedSuperclass\AbstractTranslation
 {

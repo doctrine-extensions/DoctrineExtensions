@@ -9,6 +9,7 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
@@ -42,9 +43,6 @@ class Xml extends BaseXml
         'integer',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
@@ -79,9 +77,6 @@ class Xml extends BaseXml
                         }
                         $trackedFieldAttribute = $this->_getAttribute($data, 'field');
                         $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null;
-                        if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException('Timestampable extension does not support multiple value changeset detection yet.');
-                        }
                         $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,
@@ -97,8 +92,8 @@ class Xml extends BaseXml
     /**
      * Checks if $field type is valid
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */

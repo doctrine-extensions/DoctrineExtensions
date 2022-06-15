@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -34,10 +34,10 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::SLUG);
@@ -55,7 +55,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('single', $single->getSlug());
     }
 
-    public function testUpdateOperations()
+    public function testUpdateOperations(): void
     {
         $this->populate();
         $repo = $this->em->getRepository(self::SLUG);
@@ -87,7 +87,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('cars-code/jen', $jen->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::SLUG,

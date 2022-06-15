@@ -17,16 +17,16 @@ use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 class RepositoryUtils implements RepositoryUtilsInterface
 {
-    /** @var \Doctrine\Persistence\Mapping\ClassMetadata */
+    /** @var ClassMetadata */
     protected $meta;
 
-    /** @var \Gedmo\Tree\TreeListener */
+    /** @var TreeListener */
     protected $listener;
 
-    /** @var \Doctrine\Persistence\ObjectManager */
+    /** @var ObjectManager */
     protected $om;
 
-    /** @var \Gedmo\Tree\RepositoryInterface */
+    /** @var RepositoryInterface */
     protected $repo;
 
     /**
@@ -37,6 +37,10 @@ class RepositoryUtils implements RepositoryUtilsInterface
      */
     protected $childrenIndex = '__children';
 
+    /**
+     * @param TreeListener        $listener
+     * @param RepositoryInterface $repo
+     */
     public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
     {
         $this->om = $om;
@@ -45,14 +49,14 @@ class RepositoryUtils implements RepositoryUtilsInterface
         $this->repo = $repo;
     }
 
+    /**
+     * @return ClassMetadata
+     */
     public function getClassMetadata()
     {
         return $this->meta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $meta = $this->getClassMetadata();
@@ -77,9 +81,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $this->repo->buildTree($nodes, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTree(array $nodes, array $options = [])
     {
         $meta = $this->getClassMetadata();
@@ -133,9 +134,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $build($nestedTree);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
@@ -174,17 +172,11 @@ class RepositoryUtils implements RepositoryUtilsInterface
         return $nestedTree;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setChildrenIndex($childrenIndex)
     {
         $this->childrenIndex = $childrenIndex;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildrenIndex()
     {
         return $this->childrenIndex;

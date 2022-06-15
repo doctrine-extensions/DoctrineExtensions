@@ -11,6 +11,7 @@ namespace Gedmo\Tool\Wrapper;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\UnsupportedObjectManagerException;
 use Gedmo\Tool\WrapperInterface;
@@ -26,7 +27,7 @@ abstract class AbstractWrapper implements WrapperInterface
     /**
      * Object metadata
      *
-     * @var object
+     * @var ClassMetadata
      */
     protected $meta;
 
@@ -40,16 +41,9 @@ abstract class AbstractWrapper implements WrapperInterface
     /**
      * Object manager instance
      *
-     * @var \Doctrine\Persistence\ObjectManager
+     * @var ObjectManager
      */
     protected $om;
-
-    /**
-     * List of wrapped object references
-     *
-     * @var array
-     */
-    private static $wrappedObjectReferences;
 
     /**
      * Wrap object factory method
@@ -72,32 +66,34 @@ abstract class AbstractWrapper implements WrapperInterface
         throw new UnsupportedObjectManagerException('Given object manager is not managed by wrapper');
     }
 
+    /**
+     * @return void
+     */
     public static function clear()
     {
-        self::$wrappedObjectReferences = [];
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getObject()
     {
         return $this->object;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMetadata()
     {
         return $this->meta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function populate(array $data)
     {
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
         foreach ($data as $field => $value) {
             $this->setPropertyValue($field, $value);
         }

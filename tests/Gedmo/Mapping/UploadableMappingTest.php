@@ -58,12 +58,12 @@ final class UploadableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->listener);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             Uploadable::class,
         ], $chain);
     }
 
-    public function testYamlMapping()
+    public function testYamlMapping(): void
     {
         $meta = $this->em->getClassMetadata(Uploadable::class);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());

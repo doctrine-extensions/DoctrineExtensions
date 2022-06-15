@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
 use Gedmo\Tests\Timestampable\Fixture\Article;
 use Gedmo\Tests\Timestampable\Fixture\Author;
 use Gedmo\Tests\Timestampable\Fixture\Comment;
@@ -43,10 +44,8 @@ final class TimestampableTest extends BaseTestCaseORM
 
     /**
      * issue #1255
-     *
-     * @test
      */
-    public function shouldHandleDetatchedAndMergedBackEntities()
+    public function testShouldHandleDetatchedAndMergedBackEntities(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -63,10 +62,8 @@ final class TimestampableTest extends BaseTestCaseORM
 
     /**
      * issue #1255
-     *
-     * @test
      */
-    public function shouldHandleDetatchedAndMergedBackEntitiesAfterPersist()
+    public function testShouldHandleDetatchedAndMergedBackEntitiesAfterPersist(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -91,10 +88,7 @@ final class TimestampableTest extends BaseTestCaseORM
         static::assertNotSame($newSport->getUpdated(), $updated, 'There was a change, should not remain the same');
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleStandardBehavior()
+    public function testShouldHandleStandardBehavior(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -174,10 +168,7 @@ final class TimestampableTest extends BaseTestCaseORM
         static::assertNotSame($sport->getAuthorChanged(), $sa, 'Author must have changed after update');
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToForceDates()
+    public function testShouldBeAbleToForceDates(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -222,10 +213,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    /**
-     * @test
-     */
-    public function shouldSolveIssue767()
+    public function testShouldSolveIssue767(): void
     {
         $type = new Type();
         $type->setTitle('Published');
@@ -250,7 +238,46 @@ final class TimestampableTest extends BaseTestCaseORM
         static::assertNotNull($art->getPublished());
     }
 
-    protected function getUsedEntityFixtures()
+    /**
+     * @see https://github.com/doctrine-extensions/DoctrineExtensions/issues/2367.
+     */
+    public function testHandledTypes(): void
+    {
+        $timespampable = new Article();
+        $timespampable->setTitle('My article');
+        $timespampable->setBody('My article body.');
+
+        static::assertNull($timespampable->getReachedRelevantLevel());
+        $timespampable->setLevel(8);
+
+        $this->em->persist($timespampable);
+        $this->em->flush();
+
+        $repo = $this->em->getRepository(self::ARTICLE);
+        $found = $repo->findOneBy(['body' => 'My article body.']);
+
+        static::assertNull($found->getReachedRelevantLevel());
+
+        $timespampable->setLevel(9);
+
+        $this->em->persist($timespampable);
+        $this->em->flush();
+
+        $found = $repo->findOneBy(['body' => 'My article body.']);
+
+        static::assertNull($found->getReachedRelevantLevel());
+
+        $timespampable->setLevel(10);
+
+        $this->em->persist($timespampable);
+        $this->em->flush();
+
+        $found = $repo->findOneBy(['body' => 'My article body.']);
+
+        static::assertInstanceOf(\DateTime::class, $found->getReachedRelevantLevel());
+    }
+
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

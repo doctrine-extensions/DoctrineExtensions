@@ -17,5 +17,10 @@ namespace Gedmo\Uploadable\MimeType;
  */
 interface MimeTypeGuesserInterface
 {
+    /**
+     * @param string $filePath
+     *
+     * @return string|null
+     */
     public function guess($filePath);
 }

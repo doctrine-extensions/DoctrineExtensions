@@ -28,7 +28,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query builder
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
@@ -40,7 +40,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Query
      */
@@ -52,40 +52,28 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      */
     public function getTree($rootNode = null): Iterator
     {
         return $this->getTreeQuery($rootNode)->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
         return $this->getChildrenQueryBuilder(null, true, $sortByField, $direction);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
         return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootNodes($sortByField = null, $direction = 'asc')
     {
         return $this->getRootNodesQuery($sortByField, $direction)->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function childCount($node = null, $direct = false)
     {
         $meta = $this->getClassMetadata();
@@ -109,9 +97,6 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return (int) $qb->getQuery()->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
@@ -157,17 +142,11 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return $this->getChildrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         return $this->getChildrenQuery($node, $direct, $sortByField, $direction, $includeNode)->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $sortBy = [
@@ -182,17 +161,11 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir'], $includeNode);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodesHierarchyQuery($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         return $this->getNodesHierarchyQueryBuilder($node, $direct, $options, $includeNode)->getQuery();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $query = $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode);
@@ -201,9 +174,6 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return $query->toArray();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function validate()
     {
         return Strategy::MATERIALIZED_PATH === $this->listener->getStrategy($this->dm, $this->getClassMetadata()->name)->getName();

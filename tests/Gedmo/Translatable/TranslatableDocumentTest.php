@@ -29,7 +29,14 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
     public const ARTICLE = Article::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
+
+    /**
+     * @var string|null
+     */
     private $articleId;
 
     protected function setUp(): void
@@ -46,7 +53,7 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
     }
 
-    public function testTranslation()
+    public function testTranslation(): void
     {
         // test inserted translations
         $repo = $this->dm->getRepository(self::ARTICLE);
@@ -111,6 +118,33 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
 
         $translations = $transRepo->findTranslationsByObjectId($this->articleId);
         static::assertCount(0, $translations);
+    }
+
+    public function testFindObjectByTranslatedField(): void
+    {
+        $repo = $this->dm->getRepository(self::ARTICLE);
+        $article = $repo->findOneBy(['title' => 'Title EN']);
+        static::assertInstanceOf(self::ARTICLE, $article);
+
+        $this->translatableListener->setTranslatableLocale('de_de');
+        $article->setTitle('Title DE');
+        $article->setCode('Code DE');
+
+        $this->dm->persist($article);
+        $this->dm->flush();
+        $this->dm->clear();
+
+        $transRepo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $transRepo);
+
+        $articleFound = $transRepo->findObjectByTranslatedField(
+            'title',
+            'Title DE',
+            self::ARTICLE
+        );
+        static::assertInstanceOf(self::ARTICLE, $articleFound);
+
+        static::assertSame($article->getId(), $articleFound->getId());
     }
 
     private function populate(): void

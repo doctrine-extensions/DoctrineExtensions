@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable;
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
@@ -33,10 +33,10 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);
@@ -54,7 +54,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('single', $single->getSlug());
     }
 
-    public function testUpdateOperations()
+    public function testUpdateOperations(): void
     {
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);

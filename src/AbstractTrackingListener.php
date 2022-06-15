@@ -10,10 +10,14 @@
 namespace Gedmo;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Types\Type as TypeODM;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -137,7 +141,9 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                                 $value = $changes[1];
                             }
 
-                            if (null === $options['value'] || ($singleField && in_array($value, (array) $options['value'], true))) {
+                            $configuredValues = $this->getPhpValues($options['value'], $meta->getTypeOfField($tracked), $om);
+
+                            if (null === $configuredValues || ($singleField && in_array($value, $configuredValues, true))) {
                                 $needChanges = true;
                                 $this->updateField($object, $ea, $meta, $options['field']);
                             }
@@ -187,6 +193,8 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * @param ClassMetadata    $meta
      * @param string           $field
      * @param AdapterInterface $eventAdapter
+     *
+     * @return mixed
      */
     abstract protected function getFieldValue($meta, $field, $eventAdapter);
 
@@ -197,6 +205,8 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * @param AdapterInterface $eventAdapter
      * @param ClassMetadata    $meta
      * @param string           $field
+     *
+     * @return void
      */
     protected function updateField($object, $eventAdapter, $meta, $field)
     {
@@ -220,5 +230,39 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             $uow = $eventAdapter->getObjectManager()->getUnitOfWork();
             $uow->propertyChanged($object, $field, $oldValue, $newValue);
         }
+    }
+
+    /**
+     * @param mixed $values
+     *
+     * @return mixed[]|null
+     */
+    private function getPhpValues($values, ?string $type, ObjectManager $om): ?array
+    {
+        if (null === $values) {
+            return null;
+        }
+
+        if (!is_array($values)) {
+            $values = [$values];
+        }
+
+        if (null !== $type) {
+            foreach ($values as $i => $value) {
+                if ($om instanceof DocumentManager) {
+                    if (TypeODM::hasType($type)) {
+                        $values[$i] = TypeODM::getType($type)
+                            ->convertToPHPValue($value);
+                    } else {
+                        $values[$i] = $value;
+                    }
+                } elseif (Type::hasType($type)) {
+                    $values[$i] = Type::getType($type)
+                        ->convertToPHPValue($value, $om->getConnection()->getDatabasePlatform());
+                }
+            }
+        }
+
+        return $values;
     }
 }

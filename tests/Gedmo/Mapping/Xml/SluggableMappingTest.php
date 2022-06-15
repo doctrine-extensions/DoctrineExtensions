@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 use Gedmo\Sluggable\Handler\TreeSlugHandler;
@@ -40,13 +41,10 @@ final class SluggableMappingTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->sluggable);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToMapSluggableMetadata()
+    public function testShouldBeAbleToMapSluggableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Sluggable::class);
         $config = $this->sluggable->getConfiguration($this->em, $meta->getName());
@@ -97,12 +95,12 @@ final class SluggableMappingTest extends BaseTestCaseORM
         static::assertSame('-', $second['separator']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [Sluggable::class];
     }
 
-    protected function getMetadataDriverImplementation()
+    protected function getMetadataDriverImplementation(): MappingDriver
     {
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 

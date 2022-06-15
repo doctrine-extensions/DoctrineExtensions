@@ -52,7 +52,14 @@ final class AttributeAnnotationReader implements Reader
         return $this->annotationReader->getClassAnnotations($class);
     }
 
-    public function getClassAnnotation(ReflectionClass $class, $annotationName): ?Annotation
+    /**
+     * @param class-string<T> $annotationName the name of the annotation
+     *
+     * @return T|null the Annotation or NULL, if the requested annotation does not exist
+     *
+     * @template T
+     */
+    public function getClassAnnotation(ReflectionClass $class, $annotationName)
     {
         $annotation = $this->attributeReader->getClassAnnotation($class, $annotationName);
 
@@ -77,7 +84,14 @@ final class AttributeAnnotationReader implements Reader
         return $this->annotationReader->getPropertyAnnotations($property);
     }
 
-    public function getPropertyAnnotation(\ReflectionProperty $property, $annotationName): ?Annotation
+    /**
+     * @param class-string<T> $annotationName the name of the annotation
+     *
+     * @return T|null the Annotation or NULL, if the requested annotation does not exist
+     *
+     * @template T
+     */
+    public function getPropertyAnnotation(\ReflectionProperty $property, $annotationName)
     {
         $annotation = $this->attributeReader->getPropertyAnnotation($property, $annotationName);
 
@@ -88,11 +102,14 @@ final class AttributeAnnotationReader implements Reader
         return $this->annotationReader->getPropertyAnnotation($property, $annotationName);
     }
 
-    public function getMethodAnnotations(ReflectionMethod $method)
+    public function getMethodAnnotations(ReflectionMethod $method): array
     {
         throw new \BadMethodCallException('Not implemented');
     }
 
+    /**
+     * @return mixed
+     */
     public function getMethodAnnotation(ReflectionMethod $method, $annotationName)
     {
         throw new \BadMethodCallException('Not implemented');

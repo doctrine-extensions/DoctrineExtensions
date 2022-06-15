@@ -31,12 +31,11 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
 
     /**
      * Repository utils
+     *
+     * @var RepositoryUtilsInterface
      */
     protected $repoUtils;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(DocumentManager $em, UnitOfWork $uow, ClassMetadata $class)
     {
         parent::__construct($em, $uow, $class);
@@ -85,17 +84,11 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
         return $this->repoUtils;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         return $this->repoUtils->childrenHierarchy($node, $direct, $options, $includeNode);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTree(array $nodes, array $options = [])
     {
         return $this->repoUtils->buildTree($nodes, $options);
@@ -117,9 +110,6 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
         return $this->repoUtils->getChildrenIndex();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildTreeArray(array $nodes)
     {
         return $this->repoUtils->buildTreeArray($nodes);

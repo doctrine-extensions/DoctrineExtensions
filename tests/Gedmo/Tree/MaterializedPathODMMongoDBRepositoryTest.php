@@ -42,16 +42,13 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
 
         $this->repo = $this->dm->getRepository(self::CATEGORY);
     }
 
-    /**
-     * @test
-     */
-    public function getRootNodes()
+    public function testGetRootNodes(): void
     {
         /** @var CachingIterator $result */
         $result = $this->repo->getRootNodes('title');
@@ -68,10 +65,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Sports', $result->current()->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getChildren()
+    public function testGetChildren(): void
     {
         $root = $this->repo->findOneBy(['title' => 'Food']);
 
@@ -169,10 +163,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Sports', $result->current()->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function getTree()
+    public function testGetTree(): void
     {
         $tree = $this->repo->getTree();
 
@@ -210,10 +201,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Best Whisky', $tree->current()->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function childrenHierarchy()
+    public function testChildrenHierarchy(): void
     {
         $tree = $this->repo->childrenHierarchy();
 
@@ -278,7 +266,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
 
-    public function testChildCount()
+    public function testChildCount(): void
     {
         // Count all
         $count = $this->repo->childCount();
@@ -302,19 +290,19 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame(2, $count);
     }
 
-    public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
+    public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount(new \DateTime());
     }
 
-    public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
+    public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount($this->createCategory());
     }
 
-    public function testChangeChildrenIndex()
+    public function testChangeChildrenIndex(): void
     {
         $childrenIndex = 'myChildren';
         $this->repo->setChildrenIndex($childrenIndex);
@@ -324,14 +312,14 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    public function createCategory()
+    public function createCategory(): Category
     {
         $class = self::CATEGORY;
 
         return new $class();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

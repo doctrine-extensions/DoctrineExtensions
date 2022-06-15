@@ -51,26 +51,17 @@ class Book
         $this->tags = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -86,12 +77,12 @@ class Book
     /**
      * @param Collection<int, Tag> $tags
      */
-    public function setTags(Collection $tags)
+    public function setTags(Collection $tags): void
     {
         $this->tags = $tags;
     }
 
-    public function addTag(Tag $tag)
+    public function addTag(Tag $tag): void
     {
         $this->tags->add($tag);
     }

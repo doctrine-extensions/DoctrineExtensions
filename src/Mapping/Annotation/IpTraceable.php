@@ -9,22 +9,44 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * IpTraceable annotation for IpTraceable behavioral extension
  *
  * @Annotation
+ * @NamedArgumentConstructor
  * @Target("PROPERTY")
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  */
-final class IpTraceable extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class IpTraceable implements GedmoAnnotation
 {
     /** @var string */
     public $on = 'update';
-    /** @var string|array */
+    /** @var string|string[]|null */
     public $field;
     /** @var mixed */
     public $value;
+
+    /**
+     * @param string|string[]|null $field
+     * @param mixed                $value
+     */
+    public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
+    {
+        if ([] !== $data) {
+            @trigger_error(sprintf(
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->on = $data['on'] ?? $on;
+        $this->field = $data['field'] ?? $field;
+        $this->value = $data['value'] ?? $value;
+    }
 }

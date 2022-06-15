@@ -38,9 +38,6 @@ class Xml extends BaseXml
         'citext',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
@@ -66,8 +63,8 @@ class Xml extends BaseXml
     /**
      * Checks if $field type is valid as Sluggable field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */

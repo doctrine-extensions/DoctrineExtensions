@@ -22,6 +22,9 @@ final class ExtensionODMTest extends BaseTestCaseMongoODM
 {
     public const USER = User::class;
 
+    /**
+     * @var EncoderListener
+     */
     private $encoderListener;
 
     protected function setUp(): void
@@ -35,7 +38,7 @@ final class ExtensionODMTest extends BaseTestCaseMongoODM
         $this->getMockDocumentManager($evm);
     }
 
-    public function testExtensionMetadata()
+    public function testExtensionMetadata(): void
     {
         $meta = $this->dm->getClassMetadata(self::USER);
         $config = $this->encoderListener->getConfiguration($this->dm, self::USER);
@@ -53,7 +56,7 @@ final class ExtensionODMTest extends BaseTestCaseMongoODM
         static::assertEmpty($options['secret']);
     }
 
-    public function testGeneratedValues()
+    public function testGeneratedValues(): void
     {
         $user = new User();
         $user->setName('encode me');
@@ -65,7 +68,7 @@ final class ExtensionODMTest extends BaseTestCaseMongoODM
         static::assertSame('5ebe2294ecd0e0f08eab7690d2a6ee69', $user->getPassword());
     }
 
-    public function testEventAdapterUsed()
+    public function testEventAdapterUsed(): void
     {
         $mappedSubscriberClass = new \ReflectionClass(MappedEventSubscriber::class);
         $getEventAdapterMethod = $mappedSubscriberClass->getMethod('getEventAdapter');

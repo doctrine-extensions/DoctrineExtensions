@@ -34,14 +34,11 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    /**
-     * @test
-     */
-    public function shouldRemoveAndSynchronize()
+    public function testShouldRemoveAndSynchronize(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
@@ -109,7 +106,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         $dumpTime($start, 'moving took:');
     }*/
 
-    public function testTheTree()
+    public function testTheTree(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $node = $repo->findOneBy(['title' => 'Food']);
@@ -155,7 +152,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(8, $node->getRight());
     }
 
-    public function testSetParentToNull()
+    public function testSetParentToNull(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $node = $repo->findOneBy(['title' => 'Vegitables']);
@@ -172,7 +169,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(0, $node->getLevel());
     }
 
-    public function testTreeUpdateShiftToNextBranch()
+    public function testTreeUpdateShiftToNextBranch(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $sport = $repo->findOneBy(['title' => 'Sports']);
@@ -201,7 +198,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(11, $node->getRight());
     }
 
-    public function testTreeUpdateShiftToRoot()
+    public function testTreeUpdateShiftToRoot(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
@@ -231,7 +228,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(5, $node->getRight());
     }
 
-    public function testTreeUpdateShiftToOtherParent()
+    public function testTreeUpdateShiftToOtherParent(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
@@ -262,7 +259,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(8, $node->getRight());
     }
 
-    public function testTreeUpdateShiftToChildParent()
+    public function testTreeUpdateShiftToChildParent(): void
     {
         $this->expectException('UnexpectedValueException');
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -275,7 +272,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    public function testTwoUpdateOperations()
+    public function testTwoUpdateOperations(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -313,7 +310,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(3, $node->getRight());
     }
 
-    public function testRemoval()
+    public function testRemoval(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
@@ -331,7 +328,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
     /**
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function testTreeWithRootPointingAtAnotherTable()
+    public function testTreeWithRootPointingAtAnotherTable(): void
     {
         // depopulate, i don't want the other stuff in db
         /** @var NestedTreeRepository $repo */
@@ -496,7 +493,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

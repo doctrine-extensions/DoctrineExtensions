@@ -47,9 +47,6 @@ class EntityWrapper extends AbstractWrapper
         $this->meta = $em->getClassMetadata(get_class($this->object));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPropertyValue($property)
     {
         $this->initialize();
@@ -57,9 +54,6 @@ class EntityWrapper extends AbstractWrapper
         return $this->meta->getReflectionProperty($property)->getValue($this->object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPropertyValue($property, $value)
     {
         $this->initialize();
@@ -68,25 +62,16 @@ class EntityWrapper extends AbstractWrapper
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasValidIdentifier()
     {
         return null !== $this->getIdentifier();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootObjectName()
     {
         return $this->meta->rootEntityName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIdentifier($single = true)
     {
         if (null === $this->identifier) {
@@ -119,9 +104,6 @@ class EntityWrapper extends AbstractWrapper
         return $this->identifier;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isEmbeddedAssociation($field)
     {
         return false;
@@ -130,6 +112,8 @@ class EntityWrapper extends AbstractWrapper
     /**
      * Initialize the entity if it is proxy
      * required when is detached or not initialized
+     *
+     * @return void
      */
     protected function initialize()
     {

@@ -25,6 +25,9 @@ final class ChangeTest extends BaseTestCaseORM
 {
     public const FIXTURE = TitledArticle::class;
 
+    /**
+     * @var BlameableListener
+     */
     private $listener;
 
     protected function setUp(): void
@@ -36,10 +39,10 @@ final class ChangeTest extends BaseTestCaseORM
         $this->listener->setUserValue('testuser');
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testChange()
+    public function testChange(): void
     {
         $test = new TitledArticle();
         $test->setTitle('Test');
@@ -54,7 +57,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed
         static::assertSame('testuser', $test->getChtitle());
 
         $this->listener->setUserValue('otheruser');
@@ -64,11 +67,11 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Not Changed
+        // Not Changed
         static::assertSame('testuser', $test->getChtitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
@@ -30,6 +30,9 @@ final class Issue138Test extends BaseTestCaseORM
     public const TRANSLATION = Translation::class;
     public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -46,7 +49,7 @@ final class Issue138Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIssue138()
+    public function testIssue138(): void
     {
         $this->populate();
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -56,13 +59,13 @@ final class Issue138Test extends BaseTestCaseORM
 
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
-        //die($q->getSQL());
+        // die($q->getSQL());
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
         static::assertSame('Food', $result[0]['title']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

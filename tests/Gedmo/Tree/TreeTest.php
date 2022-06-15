@@ -35,10 +35,10 @@ final class TreeTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testTheTree()
+    public function testTheTree(): void
     {
         $meta = $this->em->getClassMetadata(self::CATEGORY);
 
@@ -168,7 +168,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->persist($yetAnotherChild);
         $yetAnotherChild->setTitle('yetanotherchild');
         $yetAnotherChild->setParent($root);
-        //$this->em->persist($yetAnotherChild);
+        // $this->em->persist($yetAnotherChild);
         $this->em->flush();
         $this->em->clear();
 
@@ -181,7 +181,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(1, $level);
     }
 
-    public function testIssue33()
+    public function testIssue33(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -229,7 +229,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(5, $right);
     }
 
-    public function testIssue273()
+    public function testIssue273(): void
     {
         $meta = $this->em->getClassMetadata(self::CATEGORY_UUID);
 
@@ -363,7 +363,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->persist($yetAnotherChild);
         $yetAnotherChild->setTitle('yetanotherchild');
         $yetAnotherChild->setParent($root);
-        //$this->em->persist($yetAnotherChild);
+        // $this->em->persist($yetAnotherChild);
         $this->em->flush();
         $this->em->clear();
 
@@ -376,7 +376,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(1, $level);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

@@ -12,47 +12,62 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
+     * @var int|null
+     *
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
      */
+    #[Gedmo\SortablePosition]
+    #[ODM\Field(type: MongoDBType::INT)]
     protected $position;
-    /** @ODM\Id */
+
+    /**
+     * @var string|null
+     *
+     * @ODM\Id
+     */
+    #[ODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $title;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setPosition($position)
+    public function setPosition(?int $position): void
     {
         $this->position = $position;
     }
 
-    public function getPosition()
+    public function getPosition(): ?int
     {
         return $this->position;
     }

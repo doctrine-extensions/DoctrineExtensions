@@ -12,6 +12,7 @@ namespace Gedmo\Sortable;
 use Doctrine\Common\Comparable;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
@@ -28,8 +29,15 @@ use ProxyManager\Proxy\GhostObjectInterface;
  */
 class SortableListener extends MappedEventSubscriber
 {
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private $relocations = [];
+
+    /** @var bool */
     private $persistenceNeeded = false;
+
+    /** @var array<string, int> */
     private $maxPositions = [];
 
     /**
@@ -52,6 +60,10 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $args
+     *
+     * @return void
      */
     public function loadClassMetadata(EventArgs $args)
     {
@@ -68,6 +80,8 @@ class SortableListener extends MappedEventSubscriber
      *
      * The synchronization of the objects in memory is done in postFlush. This
      * ensures that the positions have been successfully persisted to database.
+     *
+     * @return void
      */
     public function onFlush(EventArgs $args)
     {
@@ -104,6 +118,8 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Update maxPositions as needed
+     *
+     * @return void
      */
     public function prePersist(EventArgs $args)
     {
@@ -126,6 +142,9 @@ class SortableListener extends MappedEventSubscriber
         }
     }
 
+    /**
+     * @return void
+     */
     public function postPersist(EventArgs $args)
     {
         // persist position updates here, so that the update queries
@@ -133,6 +152,9 @@ class SortableListener extends MappedEventSubscriber
         $this->persistRelocations($this->getEventAdapter($args));
     }
 
+    /**
+     * @return void
+     */
     public function preUpdate(EventArgs $args)
     {
         // persist position updates here, so that the update queries
@@ -140,6 +162,9 @@ class SortableListener extends MappedEventSubscriber
         $this->persistRelocations($this->getEventAdapter($args));
     }
 
+    /**
+     * @return void
+     */
     public function postRemove(EventArgs $args)
     {
         // persist position updates here, so that the update queries
@@ -149,6 +174,8 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Sync objects in memory
+     *
+     * @return void
      */
     public function postFlush(EventArgs $args)
     {
@@ -250,6 +277,8 @@ class SortableListener extends MappedEventSubscriber
      *
      * @param ClassMetadata $meta
      * @param object        $object
+     *
+     * @return void
      */
     protected function processInsert(SortableAdapter $ea, array $config, $meta, $object)
     {
@@ -315,6 +344,8 @@ class SortableListener extends MappedEventSubscriber
      *
      * @param ClassMetadata $meta
      * @param object        $object
+     *
+     * @return void
      */
     protected function processUpdate(SortableAdapter $ea, array $config, $meta, $object)
     {
@@ -456,6 +487,8 @@ class SortableListener extends MappedEventSubscriber
      *
      * @param ClassMetadata $meta
      * @param object        $object
+     *
+     * @return void
      */
     protected function processDeletion(SortableAdapter $ea, array $config, $meta, $object)
     {
@@ -478,6 +511,8 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Persists relocations to database.
+     *
+     * @return void
      */
     protected function persistRelocations(SortableAdapter $ea)
     {
@@ -499,6 +534,11 @@ class SortableListener extends MappedEventSubscriber
         $this->persistenceNeeded = false;
     }
 
+    /**
+     * @param array $groups
+     *
+     * @return string
+     */
     protected function getHash($groups, array $config)
     {
         $data = $config['useObjectClass'];
@@ -514,6 +554,13 @@ class SortableListener extends MappedEventSubscriber
         return md5($data);
     }
 
+    /**
+     * @param ClassMetadata $meta
+     * @param array         $config
+     * @param object        $object
+     *
+     * @return int
+     */
     protected function getMaxPosition(SortableAdapter $ea, $meta, $config, $object, array $groups = [])
     {
         $em = $ea->getObjectManager();
@@ -560,6 +607,8 @@ class SortableListener extends MappedEventSubscriber
      * @param int    $stop    Exclusive index to stop relocation at
      * @param int    $delta   The delta to add to relocated nodes
      * @param array  $exclude Objects to be excluded from relocation
+     *
+     * @return void
      */
     protected function addRelocation($hash, $class, $groups, $start, $stop, $delta, array $exclude = [])
     {
@@ -607,9 +656,6 @@ class SortableListener extends MappedEventSubscriber
         return $groups;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

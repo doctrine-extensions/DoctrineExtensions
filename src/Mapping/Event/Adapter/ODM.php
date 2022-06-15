@@ -12,6 +12,7 @@ namespace Gedmo\Mapping\Event\Adapter;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -33,11 +34,13 @@ class ODM implements AdapterInterface
      */
     private $dm;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __call($method, $args)
     {
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
         if (null === $this->args) {
             throw new RuntimeException('Event args must be set before calling its methods');
         }
@@ -46,32 +49,23 @@ class ODM implements AdapterInterface
         return call_user_func_array([$this->args, $method], $args);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setEventArgs(EventArgs $args)
     {
         $this->args = $args;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainObjectName()
     {
         return 'Document';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getManagerName()
     {
         return 'ODM';
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata $meta
      */
     public function getRootObjectClass($meta)
     {
@@ -80,6 +74,8 @@ class ODM implements AdapterInterface
 
     /**
      * Set the document manager
+     *
+     * @return void
      */
     public function setDocumentManager(DocumentManager $dm)
     {
@@ -95,44 +91,42 @@ class ODM implements AdapterInterface
             return $this->dm;
         }
 
-        return $this->__call('getDocumentManager', []);
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getDocumentManager();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function getObject(): object
+    {
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getDocument();
+    }
+
     public function getObjectState($uow, $object)
     {
         return $uow->getDocumentState($object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getObjectChangeSet($uow, $object)
     {
         return $uow->getDocumentChangeSet($object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSingleIdentifierFieldName($meta)
     {
         return $meta->getIdentifier()[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectUpdates($uow)
     {
         $updates = $uow->getScheduledDocumentUpdates();
@@ -141,33 +135,21 @@ class ODM implements AdapterInterface
         return array_merge($updates, $upserts);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectInsertions($uow)
     {
         return $uow->getScheduledDocumentInsertions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledDocumentDeletions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
         $uow->setOriginalDocumentProperty(spl_object_hash($object), $property, $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function clearObjectChangeSet($uow, $object)
     {
         $uow->clearDocumentChangeSet(spl_object_hash($object));

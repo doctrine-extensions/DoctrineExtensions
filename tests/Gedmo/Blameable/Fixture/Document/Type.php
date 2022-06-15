@@ -12,46 +12,59 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Blameable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
 /**
  * @ODM\Document(collection="types")
  */
+#[ODM\Document(collection: 'types')]
 class Type
 {
-    /** @ODM\Id */
+    /**
+     * @ODM\Id
+     *
+     * @var string|null
+     */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
+     *
+     * @var string|null
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $title;
 
     /**
      * @ODM\Field(type="string")
+     *
+     * @var string|null
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     private $identifier;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getIdentifier()
+    public function getIdentifier(): ?string
     {
         return $this->identifier;
     }
 
-    public function setIdentifier($identifier)
+    public function setIdentifier(?string $identifier): void
     {
         $this->identifier = $identifier;
     }

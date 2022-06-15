@@ -27,7 +27,14 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
 {
     public const ARTICLE = Article::class;
 
+    /**
+     * @var array
+     */
     protected $config;
+
+    /**
+     * @var TreeListenerMock
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -39,16 +46,13 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
 
         $meta = $this->dm->getClassMetadata(self::ARTICLE);
         $this->config = $this->listener->getConfiguration($this->dm, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function modifyingANodeWhileItsTreeIsLockedShouldThrowAnException()
+    public function testModifyingANodeWhileItsTreeIsLockedShouldThrowAnException(): void
     {
         // By default, TreeListenerMock disables the release of the locks
         // for testing purposes
@@ -71,10 +75,7 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $this->dm->flush();
     }
 
-    /**
-     * @test
-     */
-    public function modifyingANodeWhileItsTreeIsNotLockedShouldNotThrowException()
+    public function testModifyingANodeWhileItsTreeIsNotLockedShouldNotThrowException(): void
     {
         static::markTestSkipped('the locking test is failing after removal of scheduleExtraUpdate');
         $article = $this->createArticle();
@@ -112,7 +113,7 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $this->dm->flush();
     }
 
-    public function createArticle()
+    public function createArticle(): Article
     {
         $class = self::ARTICLE;
 

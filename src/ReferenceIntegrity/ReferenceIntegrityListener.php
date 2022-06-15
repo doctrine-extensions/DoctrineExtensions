@@ -10,6 +10,7 @@
 namespace Gedmo\ReferenceIntegrity;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -35,6 +36,8 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata for the Document
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */
@@ -135,9 +138,6 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

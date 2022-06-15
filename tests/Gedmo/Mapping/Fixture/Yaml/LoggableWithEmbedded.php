@@ -13,9 +13,18 @@ namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class LoggableWithEmbedded
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var Embedded
+     */
     private $embedded;
 }

@@ -42,6 +42,13 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     private $childrenField;
 
+    /**
+     * @param object $object
+     * @param string $property
+     * @param mixed  $value
+     *
+     * @return void
+     */
     public function setPropertyValue($object, $property, $value)
     {
         $meta = $this->_em->getClassMetadata(get_class($object));
@@ -51,7 +58,7 @@ class TreeObjectHydrator extends ObjectHydrator
     /**
      * We hook into the `hydrateAllData` to map the children collection of the entity
      *
-     * {@inheritdoc}
+     * @return mixed[]
      */
     protected function hydrateAllData()
     {
@@ -108,6 +115,8 @@ class TreeObjectHydrator extends ObjectHydrator
     /**
      * @param array $nodes
      * @param array $childrenHashmap
+     *
+     * @return void
      */
     protected function populateChildrenArray($nodes, $childrenHashmap)
     {
@@ -185,6 +194,9 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
+     * @param string $entityClass
+     * @phpstan-param class-string $entityClass
+     *
      * @return string
      */
     protected function getIdField($entityClass)
@@ -207,6 +219,9 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
+     * @param string $entityClass
+     * @phpstan-param class-string $entityClass
+     *
      * @return string
      */
     protected function getChildrenField($entityClass)
@@ -261,6 +276,12 @@ class TreeObjectHydrator extends ObjectHydrator
         return $this->_em->getClassMetadata(get_class($firstMappedEntity))->rootEntityName;
     }
 
+    /**
+     * @param object $object
+     * @param string $property
+     *
+     * @return mixed
+     */
     protected function getPropertyValue($object, $property)
     {
         $meta = $this->_em->getClassMetadata(get_class($object));

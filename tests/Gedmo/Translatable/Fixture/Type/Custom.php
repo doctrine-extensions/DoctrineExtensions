@@ -18,16 +18,25 @@ class Custom extends Type
 {
     public const NAME = 'custom';
 
+    /**
+     * @return string
+     */
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         return $platform->getClobTypeDeclarationSQL($fieldDeclaration);
     }
 
+    /**
+     * @return mixed
+     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         return serialize($value);
     }
 
+    /**
+     * @return mixed
+     */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if (null === $value) {
@@ -37,13 +46,13 @@ class Custom extends Type
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
         $val = unserialize($value);
         if (false === $val && 'b:0;' !== $value) {
-            new \Exception('Conversion failed');
+            throw new \Exception('Conversion failed');
         }
 
         return $val;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }

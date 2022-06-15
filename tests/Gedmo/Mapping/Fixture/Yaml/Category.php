@@ -41,6 +41,9 @@ class Category extends BaseCategory
      */
     private $parent;
 
+    /**
+     * @var \DateTime
+     */
     private $changed;
 
     public function __construct()
@@ -51,31 +54,22 @@ class Category extends BaseCategory
     /**
      * @return int $id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string $title
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $slug
-     */
-    public function setSlug($slug)
+    public function setSlug(string $slug): void
     {
         $this->slug = $slug;
     }
@@ -83,7 +77,7 @@ class Category extends BaseCategory
     /**
      * @return string $slug
      */
-    public function getSlug()
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -91,7 +85,7 @@ class Category extends BaseCategory
     /**
      * @param Category $children
      */
-    public function addChildren(self $children)
+    public function addChildren(self $children): void
     {
         $this->children[] = $children;
     }
@@ -104,10 +98,7 @@ class Category extends BaseCategory
         return $this->children;
     }
 
-    /**
-     * @param Category $parent
-     */
-    public function setParent($parent)
+    public function setParent(self $parent): void
     {
         $this->parent = $parent;
     }
@@ -115,7 +106,7 @@ class Category extends BaseCategory
     /**
      * @return Category $parent
      */
-    public function getParent()
+    public function getParent(): self
     {
         return $this->parent;
     }

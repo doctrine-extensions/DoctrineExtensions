@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Translatable\Fixture;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -23,6 +24,8 @@ use Gedmo\Translatable\Translatable;
 class Article implements Translatable
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,6 +36,8 @@ class Article implements Translatable
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
@@ -41,6 +46,8 @@ class Article implements Translatable
     private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="content", type="text", nullable=true)
      */
@@ -49,6 +56,8 @@ class Article implements Translatable
     private $content;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\Translatable(fallback=false)
      * @ORM\Column(name="views", type="integer", nullable=true)
      */
@@ -57,6 +66,8 @@ class Article implements Translatable
     private $views;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="author", type="string", nullable=true)
      */
@@ -65,6 +76,8 @@ class Article implements Translatable
     private $author;
 
     /**
+     * @var string|null
+     *
      * Used locale to override Translation listener`s locale
      *
      * @Gedmo\Locale
@@ -73,68 +86,73 @@ class Article implements Translatable
     private $locale;
 
     /**
+     * @var Collection<int, Comment>
+     *
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private $comments;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addComment(Comment $comment)
+    public function addComment(Comment $comment): void
     {
         $comment->setArticle($this);
         $this->comments[] = $comment;
     }
 
-    public function getComments()
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setContent($content)
+    public function setContent(?string $content): void
     {
         $this->content = $content;
     }
 
-    public function getContent()
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale(?string $locale): void
     {
         $this->locale = $locale;
     }
 
-    public function setViews($views)
+    public function setViews(?int $views): void
     {
         $this->views = $views;
     }
 
-    public function getViews()
+    public function getViews(): ?int
     {
         return $this->views;
     }
 
-    public function setAuthor($author)
+    public function setAuthor(?string $author): void
     {
         $this->author = $author;
     }
 
-    public function getAuthor()
+    public function getAuthor(): ?string
     {
         return $this->author;
     }

@@ -26,6 +26,7 @@ trait BlameableDocument
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\Blameable(on: 'create')]
     protected $createdBy;
 
     /**
@@ -34,6 +35,7 @@ trait BlameableDocument
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\Blameable(on: 'update')]
     protected $updatedBy;
 
     /**

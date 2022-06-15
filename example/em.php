@@ -79,27 +79,32 @@ $eventManager = new Doctrine\Common\EventManager();
 // Sluggable extension
 $sluggableListener = new Gedmo\Sluggable\SluggableListener();
 $sluggableListener->setAnnotationReader($annotationReader);
+$sluggableListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($sluggableListener);
 
 // Tree extension
 $treeListener = new Gedmo\Tree\TreeListener();
 $treeListener->setAnnotationReader($annotationReader);
+$treeListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($treeListener);
 
 // Loggable extension, not used in example
-//$loggableListener = new Gedmo\Loggable\LoggableListener;
-//$loggableListener->setAnnotationReader($annotationReader);
-//$loggableListener->setUsername('admin');
-//$eventManager->addEventSubscriber($loggableListener);
+// $loggableListener = new Gedmo\Loggable\LoggableListener;
+// $loggableListener->setAnnotationReader($annotationReader);
+// $loggableListener->setCacheItemPool($cache);
+// $loggableListener->setUsername('admin');
+// $eventManager->addEventSubscriber($loggableListener);
 
 // Timestampable extension
 $timestampableListener = new Gedmo\Timestampable\TimestampableListener();
 $timestampableListener->setAnnotationReader($annotationReader);
+$timestampableListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($timestampableListener);
 
 // Blameable extension
 $blameableListener = new \Gedmo\Blameable\BlameableListener();
 $blameableListener->setAnnotationReader($annotationReader);
+$blameableListener->setCacheItemPool($cache);
 $blameableListener->setUserValue('MyUsername'); // determine from your environment
 $eventManager->addEventSubscriber($blameableListener);
 
@@ -111,12 +116,14 @@ $translatableListener = new Gedmo\Translatable\TranslatableListener();
 $translatableListener->setTranslatableLocale('en');
 $translatableListener->setDefaultLocale('en');
 $translatableListener->setAnnotationReader($annotationReader);
+$translatableListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($translatableListener);
 
 // Sortable extension, not used in example
-//$sortableListener = new Gedmo\Sortable\SortableListener;
-//$sortableListener->setAnnotationReader($annotationReader);
-//$eventManager->addEventSubscriber($sortableListener);
+// $sortableListener = new Gedmo\Sortable\SortableListener;
+// $sortableListener->setAnnotationReader($annotationReader);
+// $sortableListener->setCacheItemPool($cache);
+// $eventManager->addEventSubscriber($sortableListener);
 
 // Now we will build our ORM configuration.
 $config = new Doctrine\ORM\Configuration();

@@ -19,31 +19,37 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class File
 {
     /**
-     * @Gedmo\Locale
+     * @var string|null
      */
+    #[Gedmo\Locale]
     public $locale;
+
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
-     * @Gedmo\Translatable
+     * @var string|null
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    #[Gedmo\Translatable]
     private $title;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

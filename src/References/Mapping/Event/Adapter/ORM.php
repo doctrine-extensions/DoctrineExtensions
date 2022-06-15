@@ -27,9 +27,6 @@ use ProxyManager\Proxy\GhostObjectInterface;
  */
 final class ORM extends BaseAdapterORM implements ReferencesAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getIdentifier($om, $object, $single = true)
     {
         if ($om instanceof EntityManagerInterface) {
@@ -66,9 +63,6 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSingleReference($om, $class, $identifier)
     {
         $this->throwIfNotDocumentManager($om);
@@ -83,9 +77,6 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
         return $om->getReference($class, $identifier);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function extractIdentifier($om, $object, $single = true)
     {
         if ($object instanceof ORMProxy) {
@@ -111,6 +102,8 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
 
     /**
      * Override so we don't get an exception. We want to allow this.
+     *
+     * @param MongoDocumentManager|PhpcrDocumentManager $dm
      */
     private function throwIfNotDocumentManager($dm): void
     {

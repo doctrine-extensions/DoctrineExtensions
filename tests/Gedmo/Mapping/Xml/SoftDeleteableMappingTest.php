@@ -55,13 +55,13 @@ final class SoftDeleteableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->softDeleteable);
 
-        $this->em = $this->getMockSqliteEntityManager([
+        $this->em = $this->getDefaultMockSqliteEntityManager([
             SoftDeleteable::class,
             \Gedmo\Tests\Mapping\Fixture\SoftDeleteable::class,
         ], $chain);
     }
 
-    public function testMetadata()
+    public function testMetadata(): void
     {
         $meta = $this->em->getClassMetadata(SoftDeleteable::class);
         $config = $this->softDeleteable->getConfiguration($this->em, $meta->getName());

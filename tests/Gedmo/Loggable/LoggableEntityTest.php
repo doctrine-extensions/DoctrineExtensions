@@ -46,10 +46,7 @@ final class LoggableEntityTest extends BaseTestCaseORM
         $this->em = $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleClonedEntity(): void
+    public function testShouldHandleClonedEntity(): void
     {
         $art0 = new Article();
         $art0->setTitle('Title');

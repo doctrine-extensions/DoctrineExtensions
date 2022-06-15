@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
@@ -34,6 +34,9 @@ final class Issue109Test extends BaseTestCaseORM
 
     public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -50,7 +53,7 @@ final class Issue109Test extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testIssue109()
+    public function testIssue109(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -73,7 +76,7 @@ final class Issue109Test extends BaseTestCaseORM
         static::assertCount(3, $result);
     }
 
-    public function populate()
+    public function populate(): void
     {
         $text0 = new Article();
         $text0->setTitle('text0');
@@ -104,7 +107,7 @@ final class Issue109Test extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

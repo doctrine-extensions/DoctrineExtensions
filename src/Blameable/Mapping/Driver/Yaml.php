@@ -9,6 +9,7 @@
 
 namespace Gedmo\Blameable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
@@ -20,6 +21,8 @@ use Gedmo\Mapping\Driver\File;
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
  */
 class Yaml extends File implements Driver
 {
@@ -41,9 +44,6 @@ class Yaml extends File implements Driver
         'int',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
         $mapping = $this->_getMapping($meta->getName());
@@ -111,9 +111,6 @@ class Yaml extends File implements Driver
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
@@ -122,8 +119,8 @@ class Yaml extends File implements Driver
     /**
      * Checks if $field type is valid
      *
-     * @param \Doctrine\ODM\MongoDB\Mapping\ClassMetadata $meta
-     * @param string                                      $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */

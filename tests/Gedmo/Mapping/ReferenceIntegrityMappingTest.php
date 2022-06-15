@@ -52,7 +52,7 @@ final class ReferenceIntegrityMappingTest extends BaseTestCaseOM
         $this->dm = $this->getMockDocumentManager('gedmo_extensions_test', $yamlDriver);
     }
 
-    public function testYamlMapping()
+    public function testYamlMapping(): void
     {
         $referencerMeta = $this->dm->getClassMetadata(Referencer::class);
         $referenceeMeta = $this->dm->getClassMetadata(Referenced::class);

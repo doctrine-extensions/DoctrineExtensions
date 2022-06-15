@@ -15,6 +15,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Sortable\SortableListener;
 use Gedmo\Tests\Sortable\Fixture\Category;
 use Gedmo\Tests\Sortable\Fixture\Item;
+use Gedmo\Tests\Sortable\Fixture\ItemWithDateColumn;
 use Gedmo\Tests\Sortable\Fixture\Transport\Bus;
 use Gedmo\Tests\Sortable\Fixture\Transport\Car;
 use Gedmo\Tests\Sortable\Fixture\Transport\Engine;
@@ -36,6 +37,7 @@ final class SortableGroupTest extends BaseTestCaseORM
     public const RESERVATION = Reservation::class;
     public const ITEM = Item::class;
     public const CATEGORY = Category::class;
+    public const ITEM_WITH_DATE_COLUMN = ItemWithDateColumn::class;
 
     public const SEATS = 3;
 
@@ -50,20 +52,10 @@ final class SortableGroupTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SortableListener());
 
-        $this->getMockSqliteEntityManager($evm);
-        /*$this->getMockCustomEntityManager(array(
-            'driver' => 'pdo_mysql',
-            'dbname' => 'test',
-            'host' => '127.0.0.1',
-            'user' => 'root',
-            'password' => 'nimda'
-        ), $evm);*/
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToRemove()
+    public function testShouldBeAbleToRemove(): void
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
@@ -88,10 +80,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * fix issue #502
      */
-    public function shouldBeAbleToChangeGroup()
+    public function testShouldBeAbleToChangeGroup(): void
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
@@ -100,11 +91,11 @@ final class SortableGroupTest extends BaseTestCaseORM
         $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
         static::assertSame(0, $audi80->getSortByEngine());
 
-        //position 1
+        // position 1
         $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
         static::assertSame(1, $audi80s->getSortByEngine());
 
-        //position 2
+        // position 2
         $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
         static::assertSame(2, $icarus->getSortByEngine());
 
@@ -129,10 +120,9 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * issue #873
      */
-    public function shouldBeAbleToChangeGroupWhenMultiGroups()
+    public function testShouldBeAbleToChangeGroupWhenMultiGroups(): void
     {
         $this->populate();
 
@@ -195,14 +185,12 @@ final class SortableGroupTest extends BaseTestCaseORM
     }
 
     /**
-     * @test
      * @group failing
      */
-    public function shouldBeAbleToChangeGroupAndPosition()
+    public function testShouldBeAbleToChangeGroupAndPosition(): void
     {
         $this->populate();
 
-        $this->startQueryLog();
         $repo = $this->em->getRepository(self::ITEM);
         $repoCategory = $this->em->getRepository(self::CATEGORY);
 
@@ -231,7 +219,6 @@ final class SortableGroupTest extends BaseTestCaseORM
         $item->setPosition(4);
         $this->em->persist($item);
         $this->em->flush();
-        $this->stopQueryLog(false, true);
 
         unset($vehicles, $accessories);
 
@@ -254,7 +241,35 @@ final class SortableGroupTest extends BaseTestCaseORM
         static::assertSame(30, $position);
     }
 
-    protected function getUsedEntityFixtures()
+    public function testChangePositionWithDateColumn(): void
+    {
+        for ($i = 0; $i < 6; ++$i) {
+            $object = new ItemWithDateColumn();
+            $today = new \DateTime('2022-05-22');
+            $object->setDate($today);
+            $object->setPosition($i);
+            $this->em->persist($object);
+        }
+        $this->em->flush();
+
+        $repo = $this->em->getRepository(self::ITEM_WITH_DATE_COLUMN);
+
+        /** @var ItemWithDateColumn $testItem */
+        $testItem = $repo->findOneBy(['id' => 5]);
+        $testItem->setPosition(1);
+
+        $this->em->persist($testItem);
+        $this->em->flush();
+
+        /** @var ItemWithDateColumn $freshItem */
+        $freshItem = $repo->findOneBy(['id' => 5]);
+        /** @var ItemWithDateColumn $freshPreviousItem */
+        $freshPreviousItem = $repo->findOneBy(['id' => 2]);
+        static::assertSame(1, $freshItem->getPosition());
+        static::assertSame(2, $freshPreviousItem->getPosition());
+    }
+
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::VEHICLE,
@@ -264,6 +279,7 @@ final class SortableGroupTest extends BaseTestCaseORM
             self::RESERVATION,
             self::ITEM,
             self::CATEGORY,
+            self::ITEM_WITH_DATE_COLUMN,
         ];
     }
 

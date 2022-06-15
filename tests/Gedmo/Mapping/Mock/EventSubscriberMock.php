@@ -11,21 +11,23 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Mock;
 
+use Doctrine\Common\EventArgs;
+use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
 class EventSubscriberMock extends MappedEventSubscriber
 {
-    public function getAdapter($args)
+    public function getAdapter(EventArgs $args): AdapterInterface
     {
         return $this->getEventAdapter($args);
     }
 
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [];
     }
 
-    protected function getNamespace()
+    protected function getNamespace(): string
     {
         return 'something';
     }

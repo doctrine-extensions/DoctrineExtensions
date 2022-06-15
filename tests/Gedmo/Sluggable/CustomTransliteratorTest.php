@@ -25,12 +25,12 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
 
-    public function testStandardTransliteratorFailsOnChineseCharacters()
+    public function testStandardTransliteratorFailsOnChineseCharacters(): void
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
 
         $repo = $this->em->getRepository(self::ARTICLE);
@@ -39,12 +39,12 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
         static::assertSame('bei-jing-zh', $chinese->getSlug());
     }
 
-    public function testCanUseCustomTransliterator()
+    public function testCanUseCustomTransliterator(): void
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new MySluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
 
         $repo = $this->em->getRepository(self::ARTICLE);
@@ -53,7 +53,7 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
         static::assertSame('bei-jing', $chinese->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,
@@ -75,13 +75,15 @@ class MySluggableListener extends SluggableListener
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->setTransliterator([Transliterator::class, 'transliterate']);
     }
 }
 
 class Transliterator
 {
-    public static function transliterate($text, $separator, $object)
+    public static function transliterate(string $text, string $separator, object $object): string
     {
         return 'Bei Jing';
     }

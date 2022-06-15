@@ -20,6 +20,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Sluggable
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -27,16 +29,22 @@ class Sluggable
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="code", type="string", length=16)
      */
     private $code;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(handlers={
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
      *          @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
@@ -53,41 +61,45 @@ class Sluggable
     private $slug;
 
     /**
+     * @var Sluggable|null
+     *
      * @ORM\ManyToOne(targetEntity="Sluggable")
      */
     private $parent;
 
     /**
+     * @var User|null
+     *
      * @ORM\ManyToOne(targetEntity="User")
      */
     private $user;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setCode($code)
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }
 
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

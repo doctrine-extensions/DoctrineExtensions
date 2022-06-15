@@ -20,9 +20,6 @@ namespace Gedmo\Uploadable\FilenameGenerator;
  */
 class FilenameGeneratorAlphanumeric implements FilenameGeneratorInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function generate($filename, $extension, $object = null)
     {
         return preg_replace('/[^a-z0-9]+/', '-', strtolower($filename)).$extension;

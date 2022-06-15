@@ -16,7 +16,31 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(
+ *         indexes={@ORM\Index(name="closure_category_without_level_depth_idx", columns={"depth"})},
+ *         uniqueConstraints={@ORM\UniqueConstraint(name="closure_category_without_level_unique_idx", columns={
+ *             "ancestor", "descendant"
+ *         })}
+ * )
  */
+#[ORM\Entity]
+#[ORM\UniqueConstraint(name: 'closure_category_without_level_unique_idx', columns: ['ancestor', 'descendant'])]
+#[ORM\Index(name: 'closure_category_without_level_depth_idx', columns: ['depth'])]
 class CategoryWithoutLevelClosure extends AbstractClosure
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel")
+     * @ORM\JoinColumn(name="ancestor", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     */
+    #[ORM\ManyToOne(targetEntity: CategoryWithoutLevel::class)]
+    #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    protected $ancestor;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel")
+     * @ORM\JoinColumn(name="descendant", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     */
+    #[ORM\ManyToOne(targetEntity: CategoryWithoutLevel::class)]
+    #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    protected $descendant;
 }

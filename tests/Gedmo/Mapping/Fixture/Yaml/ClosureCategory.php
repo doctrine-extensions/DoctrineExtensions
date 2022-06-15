@@ -15,90 +15,75 @@ use Doctrine\Common\Collections\Collection;
 
 class ClosureCategory
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var Collection<int, ClosureCategory>
+     */
     private $children;
 
+    /**
+     * @var ClosureCategory
+     */
     private $parent;
 
+    /**
+     * @var int
+     */
     private $level;
 
-    /**
-     * Get id
-     *
-     * @return int $id
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set title
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * Get title
-     *
-     * @return string $title
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Add children
-     */
-    public function addChildren(Category $children)
+    public function addChildren(self $children): void
     {
         $this->children[] = $children;
     }
 
     /**
-     * Get children
-     *
-     * @return Collection $children
+     * @return Collection<int, self>
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    /**
-     * Set parent
-     *
-     * @param Category $parent
-     */
-    public function setParent($parent)
+    public function setParent(self $parent): void
     {
         $this->parent = $parent;
     }
 
-    /**
-     * Get parent
-     *
-     * @return Category $parent
-     */
-    public function getParent()
+    public function getParent(): self
     {
         return $this->parent;
     }
 
-    public function setLevel($level)
+    public function setLevel(int $level): void
     {
         $this->level = $level;
     }
 
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }

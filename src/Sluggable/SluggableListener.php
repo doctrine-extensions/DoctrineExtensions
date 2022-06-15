@@ -10,13 +10,13 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Handler\SlugHandlerInterface;
 use Gedmo\Sluggable\Handler\SlugHandlerWithUniqueCallbackInterface;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Sluggable\Util\Urlizer;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -113,6 +113,8 @@ class SluggableListener extends MappedEventSubscriber
      * to urlize slugs
      *
      * @param callable $callable
+     *
+     * @return void
      */
     public function setUrlizer($callable)
     {
@@ -147,6 +149,8 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param string $name
      * @param bool   $disable True by default
+     *
+     * @return void
      */
     public function addManagedFilter($name, $disable = true)
     {
@@ -157,6 +161,8 @@ class SluggableListener extends MappedEventSubscriber
      * Removes a filter from the managed set
      *
      * @param string $name
+     *
+     * @return void
      */
     public function removeManagedFilter($name)
     {
@@ -165,6 +171,8 @@ class SluggableListener extends MappedEventSubscriber
 
     /**
      * Mapps additional metadata
+     *
+     * @param LoadClassMetadataEventArgs $eventArgs
      *
      * @return void
      */
@@ -232,13 +240,8 @@ class SluggableListener extends MappedEventSubscriber
         }
 
         $this->manageFiltersAfterGeneration($om);
-
-        AbstractWrapper::clear();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

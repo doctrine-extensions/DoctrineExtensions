@@ -59,10 +59,7 @@ final class CustomDriverTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function shouldWork()
+    public function testShouldWork(): void
     {
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(
@@ -86,12 +83,12 @@ final class CustomDriverTest extends \PHPUnit\Framework\TestCase
 
 class CustomDriver implements MappingDriver
 {
-    public function getAllClassNames()
+    public function getAllClassNames(): array
     {
         return [Timestampable::class];
     }
 
-    public function loadMetadataForClass($className, ClassMetadata $metadata)
+    public function loadMetadataForClass($className, ClassMetadata $metadata): void
     {
         if ('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable' === $className) {
             $id = [];
@@ -117,7 +114,7 @@ class CustomDriver implements MappingDriver
         }
     }
 
-    public function isTransient($className)
+    public function isTransient($className): bool
     {
         return !in_array($className, $this->getAllClassNames(), true);
     }

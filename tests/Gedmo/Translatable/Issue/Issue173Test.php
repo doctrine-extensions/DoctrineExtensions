@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translatable;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -25,7 +25,7 @@ use Gedmo\Translatable\TranslatableListener;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @contributor Oscar Balladares liebegrube@gmail.com https://github.com/oscarballadares
+ * @author Oscar Balladares liebegrube@gmail.com https://github.com/oscarballadares
  */
 final class Issue173Test extends BaseTestCaseORM
 {
@@ -34,6 +34,9 @@ final class Issue173Test extends BaseTestCaseORM
     public const PRODUCT = Product::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -51,7 +54,7 @@ final class Issue173Test extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testIssue173()
+    public function testIssue173(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
@@ -62,7 +65,7 @@ final class Issue173Test extends BaseTestCaseORM
         static::assertCount(1, $categories, '$category3 has no associations');
     }
 
-    public function getCategoriesThatHasNoAssociations()
+    public function getCategoriesThatHasNoAssociations(): array
     {
         $query = $this->em->createQueryBuilder();
         $query2 = $this->em->createQueryBuilder();
@@ -71,13 +74,13 @@ final class Issue173Test extends BaseTestCaseORM
             ->select('c1')
             ->from(self::CATEGORY, 'c1')
             ->join('c1.products', 'p')
-            ->getDql()
+            ->getDQL()
         ;
         $dql2 = $query3
             ->select('c2')
             ->from(self::CATEGORY, 'c2')
             ->join('c2.articles', 'a')
-            ->getDql()
+            ->getDQL()
         ;
         $query
             ->select('c')
@@ -92,7 +95,7 @@ final class Issue173Test extends BaseTestCaseORM
         )->getResult();
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,
@@ -104,7 +107,7 @@ final class Issue173Test extends BaseTestCaseORM
 
     private function populate(): void
     {
-        //Categories
+        // Categories
         $category1 = new Category();
         $category1->setTitle('en category1');
 
@@ -119,12 +122,12 @@ final class Issue173Test extends BaseTestCaseORM
         $this->em->persist($category3);
         $this->em->flush();
 
-        //Articles
+        // Articles
         $article1 = new Article();
         $article1->setTitle('en article1');
         $article1->setCategory($category1);
 
-        //Products
+        // Products
         $product1 = new Product();
         $product1->setTitle('en product1');
         $product1->setCategory($category2);

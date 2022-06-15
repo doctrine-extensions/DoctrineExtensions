@@ -9,12 +9,16 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
+use Gedmo\Mapping\Driver\AttributeDriverInterface;
+
 /**
  * This is an attribute mapping driver for Loggable
  * behavioral extension. Used for extraction of extended
  * metadata from attributes specifically for Loggable
  * extension.
+ *
+ * @internal
  */
-final class Attribute extends Annotation
+final class Attribute extends Annotation implements AttributeDriverInterface
 {
 }

@@ -12,6 +12,7 @@ namespace Gedmo\Mapping\Event\Adapter;
 use Doctrine\Common\EventArgs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -33,11 +34,13 @@ class ORM implements AdapterInterface
      */
     private $em;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __call($method, $args)
     {
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
         if (null === $this->args) {
             throw new RuntimeException('Event args must be set before calling its methods');
         }
@@ -46,32 +49,23 @@ class ORM implements AdapterInterface
         return call_user_func_array([$this->args, $method], $args);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setEventArgs(EventArgs $args)
     {
         $this->args = $args;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainObjectName()
     {
         return 'Entity';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getManagerName()
     {
         return 'ORM';
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata $meta
      */
     public function getRootObjectClass($meta)
     {
@@ -80,6 +74,8 @@ class ORM implements AdapterInterface
 
     /**
      * Set the entity manager
+     *
+     * @return void
      */
     public function setEntityManager(EntityManagerInterface $em)
     {
@@ -95,76 +91,65 @@ class ORM implements AdapterInterface
             return $this->em;
         }
 
-        return $this->__call('getEntityManager', []);
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getEntityManager();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function getObject(): object
+    {
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getEntity();
+    }
+
     public function getObjectState($uow, $object)
     {
         return $uow->getEntityState($object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getObjectChangeSet($uow, $object)
     {
         return $uow->getEntityChangeSet($object);
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata $meta
      */
     public function getSingleIdentifierFieldName($meta)
     {
         return $meta->getSingleIdentifierFieldName();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleEntityChangeSet($meta, $object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectUpdates($uow)
     {
         return $uow->getScheduledEntityUpdates();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectInsertions($uow)
     {
         return $uow->getScheduledEntityInsertions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledEntityDeletions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
         $uow->setOriginalEntityProperty(spl_object_id($object), $property, $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function clearObjectChangeSet($uow, $object)
     {
         $uow->clearEntityChangeSet(spl_object_id($object));

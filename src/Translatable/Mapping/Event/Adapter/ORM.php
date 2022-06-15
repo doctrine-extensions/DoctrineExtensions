@@ -27,9 +27,6 @@ use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
  */
 final class ORM extends BaseAdapterORM implements TranslatableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function usesPersonalTranslation($translationClassName)
     {
         return $this
@@ -40,17 +37,11 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDefaultTranslationClass()
     {
         return Translation::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadTranslations($object, $translationClass, $locale, $objectClass)
     {
         $em = $this->getObjectManager();
@@ -108,9 +99,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)
     {
         $em = $this->getObjectManager();
@@ -172,9 +160,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)
     {
         $qb = $this
@@ -197,9 +182,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function insertTranslationRecord($translation)
     {
         $em = $this->getObjectManager();
@@ -218,9 +200,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTranslationValue($object, $field, $value = false)
     {
         $em = $this->getObjectManager();
@@ -234,9 +213,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return $type->convertToDatabaseValue($value, $em->getConnection()->getDatabasePlatform());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setTranslationValue($object, $field, $value)
     {
         $em = $this->getObjectManager();

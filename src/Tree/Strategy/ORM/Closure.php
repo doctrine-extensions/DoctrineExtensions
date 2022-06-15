@@ -9,10 +9,11 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -62,32 +63,38 @@ class Closure implements Strategy
      */
     private $pendingNodesLevelProcess = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(TreeListener $listener)
     {
         $this->listener = $listener;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return Strategy::CLOSURE;
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processMetadataLoad($em, $meta)
     {
+        // TODO: Remove the body of this method in the next major version.
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $closureMetadata = $em->getClassMetadata($config['closure']);
+
         $cmf = $em->getMetadataFactory();
 
+        $hasTheUserExplicitlyDefinedMapping = true;
+
         if (!$closureMetadata->hasAssociation('ancestor')) {
+            @trigger_error(sprintf(
+                'Not adding mapping explicitly to "ancestor" property in "%s" is deprecated and will not work in'
+                .' version 4.0. You MUST explicitly set the mapping as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
+                $closureMetadata->getName()
+            ), E_USER_DEPRECATED);
+
+            $hasTheUserExplicitlyDefinedMapping = false;
+
             // create ancestor mapping
             $ancestorMapping = [
                 'fieldName' => 'ancestor',
@@ -116,6 +123,14 @@ class Closure implements Strategy
         }
 
         if (!$closureMetadata->hasAssociation('descendant')) {
+            @trigger_error(sprintf(
+                'Not adding mapping explicitly to "descendant" property in "%s" is deprecated and will not work in'
+                .' version 4.0. You MUST explicitly set the mapping as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
+                $closureMetadata->getName()
+            ), E_USER_DEPRECATED);
+
+            $hasTheUserExplicitlyDefinedMapping = false;
+
             // create descendant mapping
             $descendantMapping = [
                 'fieldName' => 'descendant',
@@ -142,73 +157,82 @@ class Closure implements Strategy
                 ->getAccessibleProperty($closureMetadata->getName(), 'descendant')
             ;
         }
-        // create unique index on ancestor and descendant
-        $indexName = substr(strtoupper('IDX_'.md5($closureMetadata->getName())), 0, 20);
-        $closureMetadata->table['uniqueConstraints'][$indexName] = [
-            'columns' => [
-                $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor')),
-                $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant')),
-            ],
-        ];
-        // this one may not be very useful
-        $indexName = substr(strtoupper('IDX_'.md5($meta->getName().'depth')), 0, 20);
-        $closureMetadata->table['indexes'][$indexName] = [
-            'columns' => ['depth'],
-        ];
 
-        $cacheDriver = $cmf->getCacheDriver();
+        if (!$this->hasClosureTableUniqueConstraint($closureMetadata)) {
+            @trigger_error(sprintf(
+                'Not adding a unique constraint explicitly to "%s" is deprecated and will not be automatically'
+                .' added in version 4.0. You SHOULD explicitly add the unique constraint as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
+                $closureMetadata->getName()
+            ), E_USER_DEPRECATED);
 
-        if ($cacheDriver instanceof Cache) {
-            $cacheDriver->save($closureMetadata->getName().'$CLASSMETADATA', $closureMetadata);
+            $hasTheUserExplicitlyDefinedMapping = false;
+
+            // create unique index on ancestor and descendant
+            $indexName = substr(strtoupper('IDX_'.md5($closureMetadata->getName())), 0, 20);
+            $closureMetadata->table['uniqueConstraints'][$indexName] = [
+                'columns' => [
+                    $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor')),
+                    $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant')),
+                ],
+            ];
+        }
+
+        if (!$this->hasClosureTableDepthIndex($closureMetadata)) {
+            @trigger_error(sprintf(
+                'Not adding an index with "depth" column explicitly to "%s" is deprecated and will not be automatically'
+                .' added in version 4.0. You SHOULD explicitly add the index as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
+                $closureMetadata->getName()
+            ), E_USER_DEPRECATED);
+
+            $hasTheUserExplicitlyDefinedMapping = false;
+
+            // this one may not be very useful
+            $indexName = substr(strtoupper('IDX_'.md5($meta->getName().'depth')), 0, 20);
+            $closureMetadata->table['indexes'][$indexName] = [
+                'columns' => ['depth'],
+            ];
+        }
+
+        if (!$hasTheUserExplicitlyDefinedMapping) {
+            $cacheDriver = $em->getConfiguration()->getMetadataCache();
+
+            if (null !== $cacheDriver) {
+                // @see https://github.com/doctrine/persistence/pull/144
+                // @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey()
+                $cacheKey = str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__';
+
+                $item = $cacheDriver->getItem($cacheKey);
+
+                $cacheDriver->save($item->set($closureMetadata));
+            }
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onFlushEnd($em, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPrePersist($em, $node)
     {
         $this->pendingChildNodeInserts[spl_object_id($em)][spl_object_id($node)] = $node;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreUpdate($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPreRemove($em, $node)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processScheduledDelete($em, $entity)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($entity));
@@ -220,15 +244,12 @@ class Closure implements Strategy
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processPostRemove($em, $entity, AdapterInterface $ea)
     {
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processPostPersist($em, $entity, AdapterInterface $ea)
     {
@@ -266,6 +287,13 @@ class Closure implements Strategy
                 $q = $em->createQuery($dql);
                 $q->setParameters(compact('parent'));
                 $ancestors = $q->getArrayResult();
+
+                if ([] === $ancestors) {
+                    // The parent has been persisted after the child, postpone the evaluation
+                    $this->pendingChildNodeInserts[$emHash][] = $node;
+
+                    continue;
+                }
 
                 foreach ($ancestors as $ancestor) {
                     $entries[] = [
@@ -306,7 +334,7 @@ class Closure implements Strategy
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $em
      */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
@@ -336,6 +364,8 @@ class Closure implements Strategy
      *
      * @param object $node
      * @param object $oldParent
+     *
+     * @return void
      */
     public function updateNode(EntityManagerInterface $em, $node, $oldParent)
     {
@@ -397,6 +427,11 @@ class Closure implements Strategy
         }
     }
 
+    /**
+     * @param array $association
+     *
+     * @return string|null
+     */
     protected function getJoinColumnFieldName($association)
     {
         if (count($association['joinColumnFieldNames']) > 1) {
@@ -408,6 +443,10 @@ class Closure implements Strategy
 
     /**
      * Process pending entities to set their "level" value
+     *
+     * @param EntityManagerInterface $em
+     *
+     * @return void
      */
     protected function setLevelFieldOnPendingNodes(ObjectManager $em)
     {
@@ -442,7 +481,7 @@ class Closure implements Strategy
 
             $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAllNumeric();
 
-            //create key pair array with resultset
+            // create key pair array with resultset
             $levels = [];
             foreach ($levelsAssoc as $level) {
                 $levels[$level[0]] = $level[1];
@@ -466,5 +505,41 @@ class Closure implements Strategy
 
             $this->pendingNodesLevelProcess = [];
         }
+    }
+
+    /**
+     * @param ORMClassMetadata $closureMetadata
+     */
+    private function hasClosureTableUniqueConstraint(ClassMetadata $closureMetadata): bool
+    {
+        if (!isset($closureMetadata->table['uniqueConstraints'])) {
+            return false;
+        }
+
+        foreach ($closureMetadata->table['uniqueConstraints'] as $uniqueConstraint) {
+            if ([] === array_diff(['ancestor', 'descendant'], $uniqueConstraint['columns'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param ORMClassMetadata $closureMetadata
+     */
+    private function hasClosureTableDepthIndex(ClassMetadata $closureMetadata): bool
+    {
+        if (!isset($closureMetadata->table['indexes'])) {
+            return false;
+        }
+
+        foreach ($closureMetadata->table['indexes'] as $uniqueConstraint) {
+            if ([] === array_diff(['depth'], $uniqueConstraint['columns'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

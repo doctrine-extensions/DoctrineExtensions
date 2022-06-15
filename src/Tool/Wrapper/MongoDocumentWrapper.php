@@ -46,9 +46,6 @@ class MongoDocumentWrapper extends AbstractWrapper
         $this->meta = $dm->getClassMetadata(get_class($this->object));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPropertyValue($property)
     {
         $this->initialize();
@@ -56,17 +53,11 @@ class MongoDocumentWrapper extends AbstractWrapper
         return $this->meta->getReflectionProperty($property)->getValue($this->object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootObjectName()
     {
         return $this->meta->rootDocumentName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPropertyValue($property, $value)
     {
         $this->initialize();
@@ -75,17 +66,11 @@ class MongoDocumentWrapper extends AbstractWrapper
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasValidIdentifier()
     {
         return (bool) $this->getIdentifier();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIdentifier($single = true)
     {
         if (!$this->identifier) {
@@ -105,9 +90,6 @@ class MongoDocumentWrapper extends AbstractWrapper
         return $this->identifier;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isEmbeddedAssociation($field)
     {
         return $this->getMetadata()->isSingleValuedEmbed($field);
@@ -116,6 +98,8 @@ class MongoDocumentWrapper extends AbstractWrapper
     /**
      * Initialize the document if it is proxy
      * required when is detached or not initialized
+     *
+     * @return void
      */
     protected function initialize()
     {

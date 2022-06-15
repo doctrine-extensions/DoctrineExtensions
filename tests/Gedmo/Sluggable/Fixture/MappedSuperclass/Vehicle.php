@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 class Vehicle
 {
     /**
@@ -25,32 +26,39 @@ class Vehicle
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     private $title;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(fields={"title"}, updatable=false)
      * @ORM\Column(length=128, unique=true)
      */
+    #[Gedmo\Slug(updatable: false, fields: ['title'])]
+    #[ORM\Column(length: 128, unique: true)]
     private $slug;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

@@ -38,12 +38,12 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $this->em->getConfiguration()->addCustomHydrationMode('tree', TreeObjectHydrator::class);
     }
 
-    public function testFullTreeHydration()
+    public function testFullTreeHydration(): void
     {
         $this->populate();
         $this->em->clear();
@@ -93,7 +93,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(1, $stack->queries);
     }
 
-    public function testPartialTreeHydration()
+    public function testPartialTreeHydration(): void
     {
         $this->populate();
         $this->em->clear();
@@ -127,7 +127,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(2, $stack->queries);
     }
 
-    public function testMultipleRootNodesTreeHydration()
+    public function testMultipleRootNodesTreeHydration(): void
     {
         $this->populate();
         $this->em->clear();
@@ -173,7 +173,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(2, $stack->queries);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,

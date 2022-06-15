@@ -28,7 +28,6 @@ flushed in a behavioral way.
 
     composer require gedmo/doctrine-extensions
 
-* [Symfony 2](/doc/symfony2.md)
 * [Symfony 4](/doc/symfony4.md)
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
 * [Laminas](/doc/laminas.md)
@@ -62,7 +61,7 @@ flushed in a behavioral way.
 - [**References**](/doc/references.md) - supports linking Entities in Documents and vice versa
 - [**ReferenceIntegrity**](/doc/reference_integrity.md) - constrains ODM MongoDB Document references
 
-All extensions support **YAML**, **Annotation** and **XML** mapping. Additional mapping drivers
+All extensions support **Attribute**, **Annotation** and **XML** mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
 
 ### Version Compatibility
@@ -117,7 +116,7 @@ To set up and run example, follow these steps:
 
 ### Contributors
 
-Thanks to [everyone participating](http://github.com/l3pp4rd/DoctrineExtensions/contributors) in
+Thanks to [everyone participating](http://github.com/doctrine-extensions/DoctrineExtensions/contributors) in
 the development of these great Doctrine extensions!
 
 And especially ones who create and maintain new extensions:

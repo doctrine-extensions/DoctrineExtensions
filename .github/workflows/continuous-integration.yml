@@ -36,15 +36,15 @@ jobs:
           - deps: "lowest"
             php-version: "7.2"
           - deps: "highest"
-            php-version: "8.0"
+            php-version: "8.1"
             dbal-version: "^2.13.1"
           - deps: "highest"
-            php-version: "8.0"
+            php-version: "8.1"
             dbal-version: "^3.2"
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v3"
         with:
           fetch-depth: 2
 
@@ -59,18 +59,13 @@ jobs:
         if: "${{ matrix.dbal-version }}"
         run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
 
-      # Remove this when laminas/laminas-code 4.5 is released
-      - name: "Use dev stability"
-        if: "${{ matrix.php-version == '8.1' }}"
-        run: composer config minimum-stability dev
-
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v2"
         with:
           dependency-versions: "${{ matrix.deps }}"
 
       - name: "Run PHPUnit"
-        run: "bin/phpunit -c tests --coverage-clover=coverage.xml"
+        run: "bin/phpunit -c tests --coverage-clover coverage.xml"
 
       - name: "Send coverage to Codecov"
         uses: "codecov/codecov-action@v2"
@@ -84,7 +79,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
@@ -93,7 +88,7 @@ jobs:
           extensions: mongodb
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v2"
         with:
           dependency-versions: "highest"
 

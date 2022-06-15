@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class StringIdentifier
 {
     /**
+     * @var string|null
+     *
      * @ORM\Id
      * @ORM\Column(name="uid", type="string", length=32)
      */
@@ -30,6 +32,8 @@ class StringIdentifier
     private $uid;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
@@ -38,6 +42,8 @@ class StringIdentifier
     private $title;
 
     /**
+     * @var string|null
+     *
      * Used locale to override Translation listener`s locale
      *
      * @Gedmo\Locale
@@ -45,27 +51,27 @@ class StringIdentifier
     #[Gedmo\Locale]
     private $locale;
 
-    public function getUid()
+    public function getUid(): ?string
     {
         return $this->uid;
     }
 
-    public function setUid($uid)
+    public function setUid(?string $uid): void
     {
         $this->uid = $uid;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale(?string $locale): void
     {
         $this->locale = $locale;
     }

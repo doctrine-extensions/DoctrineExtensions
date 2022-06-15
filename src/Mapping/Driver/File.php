@@ -12,6 +12,7 @@ namespace Gedmo\Mapping\Driver;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\FileDriver;
 use Doctrine\Persistence\Mapping\Driver\FileLocator;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Mapping\Driver;
 
 /**
@@ -38,6 +39,8 @@ abstract class File implements Driver
 
     /**
      * original driver if it is available
+     *
+     * @var MappingDriver
      */
     protected $_originalDriver;
 
@@ -48,6 +51,9 @@ abstract class File implements Driver
      */
     protected $_paths = [];
 
+    /**
+     * @return void
+     */
     public function setLocator(FileLocator $locator)
     {
         $this->locator = $locator;
@@ -82,7 +88,7 @@ abstract class File implements Driver
     /**
      * Passes in the mapping read by original driver
      *
-     * @param object $driver
+     * @param MappingDriver $driver
      *
      * @return void
      */
@@ -110,7 +116,7 @@ abstract class File implements Driver
      */
     protected function _getMapping($className)
     {
-        //try loading mapping from original driver first
+        // try loading mapping from original driver first
         $mapping = null;
         if (null !== $this->_originalDriver) {
             if ($this->_originalDriver instanceof FileDriver) {
@@ -118,7 +124,7 @@ abstract class File implements Driver
             }
         }
 
-        //if no mapping found try to load mapping file again
+        // if no mapping found try to load mapping file again
         if (null === $mapping) {
             $yaml = $this->_loadMappingFile($this->locator->findMappingFile($className));
             $mapping = $yaml[$className];

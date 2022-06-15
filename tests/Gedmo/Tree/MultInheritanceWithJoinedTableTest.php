@@ -46,14 +46,11 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         $this->tree = new TreeListener();
         $evm->addEventSubscriber($this->tree);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleMultilevelInheritance()
+    public function testShouldHandleMultilevelInheritance(): void
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $adminRight = $admins->getRight();
@@ -68,10 +65,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         static::assertNotSame($adminRight, $admins->getRight());
     }
 
-    /**
-     * @test
-     */
-    public function shouldBeAbleToPopulateTree()
+    public function testShouldBeAbleToPopulateTree(): void
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $user3 = new \Gedmo\Tests\Tree\Fixture\User('user3@test.com', 'secret');
@@ -120,7 +114,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         static::assertSame(2, $user3->getLevel());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::USER,

@@ -17,20 +17,25 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class SupperClassExtension extends MappedSupperClass
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      * @Gedmo\Translatable
      */
+    #[ORM\Column(length: 128)]
+    #[Gedmo\Translatable]
     private $title;
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

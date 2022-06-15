@@ -45,6 +45,8 @@ interface WrapperInterface
     public function setPropertyValue($property, $value);
 
     /**
+     * @deprecated since gedmo/doctrine-extensions 3.5 and to be removed in version 4.0.
+     *
      * Populates the wrapped object with the given property values.
      *
      * @return $this
