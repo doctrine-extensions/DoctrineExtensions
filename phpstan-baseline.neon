@@ -801,11 +801,6 @@ parameters:
 			path: src/Uploadable/UploadableListener.php
 
 		-
-			message: "#^Method Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Entity\\\\Geo\\:\\:parseFloatToString\\(\\) should return numeric\\-string but returns non\\-empty\\-string\\.$#"
-			count: 1
-			path: tests/Gedmo/Loggable/Fixture/Entity/Geo.php
-
-		-
 			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Loggable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\LogEntryRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Document\\\\Log\\\\Comment\\> will always evaluate to false\\.$#"
 			count: 1
 			path: tests/Gedmo/Loggable/LoggableDocumentTest.php
@@ -894,26 +889,6 @@ parameters:
 			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getMongoDBDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\Driver\\\\AttributeDriver\\.$#"
 			count: 1
 			path: tests/Gedmo/Tool/BaseTestCaseOM.php
-
-		-
-			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getORMDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseOM.php
-
-		-
-			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getORMDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AttributeDriver\\.$#"
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseOM.php
-
-		-
-			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseORM\\:\\:getMetadataDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseORM.php
-
-		-
-			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseORM\\:\\:getMetadataDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AttributeDriver\\.$#"
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseORM.php
 
 		-
 			message: "#^Strict comparison using \\=\\=\\= between null and Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform will always evaluate to false\\.$#"
