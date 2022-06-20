@@ -146,7 +146,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
                         continue;
                     }
 
-                    $objectSlug = $meta->getReflectionProperty($config['slug'])->getValue($object);
+                    $objectSlug = (string) $meta->getReflectionProperty($config['slug'])->getValue($object);
                     if (preg_match("@^{$target}{$config['pathSeparator']}@smi", $objectSlug)) {
                         $objectSlug = str_replace($target, $slug, $objectSlug);
                         $meta->getReflectionProperty($config['slug'])->setValue($object, $objectSlug);
