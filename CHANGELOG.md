@@ -27,6 +27,7 @@ a release.
 - Tree: In `ClosureTreeRepository::removeFromTree()` and `NestedTreeRepository::removeFromTree()` when something fails in the transaction, it uses the `code` from the original exception to construct the `\Gedmo\Exception\RuntimeException` instance instead of `null`.
 
 #### Fixed
+- Sluggable: Cast slug to string before passing it as argument 2 to `preg_match()` (#2473)
 - Sortable: [SortableGroup] Fix sorting date columns in SQLite (#2462).
 - PHPDoc of `AbstractMaterializedPath::removeNode()` and `AbstractMaterializedPath::getChildren()`
 
