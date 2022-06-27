@@ -14,6 +14,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
@@ -31,6 +32,18 @@ use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
  * the caching is activated for metadata
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-type TranslatableConfiguration = array{
+ *   fields?: string[],
+ *   fallback?: array<string, bool>,
+ *   locale?: string,
+ *   translationClass?: class-string,
+ *   useObjectClass?: class-string,
+ * }
+ *
+ * @phpstan-method TranslatableConfiguration getConfiguration(ObjectManager $objectManager, $class)
+ *
+ * @method TranslatableAdapter getEventAdapter(EventArgs $args)
  */
 class TranslatableListener extends MappedEventSubscriber
 {
