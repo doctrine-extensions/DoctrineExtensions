@@ -254,8 +254,7 @@ class TreeListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
+        $om = $eventArgs->getObjectManager();
         $meta = $eventArgs->getClassMetadata();
         $this->loadMetadataForObjectClass($om, $meta);
         if (isset(self::$configurations[$this->name][$meta->getName()]) && self::$configurations[$this->name][$meta->getName()]) {

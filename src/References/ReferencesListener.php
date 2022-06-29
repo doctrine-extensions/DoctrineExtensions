@@ -46,9 +46,8 @@ class ReferencesListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $ea = $this->getEventAdapter($eventArgs);
         $this->loadMetadataForObjectClass(
-            $ea->getObjectManager(), $eventArgs->getClassMetadata()
+            $eventArgs->getObjectManager(), $eventArgs->getClassMetadata()
         );
     }
 
