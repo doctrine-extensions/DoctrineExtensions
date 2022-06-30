@@ -42,6 +42,7 @@ use Gedmo\Tree\Mapping\Event\TreeAdapter;
  *   rootIdentifierMethod?: string,
  *   strategy?: string,
  *   useObjectClass?: class-string,
+ *   level_base?: int,
  * }
  *
  * @phpstan-method TreeConfiguration getConfiguration(ObjectManager $objectManager, $class)

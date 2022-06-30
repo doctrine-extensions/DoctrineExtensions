@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * TreeLevel annotation for Tree behavioral extension
  *
  * @Annotation
+ * @NamedArgumentConstructor
  * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -24,4 +25,24 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class TreeLevel implements GedmoAnnotation
 {
+    /**
+     * The level which root nodes will have
+     *
+     * @var int
+     */
+    public $base = 0;
+
+    public function __construct(
+        array $data = [],
+        int $base = 0
+    ) {
+        if ([] !== $data) {
+            @trigger_error(sprintf(
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->base = $data['base'] ?? $base;
+    }
 }

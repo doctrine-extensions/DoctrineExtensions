@@ -57,7 +57,7 @@ on how to setup and use the extensions in the most optimized way.
 ## Tree Entity example:
 
 **Note:** Node interface is not necessary, except in cases where
-you need to identify and entity as being a Tree Node. The metadata is loaded only once when the
+you need to identify an entity as being a Tree Node. The metadata is loaded only once when the
 cache is activated
 
 **Note:** this example is using annotations and attributes for mapping, you should use
@@ -212,7 +212,7 @@ in the corresponding section).
 - **@Gedmo\Mapping\Annotation\TreeLeft** field is used to store the tree **left** value
 - **@Gedmo\Mapping\Annotation\TreeRight** field is used to store the tree **right** value
 - **@Gedmo\Mapping\Annotation\TreeParent** will identify the column as the relation to **parent node**
-- **@Gedmo\Mapping\Annotation\TreeLevel** field is used to store the tree **level**
+- **@Gedmo\Mapping\Annotation\TreeLevel(base=0)** field is used to store the tree **level**. The **base** parameter is optional and can be used to set the level of the root nodes to other than 0.
 - **@Gedmo\Mapping\Annotation\TreeRoot** field is used to store the tree **root** id value or identify the column as the relation to **root node**
 - **@Gedmo\Mapping\Annotation\TreePath** (Materialized Path only) field is used to store the **path**. It has an
 optional parameter "separator" to define the separator used in the path.
@@ -338,12 +338,34 @@ $path = $repo->getPath($carrots);
    2 => Carrots
 */
 
+$stringPath = $repo->getPathAsString([
+    'includeNode' => false,
+    'separator' => '/',
+    'stringMethod' => 'getTitle',
+]);
+// $stringPath is 'Food/Vegetables'
+
 // verification and recovery of tree
-$repo->verify();
+
 // can return TRUE if tree is valid, or array of errors found on tree
-$repo->recover();
-$em->flush(); // important: flush recovered nodes
+$repo->verify();
+
 // if tree has errors it will try to fix all tree nodes
+$repo->recover([
+    'flush' => false,               // Do not auto-flush each entity manager after each node is recovered
+    'treeRootNode'  => $rootNode,   // Only recover the $rootNode tree (when you have a forest with multiple root nodes)
+    'skipVerify'    => false,       // Try to verify the tree first and do not attempt recovery if not necessary
+    'sortByField'   => 'hierarchy', // Reorder sibling nodes by this field during recovery
+    'sortDirection' => 'DESC',
+]);
+$em->flush(); // important: flush recovered nodes, unless you used ['flush' => true]
+
+// For large trees normal recovery can take a while, use this if speed is a priority.
+// No need to flush as it operates outside the entity manager (see phpdoc for side effects)
+$repo->recoverFast([
+    'sortByField'   => 'hierarchy', // Reorder sibling nodes by this field during recovery
+    'sortDirection' => 'DESC',
+]);
 
 // UNSAFE: be sure to backup before running this method when necessary, if you can use $em->remove($node);
 // which would cascade to children
@@ -444,9 +466,13 @@ Tree after moving the Carrots down as last child:
     /Fruits
 ```
 
-**Note:** the tree repository functions **verify, recover, removeFromTree**
+**Note:** the tree repository functions **verify, recover, recoverFast, removeFromTree**
 will require you to clear the cache of the Entity Manager because left-right values will differ.
 So after that use **$em->clear();** if you will continue using the nodes after these operations.
+
+In addition, when using **recoverFast** to prioritize speed, you should also keep in mind that it bypasses any locking 
+scheme and entity event handlers and does not increment the version column. Entities that are already loaded into the 
+persistence context will NOT be synced with the updated database state.
 
 ### If you need a repository for your TreeNode Entity simply extend it
 
@@ -1207,6 +1233,9 @@ There are repository methods that are available for you in all the strategies:
   - *sortByField*: An optional field to sort the children. Defaults to "null".
   - *direction*: If you use the "sortByField" argument, this allows you to set the direction: "asc" or "desc". Defaults to "asc".
   - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
+* **getPath** / **getPathQuery** / **getPathQueryBuilder** / **getPathAsString**: Return the tree path of Nodes to a given node
+  (not all available in every strategy). Arguments:
+  - *includeNode*: Whether to include the given node itself. Defaults to true.
 * **childrenHierarchy**: This useful method allows you to build an array of nodes representing the hierarchy of a tree. Arguments:
   - *node*: If you pass a node, the method will return its children. Defaults to "null" (this means it will return ALL nodes).
   - *direct*: If you pass true as a value for this argument, you'll get only the direct children of the node

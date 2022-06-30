@@ -182,7 +182,8 @@ class Annotation extends AbstractAnnotationDriver
                 $config['root'] = $field;
             }
             // level
-            if ($this->reader->getPropertyAnnotation($property, self::LEVEL)) {
+            $levelAnnotation = $this->reader->getPropertyAnnotation($property, self::LEVEL);
+            if (null !== $levelAnnotation) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'level' - [{$field}] as mapped property in entity - {$meta->getName()}");
@@ -191,9 +192,11 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->getName()}");
                 }
                 $config['level'] = $field;
+                $config['level_base'] = (int) $levelAnnotation->base;
             }
             // path
-            if ($pathAnnotation = $this->reader->getPropertyAnnotation($property, self::PATH)) {
+            $pathAnnotation = $this->reader->getPropertyAnnotation($property, self::PATH);
+            if (null !== $pathAnnotation) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'path' - [{$field}] as mapped property in entity - {$meta->getName()}");
@@ -211,7 +214,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config['path_ends_with_separator'] = $pathAnnotation->endsWithSeparator;
             }
             // path source
-            if ($this->reader->getPropertyAnnotation($property, self::PATH_SOURCE)) {
+            if (null !== $this->reader->getPropertyAnnotation($property, self::PATH_SOURCE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'path_source' - [{$field}] as mapped property in entity - {$meta->getName()}");
@@ -223,7 +226,7 @@ class Annotation extends AbstractAnnotationDriver
             }
 
             // path hash
-            if ($this->reader->getPropertyAnnotation($property, self::PATH_HASH)) {
+            if (null !== $this->reader->getPropertyAnnotation($property, self::PATH_HASH)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'path_hash' - [{$field}] as mapped property in entity - {$meta->getName()}");
@@ -235,7 +238,7 @@ class Annotation extends AbstractAnnotationDriver
             }
             // lock time
 
-            if ($this->reader->getPropertyAnnotation($property, self::LOCK_TIME)) {
+            if (null !== $this->reader->getPropertyAnnotation($property, self::LOCK_TIME)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'lock_time' - [{$field}] as mapped property in entity - {$meta->getName()}");
