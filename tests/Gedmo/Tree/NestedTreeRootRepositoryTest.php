@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\RootCategory;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -157,7 +159,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $childOpen = '';
         $childClose = '';
         $nodeDecorator = static function ($node) {
-            return str_repeat('-', $node['level']).$node['title']."\n";
+            return str_repeat('-', $node['level'] - 1).$node['title']."\n";
         };
 
         $decoratedCliTree = $repo->childrenHierarchy(
@@ -174,7 +176,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         // check support of the closures in rootClose
         $rootClose = static function () {return '</ul><!--rootCloseClosure-->'; };
         $childOpen = static function (&$node) {
-            return '<li class="depth'.$node['level'].'">';
+            return '<li class="depth'.($node['level'] - 1).'">';
         };
         // check support of the closures in childClose
         $childClose = static function (&$node) {
@@ -238,8 +240,34 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertNull($node->getParent());
     }
 
+    /**
+     * @dataProvider invalidStringMethods
+     *
+     * @param mixed $stringMethod
+     */
+    public function testGetPathAsStringWithInvalidStringMethod($stringMethod): void
+    {
+        /** @var NestedTreeRepository $repo */
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $carrots = $repo->findOneBy(['title' => 'Carrots']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $repo->getPathAsString($carrots, [
+            'stringMethod' => $stringMethod,
+        ]);
+    }
+
+    public function invalidStringMethods(): iterable
+    {
+        yield [null];
+        yield [123];
+        yield ['nonExistingMethod'];
+        yield [''];
+    }
+
     public function testShouldHandleBasicRepositoryMethods(): void
     {
+        /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
 
@@ -248,6 +276,17 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertSame('Food', $path[0]->getTitle());
         static::assertSame('Vegitables', $path[1]->getTitle());
         static::assertSame('Carrots', $path[2]->getTitle());
+
+        $path = $repo->getPath($carrots, ['includeNode' => false]);
+        static::assertCount(2, $path);
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Vegitables', $path[1]->getTitle());
+        $path = $repo->getPathAsString($carrots, [
+            'includeNode' => true,
+            'separator' => '-->',
+            'stringMethod' => 'getTitle',
+        ]);
+        static::assertSame('Food-->Vegitables-->Carrots', $path);
 
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $childCount = $repo->childCount($vegies);
@@ -265,11 +304,22 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $childCount = $repo->childCount(null, true);
         static::assertSame(2, $childCount);
+
+        // all children of node, including the root, ordered by two fields
+        $food = $repo->findOneBy(['title' => 'Food']);
+        $children = $repo->children($food, false, ['level', 'title'], ['asc', 'desc'], true);
+        static::assertCount(5, $children);
+        static::assertSame('Food', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+        static::assertSame('Fruits', $children[2]->getTitle());
+        static::assertSame('Potatoes', $children[3]->getTitle());
+        static::assertSame('Carrots', $children[4]->getTitle());
     }
 
     public function testShouldHandleAdvancedRepositoryFunctions(): void
     {
         $this->populateMore();
+        /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::CATEGORY);
 
         // verification
@@ -287,6 +337,12 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertCount(2, $errors);
         static::assertSame('index [4], missing on tree root: 1', $errors[0]);
         static::assertSame('index [5], duplicate on tree root: 1', $errors[1]);
+
+        // verification of single tree
+        $errors = $repo->verify(['treeRootNode' => $repo->find(2)]);
+        static::assertTrue($errors);
+        $errors = $repo->verify(['treeRootNode' => $repo->find(1)]);
+        static::assertCount(2, $errors);
 
         // test recover functionality
         $repo->recover();
@@ -408,6 +464,42 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(1, $node->getParent()->getId());
+
+        // recover with specified order
+
+        $repo->recover([
+            'flush' => true,
+            'treeRootNode' => $repo->find(1),
+            'skipVerify' => true,
+            'sortByField' => 'title',
+            'sortDirection' => 'DESC',
+        ]);
+        static::assertTrue($repo->verify());
+
+        $this->em->clear();
+        $potatoes = $repo->findOneBy(['title' => 'Potatoes']);
+
+        static::assertSame(2, $potatoes->getLeft());
+        static::assertSame(3, $potatoes->getRight());
+
+        // test fast recover
+
+        $dql = 'UPDATE '.self::CATEGORY.' node';
+        $dql .= ' SET node.lft = 1';
+        $dql .= ' WHERE node.id = 8';
+        $this->em->createQuery($dql)->execute();
+
+        $this->em->clear(); // must clear cached entities
+
+        static::assertGreaterThan(0, count($repo->verify()));
+
+        $repo->recoverFast([
+            'sortByField' => 'title',
+            'sortDirection' => 'ASC',
+        ]);
+        $this->em->clear(); // must clear cached entities
+
+        static::assertTrue($repo->verify());
     }
 
     public function testShouldRemoveTreeLeafFromTree(): void

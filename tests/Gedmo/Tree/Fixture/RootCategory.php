@@ -99,11 +99,11 @@ class RootCategory
     /**
      * @var int|null
      *
-     * @Gedmo\TreeLevel
+     * @Gedmo\TreeLevel(base=1)
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
-    #[Gedmo\TreeLevel]
+    #[Gedmo\TreeLevel(base: 1)]
     private $level;
 
     public function getId(): ?int

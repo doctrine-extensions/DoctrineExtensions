@@ -27,6 +27,15 @@ a release.
 
 ## [3.11.0] - 2023-01-26
 ### Added
+- Tree: [NestedSet] Added "base" property for tree level annotation
+- Tree: [NestedSet] Added `$options` as parameter 2 in `getPathQueryBuilder()` to specify whether you want the starting node included or not
+- Tree: [NestedSet] Added `getPathAsString()` method to entity repository
+- Tree: [NestedSet] Added "treeRootNode" option in `verify()` in case you want to verify a single tree in a forest
+- Tree: [NestedSet] Added `recoverFast()` method for where speed is more important than safety and entity manager state
+- Tree: [NestedSet] Added options to `recover()` for sibling order, tree root in a forest, verification skip and auto-flushing
+- Tree: [NestedSet] Verify and recover wrong levels in nested set
+
+### Added
 - Tree: Add `Nested::ALLOWED_NODE_POSITIONS` constant in order to expose the available node positions
 - Support for `doctrine/collections` 2.0
 - Support for `doctrine/event-manager` 2.0
@@ -117,8 +126,8 @@ a release.
 - ReferenceIntegrity: Support to use annotations as attributes on PHP >= 8.0.
 - SoftDeleteable: Support for custom column types (like Carbon).
 - Timestampable: Support for custom column types (like Carbon).
-- Translatable: Added an index to `Translation` entity to speed up searches using 
-  `Gedmo\Translatable\Entity\Repository\TranslationRepository::findTranslations()` method. 
+- Translatable: Added an index to `Translation` entity to speed up searches using
+  `Gedmo\Translatable\Entity\Repository\TranslationRepository::findTranslations()` method.
 - `Gedmo\Mapping\Event\AdapterInterface::getObject()` method.
 
 ### Fixed
@@ -188,7 +197,7 @@ a release.
 
 ## [3.2.0] - 2021-10-05
 ### Added
-- PHP 8 Attributes for Doctrine ORM to entities & traits (#2251) 
+- PHP 8 Attributes for Doctrine ORM to entities & traits (#2251)
 
 ### Fixed
 - Removed legacy checks targeting older versions of PHP (#2201)

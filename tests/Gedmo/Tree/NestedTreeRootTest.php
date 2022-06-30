@@ -113,42 +113,42 @@ final class NestedTreeRootTest extends BaseTestCaseORM
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(1, $node->getLeft());
-        static::assertSame(0, $node->getLevel());
+        static::assertSame(1, $node->getLevel());
         static::assertSame(10, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Sports']);
 
         static::assertSame(2, $node->getRoot());
         static::assertSame(1, $node->getLeft());
-        static::assertSame(0, $node->getLevel());
+        static::assertSame(1, $node->getLevel());
         static::assertSame(2, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Fruits']);
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(2, $node->getLeft());
-        static::assertSame(1, $node->getLevel());
+        static::assertSame(2, $node->getLevel());
         static::assertSame(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(4, $node->getLeft());
-        static::assertSame(1, $node->getLevel());
+        static::assertSame(2, $node->getLevel());
         static::assertSame(9, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Carrots']);
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(5, $node->getLeft());
-        static::assertSame(2, $node->getLevel());
+        static::assertSame(3, $node->getLevel());
         static::assertSame(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(7, $node->getLeft());
-        static::assertSame(2, $node->getLevel());
+        static::assertSame(3, $node->getLevel());
         static::assertSame(8, $node->getRight());
     }
 
@@ -166,7 +166,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(4, $node->getRoot());
         static::assertSame(1, $node->getLeft());
         static::assertSame(6, $node->getRight());
-        static::assertSame(0, $node->getLevel());
+        static::assertSame(1, $node->getLevel());
     }
 
     public function testTreeUpdateShiftToNextBranch(): void
@@ -189,7 +189,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(2, $node->getLeft());
-        static::assertSame(1, $node->getLevel());
+        static::assertSame(2, $node->getLevel());
         static::assertSame(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
@@ -217,14 +217,14 @@ final class NestedTreeRootTest extends BaseTestCaseORM
 
         static::assertSame(4, $node->getRoot());
         static::assertSame(1, $node->getLeft());
-        static::assertSame(0, $node->getLevel());
+        static::assertSame(1, $node->getLevel());
         static::assertSame(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
         static::assertSame(4, $node->getRoot());
         static::assertSame(4, $node->getLeft());
-        static::assertSame(1, $node->getLevel());
+        static::assertSame(2, $node->getLevel());
         static::assertSame(5, $node->getRight());
     }
 
@@ -248,14 +248,14 @@ final class NestedTreeRootTest extends BaseTestCaseORM
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(2, $node->getLeft());
-        static::assertSame(1, $node->getLevel());
+        static::assertSame(2, $node->getLevel());
         static::assertSame(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(7, $node->getLeft());
-        static::assertSame(2, $node->getLevel());
+        static::assertSame(3, $node->getLevel());
         static::assertSame(8, $node->getRight());
     }
 
@@ -292,21 +292,21 @@ final class NestedTreeRootTest extends BaseTestCaseORM
 
         static::assertSame(4, $node->getRoot());
         static::assertSame(2, $node->getLeft());
-        static::assertSame(1, $node->getLevel());
+        static::assertSame(2, $node->getLevel());
         static::assertSame(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
         static::assertSame(4, $node->getRoot());
         static::assertSame(1, $node->getLeft());
-        static::assertSame(0, $node->getLevel());
+        static::assertSame(1, $node->getLevel());
         static::assertSame(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Sports']);
 
         static::assertSame(1, $node->getRoot());
         static::assertSame(2, $node->getLeft());
-        static::assertSame(1, $node->getLevel());
+        static::assertSame(2, $node->getLevel());
         static::assertSame(3, $node->getRight());
     }
 
