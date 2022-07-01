@@ -639,6 +639,18 @@ class Nested implements Strategy
      */
     public function shiftRangeRL(EntityManagerInterface $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {
+        // @todo: Remove the following condition and assignment in the next major release and use 0 as default value for
+        // the `$levelDelta` parameter.
+        if (null === $levelDelta && func_num_args() >= 8) {
+            @trigger_error(sprintf(
+                'Passing a type different than "int" as argument 8 to "%s()" is deprecated since gedmo/doctrine-extensions'.
+                ' 3.x and will throw a "%s" error in version 4.0.',
+                __METHOD__,
+                \TypeError::class
+            ), E_USER_DEPRECATED);
+        }
+        $levelDelta = $levelDelta ?? 0;
+
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);
 

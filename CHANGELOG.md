@@ -21,6 +21,10 @@ a release.
 
 ### Fixed
 - Tree: Allow sorting children by a ManyToOne relation (#2492)
+- Tree: Fix passing `null` to `abs()` function
+
+### Deprecated
+- Tree: Passing `null` as argument 8 to `Nested::shiftRangeRL()`
 
 ## [3.8.0] - 2022-07-17
 ### Added
