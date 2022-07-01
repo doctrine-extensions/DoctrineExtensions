@@ -647,7 +647,7 @@ class Nested implements Strategy
         $sign = ($delta >= 0) ? ' + ' : ' - ';
         $absDelta = abs($delta);
         $levelSign = ($levelDelta >= 0) ? ' + ' : ' - ';
-        $absLevelDelta = $levelDelta ? abs($levelDelta) : 0;
+        $absLevelDelta = null !== $levelDelta ? abs($levelDelta) : 0;
 
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
