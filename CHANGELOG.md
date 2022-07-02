@@ -30,6 +30,7 @@ a release.
 - Sluggable: Cast slug to string before passing it as argument 2 to `preg_match()` (#2473)
 - Sortable: [SortableGroup] Fix sorting date columns in SQLite (#2462).
 - PHPDoc of `AbstractMaterializedPath::removeNode()` and `AbstractMaterializedPath::getChildren()`
+- Retrieving the proper metadata cache from Doctrine when using a CacheWarmer.
 
 ## [3.7.0] - 2022-05-17
 ## Added

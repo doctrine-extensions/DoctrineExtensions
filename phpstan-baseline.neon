@@ -181,6 +181,11 @@ parameters:
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
+			message: "#^Call to protected method getCache\\(\\) of class Doctrine\\\\Persistence\\\\Mapping\\\\AbstractClassMetadataFactory\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\>\\.$#"
+			count: 1
+			path: src/Mapping/MappedEventSubscriber.php
+
+		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/ReferenceIntegrity/Mapping/Driver/Annotation.php
