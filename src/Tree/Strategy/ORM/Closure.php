@@ -13,6 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
@@ -20,6 +21,7 @@ use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
+use Psr\Cache\CacheItemPoolInterface;
 
 /**
  * This strategy makes tree act like
@@ -194,16 +196,21 @@ class Closure implements Strategy
         }
 
         if (!$hasTheUserExplicitlyDefinedMapping) {
-            $cacheDriver = $em->getConfiguration()->getMetadataCache();
+            $metadataFactory = $em->getMetadataFactory();
+            $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
+                return $metadataFactory->getCache();
+            }, null, \get_class($metadataFactory));
 
-            if (null !== $cacheDriver) {
+            $metadataCache = $getCache($metadataFactory);
+
+            if (null !== $metadataCache) {
                 // @see https://github.com/doctrine/persistence/pull/144
                 // @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey()
                 $cacheKey = str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__';
 
-                $item = $cacheDriver->getItem($cacheKey);
+                $item = $metadataCache->getItem($cacheKey);
 
-                $cacheDriver->save($item->set($closureMetadata));
+                $metadataCache->save($item->set($closureMetadata));
             }
         }
     }

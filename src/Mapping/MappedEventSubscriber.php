@@ -21,6 +21,7 @@ use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -291,8 +292,17 @@ abstract class MappedEventSubscriber implements EventSubscriber
             return $this->cacheItemPool;
         }
 
+        // TODO: The user should configure its own cache, we are using the one from Doctrine for BC. We should deprecate using
+        // the one from Doctrine when the bundle offers an easy way to configure this cache, otherwise users using the bundle
+        // will see lots of deprecations without an easy way to avoid them.
+
         if ($objectManager instanceof EntityManagerInterface || $objectManager instanceof DocumentManager) {
-            $metadataCache = $objectManager->getConfiguration()->getMetadataCache();
+            $metadataFactory = $objectManager->getMetadataFactory();
+            $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
+                return $metadataFactory->getCache();
+            }, null, \get_class($metadataFactory));
+
+            $metadataCache = $getCache($metadataFactory);
 
             if (null !== $metadataCache) {
                 $this->cacheItemPool = $metadataCache;
