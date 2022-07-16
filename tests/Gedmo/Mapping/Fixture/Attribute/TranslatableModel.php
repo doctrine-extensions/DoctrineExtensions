@@ -15,9 +15,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 class TranslatableModel
 {
-    /**
-     * @var string|null
-     */
     #[Gedmo\Translatable]
     private ?string $title;
 

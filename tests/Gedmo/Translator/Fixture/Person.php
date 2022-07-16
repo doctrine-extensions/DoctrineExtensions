@@ -134,10 +134,10 @@ class Person
         }
 
         return new \Gedmo\Translator\TranslationProxy($this,
-        /* Locale */ $locale,
-        /* List of translatable properties: */ ['name', 'lastName'],
-        /* Translation entity class: */ PersonTranslation::class,
-        /* Translations collection property: */ $this->translations
+            $locale, // Locale
+            ['name', 'lastName'], // List of translatable properties
+            PersonTranslation::class, // Translation entity class
+            $this->translations // Translations collection property
         );
     }
 }
