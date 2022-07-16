@@ -87,7 +87,7 @@ final class Issue173Test extends BaseTestCaseORM
             ->from(self::CATEGORY, 'c')
             ->where($query->expr()->notIn('c.id', $dql1))
             ->andWhere($query->expr()->notIn('c.id', $dql2))
-            ;
+        ;
 
         return $query->getQuery()->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,

@@ -244,7 +244,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
         $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
-        static::assertTrue(((bool) strpos($qb->getQuery()->getDql(), '(SELECT MAX(')));
+        static::assertTrue((bool) strpos($qb->getQuery()->getDql(), '(SELECT MAX('));
     }
 
     public function testChangeChildrenIndex(): void

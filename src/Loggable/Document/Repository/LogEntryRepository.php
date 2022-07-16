@@ -89,7 +89,7 @@ class LogEntryRepository extends DocumentRepository
         }
         if ($logs) {
             $data = [];
-            while (($log = array_shift($logs))) {
+            while ($log = array_shift($logs)) {
                 $data = array_merge($data, $log->getData());
             }
             $this->fillDocument($document, $data);

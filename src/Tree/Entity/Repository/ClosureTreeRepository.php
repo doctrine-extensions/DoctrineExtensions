@@ -376,7 +376,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             ->from($config['closure'], 'c')
             ->innerJoin('c.descendant', 'node')
             ->leftJoin('node.parent', 'p')
-            ->addOrderBy(($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL), 'asc');
+            ->addOrderBy($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL, 'asc');
 
         if (null !== $node) {
             $q->where('c.ancestor = :node');
