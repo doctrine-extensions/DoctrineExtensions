@@ -18,8 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
-
 #### Added
+- Sluggable: Add support for DateTimeImmutable fields
 - Tree: [NestedSet] `childrenQueryBuilder()` to allow specifying sort order separately for each field
 - Tree: [NestedSet] Added option to reorder only direct children in `reorder()` method
 
