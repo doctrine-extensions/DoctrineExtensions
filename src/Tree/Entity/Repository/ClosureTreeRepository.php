@@ -152,8 +152,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
         if ($sortByField) {
             if (is_array($sortByField)) {
                 foreach ($sortByField as $key => $field) {
-                    $fieldDirection = strtolower(is_array($direction) ? ($direction[$key] ?? 'asc') : $direction);
-                    if (($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) && in_array($fieldDirection, ['asc', 'desc'], true)) {
+                    $fieldDirection = is_array($direction) ? ($direction[$key] ?? 'asc') : $direction;
+                    if (($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) && in_array(strtolower($fieldDirection), ['asc', 'desc'], true)) {
                         $qb->addOrderBy('node.'.$field, $fieldDirection);
                     } else {
                         throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $field, $fieldDirection));
