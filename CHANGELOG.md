@@ -19,6 +19,9 @@ a release.
 
 ## [Unreleased]
 
+### Fixed
+- Tree: Allow sorting children by a ManyToOne relation (#2492)
+
 ## [3.8.0] - 2022-07-17
 ### Added
 - Sluggable: Add support for `DateTimeImmutable` fields
