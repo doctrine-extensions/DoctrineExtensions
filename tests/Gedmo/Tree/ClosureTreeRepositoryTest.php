@@ -165,6 +165,21 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         static::assertSame('Oranges', $children[3]->getTitle());
         static::assertSame('Strawberries', $children[4]->getTitle());
 
+        // test sorting by single-valued association field
+        $children = $repo->children($fruits, false, 'parent');
+        static::assertCount(4, $children);
+        static::assertSame('Oranges', $children[0]->getTitle());
+        static::assertSame('Lemons', $children[1]->getTitle());
+        static::assertSame('Berries', $children[2]->getTitle());
+        static::assertSame('Strawberries', $children[3]->getTitle());
+
+        $children = $repo->children($fruits, false, ['parent'], ['ASC']);
+        static::assertCount(4, $children);
+        static::assertSame('Oranges', $children[0]->getTitle());
+        static::assertSame('Lemons', $children[1]->getTitle());
+        static::assertSame('Berries', $children[2]->getTitle());
+        static::assertSame('Strawberries', $children[3]->getTitle());
+
         // direct root nodes
         $children = $repo->children(null, true, 'title');
         static::assertCount(2, $children);
