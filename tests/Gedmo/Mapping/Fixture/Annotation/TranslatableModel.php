@@ -18,7 +18,7 @@ class TranslatableModel
     /**
      * @var string|null
      *
-     * @Gedmo\Translatable()
+     * @Gedmo\Translatable
      */
     private $title;
 
