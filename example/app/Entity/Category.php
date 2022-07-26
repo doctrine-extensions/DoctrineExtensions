@@ -117,9 +117,9 @@ class Category
 
     /**
      * @ORM\OneToMany(
-     *   targetEntity="CategoryTranslation",
-     *   mappedBy="object",
-     *   cascade={"persist", "remove"}
+     *     targetEntity="CategoryTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
      * )
      */
     private $translations;
