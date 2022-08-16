@@ -42,7 +42,7 @@ By default it updates this column on update. If column is not date, datetime or 
 type it will trigger an exception.
 
 ### Timestampable attributes:
-- **@Gedmo\Mapping\Annotation\Timestampable** this attribute tells that this column is timestampable.
+- **#[Gedmo\Mapping\Annotation\Timestampable]** this attribute tells that this column is timestampable.
   By default it updates this column on update. If column is not date, datetime or time
   type it will trigger an exception.
 
