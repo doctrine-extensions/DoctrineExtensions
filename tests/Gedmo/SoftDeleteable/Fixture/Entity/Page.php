@@ -21,7 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"page" = "Page", "mega_page" = "MegaPage"})
+ * @ORM\DiscriminatorMap({"page": "Page", "mega_page": "MegaPage"})
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 #[ORM\Entity]

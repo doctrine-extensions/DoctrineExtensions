@@ -19,19 +19,19 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
  * Gedmo\Translatable\Entity\Translation
  *
  * @Table(
- *         name="ext_translations",
- *         options={"row_format":"DYNAMIC"},
- *         indexes={
- *             @Index(name="translations_lookup_idx", columns={
- *                 "locale", "object_class", "foreign_key"
- *             }),
- *             @Index(name="general_translations_lookup_idx", columns={
- *                 "object_class", "foreign_key"
- *             })
- *         },
- *         uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
- *             "locale", "object_class", "field", "foreign_key"
- *         })}
+ *     name="ext_translations",
+ *     options={"row_format": "DYNAMIC"},
+ *     indexes={
+ *         @Index(name="translations_lookup_idx", columns={
+ *             "locale", "object_class", "foreign_key"
+ *         }),
+ *         @Index(name="general_translations_lookup_idx", columns={
+ *             "object_class", "foreign_key"
+ *         })
+ *     },
+ *     uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
+ *         "locale", "object_class", "field", "foreign_key"
+ *     })}
  * )
  * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */

@@ -23,8 +23,8 @@ use Gedmo\Tree\Entity\Repository\ClosureTreeRepository;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
  * @ORM\DiscriminatorMap({
- *   "user" = "User"
- *   })
+ *     "user": "User"
+ * })
  */
 #[Gedmo\Tree(type: 'closure')]
 #[Gedmo\TreeClosure(class: PersonClosure::class)]

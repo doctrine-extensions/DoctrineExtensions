@@ -42,11 +42,11 @@ class RelativeSlug
      * @var string|null
      *
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationField", value="article"),
-     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *          @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *      })
+     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *         @Gedmo\SlugHandlerOption(name="relationField", value="article"),
+     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
+     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
+     *     })
      * }, separator="-", updatable=true, fields={"title"})
      * @ODM\Field(type="string")
      */

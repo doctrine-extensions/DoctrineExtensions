@@ -50,8 +50,8 @@ class Article
      *
      * @ORM\ManyToMany(targetEntity="Image", inversedBy="articles")
      * @ORM\JoinTable(name="article_images",
-     *      joinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")}
+     *     joinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")}
      * )
      */
     #[ORM\ManyToMany(targetEntity: Image::class, inversedBy: 'articles')]

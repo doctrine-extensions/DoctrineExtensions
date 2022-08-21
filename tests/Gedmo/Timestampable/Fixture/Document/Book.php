@@ -23,7 +23,7 @@ use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 class Book
 {
     /**
-     * @ODM\Id()
+     * @ODM\Id
      *
      * @var string
      */

@@ -20,8 +20,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
  * @ORM\DiscriminatorMap({
- *      "vehicle" = "Vehicle",
- *      "car" = "Car"
+ *     "vehicle": "Vehicle",
+ *     "car": "Car"
  * })
  */
 #[ORM\Entity]
