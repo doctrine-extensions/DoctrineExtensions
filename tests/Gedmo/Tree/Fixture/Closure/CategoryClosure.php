@@ -17,10 +17,10 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *         indexes={@ORM\Index(name="closure_category_depth_idx", columns={"depth"})},
- *         uniqueConstraints={@ORM\UniqueConstraint(name="closure_category_unique_idx", columns={
- *             "ancestor", "descendant"
- *         })}
+ *     indexes={@ORM\Index(name="closure_category_depth_idx", columns={"depth"})},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="closure_category_unique_idx", columns={
+ *         "ancestor", "descendant"
+ *     })}
  * )
  */
 #[ORM\Entity]

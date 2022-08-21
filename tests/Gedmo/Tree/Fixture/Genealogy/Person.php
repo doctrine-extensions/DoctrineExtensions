@@ -23,7 +23,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @ORM\Table(name="genealogy")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"man" = "Man", "woman" = "Woman"})
+ * @ORM\DiscriminatorMap({"man": "Man", "woman": "Woman"})
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]

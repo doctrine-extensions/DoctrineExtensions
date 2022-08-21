@@ -58,7 +58,7 @@ class EntityWithTranslatableBoolean
     /**
      * @var string
      *
-     * @Gedmo\Locale()
+     * @Gedmo\Locale
      */
     #[Gedmo\Locale]
     private $locale;

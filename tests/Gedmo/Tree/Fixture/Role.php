@@ -23,7 +23,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @ORM\Table(name="role")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"user" = "User", "usergroup" = "UserGroup", "userldap" = "UserLDAP"})
+ * @ORM\DiscriminatorMap({"user": "User", "usergroup": "UserGroup", "userldap": "UserLDAP"})
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]

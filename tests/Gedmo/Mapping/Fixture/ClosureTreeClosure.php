@@ -18,10 +18,10 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *         indexes={@ORM\Index(name="closure_tree_depth_idx", columns={"depth"})},
- *         uniqueConstraints={@ORM\UniqueConstraint(name="closure_tree_unique_idx", columns={
- *             "ancestor", "descendant"
- *         })}
+ *     indexes={@ORM\Index(name="closure_tree_depth_idx", columns={"depth"})},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="closure_tree_unique_idx", columns={
+ *         "ancestor", "descendant"
+ *     })}
  * )
  */
 #[ORM\Entity]

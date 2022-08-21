@@ -20,9 +20,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
  * @ORM\DiscriminatorMap({
- *      "vehicle" = "Vehicle",
- *      "car" = "Car",
- *      "bus" = "Bus"
+ *     "vehicle": "Vehicle",
+ *     "car": "Car",
+ *     "bus": "Bus"
  * })
  */
 #[ORM\Entity]
