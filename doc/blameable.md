@@ -220,7 +220,7 @@ class Article
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'created_at', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'created_by', referencedColumnName: 'id')]
     #[Gedmo\Blameable(on: 'create')]
     private $createdBy;
 
