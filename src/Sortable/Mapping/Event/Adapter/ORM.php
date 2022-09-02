@@ -36,7 +36,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $em = $this->getObjectManager();
 
         $qb = $em->createQueryBuilder();
-        $qb->select('MAX(n.'.$config['position'].')')
+        $qb->select('COUNT(n.'.$config['position'].')')
            ->from($config['useObjectClass'], 'n');
         $this->addGroupWhere($qb, $meta, $groups);
         $query = $qb->getQuery();
@@ -44,7 +44,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $query->disableResultCache();
         $res = $query->getResult();
 
-        return $res[0][1];
+        return $res[0][1] > 0 ? $res[0][1] - 1 : null;
     }
 
     /**

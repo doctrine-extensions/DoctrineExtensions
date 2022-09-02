@@ -63,6 +63,9 @@ class SortableListener extends MappedEventSubscriber
     /** @var array<string, int> */
     private $maxPositions = [];
 
+    /** @var array<string, int> */
+    private $changeDueToMaxPosition = [];
+
     /**
      * Specifies the list of events to listen
      *
@@ -132,8 +135,8 @@ class SortableListener extends MappedEventSubscriber
             }
         }
         krsort($updateValues);
-        foreach ($updateValues as $updateValue) {
-            $this->processUpdate($updateValue[0], $updateValue[1], $updateValue[2], $updateValue[3]);
+        foreach ($updateValues as [$ea, $config, $meta, $object]) {
+            $this->processUpdate($ea, $config, $meta, $object);
         }
 
         // process all objects being inserted
@@ -459,10 +462,11 @@ class SortableListener extends MappedEventSubscriber
             if ($groupHasChanged) {
                 $newPosition = $this->maxPositions[$hash] + 1;
             } else {
+                $this->changeDueToMaxPosition[$hash] = $newPosition - $this->maxPositions[$hash];
                 $newPosition = $this->maxPositions[$hash];
             }
         } else {
-            $newPosition = min([$this->maxPositions[$hash], $newPosition]);
+            $newPosition = min([$this->maxPositions[$hash] - ($this->changeDueToMaxPosition[$hash] ?? 0), $newPosition]);
         }
 
         // Compute relocations
