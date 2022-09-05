@@ -1,0 +1,22 @@
+name: "Quality Assurance"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".docker/php/Dockerfile"
+  pull_request:
+
+jobs:
+  lint-dockerfile:
+    name: Hadolint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v2.1.0
+        with:
+          dockerfile: ".docker/php/Dockerfile"
