@@ -159,7 +159,7 @@ final class SortableTest extends BaseTestCaseORM
         }
     }
 
-    public function testShouldShiftPositionsProperlyWhenMoreThenOneWasUpdated(): void
+    public function testShouldShiftPositionsProperlyWhenMoreThanOneWasUpdated(): void
     {
         $node2 = new Node();
         $node2->setName('Node2');

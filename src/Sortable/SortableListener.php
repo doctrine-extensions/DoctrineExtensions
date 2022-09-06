@@ -132,8 +132,8 @@ class SortableListener extends MappedEventSubscriber
             }
         }
         krsort($updateValues);
-        foreach ($updateValues as $updateValue) {
-            $this->processUpdate($updateValue[0], $updateValue[1], $updateValue[2], $updateValue[3]);
+        foreach ($updateValues as [$ea, $config, $meta, $object]) {
+            $this->processUpdate($ea, $config, $meta, $object);
         }
 
         // process all objects being inserted
