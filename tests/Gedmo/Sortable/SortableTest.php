@@ -159,7 +159,7 @@ final class SortableTest extends BaseTestCaseORM
         }
     }
 
-    public function testShouldShiftPositionsProperlyWhenMoreThanOneWasUpdated(): void
+    public function testShouldShiftPositionsProperlyWhenMoreThenOneWasUpdated(): void
     {
         $node2 = new Node();
         $node2->setName('Node2');
@@ -198,51 +198,6 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame('Node5', $nodes[2]->getName());
         static::assertSame('Node2', $nodes[3]->getName());
         static::assertSame('Node3', $nodes[4]->getName());
-
-        for ($i = 0; $i < count($nodes); ++$i) {
-            static::assertSame($i, $nodes[$i]->getPosition());
-        }
-    }
-
-    public function testShouldShiftPositionsProperlyWhenAllWereUpdated(): void
-    {
-        $node2 = new Node();
-        $node2->setName('Node2');
-        $node2->setPath('/');
-        $this->em->persist($node2);
-
-        $node3 = new Node();
-        $node3->setName('Node3');
-        $node3->setPath('/');
-        $this->em->persist($node3);
-
-        $node4 = new Node();
-        $node4->setName('Node4');
-        $node4->setPath('/');
-        $this->em->persist($node4);
-
-        $this->em->flush();
-        $repo = $this->em->getRepository(self::NODE);
-
-        /** @var Node $node1 */
-        $node1 = $repo->find($this->nodeId);
-
-        static::assertSame(0, $node1->getPosition());
-        static::assertSame(1, $node2->getPosition());
-        static::assertSame(2, $node3->getPosition());
-        static::assertSame(3, $node4->getPosition());
-        $node1->setPosition(3);
-        $node4->setPosition(4);
-        $node2->setPosition(1);
-        $node3->setPosition(2);
-        $this->em->flush();
-
-        $nodes = $repo->getBySortableGroups(['path' => '/']);
-
-        static::assertSame('Node2', $nodes[0]->getName());
-        static::assertSame('Node3', $nodes[1]->getName());
-        static::assertSame('Node1', $nodes[2]->getName());
-        static::assertSame('Node4', $nodes[3]->getName());
 
         for ($i = 0; $i < count($nodes); ++$i) {
             static::assertSame($i, $nodes[$i]->getPosition());
