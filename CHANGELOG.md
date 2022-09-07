@@ -18,13 +18,12 @@ a release.
 ---
 
 ## [Unreleased]
-###
-- Sortable: Fix duplicated positions when manually updating position on more than one object
 
 ### Fixed
 - Tree: Allow sorting children by a ManyToOne relation (#2492)
 - Tree: Fix passing `null` to `abs()` function
 - Timestampable: Use an attribute in Timestampable attribute docs
+- Sortable: Fix duplicated positions when manually updating position on more than one object
 
 ### Deprecated
 - Tree: Passing `null` as argument 8 to `Nested::shiftRangeRL()`
