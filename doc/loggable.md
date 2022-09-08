@@ -213,7 +213,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 
 /**
- *
  * @ORM\Table(
  *     options={"row_format":"DYNAMIC"},
  *     indexes={
