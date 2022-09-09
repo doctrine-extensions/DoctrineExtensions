@@ -238,7 +238,6 @@ class ParameterHistory extends AbstractLogEntry
 }
 ```
 
-
 <a name="basic-examples"></a>
 
 ## Basic usage examples:
