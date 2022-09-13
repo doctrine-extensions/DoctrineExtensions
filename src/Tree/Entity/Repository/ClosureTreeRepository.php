@@ -152,15 +152,15 @@ class ClosureTreeRepository extends AbstractTreeRepository
         if ($sortByField) {
             if (is_array($sortByField)) {
                 foreach ($sortByField as $key => $field) {
-                    $fieldDirection = strtolower(is_array($direction) ? ($direction[$key] ?? 'asc') : $direction);
-                    if ($meta->hasField($field) && in_array($fieldDirection, ['asc', 'desc'], true)) {
+                    $fieldDirection = is_array($direction) ? ($direction[$key] ?? 'asc') : $direction;
+                    if (($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) && in_array(strtolower($fieldDirection), ['asc', 'desc'], true)) {
                         $qb->addOrderBy('node.'.$field, $fieldDirection);
                     } else {
                         throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $field, $fieldDirection));
                     }
                 }
             } else {
-                if ($meta->hasField($sortByField) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
+                if (($meta->hasField($sortByField) || $meta->isSingleValuedAssociation($sortByField)) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
                     $qb->orderBy('node.'.$sortByField, $direction);
                 } else {
                     throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $sortByField, $direction));
@@ -376,7 +376,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             ->from($config['closure'], 'c')
             ->innerJoin('c.descendant', 'node')
             ->leftJoin('node.parent', 'p')
-            ->addOrderBy(($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL), 'asc');
+            ->addOrderBy($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL, 'asc');
 
         if (null !== $node) {
             $q->where('c.ancestor = :node');

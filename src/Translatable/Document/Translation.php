@@ -17,15 +17,15 @@ use Gedmo\Translatable\Document\Repository\TranslationRepository;
  *
  * @ODM\Document(repositoryClass="Gedmo\Translatable\Document\Repository\TranslationRepository")
  * @ODM\UniqueIndex(name="lookup_unique_idx", keys={
- *         "locale" = "asc",
- *         "object_class" = "asc",
- *         "foreign_key" = "asc",
- *         "field" = "asc"
+ *     "locale": "asc",
+ *     "object_class": "asc",
+ *     "foreign_key": "asc",
+ *     "field": "asc"
  * })
  * @ODM\Index(name="translations_lookup_idx", keys={
- *      "locale" = "asc",
- *      "object_class" = "asc",
- *      "foreign_key" = "asc"
+ *     "locale": "asc",
+ *     "object_class": "asc",
+ *     "foreign_key": "asc"
  * })
  */
 #[ODM\Document(repositoryClass: TranslationRepository::class)]

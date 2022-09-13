@@ -26,9 +26,8 @@ If there is a related GitHub issue, add it as a suffix to your change.
 
 ```
 ## [Unreleased]
-### Loggable
-#### Fixed
-- Allow emoji in the docs (#123)
+### Fixed
+- Loggable: Allow emoji in the docs (#123)
 ```
 
 ## What You Can Contribute

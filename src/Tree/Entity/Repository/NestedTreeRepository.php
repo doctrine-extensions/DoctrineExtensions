@@ -248,15 +248,15 @@ class NestedTreeRepository extends AbstractTreeRepository
             $qb->orderBy('node.'.$config['left'], 'ASC');
         } elseif (is_array($sortByField)) {
             foreach ($sortByField as $key => $field) {
-                $fieldDirection = strtolower(is_array($direction) ? ($direction[$key] ?? 'asc') : $direction);
-                if ($meta->hasField($field) && in_array($fieldDirection, ['asc', 'desc'], true)) {
+                $fieldDirection = is_array($direction) ? ($direction[$key] ?? 'asc') : $direction;
+                if (($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) && in_array(strtolower($fieldDirection), ['asc', 'desc'], true)) {
                     $qb->addOrderBy('node.'.$field, $fieldDirection);
                 } else {
                     throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $field, $fieldDirection));
                 }
             }
         } else {
-            if ($meta->hasField($sortByField) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
+            if (($meta->hasField($sortByField) || $meta->isSingleValuedAssociation($sortByField)) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
                 $qb->orderBy('node.'.$sortByField, $direction);
             } else {
                 throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $sortByField, $direction));
@@ -921,13 +921,9 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $identifier = $meta->getSingleIdentifierFieldName();
         if (isset($config['root'])) {
-            if (isset($config['root'])) {
-                $rootId = $meta->getReflectionProperty($config['root'])->getValue($root);
-                if (is_object($rootId)) {
-                    $rootId = $meta->getReflectionProperty($identifier)->getValue($rootId);
-                }
-            } else {
-                $rootId = null;
+            $rootId = $meta->getReflectionProperty($config['root'])->getValue($root);
+            if (is_object($rootId)) {
+                $rootId = $meta->getReflectionProperty($identifier)->getValue($rootId);
             }
         } else {
             $rootId = null;

@@ -115,10 +115,10 @@ class Yaml extends File implements Driver
                         }
 
                         $treePathInfo = $fieldMapping['gedmo']['treePath'] ?? $fieldMapping['gedmo'][array_search(
-                                'treePath',
-                                $fieldMapping['gedmo'],
-                                true
-                            )];
+                            'treePath',
+                            $fieldMapping['gedmo'],
+                            true
+                        )];
 
                         if (is_array($treePathInfo) && isset($treePathInfo['separator'])) {
                             $separator = $treePathInfo['separator'];

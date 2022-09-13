@@ -168,7 +168,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         for ($i = 0; $i < 6; ++$i) {
             $post = new Post();
             $post->setTitle('post'.$i);
-            $post->setCategory($categories[($i % 2)]);
+            $post->setCategory($categories[$i % 2]);
             $this->dm->persist($post);
         }
 
@@ -180,7 +180,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         for ($i = 0; $i < 4; ++$i) {
             $kid = new Kid();
             $kid->setLastname('kid'.$i);
-            $kid->setBirthdate($birthdates[($i % 2)]);
+            $kid->setBirthdate($birthdates[$i % 2]);
             $this->dm->persist($kid);
         }
         $this->dm->flush();

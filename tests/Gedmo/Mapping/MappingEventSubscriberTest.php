@@ -15,9 +15,11 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Mapping\Fixture\Sluggable;
+use Psr\Cache\CacheItemPoolInterface;
 
 final class MappingEventSubscriberTest extends ORMMappingTestCase
 {
@@ -42,9 +44,14 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
         $this->em = EntityManager::create($conn, $config, new EventManager());
     }
 
-    public function testGetConfigurationCachedFromDoctrine(): void
+    public function testGetMetadataFactoryCacheFromDoctrine(): void
     {
-        $cache = $this->em->getConfiguration()->getMetadataCache();
+        $metadataFactory = $this->em->getMetadataFactory();
+        $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
+            return $metadataFactory->getCache();
+        }, null, \get_class($metadataFactory));
+
+        $cache = $getCache($metadataFactory);
 
         $cacheKey = ExtensionMetadataFactory::getCacheId(Sluggable::class, 'Gedmo\Sluggable');
 

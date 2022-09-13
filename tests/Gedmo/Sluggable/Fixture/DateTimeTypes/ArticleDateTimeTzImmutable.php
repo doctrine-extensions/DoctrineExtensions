@@ -9,19 +9,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable\Fixture\Handler;
+namespace Gedmo\Tests\Sluggable\Fixture\DateTimeTypes;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Sluggable\Handler\InversedRelativeSlugHandler;
 use Gedmo\Sluggable\Sluggable;
 
 /**
  * @ORM\Entity
  */
 #[ORM\Entity]
-class Article implements Sluggable
+class ArticleDateTimeTzImmutable implements Sluggable
 {
     /**
      * @var int|null
@@ -44,27 +43,20 @@ class Article implements Sluggable
     private $title;
 
     /**
-     * @var string|null
+     * @var \DateTimeImmutable|null
      *
-     * @ORM\Column(name="code", type="string", length=16)
+     * @ORM\Column(name="created_at", type="datetimetz_immutable")
      */
-    #[ORM\Column(name: 'code', type: Types::STRING, length: 16)]
-    private $code;
+    #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_IMMUTABLE)]
+    private $createdAt;
 
     /**
      * @var string|null
      *
-     * @Gedmo\Slug(handlers={
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\ArticleRelativeSlug"),
-     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
-     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *     })
-     * }, separator="-", updatable=true, fields={"title", "code"})
+     * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "createdAt"}, dateFormat="Y-m-d")
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
-    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
-    #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => ArticleRelativeSlug::class, 'mappedBy' => 'article', 'inverseSlugField' => 'slug'])]
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'createdAt'], dateFormat: 'Y-m-d')]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 
@@ -83,14 +75,19 @@ class Article implements Sluggable
         return $this->title;
     }
 
-    public function setCode(?string $code): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
     {
-        $this->code = $code;
+        $this->createdAt = $createdAt;
     }
 
-    public function getCode(): ?string
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->code;
+        return $this->createdAt;
+    }
+
+    public function setSlug(?string $slug): void
+    {
+        $this->slug = $slug;
     }
 
     public function getSlug(): ?string

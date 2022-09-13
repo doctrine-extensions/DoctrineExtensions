@@ -9,26 +9,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Sluggable\Fixture\Inheritance;
+namespace Gedmo\Tests\Sluggable\Fixture\DateTimeTypes;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Sluggable;
 
 /**
  * @ORM\Entity
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({
- *     "vehicle": "Vehicle",
- *     "car": "Car"
- * })
  */
 #[ORM\Entity]
-#[ORM\InheritanceType('SINGLE_TABLE')]
-#[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
-#[ORM\DiscriminatorMap(['vehicle' => Vehicle::class, 'car' => Car::class])]
-class Vehicle
+class ArticleDateTimeTz implements Sluggable
 {
     /**
      * @var int|null
@@ -45,19 +37,27 @@ class Vehicle
     /**
      * @var string|null
      *
-     * @ORM\Column(length=128)
+     * @ORM\Column(name="title", type="string", length=64)
      */
-    #[ORM\Column(length: 128)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private $title;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="created_at", type="datetimetz")
+     */
+    #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_MUTABLE)]
+    private $createdAt;
 
     /**
      * @var string|null
      *
-     * @Gedmo\Slug(fields={"title"})
-     * @ORM\Column(length=128, unique=true)
+     * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "createdAt"}, dateFormat="Y-m-d")
+     * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
-    #[Gedmo\Slug(fields: ['title'])]
-    #[ORM\Column(length: 128, unique: true)]
+    #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'createdAt'], dateFormat: 'Y-m-d')]
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 
     public function getId(): ?int
@@ -73,6 +73,21 @@ class Vehicle
     public function getTitle(): ?string
     {
         return $this->title;
+    }
+
+    public function setCreatedAt(?\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setSlug(?string $slug): void
+    {
+        $this->slug = $slug;
     }
 
     public function getSlug(): ?string

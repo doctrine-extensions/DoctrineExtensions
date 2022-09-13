@@ -21,6 +21,24 @@ use Gedmo\Mapping\MappedEventSubscriber;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
+ *
+ * @phpstan-type ReferenceConfiguration = array{
+ *   field?: string,
+ *   type?: string,
+ *   class?: class-string,
+ *   identifier?: string,
+ *   mappedBy?: string,
+ *   inversedBy?: string,
+ * }
+ *
+ * @phpstan-type ReferencesConfiguration = array{
+ *   referenceMany?: array<string, ReferenceConfiguration>,
+ *   referenceManyEmbed?: array<string, ReferenceConfiguration>,
+ *   referenceOne?: array<string, ReferenceConfiguration>,
+ *   useObjectClass?: class-string,
+ * }
+ *
+ * @phpstan-method ReferencesConfiguration getConfiguration(ObjectManager $objectManager, $class)
  */
 class ReferencesListener extends MappedEventSubscriber
 {
@@ -46,9 +64,8 @@ class ReferencesListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $ea = $this->getEventAdapter($eventArgs);
         $this->loadMetadataForObjectClass(
-            $ea->getObjectManager(), $eventArgs->getClassMetadata()
+            $eventArgs->getObjectManager(), $eventArgs->getClassMetadata()
         );
     }
 
@@ -106,7 +123,7 @@ class ReferencesListener extends MappedEventSubscriber
                                             $identifier => $id,
                                         ]);
 
-                                    return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+                                    return new ArrayCollection(is_array($results) ? $results : $results->toArray());
                                 }
                             )
                         );
@@ -203,7 +220,7 @@ class ReferencesListener extends MappedEventSubscriber
                                     $identifier => $id,
                                 ]);
 
-                            return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+                            return new ArrayCollection(is_array($results) ? $results : $results->toArray());
                         }
                     )
                 );

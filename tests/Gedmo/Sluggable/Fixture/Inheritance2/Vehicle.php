@@ -19,7 +19,7 @@ use Gedmo\Tests\Translatable\Fixture\Sport;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriment", type="string")
- * @ORM\DiscriminatorMap({"vehicle" = "Vehicle", "car" = "Car", "sport" = "SportCar"})
+ * @ORM\DiscriminatorMap({"vehicle": "Vehicle", "car": "Car", "sport": "SportCar"})
  */
 #[ORM\Entity]
 #[ORM\InheritanceType('JOINED')]

@@ -78,7 +78,7 @@ class RootAssociationCategory
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="RootAssociationCategory", inversedBy="children")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
@@ -92,7 +92,7 @@ class RootAssociationCategory
      * @Gedmo\TreeRoot
      * @ORM\ManyToOne(targetEntity="RootAssociationCategory")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+     *     @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
