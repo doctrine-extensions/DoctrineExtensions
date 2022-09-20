@@ -125,7 +125,7 @@ class Nested implements Strategy
         }
         if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !isset($config['rootIdentifierMethod'])) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
-        } elseif (isset($config['rootIdentifierMethod']) && null === $meta->getReflectionProperty($config['root'])->getValue($node)) {
+        } elseif (isset($config['rootIdentifierMethod']) && !$meta->hasAssociation($config['root']) && null === $meta->getReflectionProperty($config['root'])->getValue($node)) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         }
     }
@@ -446,7 +446,6 @@ class Nested implements Strategy
             $start = 1;
             if (isset($config['rootIdentifierMethod'])) {
                 $method = $config['rootIdentifierMethod'];
-                $newRoot = $node->$method();
                 $repo = $em->getRepository($config['useObjectClass']);
 
                 $criteria = new Criteria();
@@ -459,7 +458,9 @@ class Nested implements Strategy
                 $last = array_pop($roots);
 
                 $start = ($last) ? $meta->getFieldValue($last, $config['right']) + 1 : 1;
-            } elseif ($meta->isSingleValuedAssociation($config['root'])) {
+            }
+
+            if ($meta->isSingleValuedAssociation($config['root'])) {
                 $newRoot = $node;
             } else {
                 $newRoot = $wrapped->getIdentifier();
