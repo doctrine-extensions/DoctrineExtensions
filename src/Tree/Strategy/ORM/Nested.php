@@ -644,7 +644,7 @@ class Nested implements Strategy
         if (null === $levelDelta && func_num_args() >= 8) {
             @trigger_error(sprintf(
                 'Passing a type different than "int" as argument 8 to "%s()" is deprecated since gedmo/doctrine-extensions'.
-                ' 3.x and will throw a "%s" error in version 4.0.',
+                ' 3.9 and will throw a "%s" error in version 4.0.',
                 __METHOD__,
                 \TypeError::class
             ), E_USER_DEPRECATED);

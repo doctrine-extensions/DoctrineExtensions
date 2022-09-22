@@ -92,7 +92,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.9-dev"
+            "dev-main": "3.10-dev"
         }
     },
     "scripts": {
