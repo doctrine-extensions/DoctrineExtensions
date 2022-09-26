@@ -13,12 +13,15 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
+use Gedmo\Sortable\SortableListener;
 
 /**
  * Doctrine event adapter for ORM adapted
  * for sortable behavior
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
+ *
+ * @phpstan-import-type SortableRelocation from SortableListener
  */
 final class ORM extends BaseAdapterORM implements SortableAdapter
 {
@@ -48,6 +51,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
      * @param array $relocation
      * @param array $delta
      * @param array $config
+     * @phpstan-param SortableRelocation $relocation
      *
      * @return void
      */

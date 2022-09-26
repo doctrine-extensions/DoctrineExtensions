@@ -54,7 +54,7 @@
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/mongodb-odm": "^2.3",
         "doctrine/orm": "^2.10.2",
-        "friendsofphp/php-cs-fixer": "^3.4.0",
+        "friendsofphp/php-cs-fixer": "^3.4.0,<3.10",
         "nesbot/carbon": "^2.55",
         "phpstan/phpstan": "^1.1",
         "phpstan/phpstan-doctrine": "^1.0",
@@ -92,7 +92,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.9-dev"
+            "dev-main": "3.10-dev"
         }
     },
     "scripts": {

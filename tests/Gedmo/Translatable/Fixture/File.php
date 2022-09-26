@@ -19,7 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({"file" = "File", "image" = "Image"})
+ * @ORM\DiscriminatorMap({"file": "File", "image": "Image"})
  */
 #[ORM\Entity]
 #[ORM\InheritanceType('JOINED')]

@@ -20,7 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
  *
- * @ORM\Embeddable()
+ * @ORM\Embeddable
  */
 #[ORM\Embeddable]
 class GeoLocation
@@ -28,7 +28,7 @@ class GeoLocation
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @Gedmo\Versioned()
+     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Versioned]

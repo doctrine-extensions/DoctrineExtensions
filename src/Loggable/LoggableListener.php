@@ -11,6 +11,7 @@ namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -20,6 +21,17 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  *
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-type LoggableConfiguration = array{
+ *   loggable?: bool,
+ *   logEntryClass?: class-string,
+ *   useObjectClass?: class-string,
+ *   versioned?: string[],
+ * }
+ *
+ * @phpstan-method LoggableConfiguration getConfiguration(ObjectManager $objectManager, $class)
+ *
+ * @method LoggableAdapter getEventAdapter(EventArgs $args)
  */
 class LoggableListener extends MappedEventSubscriber
 {

@@ -51,12 +51,12 @@ class TreeSlugPrefixSuffix
      * @var string|null
      *
      * @Gedmo\Slug(fields={"title"}, handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *          @Gedmo\SlugHandlerOption(name="separator", value="/"),
-     *          @Gedmo\SlugHandlerOption(name="prefix", value="prefix."),
-     *          @Gedmo\SlugHandlerOption(name="suffix", value=".suffix")
-     *      })
+     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
+     *         @Gedmo\SlugHandlerOption(name="separator", value="/"),
+     *         @Gedmo\SlugHandlerOption(name="prefix", value="prefix."),
+     *         @Gedmo\SlugHandlerOption(name="suffix", value=".suffix")
+     *     })
      * }, separator="-", updatable=true)
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */

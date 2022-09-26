@@ -74,7 +74,7 @@ class MPFeaturesCategory
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="MPFeaturesCategory", inversedBy="children")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]

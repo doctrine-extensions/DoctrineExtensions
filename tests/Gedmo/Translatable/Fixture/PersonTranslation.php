@@ -17,13 +17,13 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 
 /**
  * @ORM\Table(
- *         name="ext_translations",
- *         indexes={@ORM\Index(name="translations_lookup_idx", columns={
- *             "locale", "object_class", "foreign_key"
- *         })},
- *         uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
- *             "locale", "object_class", "foreign_key", "field"
- *         })}
+ *     name="ext_translations",
+ *     indexes={@ORM\Index(name="translations_lookup_idx", columns={
+ *         "locale", "object_class", "foreign_key"
+ *     })},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
+ *         "locale", "object_class", "foreign_key", "field"
+ *     })}
  * )
  * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
