@@ -199,7 +199,6 @@ class Article
 </doctrine-mapping>
 ```
 
-
 <a name="custom-logentry-class"></a>
 
 ## Custom LogEntry class
