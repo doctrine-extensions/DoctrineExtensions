@@ -46,11 +46,11 @@ class Company
      * @var string|null
      *
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\User"),
-     *          @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
-     *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *      })
+     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\User"),
+     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
+     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
+     *     })
      * }, fields={"title"})
      * @ORM\Column(length=64, unique=true)
      */

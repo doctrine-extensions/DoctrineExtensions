@@ -33,7 +33,14 @@ final class TranslatableTest extends BaseTestCaseORM
     public const COMMENT = Comment::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var int|null
+     */
     private $articleId;
+
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void

@@ -30,6 +30,9 @@ final class Issue138Test extends BaseTestCaseORM
     public const TRANSLATION = Translation::class;
     public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -56,7 +59,7 @@ final class Issue138Test extends BaseTestCaseORM
 
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
-        //die($q->getSQL());
+        // die($q->getSQL());
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
         static::assertSame('Food', $result[0]['title']);

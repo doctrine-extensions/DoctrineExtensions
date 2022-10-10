@@ -27,6 +27,39 @@ use Gedmo\Sluggable\Util\Urlizer;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Klein Florian <florian.klein@free.fr>
+ *
+ * @phpstan-type SluggableConfiguration = array{
+ *   mappedBy?: string,
+ *   pathSeparator?: string,
+ *   slug?: string,
+ *   slugs?: array<string, array{
+ *     fields?: string[],
+ *     slug?: string,
+ *     style?: string,
+ *     dateFormat?: string,
+ *     updatable?: bool,
+ *     unique?: bool,
+ *     unique_base?: string,
+ *     separator?: string,
+ *     prefix?: string,
+ *     suffix?: string,
+ *     handlers?: array<class-string, array{
+ *       mappedBy?: string,
+ *       inverseSlugField?: string,
+ *       parentRelationField?: string,
+ *       relationClass?: class-string,
+ *       relationField?: string,
+ *       relationSlugField?: string,
+ *       separator?: string,
+ *     }>,
+ *   }>,
+ *   unique?: bool,
+ *   useObjectClass?: class-string,
+ * }
+ *
+ * @phpstan-method SluggableConfiguration getConfiguration(ObjectManager $objectManager, $class)
+ *
+ * @method SluggableAdapter getEventAdapter(EventArgs $args)
  */
 class SluggableListener extends MappedEventSubscriber
 {
@@ -178,8 +211,7 @@ class SluggableListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass($eventArgs->getObjectManager(), $eventArgs->getClassMetadata());
     }
 
     /**

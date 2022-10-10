@@ -50,11 +50,11 @@ class Article
      * @var string|null
      *
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Document\Handler\RelativeSlug"),
-     *          @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
-     *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="alias")
-     *      })
+     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Document\Handler\RelativeSlug"),
+     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
+     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="alias")
+     *     })
      * }, separator="-", updatable=true, fields={"title", "code"})
      * @ODM\Field(type="string")
      */

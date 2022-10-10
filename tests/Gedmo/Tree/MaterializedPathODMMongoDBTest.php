@@ -134,7 +134,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->flush();
     }
 
-    public function createCategory()
+    public function createCategory(): Category
     {
         $class = self::CATEGORY;
 

@@ -52,6 +52,8 @@ class Company implements Translatable
     private $link;
 
     /**
+     * @var string|null
+     *
      * Used locale to override Translation listener`s locale
      *
      * @Gedmo\Locale
@@ -93,10 +95,7 @@ class Company implements Translatable
         return $this;
     }
 
-    /**
-     * @param mixed $locale
-     */
-    public function setTranslatableLocale($locale): self
+    public function setTranslatableLocale(?string $locale): self
     {
         $this->locale = $locale;
 

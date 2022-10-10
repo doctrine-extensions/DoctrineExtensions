@@ -208,11 +208,11 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Get list of children followed by given $node. This returns a QueryBuilder object
      *
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
      */
@@ -221,11 +221,11 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Get list of children followed by given $node. This returns a Query
      *
-     * @param object|null $node        if null, all tree nodes will be taken
-     * @param bool        $direct      true to take only direct children
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $includeNode Include the root node in results?
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
      * @return Query Query object
      */

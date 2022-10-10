@@ -13,17 +13,32 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class Uploadable
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $mimeType;
 
+    /**
+     * @var array
+     */
     private $fileInfo;
 
+    /**
+     * @var float
+     */
     private $size;
 
+    /**
+     * @var string
+     */
     private $path;
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }

@@ -41,6 +41,9 @@ class Category extends BaseCategory
      */
     private $parent;
 
+    /**
+     * @var \DateTime
+     */
     private $changed;
 
     public function __construct()
@@ -66,10 +69,7 @@ class Category extends BaseCategory
         return $this->title;
     }
 
-    /**
-     * @param string $slug
-     */
-    public function setSlug($slug): void
+    public function setSlug(string $slug): void
     {
         $this->slug = $slug;
     }
@@ -98,10 +98,7 @@ class Category extends BaseCategory
         return $this->children;
     }
 
-    /**
-     * @param Category $parent
-     */
-    public function setParent($parent): void
+    public function setParent(self $parent): void
     {
         $this->parent = $parent;
     }

@@ -46,11 +46,11 @@ class Person
      * @var string|null
      *
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationField", value="occupation"),
-     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *          @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *      })
+     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *         @Gedmo\SlugHandlerOption(name="relationField", value="occupation"),
+     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
+     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
+     *     })
      * }, separator="-", updatable=true, fields={"name"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */

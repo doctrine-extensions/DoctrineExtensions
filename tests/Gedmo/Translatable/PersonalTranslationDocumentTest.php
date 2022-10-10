@@ -27,7 +27,14 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
     public const ARTICLE = Article::class;
     public const TRANSLATION = ArticleTranslation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
+
+    /**
+     * @var string|null
+     */
     private $id;
 
     protected function setUp(): void

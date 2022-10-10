@@ -56,23 +56,17 @@ class BaseCategory
         return $this->created;
     }
 
-    /**
-     * @param \DateTime $updated
-     */
-    public function setUpdated($updated): void
+    public function setUpdated(\DateTime $updated): void
     {
         $this->updated = $updated;
     }
 
-    /**
-     * @return \DateTime $updated
-     */
     public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }
 
-    public function setLeft($left): self
+    public function setLeft(int $left): self
     {
         $this->left = $left;
 
@@ -84,7 +78,7 @@ class BaseCategory
         return $this->left;
     }
 
-    public function setRight($right): self
+    public function setRight(int $right): self
     {
         $this->right = $right;
 
@@ -96,7 +90,7 @@ class BaseCategory
         return $this->right;
     }
 
-    public function setLevel($level): self
+    public function setLevel(int $level): self
     {
         $this->level = $level;
 
@@ -108,7 +102,7 @@ class BaseCategory
         return $this->level;
     }
 
-    public function setRooted($rooted): self
+    public function setRooted(int $rooted): self
     {
         $this->rooted = $rooted;
 

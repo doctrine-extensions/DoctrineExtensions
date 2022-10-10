@@ -24,6 +24,7 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use MongoDB\Client;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Base test case contains common mock objects
@@ -81,13 +82,13 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
      * DocumentManager mock object with
      * annotation mapping driver
      */
-    protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null): DocumentManager
+    protected function getMockMappedDocumentManager(EventManager $evm = null, Configuration $config = null): DocumentManager
     {
-        $conn = $this->getMockBuilder('Doctrine\\MongoDB\\Connection')->getMock();
+        $conn = $this->createStub(Client::class);
 
-        $config = $config ? $config : $this->getMockAnnotatedConfig();
+        $config = $config ?? $this->getMockAnnotatedConfig();
 
-        $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
+        $this->dm = DocumentManager::create($conn, $config, $evm ?? $this->getEventManager());
 
         return $this->dm;
     }
@@ -115,6 +116,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }
@@ -131,6 +133,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }

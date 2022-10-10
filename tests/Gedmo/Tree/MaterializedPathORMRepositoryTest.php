@@ -365,7 +365,10 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    public function createCategory($class = null)
+    /**
+     * @phpstan-param class-string|null $class
+     */
+    public function createCategory(?string $class = null): object
     {
         if (!$class) {
             $class = self::CATEGORY;
@@ -382,6 +385,9 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         ];
     }
 
+    /**
+     * @phpstan-param class-string|null $class
+     */
     private function populate(string $class = null): void
     {
         $root = $this->createCategory($class);

@@ -20,7 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
  *
- * @ORM\Embeddable()
+ * @ORM\Embeddable
  */
 #[ORM\Embeddable]
 class Geo
@@ -29,7 +29,7 @@ class Geo
      * @var string|null
      * @phpstan-var numeric-string|null
      * @ORM\Column(type="decimal", precision=9, scale=6)
-     * @Gedmo\Versioned()
+     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Gedmo\Versioned]
@@ -37,9 +37,9 @@ class Geo
 
     /**
      * @var string|null
-     * @var phpstan-var numeric-string|null
+     * @phpstan-var numeric-string|null
      * @ORM\Column(type="decimal", precision=9, scale=6)
-     * @Gedmo\Versioned()
+     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Gedmo\Versioned]
@@ -48,7 +48,7 @@ class Geo
     /**
      * @var GeoLocation
      * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation")
-     * @Gedmo\Versioned()
+     * @Gedmo\Versioned
      */
     #[ORM\Embedded(class: GeoLocation::class)]
     #[Gedmo\Versioned]

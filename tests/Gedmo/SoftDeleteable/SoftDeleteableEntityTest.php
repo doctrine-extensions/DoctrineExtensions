@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\SoftDeleteable;
 
 use function class_exists;
+
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventManager;

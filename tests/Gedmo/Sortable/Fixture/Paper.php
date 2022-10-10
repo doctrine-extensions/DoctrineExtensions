@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sortable\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,12 +35,16 @@ class Paper
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="name", type="string")
      */
     #[ORM\Column(name: 'name', type: Types::STRING)]
     private $name;
 
     /**
+     * @var Collection<int, Author>
+     *
      * @ORM\OneToMany(targetEntity="Author", mappedBy="paper", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Author::class, cascade: ['persist', 'remove'])]
@@ -55,7 +60,7 @@ class Paper
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -65,12 +70,15 @@ class Paper
         $this->name = $name;
     }
 
-    public function getAuthors(): ArrayCollection
+    /**
+     * @return Collection<int, Author>
+     */
+    public function getAuthors(): Collection
     {
         return $this->authors;
     }
 
-    public function addAuthor($author): void
+    public function addAuthor(Author $author): void
     {
         $this->authors->add($author);
     }

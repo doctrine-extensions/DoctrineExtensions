@@ -456,7 +456,7 @@ class UploadableListener extends MappedEventSubscriber
             $info['fileExtension'] = substr($info['filePath'], strrpos($info['filePath'], '.'));
             $info['fileWithoutExt'] = substr($info['filePath'], 0, strrpos($info['filePath'], '.'));
         } else {
-            $info['fileWithoutExt'] = $info['fileName'];
+            $info['fileWithoutExt'] = $info['filePath'];
         }
 
         // Save the original filename for later use
@@ -535,8 +535,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass($eventArgs->getObjectManager(), $eventArgs->getClassMetadata());
     }
 
     /**

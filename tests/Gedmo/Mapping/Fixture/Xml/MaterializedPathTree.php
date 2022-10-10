@@ -13,17 +13,38 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class MaterializedPathTree
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var string
+     */
     private $path;
 
+    /**
+     * @var \DateTime|null
+     */
     private $lockTime;
 
+    /**
+     * @var string
+     */
     private $pathHash;
 
+    /**
+     * @var MaterializedPathTree
+     */
     private $parent;
 
+    /**
+     * @var int
+     */
     private $level;
 }

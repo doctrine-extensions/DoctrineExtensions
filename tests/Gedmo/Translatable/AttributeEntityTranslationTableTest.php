@@ -32,6 +32,9 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
     public const TRANSLATION = PersonTranslation::class;
     public const FILE = File::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -57,7 +60,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        static::assertTrue($repo instanceof TranslationRepository);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
         // As Translate locale and Default locale are the same, no records should be present in translations table

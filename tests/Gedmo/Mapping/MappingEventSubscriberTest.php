@@ -13,19 +13,16 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
-use Doctrine\Deprecations\Deprecation;
-use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\Persistence\Reflection\TypedNoDefaultReflectionPropertyBase;
+use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sluggable\SluggableListener;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
+use Gedmo\Tests\Mapping\Fixture\Sluggable;
+use Psr\Cache\CacheItemPoolInterface;
 
 final class MappingEventSubscriberTest extends ORMMappingTestCase
 {
-    use VerifyDeprecations;
-    use ExpectDeprecationTrait;
-
     /**
      * @var EntityManager
      */
@@ -47,28 +44,30 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
         $this->em = EntityManager::create($conn, $config, new EventManager());
     }
 
-    /**
-     * @group legacy
-     */
-    public function testGetConfigurationCachedFromDoctrine(): void
+    public function testGetMetadataFactoryCacheFromDoctrine(): void
     {
-        // doctrine/persistence changed from trigger_error to doctrine/deprecations in 2.2.1. In 2.2.2 this trait was
-        // added, this is used to know if the doctrine/persistence version is using trigger_error or
-        // doctrine/deprecations. This "if" check can be removed once we drop support for doctrine/persistence < 2.2.1
-        if (trait_exists(TypedNoDefaultReflectionPropertyBase::class)) {
-            Deprecation::enableWithTriggerError();
+        $metadataFactory = $this->em->getMetadataFactory();
+        $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
+            return $metadataFactory->getCache();
+        }, null, \get_class($metadataFactory));
 
-            $this->expectDeprecationWithIdentifier('https://github.com/doctrine/persistence/issues/184');
-        } else {
-            $this->expectDeprecation('Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheDriver is deprecated. Use getCache() instead.');
-        }
+        $cache = $getCache($metadataFactory);
+
+        $cacheKey = ExtensionMetadataFactory::getCacheId(Sluggable::class, 'Gedmo\Sluggable');
+
+        static::assertFalse($cache->hasItem($cacheKey));
 
         $subscriber = new SluggableListener();
-        $subscriber->getExtensionMetadataFactory($this->em);
+        $classMetadata = $this->em->getClassMetadata(Sluggable::class);
+        $subscriber->getExtensionMetadataFactory($this->em)->getExtensionMetadata($classMetadata);
+
+        static::assertTrue($cache->hasItem($cacheKey));
     }
 
     protected function getUsedEntityFixtures(): array
     {
-        return [];
+        return [
+            Sluggable::class,
+        ];
     }
 }

@@ -87,7 +87,7 @@ class Event
         return $this->name;
     }
 
-    public function setPosition($position): void
+    public function setPosition(int $position): void
     {
         $this->position = $position;
     }

@@ -13,11 +13,23 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class LoggableWithEmbedded
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $title;
 
+    /**
+     * @var Status
+     */
     private $status;
 
+    /**
+     * @var Embedded
+     */
     private $embedded;
 }

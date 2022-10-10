@@ -18,8 +18,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
  *
- * @ORM\Entity()
- * @Gedmo\Loggable()
+ * @ORM\Entity
+ * @Gedmo\Loggable
  */
 #[ORM\Entity]
 #[Gedmo\Loggable]
@@ -27,7 +27,7 @@ class Address
 {
     /**
      * @var int|null
-     * @ORM\Id()
+     * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -39,7 +39,7 @@ class Address
     /**
      * @var string|null
      * @ORM\Column(type="string", length=191)
-     * @Gedmo\Versioned()
+     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     #[Gedmo\Versioned]
@@ -48,7 +48,7 @@ class Address
     /**
      * @var string|null
      * @ORM\Column(type="string", length=191)
-     * @Gedmo\Versioned()
+     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     #[Gedmo\Versioned]
@@ -57,7 +57,7 @@ class Address
     /**
      * @var Geo|null
      * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\Geo")
-     * @Gedmo\Versioned()
+     * @Gedmo\Versioned
      */
     #[ORM\Embedded(class: Geo::class)]
     #[Gedmo\Versioned]

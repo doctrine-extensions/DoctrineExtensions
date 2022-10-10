@@ -162,6 +162,7 @@ class TranslationRepository extends DocumentRepository
      * @param string $field
      * @param string $value
      * @param string $class
+     * @phpstan-param class-string $class
      *
      * @return object|null instance of $class or null if not found
      */

@@ -113,7 +113,7 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $this->dm->flush();
     }
 
-    public function createArticle()
+    public function createArticle(): Article
     {
         $class = self::ARTICLE;
 

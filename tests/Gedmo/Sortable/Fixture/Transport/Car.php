@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture\Transport;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,6 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Car extends Vehicle
 {
     /**
+     * @var self|null
+     *
      * @ORM\ManyToOne(targetEntity="Car", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -28,22 +31,27 @@ class Car extends Vehicle
     private $parent;
 
     /**
+     * @var Collection<int, self>
+     *
      * @ORM\OneToMany(targetEntity="Car", mappedBy="parent")
      */
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private $children;
 
-    public function setParent($parent = null): void
+    public function setParent(?self $parent = null): void
     {
         $this->parent = $parent;
     }
 
-    public function getChildren()
+    /**
+     * @return Collection<int, self>
+     */
+    public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }

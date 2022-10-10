@@ -61,7 +61,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
 
-        //getScheduledDocumentDeletions
+        // getScheduledDocumentDeletions
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             $config = $this->getConfiguration($om, $meta->getName());
@@ -109,8 +109,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass($eventArgs->getObjectManager(), $eventArgs->getClassMetadata());
     }
 
     protected function getNamespace()

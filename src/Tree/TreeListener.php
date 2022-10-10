@@ -13,6 +13,7 @@ use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Tree\Mapping\Event\TreeAdapter;
 
 /**
  * The tree listener handles the synchronization of
@@ -20,6 +21,32 @@ use Gedmo\Mapping\MappedEventSubscriber;
  * strategies on handling the tree.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-type TreeConfiguration = array{
+ *   activate_locking?: bool,
+ *   closure?: class-string,
+ *   left?: string,
+ *   level?: string,
+ *   lock_time?: string,
+ *   locking_timeout?: int,
+ *   parent?: string,
+ *   path?: string,
+ *   path_source?: string,
+ *   path_separator?: string,
+ *   path_append_id?: bool,
+ *   path_starts_with_separator?: bool,
+ *   path_ends_with_separator?: bool,
+ *   path_hash?: string,
+ *   right?: string,
+ *   root?: string,
+ *   rootIdentifierMethod?: string,
+ *   strategy?: string,
+ *   useObjectClass?: class-string,
+ * }
+ *
+ * @phpstan-method TreeConfiguration getConfiguration(ObjectManager $objectManager, $class)
+ *
+ * @method TreeAdapter getEventAdapter(EventArgs $args)
  */
 class TreeListener extends MappedEventSubscriber
 {
@@ -254,8 +281,7 @@ class TreeListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
+        $om = $eventArgs->getObjectManager();
         $meta = $eventArgs->getClassMetadata();
         $this->loadMetadataForObjectClass($om, $meta);
         if (isset(self::$configurations[$this->name][$meta->getName()]) && self::$configurations[$this->name][$meta->getName()]) {

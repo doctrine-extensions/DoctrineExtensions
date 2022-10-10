@@ -46,7 +46,7 @@ class Article
     /**
      * @var string
      *
-     * @Gedmo\Locale()
+     * @Gedmo\Locale
      */
     #[Gedmo\Locale]
     private $locale;

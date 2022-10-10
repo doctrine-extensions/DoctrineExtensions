@@ -88,6 +88,9 @@ class PersonCustom
         return $this->description;
     }
 
+    /**
+     * @return self|CustomProxy
+     */
     public function translate(string $locale = null)
     {
         if (null === $locale) {
@@ -95,10 +98,10 @@ class PersonCustom
         }
 
         return new CustomProxy($this,
-        /* Locale                            */ $locale,
-        /* List of translatable properties:  */ ['name'],
-        /* Translation entity class:         */ PersonCustomTranslation::class,
-        /* Translations collection property: */ $this->translations
+            $locale, // Locale
+            ['name'], // List of translatable properties
+            PersonCustomTranslation::class, // Translation entity class
+            $this->translations // Translations collection property
         );
     }
 }

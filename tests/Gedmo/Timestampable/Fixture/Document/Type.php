@@ -20,23 +20,31 @@ use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 #[ODM\Document(collection: 'types')]
 class Type
 {
-    /** @ODM\Id */
+    /**
+     * @var string|null
+     *
+     * @ODM\Id
+     */
     #[ODM\Id]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
     private $title;
 
     /**
+     * @var string|null
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
     private $identifier;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -46,12 +54,12 @@ class Type
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getIdentifier()
+    public function getIdentifier(): ?string
     {
         return $this->identifier;
     }

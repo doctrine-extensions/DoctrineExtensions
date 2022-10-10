@@ -106,7 +106,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
                             continue;
                         }
 
-                        $objectSlug = $meta->getReflectionProperty($mappedByConfig['slug'])->getValue($object);
+                        $objectSlug = (string) $meta->getReflectionProperty($mappedByConfig['slug'])->getValue($object);
                         if (preg_match("@^{$oldSlug}@smi", $objectSlug)) {
                             $objectSlug = str_replace($oldSlug, $slug, $objectSlug);
                             $meta->getReflectionProperty($mappedByConfig['slug'])->setValue($object, $objectSlug);

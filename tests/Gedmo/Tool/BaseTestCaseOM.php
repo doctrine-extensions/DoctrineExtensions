@@ -37,6 +37,7 @@ use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
 use MongoDB\Client;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Base test case contains common mock objects
@@ -121,7 +122,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $config = $this->getMockORMConfig($mappingDriver);
         $em = EntityManager::create($conn, $config, $this->getEventManager());
 
-        $schema = array_map(static function ($class) use ($em) {
+        $schema = array_map(static function (string $class) use ($em) {
             return $em->getClassMetadata($class);
         }, $fixtures);
 
@@ -167,6 +168,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setMetadataDriverImpl($mappingDriver);
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }
@@ -187,6 +189,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $config->setNamingStrategy(new DefaultNamingStrategy());
         $config->setMetadataDriverImpl($mappingDriver ?? $this->getORMDriver());
         $config->setRepositoryFactory(new DefaultRepositoryFactoryORM());
+        $config->setMetadataCache(new ArrayAdapter());
 
         return $config;
     }

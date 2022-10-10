@@ -504,7 +504,24 @@ final class UploadableEntityTest extends BaseTestCaseORM
         static::assertFalse($this->listener->removeFile('non_existent_file'));
     }
 
-    public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): void
+    public function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): array
+    {
+        return [
+            'With extension' => [
+                'Filename' => 'test.txt',
+                'Expected filename' => 'test-2.txt',
+            ],
+            'Without extension' => [
+                'Filename' => 'test',
+                'Expected filename' => 'test-2',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists
+     */
+    public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(string $filename, string $expectedFilename): void
     {
         $file = new FileAppendNumber();
         $file2 = new FileAppendNumber();
@@ -512,7 +529,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $file->setTitle('test');
         $file2->setTitle('test2');
 
-        $fileInfo = $this->generateUploadedFile();
+        $fileInfo = $this->generateUploadedFile(null, $filename);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -526,9 +543,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        $filename = substr($file2->getFilePath(), strrpos($file2->getFilePath(), '/') + 1);
-
-        static::assertSame('test-2.txt', $filename);
+        static::assertSame($expectedFilename, basename($file2->getFilePath()));
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath(): void
@@ -608,7 +623,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $file = new FileWithMaxSize();
         $size = 1;
-        $fileInfo = $this->generateUploadedFile(false, false, ['size' => $size]);
+        $fileInfo = $this->generateUploadedFile(null, null, ['size' => $size]);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -669,6 +684,8 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
+     * @param mixed $class
+     *
      * @dataProvider invalidFileInfoClassesProvider
      */
     public function testSetDefaultFileInfoClassThrowExceptionIfInvalidClassArePassed($class): void
@@ -768,11 +785,11 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     // Util
 
-    private function generateUploadedFile($filePath = false, $filename = false, array $info = []): array
+    private function generateUploadedFile(?string $filePath = null, ?string $filename = null, array $info = []): array
     {
         $defaultInfo = [
-            'tmp_name' => !$filePath ? $this->testFile : $filePath,
-            'name' => !$filename ? $this->testFilename : $filename,
+            'tmp_name' => $filePath ?? $this->testFile,
+            'name' => $filename ?? $this->testFilename,
             'size' => $this->testFileSize,
             'type' => $this->testFileMimeType,
             'error' => 0,

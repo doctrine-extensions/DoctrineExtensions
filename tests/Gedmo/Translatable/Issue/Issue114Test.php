@@ -29,6 +29,9 @@ final class Issue114Test extends BaseTestCaseORM
     public const ARTICLE = Article::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -48,7 +51,7 @@ final class Issue114Test extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
 
-        //Categories
+        // Categories
         $category1 = new Category();
         $category1->setTitle('en category1');
 
@@ -59,7 +62,7 @@ final class Issue114Test extends BaseTestCaseORM
         $this->em->persist($category2);
         $this->em->flush();
 
-        //Articles
+        // Articles
         $article1 = new Article();
         $article1->setTitle('en article1');
         $article1->setCategory($category1);

@@ -20,17 +20,23 @@ use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 class User
 {
     /**
+     * @var string|null
+     *
      * @ODM\Id
      */
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Ext\Encode(type="sha1", secret="xxx")
      * @ODM\Field(type="string")
      */
     private $name;
 
     /**
+     * @var string|null
+     *
      * @Ext\Encode(type="md5")
      * @ODM\Field(type="string")
      */
@@ -41,17 +47,17 @@ class User
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setPassword($password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }

@@ -22,6 +22,9 @@ final class ExtensionORMTest extends BaseTestCaseORM
 {
     public const USER = User::class;
 
+    /**
+     * @var EncoderListener
+     */
     private $encoderListener;
 
     protected function setUp(): void

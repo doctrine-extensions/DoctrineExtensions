@@ -10,15 +10,50 @@ changes, in order to more easily recognize how an Extension has changed in
 a release.
 
 ```
-## [2.4.36] - 2018-07-26
-### Sortable
-#### Fixed
-- Fix issue with add+delete position synchronization (#1932)
+## [3.6.1] - 2022-07-26
+### Fixed
+- Sortable: Fix issue with add+delete position synchronization (#1932)
 ```
 
 ---
 
 ## [Unreleased]
+
+## [3.9.0] - 2022-09-22
+### Fixed
+- Tree: Allow sorting children by a ManyToOne relation (#2492)
+- Tree: Fix passing `null` to `abs()` function
+- Timestampable: Use an attribute in Timestampable attribute docs
+
+### Deprecated
+- Tree: Passing `null` as argument 8 to `Nested::shiftRangeRL()`
+
+## [3.8.0] - 2022-07-17
+### Added
+- Sluggable: Add support for `DateTimeImmutable` fields
+- Tree: [NestedSet] `childrenQueryBuilder()` to allow specifying sort order separately for each field
+- Tree: [NestedSet] Added option to reorder only direct children in `reorder()` method
+
+### Changed
+- Tree: In `ClosureTreeRepository::removeFromTree()` and `NestedTreeRepository::removeFromTree()` when something fails in the transaction, it uses the `code` from the original exception to construct the `\Gedmo\Exception\RuntimeException` instance instead of `null`.
+
+### Fixed
+- Sluggable: Cast slug to string before passing it as argument 2 to `preg_match()` (#2473)
+- Sortable: [SortableGroup] Fix sorting date columns in SQLite (#2462).
+- PHPDoc of `AbstractMaterializedPath::removeNode()` and `AbstractMaterializedPath::getChildren()`
+- Retrieving the proper metadata cache from Doctrine when using a CacheWarmer.
+
+## [3.7.0] - 2022-05-17
+### Added
+- Add support for doctrine/persistence 3
+
+### Changed
+- Removed call to deprecated `ClassMetadataFactory::getCacheDriver()` method.
+- Dropped support for doctrine/mongodb-odm < 2.3.
+- Make doctrine/cache an optional dependency.
+
+### Fixed
+- Loggable: Fix `appendNumber` renaming for files without extension (#2228)
 
 ## [3.6.0] - 2022-03-19
 ### Added

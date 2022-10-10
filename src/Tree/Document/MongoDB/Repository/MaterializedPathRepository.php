@@ -111,18 +111,24 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $nodePath = preg_quote($node->getPropertyValue($config['path']));
 
             if ($direct) {
-                $regex = sprintf('^%s([^%s]+%s)'.($includeNode ? '?' : '').'$',
-                     $nodePath,
-                     $separator,
-                     $separator);
+                $regex = sprintf(
+                    '^%s([^%s]+%s)'.($includeNode ? '?' : '').'$',
+                    $nodePath,
+                    $separator,
+                    $separator
+                );
             } else {
-                $regex = sprintf('^%s(.+)'.($includeNode ? '?' : ''),
-                     $nodePath);
+                $regex = sprintf(
+                    '^%s(.+)'.($includeNode ? '?' : ''),
+                    $nodePath
+                );
             }
         } elseif ($direct) {
-            $regex = sprintf('^([^%s]+)'.($includeNode ? '?' : '').'%s$',
+            $regex = sprintf(
+                '^([^%s]+)'.($includeNode ? '?' : '').'%s$',
                 $separator,
-                $separator);
+                $separator
+            );
         }
 
         if ($regex) {

@@ -46,8 +46,8 @@ class Comment
      *
      * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
      * @ORM\JoinColumns({
-     *    @ORM\JoinColumn(name="post_title", referencedColumnName="title", nullable=false),
-     *    @ORM\JoinColumn(name="post_slug", referencedColumnName="slug", nullable=false)
+     *     @ORM\JoinColumn(name="post_title", referencedColumnName="title", nullable=false),
+     *     @ORM\JoinColumn(name="post_slug", referencedColumnName="slug", nullable=false)
      * })
      */
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]

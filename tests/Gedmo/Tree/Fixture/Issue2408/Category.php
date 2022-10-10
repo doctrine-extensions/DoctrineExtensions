@@ -105,7 +105,7 @@ class Category
      * @var Collection<int, Category>
      *
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
-     * @ORM\OrderBy({"lft" = "ASC"})
+     * @ORM\OrderBy({"lft": "ASC"})
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     #[ORM\OrderBy(['lft' => 'ASC'])]

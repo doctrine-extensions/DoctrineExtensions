@@ -40,6 +40,8 @@ class UsingTrait
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
@@ -55,7 +57,7 @@ class UsingTrait
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

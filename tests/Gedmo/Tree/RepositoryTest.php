@@ -94,6 +94,52 @@ final class RepositoryTest extends BaseTestCaseORM
 
         static::assertCount(6, $children);
 
+        // test children sorting
+
+        $children = $this->em->getRepository(self::CATEGORY)
+             ->children($food, true, ['title'], 'ASC');
+
+        static::assertCount(2, $children);
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY)
+             ->children($food, false, ['level', 'title'], ['ASC', 'DESC']);
+
+        static::assertCount(4, $children);
+        static::assertSame('Vegitables', $children[0]->getTitle());
+        static::assertSame('Fruits', $children[1]->getTitle());
+        static::assertSame('Potatoes', $children[2]->getTitle());
+        static::assertSame('Carrots', $children[3]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY)
+             ->children($food, false, ['level', 'title'], ['ASC']);
+
+        static::assertCount(4, $children);
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[2]->getTitle());
+        static::assertSame('Potatoes', $children[3]->getTitle());
+
+        // test sorting by single-valued association field
+        $children = $this->em->getRepository(self::CATEGORY)
+            ->children($food, false, 'parentId');
+
+        static::assertCount(4, $children);
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[2]->getTitle());
+        static::assertSame('Potatoes', $children[3]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY)
+            ->children($food, false, ['parentId'], ['ASC']);
+
+        static::assertCount(4, $children);
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[2]->getTitle());
+        static::assertSame('Potatoes', $children[3]->getTitle());
+
         // path
 
         $path = $this->em->getRepository(self::CATEGORY)

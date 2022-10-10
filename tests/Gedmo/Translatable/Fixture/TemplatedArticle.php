@@ -35,6 +35,8 @@ class TemplatedArticle extends ArticleTemplate
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(type="string", length=128)
      */
@@ -47,7 +49,7 @@ class TemplatedArticle extends ArticleTemplate
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }

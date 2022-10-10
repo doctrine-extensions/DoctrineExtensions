@@ -19,10 +19,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("base_entity")
  * @ORM\Inheritancetype("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap
- * ({
- * "base" = "BaseEntity",
- * "child" = "ChildEntity"
+ * @ORM\DiscriminatorMap({
+ *     "base": "BaseEntity",
+ *     "child": "ChildEntity"
  * })
  */
 #[ORM\Entity]
@@ -33,6 +32,8 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class BaseEntity
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")

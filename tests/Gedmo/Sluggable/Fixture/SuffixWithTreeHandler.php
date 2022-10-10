@@ -52,10 +52,10 @@ class SuffixWithTreeHandler implements Sluggable
      * @var string|null
      *
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *          @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *      })
+     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
+     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
+     *     })
      * }, separator="-", updatable=true, fields={"title"}, suffix=".test")
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */

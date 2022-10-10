@@ -10,6 +10,7 @@
 namespace Gedmo\Mapping;
 
 use function class_exists;
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
@@ -18,6 +19,9 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -43,6 +47,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * other listener configuration
      *
      * @var array
+     * @phpstan-var array<string, array<class-string, array<string, mixed>>>
      */
     protected static $configurations = [];
 
@@ -96,8 +101,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * if cache driver is present it scans it also
      *
      * @param string $class
+     * @phpstan-param class-string $class
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getConfiguration(ObjectManager $objectManager, $class)
     {
@@ -286,16 +292,26 @@ abstract class MappedEventSubscriber implements EventSubscriber
             return $this->cacheItemPool;
         }
 
-        $factory = $objectManager->getMetadataFactory();
-        $cacheDriver = $factory->getCacheDriver();
+        // TODO: The user should configure its own cache, we are using the one from Doctrine for BC. We should deprecate using
+        // the one from Doctrine when the bundle offers an easy way to configure this cache, otherwise users using the bundle
+        // will see lots of deprecations without an easy way to avoid them.
 
-        if (null === $cacheDriver) {
-            $this->cacheItemPool = new ArrayAdapter();
+        if ($objectManager instanceof EntityManagerInterface || $objectManager instanceof DocumentManager) {
+            $metadataFactory = $objectManager->getMetadataFactory();
+            $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
+                return $metadataFactory->getCache();
+            }, null, \get_class($metadataFactory));
 
-            return $this->cacheItemPool;
+            $metadataCache = $getCache($metadataFactory);
+
+            if (null !== $metadataCache) {
+                $this->cacheItemPool = $metadataCache;
+
+                return $this->cacheItemPool;
+            }
         }
 
-        $this->cacheItemPool = CacheAdapter::wrap($cacheDriver);
+        $this->cacheItemPool = new ArrayAdapter();
 
         return $this->cacheItemPool;
     }

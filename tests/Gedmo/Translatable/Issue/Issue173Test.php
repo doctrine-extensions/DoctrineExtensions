@@ -34,6 +34,9 @@ final class Issue173Test extends BaseTestCaseORM
     public const PRODUCT = Product::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -62,7 +65,7 @@ final class Issue173Test extends BaseTestCaseORM
         static::assertCount(1, $categories, '$category3 has no associations');
     }
 
-    public function getCategoriesThatHasNoAssociations()
+    public function getCategoriesThatHasNoAssociations(): array
     {
         $query = $this->em->createQueryBuilder();
         $query2 = $this->em->createQueryBuilder();
@@ -84,7 +87,7 @@ final class Issue173Test extends BaseTestCaseORM
             ->from(self::CATEGORY, 'c')
             ->where($query->expr()->notIn('c.id', $dql1))
             ->andWhere($query->expr()->notIn('c.id', $dql2))
-            ;
+        ;
 
         return $query->getQuery()->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
@@ -104,7 +107,7 @@ final class Issue173Test extends BaseTestCaseORM
 
     private function populate(): void
     {
-        //Categories
+        // Categories
         $category1 = new Category();
         $category1->setTitle('en category1');
 
@@ -119,12 +122,12 @@ final class Issue173Test extends BaseTestCaseORM
         $this->em->persist($category3);
         $this->em->flush();
 
-        //Articles
+        // Articles
         $article1 = new Article();
         $article1->setTitle('en article1');
         $article1->setCategory($category1);
 
-        //Products
+        // Products
         $product1 = new Product();
         $product1->setTitle('en product1');
         $product1->setCategory($category2);

@@ -9,11 +9,11 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
@@ -21,6 +21,7 @@ use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
+use Psr\Cache\CacheItemPoolInterface;
 
 /**
  * This strategy makes tree act like
@@ -195,15 +196,21 @@ class Closure implements Strategy
         }
 
         if (!$hasTheUserExplicitlyDefinedMapping) {
-            $cacheDriver = $cmf->getCacheDriver();
+            $metadataFactory = $em->getMetadataFactory();
+            $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
+                return $metadataFactory->getCache();
+            }, null, \get_class($metadataFactory));
 
-            if ($cacheDriver instanceof Cache) {
+            $metadataCache = $getCache($metadataFactory);
+
+            if (null !== $metadataCache) {
                 // @see https://github.com/doctrine/persistence/pull/144
                 // @see \Doctrine\Persistence\Mapping\AbstractClassMetadataFactory::getCacheKey()
-                $cacheDriver->save(
-                    str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__',
-                    $closureMetadata
-                );
+                $cacheKey = str_replace('\\', '__', $closureMetadata->getName()).'__CLASSMETADATA__';
+
+                $item = $metadataCache->getItem($cacheKey);
+
+                $metadataCache->save($item->set($closureMetadata));
             }
         }
     }
@@ -481,7 +488,7 @@ class Closure implements Strategy
 
             $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAllNumeric();
 
-            //create key pair array with resultset
+            // create key pair array with resultset
             $levels = [];
             foreach ($levelsAssoc as $level) {
                 $levels[$level[0]] = $level[1];

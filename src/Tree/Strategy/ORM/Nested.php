@@ -125,9 +125,7 @@ class Nested implements Strategy
         }
         if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !isset($config['rootIdentifierMethod'])) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
-        } elseif (isset($config['rootIdentifierMethod']) && null === $meta->getReflectionProperty($config['root'])->getValue(
-                $node
-            )) {
+        } elseif (isset($config['rootIdentifierMethod']) && null === $meta->getReflectionProperty($config['root'])->getValue($node)) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         }
     }
@@ -529,6 +527,8 @@ class Nested implements Strategy
      * @param string $class
      * @param int    $rootId
      *
+     * @phpstan-param class-string $class
+     *
      * @return int
      */
     public function max(EntityManagerInterface $em, $class, $rootId = 0)
@@ -555,10 +555,9 @@ class Nested implements Strategy
      * @param string     $class
      * @param int        $first
      * @param int        $delta
-     * @param string     $class
-     * @param int        $first
-     * @param int        $delta
      * @param int|string $root
+     *
+     * @phpstan-param class-string $class
      *
      * @return void
      */
@@ -634,10 +633,24 @@ class Nested implements Strategy
      * @param int|string $destRoot
      * @param int        $levelDelta
      *
+     * @phpstan-param class-string $class
+     *
      * @return void
      */
     public function shiftRangeRL(EntityManagerInterface $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {
+        // @todo: Remove the following condition and assignment in the next major release and use 0 as default value for
+        // the `$levelDelta` parameter.
+        if (null === $levelDelta && func_num_args() >= 8) {
+            @trigger_error(sprintf(
+                'Passing a type different than "int" as argument 8 to "%s()" is deprecated since gedmo/doctrine-extensions'.
+                ' 3.9 and will throw a "%s" error in version 4.0.',
+                __METHOD__,
+                \TypeError::class
+            ), E_USER_DEPRECATED);
+        }
+        $levelDelta = $levelDelta ?? 0;
+
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);
 

@@ -14,6 +14,7 @@ use Doctrine\Common\EventArgs;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 use ProxyManager\Proxy\GhostObjectInterface;
@@ -26,11 +27,33 @@ use ProxyManager\Proxy\GhostObjectInterface;
  * since it does some additional calculations on persisted objects.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
+ *
+ * @phpstan-type SortableConfiguration = array{
+ *   groups?: string[],
+ *   position?: string,
+ *   useObjectClass?: class-string,
+ * }
+ *
+ * @phpstan-type SortableRelocation = array{
+ *   name?: class-string,
+ *   groups?: mixed[],
+ *   deltas?: array<array{
+ *     delta: int,
+ *     exclude: int[],
+ *     start: int,
+ *     stop: int,
+ *   }>,
+ * }
+ *
+ * @phpstan-method SortableConfiguration getConfiguration(ObjectManager $objectManager, $class)
+ *
+ * @method SortableAdapter getEventAdapter(EventArgs $args)
  */
 class SortableListener extends MappedEventSubscriber
 {
     /**
      * @var array<string, array<string, mixed>>
+     * @phpstan-var array<string, SortableRelocation>
      */
     private $relocations = [];
 

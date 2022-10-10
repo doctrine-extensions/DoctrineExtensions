@@ -110,7 +110,7 @@ class Category
         $this->closures[] = $closure;
     }
 
-    public function setLevel($level): void
+    public function setLevel(?int $level): void
     {
         $this->level = $level;
     }

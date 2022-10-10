@@ -183,7 +183,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         }
 
-        //Default translation is en_us, so we expect the results in that locale
+        // Default translation is en_us, so we expect the results in that locale
         static::assertSame('Food', $result[0]->getTitle());
         static::assertSame('about food', $result[0]->getContent());
     }
@@ -232,7 +232,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         }
 
-        //Default translation is en_us, so we expect the results in that locale
+        // Default translation is en_us, so we expect the results in that locale
         static::assertSame('Food', $result[0]['title']);
         static::assertSame('about food', $result[0]['content']);
     }
@@ -285,7 +285,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         }
 
-        //Default translation is en_us, so we expect the results in that locale
+        // Default translation is en_us, so we expect the results in that locale
         static::assertSame('Food', $result[0]->getTitle());
         static::assertSame('John Doe', $result[0]->getAuthor());
         static::assertNull($result[0]->getViews()); // optional fallback is false,  thus no translation required
@@ -399,7 +399,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         }
 
-        //Default translation is en_us, so we expect the results in that locale
+        // Default translation is en_us, so we expect the results in that locale
         static::assertSame('Food', $result[0]->getTitle());
         static::assertSame('about food', $result[0]->getContent());
 
@@ -408,7 +408,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $q->setHint(TranslatableListener::HINT_FALLBACK, 1);
 
         $result = $q->getResult();
-        //Default translation is en_us, so we expect the results in that locale
+        // Default translation is en_us, so we expect the results in that locale
         static::assertSame('Food', $result[0]->getTitle());
         static::assertSame('about food', $result[0]->getContent());
 
@@ -417,7 +417,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $q->setHint(TranslatableListener::HINT_FALLBACK, 0);
 
         $result = $q->getResult();
-        //Default translation is en_us, so we expect the results in that locale
+        // Default translation is en_us, so we expect the results in that locale
         static::assertNull($result[0]->getTitle());
         static::assertNull($result[0]->getContent());
     }

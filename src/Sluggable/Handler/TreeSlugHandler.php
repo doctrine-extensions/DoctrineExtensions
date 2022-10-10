@@ -106,7 +106,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
             if (isset($options['suffix'])) {
                 $suffix = $options['suffix'];
 
-                if (substr($this->parentSlug, -strlen($suffix)) === $suffix) { //endsWith
+                if (substr($this->parentSlug, -strlen($suffix)) === $suffix) { // endsWith
                     $this->parentSlug = substr_replace($this->parentSlug, '', -1 * strlen($suffix));
                 }
             }
@@ -146,7 +146,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
                         continue;
                     }
 
-                    $objectSlug = $meta->getReflectionProperty($config['slug'])->getValue($object);
+                    $objectSlug = (string) $meta->getReflectionProperty($config['slug'])->getValue($object);
                     if (preg_match("@^{$target}{$config['pathSeparator']}@smi", $objectSlug)) {
                         $objectSlug = str_replace($target, $slug, $objectSlug);
                         $meta->getReflectionProperty($config['slug'])->setValue($object, $objectSlug);

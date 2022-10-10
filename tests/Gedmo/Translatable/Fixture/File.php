@@ -19,7 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({"file" = "File", "image" = "Image"})
+ * @ORM\DiscriminatorMap({"file": "File", "image": "Image"})
  */
 #[ORM\Entity]
 #[ORM\InheritanceType('JOINED')]
@@ -40,6 +40,8 @@ class File
     private $id;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
@@ -48,6 +50,8 @@ class File
     private $name;
 
     /**
+     * @var int|null
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -58,17 +62,17 @@ class File
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setSize($size): void
+    public function setSize(?int $size): void
     {
         $this->size = $size;
     }
 
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }

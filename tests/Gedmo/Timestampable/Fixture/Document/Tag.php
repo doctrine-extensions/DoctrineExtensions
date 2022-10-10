@@ -16,7 +16,7 @@ use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ODM\EmbeddedDocument()
+ * @ODM\EmbeddedDocument
  */
 #[ODM\EmbeddedDocument]
 class Tag

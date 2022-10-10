@@ -21,6 +21,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class SupperClassExtension extends MappedSupperClass
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      * @Gedmo\Translatable
      */
@@ -33,7 +35,7 @@ class SupperClassExtension extends MappedSupperClass
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }

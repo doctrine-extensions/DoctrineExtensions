@@ -36,15 +36,15 @@ jobs:
           - deps: "lowest"
             php-version: "7.2"
           - deps: "highest"
-            php-version: "8.0"
+            php-version: "8.1"
             dbal-version: "^2.13.1"
           - deps: "highest"
-            php-version: "8.0"
+            php-version: "8.1"
             dbal-version: "^3.2"
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v3"
         with:
           fetch-depth: 2
 
@@ -60,7 +60,7 @@ jobs:
         run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v2"
         with:
           dependency-versions: "${{ matrix.deps }}"
 
@@ -79,7 +79,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
@@ -88,7 +88,7 @@ jobs:
           extensions: mongodb
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v2"
         with:
           dependency-versions: "highest"
 

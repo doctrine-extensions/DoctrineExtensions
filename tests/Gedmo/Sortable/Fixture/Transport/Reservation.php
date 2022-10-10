@@ -34,6 +34,8 @@ class Reservation
     private $id;
 
     /**
+     * @var Bus|null
+     *
      * @ORM\ManyToOne(targetEntity="Bus")
      */
     #[ORM\ManyToOne(targetEntity: Bus::class)]
@@ -41,6 +43,8 @@ class Reservation
 
     /**
      * Bus destination
+     *
+     * @var string|null
      *
      * @Gedmo\SortableGroup
      * @ORM\Column(length=191)
@@ -50,6 +54,8 @@ class Reservation
     private $destination;
 
     /**
+     * @var \DateTime|null
+     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
@@ -58,6 +64,8 @@ class Reservation
     private $travelDate;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
@@ -66,6 +74,8 @@ class Reservation
     private $seat;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=191)
      */
     #[ORM\Column(length: 191)]
@@ -81,17 +91,17 @@ class Reservation
         $this->bus = $bus;
     }
 
-    public function getBus()
+    public function getBus(): ?Bus
     {
         return $this->bus;
     }
 
-    public function setDestination($destination): void
+    public function setDestination(?string $destination): void
     {
         $this->destination = $destination;
     }
 
-    public function getDestination()
+    public function getDestination(): ?string
     {
         return $this->destination;
     }
@@ -101,17 +111,17 @@ class Reservation
         $this->travelDate = $date;
     }
 
-    public function getTravelDate()
+    public function getTravelDate(): ?\DateTime
     {
         return $this->travelDate;
     }
 
-    public function setSeat($seat): void
+    public function setSeat(?int $seat): void
     {
         $this->seat = $seat;
     }
 
-    public function getSeat()
+    public function getSeat(): ?int
     {
         return $this->seat;
     }
@@ -121,7 +131,7 @@ class Reservation
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
