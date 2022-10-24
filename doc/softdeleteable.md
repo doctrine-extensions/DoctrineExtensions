@@ -165,19 +165,6 @@ class Article
 }
 ```
 
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-    deletedAt:
-      type: date
-      nullable: true
-```
-
 <a name="xml-mapping"></a>
 
 ## Xml mapping example
