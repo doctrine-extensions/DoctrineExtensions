@@ -159,6 +159,51 @@ final class SortableTest extends BaseTestCaseORM
         }
     }
 
+    public function testShouldShiftPositionsProperlyWhenMoreThanOneWasUpdated(): void
+    {
+        $node2 = new Node();
+        $node2->setName('Node2');
+        $node2->setPath('/');
+        $this->em->persist($node2);
+
+        $node3 = new Node();
+        $node3->setName('Node3');
+        $node3->setPath('/');
+        $this->em->persist($node3);
+
+        $node = new Node();
+        $node->setName('Node4');
+        $node->setPath('/');
+        $this->em->persist($node);
+
+        $node = new Node();
+        $node->setName('Node5');
+        $node->setPath('/');
+        $this->em->persist($node);
+
+        $this->em->flush();
+
+        static::assertSame(1, $node2->getPosition());
+        $node2->setPosition(3);
+        $node3->setPosition(4);
+        $this->em->persist($node2);
+        $this->em->persist($node3);
+        $this->em->flush();
+
+        $repo = $this->em->getRepository(self::NODE);
+        $nodes = $repo->getBySortableGroups(['path' => '/']);
+
+        static::assertSame('Node1', $nodes[0]->getName());
+        static::assertSame('Node4', $nodes[1]->getName());
+        static::assertSame('Node5', $nodes[2]->getName());
+        static::assertSame('Node2', $nodes[3]->getName());
+        static::assertSame('Node3', $nodes[4]->getName());
+
+        for ($i = 0; $i < count($nodes); ++$i) {
+            static::assertSame($i, $nodes[$i]->getPosition());
+        }
+    }
+
     public function testShouldShiftPositionBackward(): void
     {
         $node = new Node();

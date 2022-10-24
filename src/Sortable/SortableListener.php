@@ -122,12 +122,18 @@ class SortableListener extends MappedEventSubscriber
             }
         }
 
+        $updateValues = [];
         // process all objects being updated
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->getName())) {
-                $this->processUpdate($ea, $config, $meta, $object);
+                $position = $meta->getReflectionProperty($config['position'])->getValue($object);
+                $updateValues[$position] = [$ea, $config, $meta, $object];
             }
+        }
+        krsort($updateValues);
+        foreach ($updateValues as [$ea, $config, $meta, $object]) {
+            $this->processUpdate($ea, $config, $meta, $object);
         }
 
         // process all objects being inserted
@@ -483,18 +489,6 @@ class SortableListener extends MappedEventSubscriber
         } elseif ($newPosition > $oldPosition) {
             $relocation = [$hash, $config['useObjectClass'], $groups, $oldPosition + 1, $newPosition + 1, -1];
         }
-
-        // Apply existing relocations
-        $applyDelta = 0;
-        if (isset($this->relocations[$hash])) {
-            foreach ($this->relocations[$hash]['deltas'] as $delta) {
-                if ($delta['start'] <= $newPosition
-                        && ($delta['stop'] > $newPosition || $delta['stop'] < 0)) {
-                    $applyDelta += $delta['delta'];
-                }
-            }
-        }
-        $newPosition += $applyDelta;
 
         if ($relocation) {
             // Add relocation
