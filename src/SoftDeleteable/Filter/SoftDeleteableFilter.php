@@ -115,7 +115,7 @@ class SoftDeleteableFilter extends SQLFilter
             $em = $this->getEntityManager();
             $evm = $em->getEventManager();
 
-            foreach ($evm->getListeners() as $listeners) {
+            foreach ($evm->getAllListeners() as $listeners) {
                 foreach ($listeners as $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;

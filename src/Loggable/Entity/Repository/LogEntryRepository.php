@@ -147,7 +147,7 @@ class LogEntryRepository extends EntityRepository
     private function getLoggableListener(): LoggableListener
     {
         if (null === $this->listener) {
-            foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
+            foreach ($this->_em->getEventManager()->getAllListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;

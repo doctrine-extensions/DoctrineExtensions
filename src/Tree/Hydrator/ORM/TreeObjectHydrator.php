@@ -252,7 +252,7 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     protected function getTreeListener(EntityManagerInterface $em)
     {
-        foreach ($em->getEventManager()->getListeners() as $listeners) {
+        foreach ($em->getEventManager()->getAllListeners() as $listeners) {
             foreach ($listeners as $listener) {
                 if ($listener instanceof TreeListener) {
                     return $listener;

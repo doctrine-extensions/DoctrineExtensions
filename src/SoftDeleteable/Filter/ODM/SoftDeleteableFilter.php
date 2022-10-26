@@ -101,7 +101,7 @@ class SoftDeleteableFilter extends BsonFilter
             $em = $this->getDocumentManager();
             $evm = $em->getEventManager();
 
-            foreach ($evm->getListeners() as $listeners) {
+            foreach ($evm->getAllListeners() as $listeners) {
                 foreach ($listeners as $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;

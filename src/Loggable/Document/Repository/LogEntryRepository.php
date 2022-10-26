@@ -146,7 +146,7 @@ class LogEntryRepository extends DocumentRepository
     private function getLoggableListener(): LoggableListener
     {
         if (null === $this->listener) {
-            foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
+            foreach ($this->dm->getEventManager()->getAllListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
