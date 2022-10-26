@@ -136,7 +136,7 @@ class SoftDeleteableWalker extends SqlWalker
         if (null === $this->listener) {
             $em = $this->getEntityManager();
 
-            foreach ($em->getEventManager()->getListeners() as $listeners) {
+            foreach ($em->getEventManager()->getAllListeners() as $listeners) {
                 foreach ($listeners as $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;

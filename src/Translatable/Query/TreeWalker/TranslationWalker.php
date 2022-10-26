@@ -410,7 +410,7 @@ class TranslationWalker extends SqlWalker
     private function getTranslatableListener(): TranslatableListener
     {
         $em = $this->getEntityManager();
-        foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
+        foreach ($em->getEventManager()->getAllListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof TranslatableListener) {
                     return $listener;

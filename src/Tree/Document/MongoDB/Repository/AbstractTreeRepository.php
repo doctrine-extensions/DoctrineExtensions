@@ -40,7 +40,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     {
         parent::__construct($em, $uow, $class);
         $treeListener = null;
-        foreach ($em->getEventManager()->getListeners() as $listeners) {
+        foreach ($em->getEventManager()->getAllListeners() as $listeners) {
             foreach ($listeners as $listener) {
                 if ($listener instanceof \Gedmo\Tree\TreeListener) {
                     $treeListener = $listener;

@@ -41,7 +41,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     {
         parent::__construct($em, $class);
         $treeListener = null;
-        foreach ($em->getEventManager()->getListeners() as $listeners) {
+        foreach ($em->getEventManager()->getAllListeners() as $listeners) {
             foreach ($listeners as $listener) {
                 if ($listener instanceof TreeListener) {
                     $treeListener = $listener;

@@ -42,7 +42,7 @@ class SortableRepository extends EntityRepository
     {
         parent::__construct($em, $class);
         $sortableListener = null;
-        foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
+        foreach ($em->getEventManager()->getAllListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof SortableListener) {
                     $sortableListener = $listener;

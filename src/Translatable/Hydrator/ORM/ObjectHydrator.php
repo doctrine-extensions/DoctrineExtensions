@@ -63,7 +63,7 @@ class ObjectHydrator extends BaseObjectHydrator
     protected function getTranslatableListener()
     {
         $translatableListener = null;
-        foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
+        foreach ($this->_em->getEventManager()->getAllListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof TranslatableListener) {
                     $translatableListener = $listener;
