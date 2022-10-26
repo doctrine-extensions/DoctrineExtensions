@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: TreeRoot without rootIdentifierMethod when calling getNextSiblings (#2518)
 
 ## [3.9.0] - 2022-09-22
 ### Fixed
