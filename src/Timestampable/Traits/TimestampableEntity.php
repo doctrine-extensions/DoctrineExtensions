@@ -53,7 +53,7 @@ trait TimestampableEntity
     /**
      * Returns createdAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getCreatedAt()
     {
@@ -75,7 +75,7 @@ trait TimestampableEntity
     /**
      * Returns updatedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getUpdatedAt()
     {
