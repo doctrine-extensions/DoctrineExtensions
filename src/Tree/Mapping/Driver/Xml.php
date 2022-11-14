@@ -108,7 +108,7 @@ class Xml extends BaseXml
                         throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
                     }
 
-                    $appendId = !$this->_isAttributeSet($mapping->{'tree-path'}, 'append_id') || $this->_getBooleanAttribute($mapping->{'tree-path'}, 'append_id');
+                    $appendId = $this->_isAttributeSet($mapping->{'tree-path'}, 'append_id') ? $this->_getBooleanAttribute($mapping->{'tree-path'}, 'append_id') : null;
                     $startsWithSeparator = $this->_isAttributeSet($mapping->{'tree-path'}, 'starts_with_separator') && $this->_getBooleanAttribute($mapping->{'tree-path'}, 'starts_with_separator');
                     $endsWithSeparator = !$this->_isAttributeSet($mapping->{'tree-path'}, 'ends_with_separator') || $this->_getBooleanAttribute($mapping->{'tree-path'}, 'ends_with_separator');
 
