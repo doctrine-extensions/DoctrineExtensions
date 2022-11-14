@@ -33,7 +33,7 @@ use Gedmo\Tree\Mapping\Event\TreeAdapter;
  *   path?: string,
  *   path_source?: string,
  *   path_separator?: string,
- *   path_append_id?: bool,
+ *   path_append_id?: ?bool,
  *   path_starts_with_separator?: bool,
  *   path_ends_with_separator?: bool,
  *   path_hash?: string,
