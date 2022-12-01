@@ -264,6 +264,17 @@ class SortableListener extends MappedEventSubscriber
                                 // Otherwise we fallback to normal object comparison
                                 if ($gr instanceof Comparable) {
                                     $matches = $gr->compareTo($value);
+                                    // @todo: Remove "is_int" check and only support integer as the interface expects.
+                                    if (is_int($matches)) {
+                                        $matches = 0 === $matches;
+                                    } else {
+                                        @trigger_error(sprintf(
+                                            'Support for "%s" as return type from "%s::compareTo()" is deprecated since'
+                                            .' gedmo/doctrine-extensions 3.x and will be removed in version 4.0. Return "integer" instead.',
+                                            gettype($matches),
+                                            Comparable::class
+                                        ), E_USER_DEPRECATED);
+                                    }
                                 } else {
                                     $matches = $gr == $value;
                                 }
