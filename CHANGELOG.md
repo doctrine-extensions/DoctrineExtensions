@@ -19,6 +19,12 @@ a release.
 
 ## [Unreleased]
 
+### Fixed
+- Sortable: Fix return value check of Comparable interface (#2541)
+
+### Deprecated
+- Sortable: Accepting a return type other than "integer" from `Comparable::compareTo()` is deprecated in `SortableListener::postFlush()`. This will not be accepted in version 4.0.
+
 ## [3.10.0] - 2022-11-14
 ### Changed
 - Bump "doctrine/event-manager" dependency from ^1.0 to ^1.2.
