@@ -20,6 +20,11 @@ use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
 use Gedmo\Tree\TreeListener;
 
+/**
+ * @template T of object
+ * @template-extends DocumentRepository<T>
+ * @template-implements RepositoryInterface<T>
+ */
 abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
 {
     /**

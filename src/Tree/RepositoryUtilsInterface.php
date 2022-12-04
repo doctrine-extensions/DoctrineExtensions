@@ -11,6 +11,9 @@ namespace Gedmo\Tree;
 
 use Gedmo\Exception\InvalidArgumentException;
 
+/**
+ * @template T of object
+ */
 interface RepositoryUtilsInterface
 {
     /**
@@ -18,7 +21,7 @@ interface RepositoryUtilsInterface
      *
      * Uses options to handle decorations
      *
-     * @param object|null $node        The object to fetch children for; if null, all nodes will be retrieved
+     * @param T|null $node        The object to fetch children for; if null, all nodes will be retrieved
      * @param bool        $direct      Flag indicating whether only direct children should be retrieved
      * @param array       $options     Options configuring the output, supported keys include:
      *                                 - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
@@ -43,7 +46,7 @@ interface RepositoryUtilsInterface
      *
      * NOTE: nodes should be fetched and hydrated as array
      *
-     * @param object[] $nodes   The nodes to build the tree from
+     * @param T[] $nodes   The nodes to build the tree from
      * @param array    $options Options configuring the output, supported keys include:
      *                          - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
      *                          - nodeDecorator: Closure (null) - uses $node as argument and returns the decorated item as a string
@@ -61,7 +64,7 @@ interface RepositoryUtilsInterface
     /**
      * Process a list of nodes and produce an array with the structure of the tree.
      *
-     * @param object[] $nodes The nodes to build the tree from
+     * @param T[] $nodes The nodes to build the tree from
      *
      * @return array
      */

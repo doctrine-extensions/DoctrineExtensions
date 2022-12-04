@@ -33,6 +33,8 @@ use Gedmo\Tree\Strategy\ORM\Nested;
  * @method persistAsNextSiblingOf($node, $sibling)
  * @method persistAsPrevSibling($node)
  * @method persistAsPrevSiblingOf($node, $sibling)
+ * @template T of object
+ * @template-extends AbstractTreeRepository<T>
  */
 class NestedTreeRepository extends AbstractTreeRepository
 {
@@ -183,9 +185,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get the Tree path of Nodes by given $node
      *
-     * @param object $node
+     * @param T $node
      *
-     * @return array list of Nodes in path
+     * @return T[] list of Nodes in path
      */
     public function getPath($node)
     {
@@ -193,7 +195,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param T|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
      * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
@@ -267,7 +269,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null          $node        if null, all tree nodes will be taken
+     * @param T|null          $node        if null, all tree nodes will be taken
      * @param bool                 $direct      true to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
      * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
@@ -281,7 +283,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null          $node        The object to fetch children for; if null, all nodes will be retrieved
+     * @param T|null          $node        The object to fetch children for; if null, all nodes will be retrieved
      * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
      * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
@@ -297,7 +299,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param object|null          $node        if null, all tree nodes will be taken
+     * @param T|null          $node        if null, all tree nodes will be taken
      * @param bool                 $direct      true to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
      * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
@@ -323,7 +325,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get tree leafs query builder
      *
-     * @param object $root        root node in case of root tree is required
+     * @param T $root        root node in case of root tree is required
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
@@ -377,7 +379,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get tree leafs query
      *
-     * @param object $root        root node in case of root tree is required
+     * @param T $root        root node in case of root tree is required
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
@@ -391,7 +393,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get list of leaf nodes of the tree
      *
-     * @param object $root        root node in case of root tree is required
+     * @param T $root        root node in case of root tree is required
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
@@ -405,7 +407,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get the query builder for next siblings of the given $node
      *
-     * @param object $node
+     * @param T $node
      * @param bool   $includeSelf include the node itself
      *
      * @throws \Gedmo\Exception\InvalidArgumentException if input is invalid
@@ -459,7 +461,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get the query for next siblings of the given $node
      *
-     * @param object $node
+     * @param T $node
      * @param bool   $includeSelf include the node itself
      *
      * @return \Doctrine\ORM\Query
@@ -472,7 +474,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Find the next siblings of the given $node
      *
-     * @param object $node
+     * @param T $node
      * @param bool   $includeSelf include the node itself
      *
      * @return array
@@ -485,7 +487,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get query builder for previous siblings of the given $node
      *
-     * @param object $node
+     * @param T $node
      * @param bool   $includeSelf include the node itself
      *
      * @throws \Gedmo\Exception\InvalidArgumentException if input is invalid
@@ -536,7 +538,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get query for previous siblings of the given $node
      *
-     * @param object $node
+     * @param T $node
      * @param bool   $includeSelf include the node itself
      *
      * @throws \Gedmo\Exception\InvalidArgumentException if input is invalid
@@ -551,10 +553,10 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Find the previous siblings of the given $node
      *
-     * @param object $node
+     * @param T $node
      * @param bool   $includeSelf include the node itself
      *
-     * @return array
+     * @return T[]
      */
     public function getPrevSiblings($node, $includeSelf = false)
     {
@@ -564,7 +566,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Move the node down in the same level
      *
-     * @param object   $node
+     * @param T   $node
      * @param int|bool $number integer - number of positions to shift
      *                         boolean - if "true" - shift till last position
      *
@@ -599,7 +601,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Move the node up in the same level
      *
-     * @param object   $node
+     * @param T   $node
      * @param int|bool $number integer - number of positions to shift
      *                         boolean - true shift till first position
      *
@@ -636,7 +638,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * Removes given $node from the tree and reparents its descendants
      *
-     * @param object $node
+     * @param T $node
      *
      * @throws \RuntimeException if something fails in transaction
      *
@@ -763,7 +765,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Reorders $node's child nodes,
      * according to the $sortByField and $direction specified
      *
-     * @param object|null $node        node from which to start reordering the tree; null will reorder everything
+     * @param T|null $node        node from which to start reordering the tree; null will reorder everything
      * @param string      $sortByField field name to sort by
      * @param string      $direction   sort direction : "ASC" or "DESC"
      * @param bool        $verify      true to verify tree first
@@ -814,7 +816,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * If any error is detected it will return an array
      * with a list of errors found on tree
      *
-     * @return array|bool true on success,error list on failure
+     * @return string[]|bool true on success,error list on failure
      */
     public function verify()
     {

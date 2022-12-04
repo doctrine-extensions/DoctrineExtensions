@@ -22,13 +22,15 @@ use MongoDB\BSON\Regex;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @template T of object
+ * @template-extends AbstractTreeRepository<T>
  */
 class MaterializedPathRepository extends AbstractTreeRepository
 {
     /**
      * Get tree query builder
      *
-     * @param object|null $rootNode
+     * @param T|null $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
@@ -40,7 +42,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query
      *
-     * @param object|null $rootNode
+     * @param T|null $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Query
      */
@@ -52,7 +54,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree
      *
-     * @param object|null $rootNode
+     * @param T|null $rootNode
      */
     public function getTree($rootNode = null): Iterator
     {
