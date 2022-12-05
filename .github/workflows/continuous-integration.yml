@@ -28,6 +28,7 @@ jobs:
           - "7.4"
           - "8.0"
           - "8.1"
+          - "8.2"
         deps:
           - "highest"
         dbal-version:
@@ -38,10 +39,10 @@ jobs:
           - deps: "lowest"
             php-version: "7.2"
           - deps: "highest"
-            php-version: "8.1"
+            php-version: "8.2"
             dbal-version: "^2.13.1"
           - deps: "highest"
-            php-version: "8.1"
+            php-version: "8.2"
             dbal-version: "^3.2"
           - deps: "highest"
             php-version: "8.1"
@@ -98,7 +99,7 @@ jobs:
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.1"
+          php-version: "8.2"
           extensions: mongodb
 
       - name: "Install dependencies with Composer"
