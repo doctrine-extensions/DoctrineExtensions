@@ -29,18 +29,11 @@ use Gedmo\Mapping\Driver\File;
 class Yaml extends File implements Driver
 {
     /**
-     * File extension
-     *
-     * @var string
-     */
-    protected $_extension = '.dcm.yml';
-
-    /**
      * List of types which are valid for slug and sluggable fields
      *
-     * @var array
+     * @var string[]
      */
-    private $validTypes = [
+    private const VALID_TYPES = [
         'string',
         'text',
         'integer',
@@ -48,6 +41,13 @@ class Yaml extends File implements Driver
         'datetime',
         'citext',
     ];
+
+    /**
+     * File extension
+     *
+     * @var string
+     */
+    protected $_extension = '.dcm.yml';
 
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -83,7 +83,7 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 
     private function buildFieldConfiguration(string $field, array $fieldMapping, ClassMetadata $meta, array &$config): void

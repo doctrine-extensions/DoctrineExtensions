@@ -261,8 +261,7 @@ class Nested implements Strategy
     }
 
     /**
-     * Update the $node with a diferent $parent
-     * destination
+     * Update the $node with a different $parent destination
      *
      * @param Node|object $node     target node
      * @param Node|object $parent   destination node

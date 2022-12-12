@@ -9,11 +9,13 @@
 
 namespace Gedmo\References\Mapping\Driver;
 
+use Doctrine\Common\Annotations\Reader;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Mapping\Annotation\ReferenceMany;
 use Gedmo\Mapping\Annotation\ReferenceManyEmbed;
 use Gedmo\Mapping\Annotation\ReferenceOne;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
+use Gedmo\Mapping\Driver\AttributeReader;
 
 /**
  * This is an annotation mapping driver for References
@@ -43,6 +45,15 @@ class Annotation implements AnnotationDriverInterface
     public const REFERENCE_MANY_EMBED = ReferenceManyEmbed::class;
 
     /**
+     * @var array<string, self::REFERENCE_ONE|self::REFERENCE_MANY|self::REFERENCE_MANY_EMBED>
+     */
+    private const ANNOTATIONS = [
+        'referenceOne' => self::REFERENCE_ONE,
+        'referenceMany' => self::REFERENCE_MANY,
+        'referenceManyEmbed' => self::REFERENCE_MANY_EMBED,
+    ];
+
+    /**
      * original driver if it is available
      *
      * @var MappingDriver
@@ -50,18 +61,9 @@ class Annotation implements AnnotationDriverInterface
     protected $_originalDriver;
 
     /**
-     * @var string[]
-     */
-    private $annotations = [
-        'referenceOne' => self::REFERENCE_ONE,
-        'referenceMany' => self::REFERENCE_MANY,
-        'referenceManyEmbed' => self::REFERENCE_MANY_EMBED,
-    ];
-
-    /**
      * Annotation reader instance
      *
-     * @var object
+     * @var Reader|AttributeReader|object
      */
     private $reader;
 
@@ -73,7 +75,7 @@ class Annotation implements AnnotationDriverInterface
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $meta->getReflectionClass();
-        foreach ($this->annotations as $key => $annotation) {
+        foreach (self::ANNOTATIONS as $key => $annotation) {
             $config[$key] = [];
             foreach ($class->getProperties() as $property) {
                 if ($meta->isMappedSuperclass && !$property->isPrivate() ||

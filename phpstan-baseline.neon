@@ -21,17 +21,12 @@ parameters:
 			path: src/AbstractTrackingListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Blameable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
 			count: 1
 			path: src/Blameable/Mapping/Driver/Annotation.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Blameable/Mapping/Driver/Annotation.php
 
@@ -46,17 +41,12 @@ parameters:
 			path: src/Blameable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/IpTraceable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Annotation.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Annotation.php
 
@@ -69,11 +59,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Yaml.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: src/Loggable/Document/Repository/LogEntryRepository.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
@@ -91,24 +76,9 @@ parameters:
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 2
-			path: src/Loggable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
 			count: 1
 			path: src/Loggable/Mapping/Driver/Xml.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Loggable/Mapping/Driver/Xml.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Loggable/Mapping/Driver/Yaml.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -186,11 +156,6 @@ parameters:
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: src/ReferenceIntegrity/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
@@ -211,12 +176,7 @@ parameters:
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/References/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/References/Mapping/Driver/Annotation.php
 
@@ -336,12 +296,7 @@ parameters:
 			path: src/Sluggable/Handler/TreeSlugHandler.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Sluggable/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Sluggable/Mapping/Driver/Annotation.php
 
@@ -369,16 +324,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/Sluggable/Mapping/Driver/Yaml.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getAssociationMapping\\(\\)\\.$#"
-			count: 1
-			path: src/Sluggable/Mapping/Event/Adapter/ORM.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getAssociationMappings\\(\\)\\.$#"
-			count: 1
-			path: src/Sluggable/Mapping/Event/Adapter/ORM.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -416,29 +361,14 @@ parameters:
 			path: src/SoftDeleteable/SoftDeleteableListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 2
-			path: src/Sortable/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Sortable/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Sortable/Mapping/Driver/Xml.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/Sortable/Mapping/Driver/Xml.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Sortable/Mapping/Driver/Yaml.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -476,17 +406,12 @@ parameters:
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Annotation.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Annotation.php
 
@@ -506,47 +431,12 @@ parameters:
 			path: src/Timestampable/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$identifier\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$rootEntityName\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
-			count: 2
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 1
 			path: src/Tool/Wrapper/EntityWrapper.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$identifier\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$rootDocumentName\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
 			message: "#^Access to an undefined property ProxyManager\\\\Proxy\\\\GhostObjectInterface\\:\\:\\$identifier\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
-			count: 2
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isSingleValuedEmbed\\(\\)\\.$#"
 			count: 1
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
@@ -571,43 +461,28 @@ parameters:
 			path: src/Translatable/Entity/Repository/TranslationRepository.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Driver/Annotation.php
+
+		-
+			message: "#^Access to offset 'association' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
 			count: 2
-			path: src/Translatable/Mapping/Driver/Annotation.php
+			path: src/Translatable/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedEmbeddedClass\\(\\)\\.$#"
-			count: 1
-			path: src/Translatable/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
-			count: 1
-			path: src/Translatable/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Translatable/Mapping/Driver/Xml.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedEmbeddedClass\\(\\)\\.$#"
-			count: 1
-			path: src/Translatable/Mapping/Driver/Xml.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Translatable/Mapping/Driver/Yaml.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$fieldMappings\\.$#"
+			message: "#^Access to offset 'fieldName' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
 			count: 1
 			path: src/Translatable/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 2
+			message: "#^Access to offset 'mappedBy' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
+			count: 1
+			path: src/Translatable/Mapping/Event/Adapter/ODM.php
+
+		-
+			message: "#^Access to offset 'targetDocument' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
+			count: 1
 			path: src/Translatable/Mapping/Event/Adapter/ODM.php
 
 		-
@@ -676,24 +551,9 @@ parameters:
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 2
-			path: src/Tree/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Tree/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Tree/Mapping/Driver/Xml.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Tree/Mapping/Driver/Yaml.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -811,17 +671,7 @@ parameters:
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:isInheritedField\\(\\)\\.$#"
+			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
 

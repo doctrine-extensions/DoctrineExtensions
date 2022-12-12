@@ -14,6 +14,7 @@ use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation;
 use Gedmo\Translatable\Document\Translation;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
@@ -45,6 +46,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     {
         $dm = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $dm);
+        assert($wrapped instanceof MongoDocumentWrapper);
         $result = [];
 
         if ($this->usesPersonalTranslation($translationClass)) {
@@ -157,6 +159,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     {
         $dm = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $dm);
+        assert($wrapped instanceof MongoDocumentWrapper);
         $meta = $wrapped->getMetadata();
         $mapping = $meta->getFieldMapping($field);
         $type = $this->getType($mapping['type']);
@@ -171,6 +174,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     {
         $dm = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $dm);
+        assert($wrapped instanceof MongoDocumentWrapper);
         $meta = $wrapped->getMetadata();
         $mapping = $meta->getFieldMapping($field);
         $type = $this->getType($mapping['type']);

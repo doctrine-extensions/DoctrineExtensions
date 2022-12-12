@@ -29,9 +29,9 @@ class Xml extends BaseXml
     /**
      * List of types which are valid for timestamp
      *
-     * @var array
+     * @var string[]
      */
-    private $validTypes = [
+    private const VALID_TYPES = [
         'date',
         'date_immutable',
         'time',
@@ -103,6 +103,6 @@ class Xml extends BaseXml
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 }

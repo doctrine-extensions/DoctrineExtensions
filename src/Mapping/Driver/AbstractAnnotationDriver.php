@@ -40,7 +40,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * List of types which are valid for extension
      *
-     * @var array
+     * @var string[]
      */
     protected $validTypes = [];
 

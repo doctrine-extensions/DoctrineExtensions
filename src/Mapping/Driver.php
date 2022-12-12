@@ -9,6 +9,8 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as OdmClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata as OrmClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Exception\InvalidMappingException;
@@ -24,7 +26,7 @@ interface Driver
     /**
      * Read the extended metadata configuration for a single mapped class.
      *
-     * @param ClassMetadata $meta
+     * @param ClassMetadata&(OdmClassMetadata|OrmClassMetadata) $meta
      *
      * @return void
      *
