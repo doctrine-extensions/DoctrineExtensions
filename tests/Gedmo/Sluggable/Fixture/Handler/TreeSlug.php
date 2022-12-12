@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Gedmo\Tree\Node;
 
 /**
  * @Gedmo\Tree(type="nested")
@@ -25,7 +26,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[Gedmo\Tree(type: 'nested')]
-class TreeSlug
+class TreeSlug implements Node
 {
     /**
      * @var int|null
@@ -120,6 +121,11 @@ class TreeSlug
     #[Gedmo\TreeLevel]
     private $level;
 
+    /**
+     * @var Node|null
+     */
+    private $sibling;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -181,5 +187,15 @@ class TreeSlug
     public function getSlug(): ?string
     {
         return $this->slug;
+    }
+
+    public function setSibling(Node $node): void
+    {
+        $this->sibling = $node;
+    }
+
+    public function getSibling(): ?Node
+    {
+        return $this->sibling;
     }
 }

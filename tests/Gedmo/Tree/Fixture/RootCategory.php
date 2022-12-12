@@ -16,6 +16,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Gedmo\Tree\Node;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
@@ -23,7 +24,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[Gedmo\Tree(type: 'nested')]
-class RootCategory
+class RootCategory implements Node
 {
     /**
      * @var Collection<int, self>
@@ -106,6 +107,11 @@ class RootCategory
     #[Gedmo\TreeLevel(base: 1)]
     private $level;
 
+    /**
+     * @var Node|null
+     */
+    private $sibling;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -165,5 +171,15 @@ class RootCategory
     public function setChildren(Collection $children): void
     {
         $this->children = $children;
+    }
+
+    public function setSibling(Node $node): void
+    {
+        $this->sibling = $node;
+    }
+
+    public function getSibling(): ?Node
+    {
+        return $this->sibling;
     }
 }

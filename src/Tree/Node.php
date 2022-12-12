@@ -14,6 +14,9 @@ namespace Gedmo\Tree;
  * Entities which in some cases needs to be identified as
  * Tree Node
  *
+ * @method void  setSibling(self $node)
+ * @method ?self getSibling()
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 interface Node
@@ -42,4 +45,10 @@ interface Node
      * @gedmo:TreeLevel
      * level of node.
      */
+
+    // @todo: In the next major release, remove this line and uncomment the method in the next line.
+    // public function setSibling(self $node): void;
+
+    // @todo: In the next major release, remove this line and uncomment the method in the next line.
+    // public function getSibling(): ?self;
 }

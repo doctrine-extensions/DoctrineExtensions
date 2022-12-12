@@ -119,6 +119,11 @@ class CategoryUuid implements NodeInterface
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
     private $comments;
 
+    /**
+     * @var NodeInterface|null
+     */
+    private $sibling;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -174,5 +179,15 @@ class CategoryUuid implements NodeInterface
     public function getLevel(): ?int
     {
         return $this->level;
+    }
+
+    public function setSibling(NodeInterface $node): void
+    {
+        $this->sibling = $node;
+    }
+
+    public function getSibling(): ?NodeInterface
+    {
+        return $this->sibling;
     }
 }
