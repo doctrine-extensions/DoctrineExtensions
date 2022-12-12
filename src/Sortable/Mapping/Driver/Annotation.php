@@ -39,7 +39,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * List of types which are valid for position fields
      *
-     * @var array
+     * @var string[]
      */
     protected $validTypes = [
         'int',

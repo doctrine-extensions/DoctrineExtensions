@@ -11,7 +11,8 @@ namespace Gedmo\Mapping;
 
 use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver as DoctrineBundleMappingDriver;
 use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Cache\Cache;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo as EntityClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -45,7 +46,7 @@ class ExtensionMetadataFactory
     /**
      * Object manager, entity or document
      *
-     * @var object
+     * @var ObjectManager
      */
     protected $objectManager;
 
@@ -59,8 +60,7 @@ class ExtensionMetadataFactory
     /**
      * Custom annotation reader
      *
-     * @var object
-     * @phpstan-var Reader|AttributeReader
+     * @var Reader|AttributeReader|object
      */
     protected $annotationReader;
 
@@ -113,6 +113,7 @@ class ExtensionMetadataFactory
             foreach (array_reverse(class_parents($meta->getName())) as $parentClass) {
                 // read only inherited mapped classes
                 if ($cmf->hasMetadataFor($parentClass)) {
+                    /** @var DocumentClassMetadata|EntityClassMetadata $class */
                     $class = $this->objectManager->getClassMetadata($parentClass);
                     $this->driver->readExtendedMetadata($class, $config);
                     $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()

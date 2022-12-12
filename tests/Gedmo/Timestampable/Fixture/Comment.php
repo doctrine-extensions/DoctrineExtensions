@@ -78,7 +78,10 @@ class Comment implements Timestampable
     #[Gedmo\Timestampable(on: 'update')]
     private $modified;
 
-    public function setArticle(?Article $article): void
+    /**
+     * @param Article|ArticleCarbon $article
+     */
+    public function setArticle(?Timestampable $article): void
     {
         $this->article = $article;
     }

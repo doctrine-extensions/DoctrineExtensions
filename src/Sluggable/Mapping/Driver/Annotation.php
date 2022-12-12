@@ -47,7 +47,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * List of types which are valid for slug and sluggable fields
      *
-     * @var array
+     * @var string[]
      */
     protected $validTypes = [
         'string',

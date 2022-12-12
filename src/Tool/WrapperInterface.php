@@ -14,6 +14,8 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 /**
  * Interface for a wrapper of a managed object.
  *
+ * @phpstan-template TClassMetadata of ClassMetadata
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 interface WrapperInterface
@@ -64,6 +66,8 @@ interface WrapperInterface
      * Get the object metadata.
      *
      * @return ClassMetadata
+     *
+     * @phpstan-return TClassMetadata
      */
     public function getMetadata();
 

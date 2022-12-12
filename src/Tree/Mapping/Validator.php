@@ -28,9 +28,9 @@ class Validator
     /**
      * List of types which are valid for tree fields
      *
-     * @var array
+     * @var string[]
      */
-    private $validTypes = [
+    private const VALID_TYPES = [
         'integer',
         'smallint',
         'bigint',
@@ -40,7 +40,7 @@ class Validator
     /**
      * List of types which are valid for the path (materialized path strategy)
      *
-     * @var array
+     * @var string[]
      */
     private $validPathTypes = [
         'string',
@@ -50,7 +50,7 @@ class Validator
     /**
      * List of types which are valid for the path source (materialized path strategy)
      *
-     * @var array
+     * @var string[]
      */
     private $validPathSourceTypes = [
         'id',
@@ -65,7 +65,7 @@ class Validator
     /**
      * List of types which are valid for the path hash (materialized path strategy)
      *
-     * @var array
+     * @var string[]
      */
     private $validPathHashTypes = [
         'string',
@@ -74,7 +74,7 @@ class Validator
     /**
      * List of types which are valid for the path source (materialized path strategy)
      *
-     * @var array
+     * @var string[]
      */
     private $validRootTypes = [
         'integer',
@@ -97,7 +97,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 
     /**

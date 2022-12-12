@@ -29,20 +29,20 @@ use Gedmo\Mapping\Driver\File;
 class Yaml extends File implements Driver
 {
     /**
+     * List of types which are valid for IP
+     *
+     * @var string[]
+     */
+    private const VALID_TYPES = [
+        'string',
+    ];
+
+    /**
      * File extension
      *
      * @var string
      */
     protected $_extension = '.dcm.yml';
-
-    /**
-     * List of types which are valid for IP
-     *
-     * @var array
-     */
-    private $validTypes = [
-        'string',
-    ];
 
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -128,6 +128,6 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 }

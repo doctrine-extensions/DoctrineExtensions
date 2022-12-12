@@ -28,9 +28,9 @@ class Xml extends BaseXml
     /**
      * List of types which are valid for position field
      *
-     * @var array
+     * @var string[]
      */
-    private $validTypes = [
+    private const VALID_TYPES = [
         'int',
         'integer',
         'smallint',
@@ -88,7 +88,7 @@ class Xml extends BaseXml
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 
     private function readSortableGroups(\SimpleXMLElement $mapping, array &$config, string $fieldAttr = 'field'): void

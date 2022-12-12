@@ -156,7 +156,6 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $user = $repo->findOneBy(['username' => $username]);
 
         static::assertNull($user);
-        $this->dm->remove($user);
         $this->dm->flush();
     }
 

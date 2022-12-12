@@ -46,7 +46,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * leaving it static for reasons to look into
      * other listener configuration
      *
-     * @var array
+     * @var array<string, array<string, array<string, mixed>>>
+     *
      * @phpstan-var array<string, array<class-string, array<string, mixed>>>
      */
     protected static $configurations = [];
@@ -172,8 +173,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *     getPropertyAnnotations([reflectionProperty])
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
-     * @param object $reader
-     * @phpstan-param Reader|AttributeReader $reader
+     * @param Reader|AttributeReader|object $reader
      *
      * @return void
      *
