@@ -17,6 +17,7 @@ use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Tree\Node;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\Strategy\ORM\Nested;
 
@@ -81,7 +82,32 @@ class NestedTreeRepository extends AbstractTreeRepository
                     if (null === $newParent && isset($config['root'])) {
                         throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
                     }
-                    $node->sibling = $parentOrSibling;
+
+                    if (!$node instanceof Node) {
+                        @trigger_error(\sprintf(
+                            'Not implementing the "%s" interface from node "%s" is deprecated since gedmo/doctrine-extensions'
+                            .' 3.x and will throw a "%s" error in version 4.0.',
+                            Node::class,
+                            \get_class($node),
+                            \TypeError::class
+                        ), \E_USER_DEPRECATED);
+                    }
+
+                    // @todo: In the next major release, remove the previous condition and uncomment the following one.
+
+                    // if (!$node instanceof Node) {
+                    //     throw new \TypeError(\sprintf(
+                    //         'Node MUST implement "%s" interface.',
+                    //         Node::class
+                    //     ));
+                    // }
+
+                    // @todo: In the next major release, remove the `method_exists()` condition and left the `else` branch.
+                    if (!method_exists($node, 'setSibling')) {
+                        $node->sibling = $parentOrSibling;
+                    } else {
+                        $node->setSibling($parentOrSibling);
+                    }
                     $parentOrSibling = $newParent;
                 }
                 $wrapped->setPropertyValue($config['parent'], $parentOrSibling);

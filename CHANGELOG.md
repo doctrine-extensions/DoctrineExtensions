@@ -18,6 +18,14 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Tree: `setSibling()` and `getSibling()` methods in the `Node` interface through the BC `@method` annotation
+
+### Fixed
+- Tree: Creation of dynamic `Node::$sibling` property, which is deprecated as of PHP >= 8.2
+
+### Deprecated
+- Tree: Not implementing `Node` interface in classes that are used as nodes
 
 ## [3.11.1] - 2023-02-20
 ### Fixed
