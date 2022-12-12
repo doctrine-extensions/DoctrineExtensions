@@ -19,6 +19,9 @@ a release.
 
 ## [Unreleased]
 
+### Added
+- Tree: Add `Nested::ALLOWED_NODE_POSITIONS` constant in order to expose the available node positions
+
 ### Fixed
 - Sortable: Fix return value check of Comparable interface (#2541)
 
