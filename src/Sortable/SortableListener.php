@@ -15,6 +15,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 use ProxyManager\Proxy\GhostObjectInterface;
@@ -234,6 +235,10 @@ class SortableListener extends MappedEventSubscriber
                     foreach ($objects as $object) {
                         if ($object instanceof GhostObjectInterface && !$object->isProxyInitialized()) {
                             continue;
+                        }
+
+                        if ($object instanceof Proxy && !$object->__isInitialized()) {
+                            $object->__load();
                         }
 
                         $changeSet = $ea->getObjectChangeSet($uow, $object);
