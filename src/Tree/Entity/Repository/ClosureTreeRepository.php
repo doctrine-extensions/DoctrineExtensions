@@ -23,6 +23,10 @@ use Gedmo\Tree\Strategy;
  *
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @template T of object
+ *
+ * @template-extends AbstractTreeRepository<T>
  */
 class ClosureTreeRepository extends AbstractTreeRepository
 {

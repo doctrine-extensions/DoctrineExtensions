@@ -28,6 +28,10 @@ use Gedmo\Tree\Strategy\ORM\Nested;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
+ * @template T of object
+ *
+ * @template-extends AbstractTreeRepository<T>
+ *
  * @method persistAsFirstChild($node)
  * @method persistAsFirstChildOf($node, $parent)
  * @method persistAsLastChild($node)

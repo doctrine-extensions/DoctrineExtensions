@@ -23,7 +23,9 @@ use Gedmo\Tree\RepositoryUtilsInterface;
 use Gedmo\Tree\TreeListener;
 
 /**
- * @phpstan-extends EntityRepository<object>
+ * @template T of object
+ *
+ * @template-extends EntityRepository<T>
  */
 abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
 {
