@@ -41,7 +41,7 @@
         "php": "^7.2 || ^8.0",
         "behat/transliterator": "~1.2",
         "doctrine/annotations": "^1.13",
-        "doctrine/collections": "^1.0",
+        "doctrine/collections": "^2.0",
         "doctrine/common": "^2.13 || ^3.0",
         "doctrine/event-manager": "^1.2",
         "doctrine/persistence": "^2.2 || ^3.0",
