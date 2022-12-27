@@ -37,11 +37,6 @@ $loader = require __DIR__.'/../vendor/autoload.php';
 // Register the example app with the autoloader
 $loader->addPsr4('App\\', __DIR__.'/app');
 
-// Ensure standard Doctrine annotations are registered
-Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
-    __DIR__.'/../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
-);
-
 // Define our global cache backend for the application.
 // For larger applications, you may use multiple cache pools to store cacheable data in different locations.
 $cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();

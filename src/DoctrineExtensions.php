@@ -12,7 +12,6 @@ namespace Gedmo;
 use function class_exists;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
@@ -41,7 +40,6 @@ final class DoctrineExtensions
      */
     public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
-        self::registerAnnotations();
         if (!$reader) {
             $reader = self::createAnnotationReader();
         }
@@ -59,7 +57,6 @@ final class DoctrineExtensions
      */
     public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
-        self::registerAnnotations();
         if (!$reader) {
             $reader = self::createAnnotationReader();
         }
@@ -77,7 +74,6 @@ final class DoctrineExtensions
      */
     public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
-        self::registerAnnotations();
         if (!$reader) {
             $reader = self::createAnnotationReader();
         }
@@ -94,7 +90,6 @@ final class DoctrineExtensions
      */
     public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null): void
     {
-        self::registerAnnotations();
         if (!$reader) {
             $reader = self::createAnnotationReader();
         }
@@ -107,10 +102,17 @@ final class DoctrineExtensions
 
     /**
      * Registers all extension annotations.
+     *
+     * @deprecated to be removed in 4.0, annotation classes are autoloaded instead
      */
     public static function registerAnnotations(): void
     {
-        AnnotationRegistry::registerFile(__DIR__.'/Mapping/Annotation/All.php');
+        @trigger_error(sprintf(
+            '"%s()" is deprecated since gedmo/doctrine-extensions 3.11 and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
+        // Purposefully no-op'd, all supported versions of `doctrine/annotations` support autoloading
     }
 
     private static function createAnnotationReader(): AnnotationReader
