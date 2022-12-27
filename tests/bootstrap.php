@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -27,10 +26,7 @@ define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', sys_get_temp_dir().'/doctrine-extension-tests');
 define('VENDOR_PATH', realpath(dirname(__DIR__).'/vendor'));
 
-$loader = require dirname(__DIR__).'/vendor/autoload.php';
-
-AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-Gedmo\DoctrineExtensions::registerAnnotations();
+require dirname(__DIR__).'/vendor/autoload.php';
 
 $reader = new AnnotationReader();
 $reader = new PsrCachedReader($reader, new ArrayAdapter());

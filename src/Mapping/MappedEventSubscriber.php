@@ -12,7 +12,6 @@ namespace Gedmo\Mapping;
 use function class_exists;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
@@ -287,8 +286,6 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private function getDefaultAnnotationReader(): Reader
     {
         if (null === self::$defaultAnnotationReader) {
-            AnnotationRegistry::registerAutoloadNamespace('Gedmo\\Mapping\\Annotation', __DIR__.'/../../');
-
             $reader = new AnnotationReader();
 
             if (class_exists(ArrayAdapter::class)) {
