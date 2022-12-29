@@ -21,6 +21,8 @@ a release.
 
 ### Added
 - Tree: Add `Nested::ALLOWED_NODE_POSITIONS` constant in order to expose the available node positions
+- Support for `doctrine/collections` 2.0
+- Support for `doctrine/event-manager` 2.0
 
 ### Fixed
 - Sortable: Fix return value check of Comparable interface (#2541)
