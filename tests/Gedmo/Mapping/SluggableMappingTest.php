@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -49,10 +48,6 @@ final class SluggableMappingTest extends ORMMappingTestCase
             'Gedmo\Tests\Mapping\Fixture\Yaml'
         );
         $reader = new AnnotationReader();
-        AnnotationRegistry::registerAutoloadNamespace(
-            'Gedmo\\Mapping\\Annotation',
-            dirname(VENDOR_PATH).'/src'
-        );
         $chainDriverImpl->addDriver(
             new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader),
             'Gedmo\Tests\Mapping\Fixture'
