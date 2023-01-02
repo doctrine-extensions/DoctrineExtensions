@@ -16,6 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Uploadable\Fixture\Entity\ImageWithTypedProperties;
 use Gedmo\Tests\Uploadable\Stub\MimeTypeGuesserStub;
 use Gedmo\Tests\Uploadable\Stub\UploadableListenerStub;
+use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * This test is for Uploadable behavior with typed properties
@@ -52,9 +53,7 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
 
         $this->clearFilesAndDirectories();
 
-        if (!is_dir($this->destinationTestDir)) {
-            mkdir($this->destinationTestDir);
-        }
+        Validator::validatePath($this->destinationTestDir);
     }
 
     protected function tearDown(): void

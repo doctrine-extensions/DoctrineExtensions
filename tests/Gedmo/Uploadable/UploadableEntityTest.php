@@ -44,6 +44,7 @@ use Gedmo\Tests\Uploadable\Stub\MimeTypeGuesserStub;
 use Gedmo\Tests\Uploadable\Stub\UploadableListenerStub;
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
+use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * These are tests for Uploadable behavior
@@ -141,9 +142,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->clearFilesAndDirectories();
 
-        if (!is_dir($this->destinationTestDir)) {
-            mkdir($this->destinationTestDir);
-        }
+        Validator::validatePath($this->destinationTestDir);
     }
 
     protected function tearDown(): void
