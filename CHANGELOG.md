@@ -20,6 +20,7 @@ a release.
 ## [Unreleased]
 ### Changed
 - Dropped support for PHP < 7.4
+- Dropped support for Symfony < 5.4
 
 ### Deprecated
 - Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 

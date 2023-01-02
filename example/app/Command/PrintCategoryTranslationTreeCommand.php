@@ -27,12 +27,6 @@ final class PrintCategoryTranslationTreeCommand extends Command
     protected static $defaultName = 'app:print-category-translation-tree';
     protected static $defaultDescription = 'Seeds an example category tree with translations and prints the tree.';
 
-    protected function configure(): void
-    {
-        // Kept for compatibility with Symfony 5.2 and older, which do not support lazy descriptions
-        $this->setDescription(self::$defaultDescription);
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var EntityManagerHelper $helper */
