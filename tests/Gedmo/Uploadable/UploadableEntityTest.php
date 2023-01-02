@@ -454,6 +454,42 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->assertPathEquals($filePath, $file->getFilePath());
     }
 
+    public function testCanUploadTwoEntities(): void
+    {
+        // create two entities: File and Image
+        $file = new File();
+        $fileInfo = $this->generateUploadedFile($this->testFile, $this->testFilename);
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $image = new Image();
+        $image->setTitle('test image');
+        $imageInfo = $this->generateUploadedFile($this->testFile2, $this->testFilename2);
+        $this->listener->addEntityFileInfo($image, $imageInfo);
+
+        $this->em->persist($file);
+        $this->em->persist($image);
+        $this->em->flush();
+
+        // update uploaded files on both entities
+        $this->listener->addEntityFileInfo(
+            $file,
+            $this->generateUploadedFile($this->testFile3, $this->testFilename3)
+        );
+        $this->listener->addEntityFileInfo(
+            $image,
+            $this->generateUploadedFile($this->testFileWithoutExt, $this->testFilenameWithoutExt)
+        );
+
+        $this->em->persist($file);
+        $this->em->persist($image);
+        $this->em->flush();
+        $this->em->refresh($file);
+        $this->em->refresh($image);
+
+        static::assertFileExists($file->getFilePath());
+        static::assertFileExists($image->getFilePath());
+    }
+
     public function testFileAlreadyExistsException(): void
     {
         $this->expectException(UploadableFileAlreadyExistsException::class);
