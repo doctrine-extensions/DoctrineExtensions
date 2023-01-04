@@ -76,12 +76,12 @@ parameters:
 			path: src/Loggable/Document/Repository/LogEntryRepository.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
 			count: 1
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:newInstance\\(\\)\\.$#"
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\>\\:\\:newInstance\\(\\)\\.$#"
 			count: 1
 			path: src/Loggable/LoggableListener.php
 

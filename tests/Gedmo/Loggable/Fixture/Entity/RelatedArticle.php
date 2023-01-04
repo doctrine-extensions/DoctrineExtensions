@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Loggable\Fixture\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -22,7 +23,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 #[ORM\Entity]
 #[Gedmo\Loggable]
-class RelatedArticle
+class RelatedArticle implements Loggable
 {
     /**
      * @var int|null

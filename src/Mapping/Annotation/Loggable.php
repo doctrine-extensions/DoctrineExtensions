@@ -11,10 +11,13 @@ namespace Gedmo\Mapping\Annotation;
 
 use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Loggable\LogEntryInterface;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * Loggable annotation for Loggable behavioral extension
+ *
+ * @phpstan-template T of LogEntryInterface
  *
  * @Annotation
  * @NamedArgumentConstructor
@@ -27,12 +30,13 @@ final class Loggable implements GedmoAnnotation
 {
     /**
      * @var string|null
-     * @phpstan-var class-string|null
+     *
+     * @phpstan-var class-string<T>|null
      */
     public $logEntryClass;
 
     /**
-     * @phpstan-param class-string|null $logEntryClass
+     * @phpstan-param class-string<T>|null $logEntryClass
      */
     public function __construct(array $data = [], ?string $logEntryClass = null)
     {

@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Loggable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
+use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -21,7 +22,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 #[ODM\Document(collection: 'articles')]
 #[Gedmo\Loggable]
-class Article
+class Article implements Loggable
 {
     /**
      * @var string|null
