@@ -32,16 +32,16 @@ on how to setup and use the extensions in most optimized way.
 
 ### Loggable annotations:
 
-- **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="my\class")** this class annotation
-will store logs to optionally specified **logEntryClass**. You will still need to specify versioned fields with the following annotation.
+- **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="My\LoggableModel")** this class annotation will store logs to optionally
+  specified **logEntryClass**. The class provided in this annotation MUST implement ``Gedmo\Loggable\LogEntryInterface``. You will
+  still need to specify versioned fields with the following annotation.
 - **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
-
-**Note:** If you need to use a different class, it must extend ``Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry``.
 
 ### Loggable attributes:
 
-- **\#[Gedmo\Mapping\Annotation\Loggable(logEntryClass: MyClass::class]** this class attribute
-will store logs to optionally specified **logEntryClass**. You will still need to specify versioned fields with the following attribute.
+- **\#[Gedmo\Mapping\Annotation\Loggable(logEntryClass: My\LoggableModel::class]** this class attribute will store logs to optionally
+  specified **logEntryClass**. The class provided in this attribute MUST implement ``Gedmo\Loggable\LogEntryInterface``. You will
+  still need to specify versioned fields with the following attribute.
 - **\#[Gedmo\Mapping\Annotation\Versioned]** tracks attributed property for changes
 
 ### Loggable username:

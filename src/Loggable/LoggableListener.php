@@ -24,7 +24,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  *
  * @phpstan-type LoggableConfiguration = array{
  *   loggable?: bool,
- *   logEntryClass?: class-string,
+ *   logEntryClass?: class-string<LogEntryInterface>,
  *   useObjectClass?: class-string,
  *   versioned?: string[],
  * }
@@ -38,19 +38,19 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
 class LoggableListener extends MappedEventSubscriber
 {
     /**
-     * Create action
+     * @deprecated use `LogEntryInterface::ACTION_CREATE` instead
      */
-    public const ACTION_CREATE = 'create';
+    public const ACTION_CREATE = LogEntryInterface::ACTION_CREATE;
 
     /**
-     * Update action
+     * @deprecated use `LogEntryInterface::ACTION_UPDATE` instead
      */
-    public const ACTION_UPDATE = 'update';
+    public const ACTION_UPDATE = LogEntryInterface::ACTION_UPDATE;
 
     /**
-     * Remove action
+     * @deprecated use `LogEntryInterface::ACTION_REMOVE` instead
      */
-    public const ACTION_REMOVE = 'remove';
+    public const ACTION_REMOVE = LogEntryInterface::ACTION_REMOVE;
 
     /**
      * Username for identification
@@ -64,7 +64,7 @@ class LoggableListener extends MappedEventSubscriber
      * key generated yet - MySQL case. These entries
      * will be updated with new keys on postPersist event
      *
-     * @var array
+     * @var array<int, LogEntryInterface>
      */
     protected $pendingLogEntryInserts = [];
 
@@ -74,7 +74,9 @@ class LoggableListener extends MappedEventSubscriber
      * These are pending relations in case it does not
      * have an identifier yet
      *
-     * @var array
+     * @var array<int, array<int, array<string, LogEntryInterface|string>>>
+     *
+     * @phpstan-var array<int, array<int, array{log: LogEntryInterface, field: string}>>
      */
     protected $pendingRelatedObjects = [];
 
@@ -186,13 +188,13 @@ class LoggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
 
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $this->createLogEntry(self::ACTION_CREATE, $object, $ea);
+            $this->createLogEntry(LogEntryInterface::ACTION_CREATE, $object, $ea);
         }
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $this->createLogEntry(self::ACTION_UPDATE, $object, $ea);
+            $this->createLogEntry(LogEntryInterface::ACTION_UPDATE, $object, $ea);
         }
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
-            $this->createLogEntry(self::ACTION_REMOVE, $object, $ea);
+            $this->createLogEntry(LogEntryInterface::ACTION_REMOVE, $object, $ea);
         }
     }
 
@@ -203,7 +205,7 @@ class LoggableListener extends MappedEventSubscriber
      * @phpstan-param class-string $class
      *
      * @return string
-     * @phpstan-return class-string
+     * @phpstan-return class-string<LogEntryInterface>
      */
     protected function getLogEntryClass(LoggableAdapter $ea, $class)
     {
@@ -214,8 +216,8 @@ class LoggableListener extends MappedEventSubscriber
      * Handle any custom LogEntry functionality that needs to be performed
      * before persisting it
      *
-     * @param object $logEntry The LogEntry being persisted
-     * @param object $object   The object being Logged
+     * @param LogEntryInterface $logEntry The LogEntry being persisted
+     * @param object            $object   The object being Logged
      *
      * @return void
      */
@@ -231,9 +233,9 @@ class LoggableListener extends MappedEventSubscriber
     /**
      * Returns an objects changeset data
      *
-     * @param LoggableAdapter $ea
-     * @param object          $object
-     * @param object          $logEntry
+     * @param LoggableAdapter   $ea
+     * @param object            $object
+     * @param LogEntryInterface $logEntry
      *
      * @return array
      */
@@ -278,7 +280,9 @@ class LoggableListener extends MappedEventSubscriber
      * @param string $action
      * @param object $object
      *
-     * @return \Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry|null
+     * @phpstan-param LogEntryInterface::ACTION_CREATE|LogEntryInterface::ACTION_UPDATE|LogEntryInterface::ACTION_REMOVE $action
+     *
+     * @return LogEntryInterface|null
      */
     protected function createLogEntry($action, $object, LoggableAdapter $ea)
     {
@@ -294,7 +298,7 @@ class LoggableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             $logEntryClass = $this->getLogEntryClass($ea, $meta->getName());
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
-            /** @var \Gedmo\Loggable\Entity\LogEntry $logEntry */
+            /** @var LogEntryInterface $logEntry */
             $logEntry = $logEntryMeta->newInstance();
 
             $logEntry->setAction($action);
@@ -304,23 +308,23 @@ class LoggableListener extends MappedEventSubscriber
 
             // check for the availability of the primary key
             $uow = $om->getUnitOfWork();
-            if (self::ACTION_CREATE === $action && $ea->isPostInsertGenerator($meta)) {
+            if (LogEntryInterface::ACTION_CREATE === $action && $ea->isPostInsertGenerator($meta)) {
                 $this->pendingLogEntryInserts[spl_object_id($object)] = $logEntry;
             } else {
                 $logEntry->setObjectId($wrapped->getIdentifier());
             }
             $newValues = [];
-            if (self::ACTION_REMOVE !== $action && isset($config['versioned'])) {
+            if (LogEntryInterface::ACTION_REMOVE !== $action && isset($config['versioned'])) {
                 $newValues = $this->getObjectChangeSetData($ea, $object, $logEntry);
                 $logEntry->setData($newValues);
             }
 
-            if (self::ACTION_UPDATE === $action && 0 === count($newValues)) {
+            if (LogEntryInterface::ACTION_UPDATE === $action && 0 === count($newValues)) {
                 return null;
             }
 
             $version = 1;
-            if (self::ACTION_CREATE !== $action) {
+            if (LogEntryInterface::ACTION_CREATE !== $action) {
                 $version = $ea->getNewVersion($logEntryMeta, $object);
                 if (empty($version)) {
                     // was versioned later

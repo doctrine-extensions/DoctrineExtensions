@@ -23,6 +23,7 @@ a release.
 - Tree: Add `Nested::ALLOWED_NODE_POSITIONS` constant in order to expose the available node positions
 - Support for `doctrine/collections` 2.0
 - Support for `doctrine/event-manager` 2.0
+- Loggable: Add `LogEntryInterface` interface in order to be implemented by log entry models
 
 ### Fixed
 - Sortable: Fix return value check of Comparable interface (#2541)
@@ -35,6 +36,9 @@ a release.
 - Deprecate the annotation reader being allowed to be any object.
   In 4.0, a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` instance will be required.
 - `Gedmo\DoctrineExtensions::registerAnnotations()` is deprecated and will be removed in 4.0, the method has been no-op'd as all supported `doctrine/annotations` versions support autoloading
+- Loggable: Constants `LoggableListener::ACTION_CREATE`, `LoggableListener::ACTION_UPDATE` and `LoggableListener::ACTION_REMOVE`
+  are deprecated. Use `LogEntryInterface::ACTION_CREATE`, `LogEntryInterface::ACTION_UPDATE` and `LogEntryInterface::ACTION_REMOVE`
+  instead.
 
 ## [3.10.0] - 2022-11-14
 ### Changed

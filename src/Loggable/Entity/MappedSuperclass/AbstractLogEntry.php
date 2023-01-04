@@ -11,12 +11,17 @@ namespace Gedmo\Loggable\Entity\MappedSuperclass;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Loggable\LogEntryInterface;
 
 /**
+ * @phpstan-template T of object
+ *
+ * @phpstan-implements LogEntryInterface<T>
+ *
  * @ORM\MappedSuperclass
  */
 #[ORM\MappedSuperclass]
-abstract class AbstractLogEntry
+abstract class AbstractLogEntry implements LogEntryInterface
 {
     /**
      * @var int|null
@@ -32,6 +37,8 @@ abstract class AbstractLogEntry
 
     /**
      * @var string|null
+     *
+     * @phpstan-var self::ACTION_CREATE|self::ACTION_UPDATE|self::ACTION_REMOVE|null
      *
      * @ORM\Column(type="string", length=8)
      */
@@ -56,6 +63,8 @@ abstract class AbstractLogEntry
 
     /**
      * @var string|null
+     *
+     * @phpstan-var class-string<T>|null
      *
      * @ORM\Column(name="object_class", type="string", length=191)
      */
