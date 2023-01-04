@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Loggable;
 
-use Doctrine\Common\EventManager;
 use Gedmo\Loggable\Entity\LogEntry;
-use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Loggable\Fixture\Entity\Address;
 use Gedmo\Tests\Loggable\Fixture\Entity\Article;
 use Gedmo\Tests\Loggable\Fixture\Entity\Comment;
@@ -27,24 +25,12 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class LoggableEntityTest extends BaseTestCaseORM
+abstract class LoggableEntityTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
     public const COMMENT = Comment::class;
     public const RELATED_ARTICLE = RelatedArticle::class;
     public const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment::class;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $evm = new EventManager();
-        $loggableListener = new LoggableListener();
-        $loggableListener->setUsername('jules');
-        $evm->addEventSubscriber($loggableListener);
-
-        $this->em = $this->getDefaultMockSqliteEntityManager($evm);
-    }
 
     public function testShouldHandleClonedEntity(): void
     {
