@@ -319,7 +319,7 @@ class LoggableListener extends MappedEventSubscriber
                 $logEntry->setData($newValues);
             }
 
-            if (LogEntryInterface::ACTION_UPDATE === $action && 0 === count($newValues)) {
+            if (LogEntryInterface::ACTION_UPDATE === $action && [] === $newValues) {
                 return null;
             }
 

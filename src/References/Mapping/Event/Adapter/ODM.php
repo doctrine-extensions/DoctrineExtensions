@@ -58,7 +58,6 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
 
     public function getSingleReference($om, $class, $identifier)
     {
-        $this->throwIfNotEntityManager($om);
         $meta = $om->getClassMetadata($class);
 
         if (!$meta->isInheritanceTypeNone()) {
@@ -82,12 +81,5 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
         }
 
         return [$meta->getIdentifier()[0] => $id];
-    }
-
-    /**
-     * Override so we don't get an exception. We want to allow this.
-     */
-    private function throwIfNotEntityManager(EntityManagerInterface $em): void
-    {
     }
 }

@@ -51,6 +51,8 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * The configuration of the Uploadable extension for this entity class
      *
+     * @todo Check if this property must be removed, as it is never set.
+     *
      * @var array
      */
     private $extensionConfiguration;

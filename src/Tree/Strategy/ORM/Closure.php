@@ -244,6 +244,7 @@ class Closure implements Strategy
 
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
+        \assert($em instanceof EntityManagerInterface);
         $meta = $em->getClassMetadata(get_class($entity));
         $config = $this->listener->getConfiguration($em, $meta->getName());
 

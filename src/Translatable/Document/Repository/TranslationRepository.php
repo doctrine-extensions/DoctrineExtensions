@@ -142,10 +142,8 @@ class TranslationRepository extends DocumentRepository
 
             $q->setHydrate(false);
             $data = $q->execute();
-            if ($data instanceof Iterator) {
-                $data = $data->toArray();
-            }
-            if ($data && is_array($data) && count($data)) {
+
+            if (is_iterable($data)) {
                 foreach ($data as $row) {
                     $result[$row['locale']][$row['field']] = $row['content'];
                 }
@@ -219,10 +217,7 @@ class TranslationRepository extends DocumentRepository
             $q->setHydrate(false);
             $data = $q->execute();
 
-            if ($data instanceof Iterator) {
-                $data = $data->toArray();
-            }
-            if ($data && is_array($data) && count($data)) {
+            if (is_iterable($data)) {
                 foreach ($data as $row) {
                     $result[$row['locale']][$row['field']] = $row['content'];
                 }

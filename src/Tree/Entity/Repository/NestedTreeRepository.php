@@ -521,7 +521,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $wrappedParent = new EntityWrapper($parent, $this->_em);
             $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], ':pid'));
             $qb->setParameter('pid', $wrappedParent->getIdentifier());
-        } elseif (isset($config['root']) && !$parent) {
+        } elseif (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':root'));
             $qb->andWhere($qb->expr()->isNull('node.'.$config['parent']));
             $method = $config['rootIdentifierMethod'];
@@ -978,7 +978,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $qb->setParameter('rid', $rootId);
         }
         $nodes = $qb->getQuery()->getArrayResult();
-        if (count($nodes)) {
+        if ([] !== $nodes) {
             foreach ($nodes as $node) {
                 $errors[] = "node [{$node[$identifier]}] has missing parent".($root ? ' on tree root: '.$rootId : '');
             }
@@ -998,9 +998,9 @@ class NestedTreeRepository extends AbstractTreeRepository
         $result = $qb->getQuery()
             ->setMaxResults(1)
             ->getResult(Query::HYDRATE_ARRAY);
-        $node = count($result) ? array_shift($result) : null;
+        $node = [] !== $result ? array_shift($result) : [];
 
-        if ($node) {
+        if ([] !== $node) {
             $id = $node[$identifier];
             $errors[] = "node [{$id}], left is greater than right".($root ? ' on tree root: '.$rootId : '');
         }

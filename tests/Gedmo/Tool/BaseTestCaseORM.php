@@ -94,8 +94,8 @@ abstract class BaseTestCaseORM extends TestCase
      */
     protected function startQueryLog(): void
     {
-        if (null === $this->em || null === $this->em->getConnection()->getDatabasePlatform()) {
-            throw new \RuntimeException('EntityManager and database platform must be initialized');
+        if (null === $this->em) {
+            throw new \RuntimeException('EntityManager must be initialized.');
         }
         $this->queryAnalyzer = new QueryAnalyzer($this->em->getConnection()->getDatabasePlatform());
         $this->em->getConfiguration()->setSQLLogger($this->queryAnalyzer);

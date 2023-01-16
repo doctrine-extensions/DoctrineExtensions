@@ -103,7 +103,9 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
     /**
      * Override so we don't get an exception. We want to allow this.
      *
-     * @param MongoDocumentManager|PhpcrDocumentManager $dm
+     * @param mixed $dm
+     *
+     * @phpstan-assert MongoDocumentManager|PhpcrDocumentManager $dm
      */
     private function throwIfNotDocumentManager($dm): void
     {

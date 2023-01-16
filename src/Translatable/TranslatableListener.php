@@ -362,7 +362,7 @@ class TranslatableListener extends MappedEventSubscriber
             }
         } elseif ($om instanceof DocumentManager) {
             [$mapping, $parentObject] = $om->getUnitOfWork()->getParentAssociation($object);
-            if (null != $parentObject) {
+            if (null !== $parentObject) {
                 $parentMeta = $om->getClassMetadata(get_class($parentObject));
                 $locale = $this->getTranslatableLocale($parentObject, $parentMeta, $om);
             }
@@ -441,6 +441,7 @@ class TranslatableListener extends MappedEventSubscriber
             if (isset($config['fields'])) {
                 $wrapped = AbstractWrapper::wrap($object, $om);
                 $transClass = $this->getTranslationClass($ea, $meta->getName());
+                \assert($wrapped instanceof AbstractWrapper);
                 $ea->removeAssociatedTranslations($wrapped, $transClass, $config['useObjectClass']);
             }
         }
@@ -459,7 +460,7 @@ class TranslatableListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
         // check if entity is tracked by translatable and without foreign key
-        if ($this->getConfiguration($om, $meta->getName()) && count($this->pendingTranslationInserts)) {
+        if ($this->getConfiguration($om, $meta->getName()) && [] !== $this->pendingTranslationInserts) {
             $oid = spl_object_id($object);
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
@@ -679,6 +680,8 @@ class TranslatableListener extends MappedEventSubscriber
 
             // check if translation already is created
             if (!$isInsert && !$translation) {
+                \assert($wrapped instanceof AbstractWrapper);
+
                 $translation = $ea->findTranslation(
                     $wrapped,
                     $locale,

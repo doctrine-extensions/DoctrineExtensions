@@ -66,7 +66,7 @@ class TreeObjectHydrator extends ObjectHydrator
     {
         $data = parent::hydrateAllData();
 
-        if (0 === count($data)) {
+        if ([] === $data) {
             return $data;
         }
 

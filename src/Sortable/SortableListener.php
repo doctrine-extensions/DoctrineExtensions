@@ -598,7 +598,7 @@ class SortableListener extends MappedEventSubscriber
         $maxPos = null;
 
         // Get groups
-        if (!count($groups)) {
+        if ([] === $groups) {
             $groups = $this->getGroups($meta, $config, $object);
         }
 

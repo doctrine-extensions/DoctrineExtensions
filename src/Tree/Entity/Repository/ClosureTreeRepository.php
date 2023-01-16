@@ -319,7 +319,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $levelProp = $hasLevelProp ? $config['level'] : self::SUBQUERY_LEVEL;
         $childrenIndex = $this->repoUtils->getChildrenIndex();
 
-        if (count($nodes) > 0) {
+        if ([] !== $nodes) {
             $firstLevel = $hasLevelProp ? $nodes[0][0]['descendant'][$levelProp] : $nodes[0][$levelProp];
             $l = 1;     // 1 is only an initial value. We could have a tree which has a root node with any level (subtrees)
             $refs = [];
@@ -517,7 +517,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 $entries = $q->getScalarResult();
                 $insertClosures($entries);
                 $newClosuresCount += count($entries);
-            } while (count($entries) > 0);
+            } while ([] !== $entries);
 
             return $newClosuresCount;
         };
@@ -611,7 +611,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 }
                 $this->_em->getConnection()->commit();
                 $levelUpdatesCount += count($entries);
-            } while (count($entries) > 0);
+            } while ([] !== $entries);
         }
 
         return $levelUpdatesCount;

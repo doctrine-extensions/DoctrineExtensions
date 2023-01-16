@@ -80,7 +80,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         // add excludes
         if (!empty($delta['exclude'])) {
             $meta = $this->getObjectManager()->getClassMetadata($relocation['name']);
-            if (1 == count($meta->getIdentifier())) {
+            if (1 === count($meta->getIdentifier())) {
                 // if we only have one identifier, we can use IN syntax, for better performance
                 $excludedIds = [];
                 foreach ($delta['exclude'] as $entity) {

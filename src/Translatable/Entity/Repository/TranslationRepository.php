@@ -33,7 +33,7 @@ class TranslationRepository extends EntityRepository
      * Current TranslatableListener instance used
      * in EntityManager
      *
-     * @var TranslatableListener
+     * @var TranslatableListener|null
      */
     private $listener;
 
@@ -147,10 +147,8 @@ class TranslationRepository extends EntityRepository
                 Query::HYDRATE_ARRAY
             );
 
-            if ($data && is_array($data) && count($data)) {
-                foreach ($data as $row) {
-                    $result[$row['locale']][$row['field']] = $row['content'];
-                }
+            foreach ($data as $row) {
+                $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
 
@@ -184,9 +182,9 @@ class TranslationRepository extends EntityRepository
             $q->setParameters(compact('class', 'field', 'value'));
             $q->setMaxResults(1);
             $result = $q->getArrayResult();
-            $id = count($result) ? $result[0]['foreignKey'] : null;
+            $id = $result[0]['foreignKey'] ?? null;
 
-            if ($id) {
+            if (null !== $id) {
                 $entity = $this->_em->find($class, $id);
             }
         }
@@ -218,10 +216,8 @@ class TranslationRepository extends EntityRepository
                 Query::HYDRATE_ARRAY
             );
 
-            if ($data && is_array($data) && count($data)) {
-                foreach ($data as $row) {
-                    $result[$row['locale']][$row['field']] = $row['content'];
-                }
+            foreach ($data as $row) {
+                $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
 
@@ -235,7 +231,7 @@ class TranslationRepository extends EntityRepository
      */
     private function getTranslatableListener(): TranslatableListener
     {
-        if (!$this->listener) {
+        if (null === $this->listener) {
             foreach ($this->_em->getEventManager()->getAllListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof TranslatableListener) {
