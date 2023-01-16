@@ -101,28 +101,28 @@ class LogEntryRepository extends EntityRepository
         $q->setParameters(compact('objectId', 'objectClass', 'version'));
         $logs = $q->getResult();
 
-        if ($logs) {
-            $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->getName());
-            $fields = $config['versioned'];
-            $filled = false;
-            while (($log = array_pop($logs)) && !$filled) {
-                if ($data = $log->getData()) {
-                    foreach ($data as $field => $value) {
-                        if (in_array($field, $fields, true)) {
-                            $this->mapValue($objectMeta, $field, $value);
-                            $wrapped->setPropertyValue($field, $value);
-                            unset($fields[array_search($field, $fields, true)]);
-                        }
-                    }
-                }
-                $filled = 0 === count($fields);
-            }
-            /*if (count($fields)) {
-                throw new \Gedmo\Exception\UnexpectedValueException('Could not fully revert the entity to version: '.$version);
-            }*/
-        } else {
+        if ([] === $logs) {
             throw new \Gedmo\Exception\UnexpectedValueException('Could not find any log entries under version: '.$version);
         }
+
+        $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->getName());
+        $fields = $config['versioned'];
+        $filled = false;
+        while (($log = array_pop($logs)) && !$filled) {
+            if ($data = $log->getData()) {
+                foreach ($data as $field => $value) {
+                    if (in_array($field, $fields, true)) {
+                        $this->mapValue($objectMeta, $field, $value);
+                        $wrapped->setPropertyValue($field, $value);
+                        unset($fields[array_search($field, $fields, true)]);
+                    }
+                }
+            }
+            $filled = [] === $fields;
+        }
+        /*if (count($fields)) {
+            throw new \Gedmo\Exception\UnexpectedValueException('Could not fully revert the entity to version: '.$version);
+        }*/
     }
 
     /**

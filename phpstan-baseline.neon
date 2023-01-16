@@ -111,16 +111,6 @@ parameters:
 			path: src/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Mapping/ExtensionMetadataFactory.php
-
-		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$reflClass\\.$#"
-			count: 1
-			path: src/Mapping/ExtensionMetadataFactory.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver\\:\\:getDefaultDriver\\(\\)\\.$#"
 			count: 2
 			path: src/Mapping/ExtensionMetadataFactory.php
@@ -211,28 +201,23 @@ parameters:
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getReference\\(\\)\\.$#"
-			count: 1
-			path: src/References/Mapping/Event/Adapter/ORM.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
 			message: "#^Call to method getClassMetadata\\(\\) on an unknown class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager\\.$#"
+			count: 2
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: "#^Call to method getReference\\(\\) on an unknown class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager\\.$#"
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
 			message: "#^Class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager not found\\.$#"
 			count: 2
-			path: src/References/Mapping/Event/Adapter/ORM.php
-
-		-
-			message: "#^Parameter \\$dm of method Gedmo\\\\References\\\\Mapping\\\\Event\\\\Adapter\\\\ORM\\:\\:throwIfNotDocumentManager\\(\\) has invalid type Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager\\.$#"
-			count: 1
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
@@ -446,21 +431,6 @@ parameters:
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
 		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 2
-			path: src/Translatable/Document/Repository/TranslationRepository.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: src/Translatable/Entity/Repository/TranslationRepository.php
-
-		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 2
-			path: src/Translatable/Entity/Repository/TranslationRepository.php
-
-		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Translatable/Mapping/Driver/Annotation.php
@@ -538,11 +508,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
 			count: 2
-			path: src/Tree/Entity/Repository/NestedTreeRepository.php
-
-		-
-			message: "#^Negated boolean expression is always true\\.$#"
-			count: 1
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
@@ -626,18 +591,8 @@ parameters:
 			path: src/Uploadable/UploadableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getConnection\\(\\)\\.$#"
-			count: 1
-			path: src/Uploadable/UploadableListener.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getEventManager\\(\\)\\.$#"
-			count: 1
-			path: src/Uploadable/UploadableListener.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 4
+			count: 3
 			path: src/Uploadable/UploadableListener.php
 
 		-
@@ -694,11 +649,6 @@ parameters:
 			message: "#^Method Gedmo\\\\Tests\\\\Timestampable\\\\Fixture\\\\ArticleCarbon\\:\\:getCreated\\(\\) should return Carbon\\\\Carbon\\|null but returns DateTime\\|null\\.$#"
 			count: 1
 			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between null and Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseORM.php
 
 		-
 			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Translatable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\TranslationRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Translatable\\\\Document\\\\Translation\\> will always evaluate to false\\.$#"

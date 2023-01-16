@@ -133,7 +133,7 @@ class TranslationWalker extends SqlWalker
     public function walkSelectStatement(SelectStatement $AST)
     {
         $result = parent::walkSelectStatement($AST);
-        if (!count($this->translatedComponents)) {
+        if ([] === $this->translatedComponents) {
             return $result;
         }
 
