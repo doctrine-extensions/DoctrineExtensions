@@ -28,6 +28,7 @@ a release.
 ### Fixed
 - Sortable: Fix return value check of Comparable interface (#2541)
 - Uploadable: Retrieve the correct metadata when uploading entities of different classes (#2071)
+- Translatable: Fix property existence check at `TranslatableListener::getTranslatableLocale()`
 
 ### Deprecated
 - In order to close the API, `@final` and `@internal` annotations were added to all non base classes, which means that extending
