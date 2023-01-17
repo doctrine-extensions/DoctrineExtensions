@@ -511,11 +511,6 @@ parameters:
 			path: src/Translatable/TranslatableListener.php
 
 		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: src/Translatable/TranslatableListener.php
-
-		-
 			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
 			count: 1
 			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
