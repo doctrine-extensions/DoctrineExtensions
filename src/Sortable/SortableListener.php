@@ -49,7 +49,7 @@ use ProxyManager\Proxy\GhostObjectInterface;
  *
  * @method SortableAdapter getEventAdapter(EventArgs $args)
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class SortableListener extends MappedEventSubscriber
 {
@@ -272,7 +272,7 @@ class SortableListener extends MappedEventSubscriber
                                     } else {
                                         @trigger_error(sprintf(
                                             'Support for "%s" as return type from "%s::compareTo()" is deprecated since'
-                                            .' gedmo/doctrine-extensions 3.x and will be removed in version 4.0. Return "integer" instead.',
+                                            .' gedmo/doctrine-extensions 3.11 and will be removed in version 4.0. Return "integer" instead.',
                                             gettype($matches),
                                             Comparable::class
                                         ), E_USER_DEPRECATED);

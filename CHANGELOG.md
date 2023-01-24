@@ -19,6 +19,7 @@ a release.
 
 ## [Unreleased]
 
+## [3.11.0] - 2023-01-26
 ### Added
 - Tree: Add `Nested::ALLOWED_NODE_POSITIONS` constant in order to expose the available node positions
 - Support for `doctrine/collections` 2.0
@@ -33,10 +34,12 @@ a release.
 ### Deprecated
 - In order to close the API, `@final` and `@internal` annotations were added to all non base classes, which means that extending
   these classes is deprecated and can not be inherited in version 4.0.
-- Sortable: Accepting a return type other than "integer" from `Comparable::compareTo()` is deprecated in `SortableListener::postFlush()`. This will not be accepted in version 4.0.
+- Sortable: Accepting a return type other than "integer" from `Comparable::compareTo()` is deprecated in `SortableListener::postFlush()`.
+  This will not be accepted in version 4.0.
 - Deprecate the annotation reader being allowed to be any object.
   In 4.0, a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` instance will be required.
-- `Gedmo\DoctrineExtensions::registerAnnotations()` is deprecated and will be removed in 4.0, the method has been no-op'd as all supported `doctrine/annotations` versions support autoloading
+- `Gedmo\DoctrineExtensions::registerAnnotations()` is deprecated and will be removed in 4.0, the method has been no-op'd as all
+  supported `doctrine/annotations` versions support autoloading
 - Loggable: Constants `LoggableListener::ACTION_CREATE`, `LoggableListener::ACTION_UPDATE` and `LoggableListener::ACTION_REMOVE`
   are deprecated. Use `LogEntryInterface::ACTION_CREATE`, `LogEntryInterface::ACTION_UPDATE` and `LogEntryInterface::ACTION_REMOVE`
   instead.

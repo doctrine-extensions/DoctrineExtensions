@@ -18,7 +18,7 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 /**
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class RepositoryUtils implements RepositoryUtilsInterface
 {

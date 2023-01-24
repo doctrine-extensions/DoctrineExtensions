@@ -21,7 +21,7 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class ReferenceIntegrityListener extends MappedEventSubscriber
 {

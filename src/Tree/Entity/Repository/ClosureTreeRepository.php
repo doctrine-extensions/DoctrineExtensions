@@ -24,7 +24,7 @@ use Gedmo\Tree\Strategy;
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class ClosureTreeRepository extends AbstractTreeRepository
 {

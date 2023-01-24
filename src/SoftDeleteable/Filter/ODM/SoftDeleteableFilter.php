@@ -15,7 +15,7 @@ use Doctrine\ODM\MongoDB\Query\Filter\BsonFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class SoftDeleteableFilter extends BsonFilter
 {

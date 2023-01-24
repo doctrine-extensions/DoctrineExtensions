@@ -28,7 +28,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class Nested implements Strategy
 {
