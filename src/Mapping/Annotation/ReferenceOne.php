@@ -21,7 +21,7 @@ use Attribute;
  *
  * @NamedArgumentConstructor
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ReferenceOne extends Reference

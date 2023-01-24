@@ -14,7 +14,7 @@ namespace Gedmo\Exception;
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class ReferenceIntegrityStrictException extends RuntimeException
 {

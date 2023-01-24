@@ -19,7 +19,7 @@ use Gedmo\Sortable\SortableListener;
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class SortableRepository extends EntityRepository
 {

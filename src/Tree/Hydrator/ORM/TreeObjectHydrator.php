@@ -20,7 +20,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @author Ilija Tovilo <ilija.tovilo@me.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class TreeObjectHydrator extends ObjectHydrator
 {

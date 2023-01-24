@@ -18,7 +18,7 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class Validator
 {

@@ -33,7 +33,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  *
  * @method LoggableAdapter getEventAdapter(EventArgs $args)
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class LoggableListener extends MappedEventSubscriber
 {

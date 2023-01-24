@@ -20,7 +20,7 @@ use Doctrine\Common\Collections\AbstractLazyCollection;
  *
  * @template-extends AbstractLazyCollection<array-key, mixed>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class LazyCollection extends AbstractLazyCollection
 {

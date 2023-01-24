@@ -22,7 +22,7 @@ use Doctrine\Persistence\Proxy as PersistenceProxy;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @final since gedmo/doctrine-extensions 3.x
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class EntityWrapper extends AbstractWrapper
 {
