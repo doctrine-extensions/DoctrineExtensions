@@ -1,12 +1,12 @@
-# Install Gedmo Doctrine2 extensions in Symfony 4
+# Install Gedmo Doctrine extensions in Symfony 4
 
-Configure full featured [Doctrine2 extensions](https://github.com/doctrine-extensions/DoctrineExtensions) for your symfony 4 project.
+Configure full featured [Doctrine extensions](https://github.com/doctrine-extensions/DoctrineExtensions) for your Symfony 4 project.
 This post will show you - how to create a simple configuration file to manage extensions with
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
 
 This post will put some light over the shed of extension installation and mapping configuration
-of Doctrine2. It does not require any additional dependencies and gives you full power
+of Doctrine. It does not require any additional dependencies and gives you full power
 over management of extensions.
 
 Content:

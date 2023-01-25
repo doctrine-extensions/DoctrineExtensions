@@ -1,4 +1,4 @@
-# Mapping extension for Doctrine2
+# Mapping extension for Doctrine
 
 **Mapping** extension makes it easy to map additional metadata for event listeners.
 It supports **Attribute**, **Xml** and **Annotation** drivers which will be chosen depending on

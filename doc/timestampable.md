@@ -1,4 +1,4 @@
-# Timestampable behavior extension for Doctrine 2
+# Timestampable behavior extension for Doctrine
 
 **Timestampable** behavior will automate the update of date fields
 on your Entities or Documents. It works through annotations and can update

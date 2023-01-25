@@ -1,4 +1,4 @@
-# Translatable behavior extension for Doctrine 2
+# Translatable behavior extension for Doctrine
 
 **Translatable** behavior offers a very handy solution for translating specific record fields
 in different languages. Further more, it loads the translations automatically for a locale

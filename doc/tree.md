@@ -1,4 +1,4 @@
-# Tree - Nestedset behavior extension for Doctrine 2
+# Tree - Nestedset behavior extension for Doctrine
 
 **Tree** nested behavior will implement the standard Nested-Set behavior
 on your Entity. Tree supports different strategies. Currently it supports

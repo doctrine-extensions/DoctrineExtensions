@@ -1,4 +1,4 @@
-# Cross Object Mapper References behavior extension for Doctrine 2
+# Cross Object Mapper References behavior extension for Doctrine
 
 Create documents and entities that contain references to each other.
 
@@ -47,7 +47,7 @@ private $product;
 
 ## Example
 
-Here is an example where you have a Product which is mapped using the Doctrine MongoDB ODM project and it contains a property `$stockItems` that is populated from the Doctrine2 ORM.
+Here is an example where you have a Product which is mapped using the Doctrine MongoDB ODM project and it contains a property `$stockItems` that is populated from the Doctrine ORM.
 
 ```php
 <?php

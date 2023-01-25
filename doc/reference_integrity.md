@@ -1,4 +1,4 @@
-# Reference Integrity behavior extension for Doctrine 2
+# Reference Integrity behavior extension for Doctrine
 
 **ReferenceIntegrity** behavior will automate the reference integrity for referenced documents.
 It works through annotations and attributes, and supports 'nullify', 'pull' and 'restrict' which throws an exception.

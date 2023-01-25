@@ -1,4 +1,4 @@
-# Loggable behavioral extension for Doctrine2
+# Loggable behavioral extension for Doctrine
 
 **Loggable** behavior tracks your record changes and is able to
 manage versions.

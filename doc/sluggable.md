@@ -1,4 +1,4 @@
-# Sluggable behavior extension for Doctrine 2
+# Sluggable behavior extension for Doctrine
 
 **Sluggable** behavior will build the slug of predefined fields on a given field
 which should store the slug

@@ -1,4 +1,4 @@
-# IpTraceable behavior extension for Doctrine 2
+# IpTraceable behavior extension for Doctrine
 
 **IpTraceable** behavior will automate the update of IP trace
 on your Entities or Documents. It works through annotations and can update
