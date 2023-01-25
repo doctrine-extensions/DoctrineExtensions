@@ -1,4 +1,4 @@
-# Sortable behavior extension for Doctrine2
+# Sortable behavior extension for Doctrine
 
 **Sortable** behavior will maintain a position field for ordering entities.
 

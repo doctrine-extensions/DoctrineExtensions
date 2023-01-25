@@ -1,4 +1,4 @@
-# Blameable behavior extension for Doctrine 2
+# Blameable behavior extension for Doctrine
 
 **Blameable** behavior will automate the update of username or user reference fields
 on your Entities or Documents. It works through annotations and can update
