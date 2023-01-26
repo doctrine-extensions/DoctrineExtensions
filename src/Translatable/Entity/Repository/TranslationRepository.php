@@ -24,8 +24,6 @@ use Gedmo\Translatable\TranslatableListener;
  * to interact with translations.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @final since gedmo/doctrine-extensions 3.11
  */
 class TranslationRepository extends EntityRepository
 {
