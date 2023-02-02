@@ -32,8 +32,6 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * @phpstan-method LoggableConfiguration getConfiguration(ObjectManager $objectManager, $class)
  *
  * @method LoggableAdapter getEventAdapter(EventArgs $args)
- *
- * @final since gedmo/doctrine-extensions 3.11
  */
 class LoggableListener extends MappedEventSubscriber
 {
