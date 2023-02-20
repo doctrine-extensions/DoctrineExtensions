@@ -19,6 +19,12 @@ a release.
 
 ## [Unreleased]
 
+## [3.11.1] - 2023-02-20
+### Fixed
+- Loggable: Remove unfixable deprecation when extending `LoggableListener`
+- Remove unfixable deprecations when extending repository classes
+- Fix error caused by the attempt of "doctrine/annotations" parsing a `@note` annotation
+
 ## [3.11.0] - 2023-01-26
 ### Added
 - Tree: Add `Nested::ALLOWED_NODE_POSITIONS` constant in order to expose the available node positions
