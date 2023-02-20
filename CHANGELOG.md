@@ -9,7 +9,7 @@ Each release should include sub-headers for the Extension above the types of
 changes, in order to more easily recognize how an Extension has changed in
 a release.
 
-```
+```markdown
 ## [3.6.1] - 2022-07-26
 ### Fixed
 - Sortable: Fix issue with add+delete position synchronization (#1932)
