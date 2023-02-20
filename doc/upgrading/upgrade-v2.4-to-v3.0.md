@@ -37,3 +37,22 @@ _Applies To: Projects with a custom `SoftDeleteableAdapter` implementation_
 
 The [`SoftDeleteableAdapter`](/src/SoftDeleteable/Mapping/Event/SoftDeleteableAdapter.php) interface has a new method
 for generating the DateTime value.
+
+## Translatable
+
+_Applies To: Projects migrated from Symfony v4 to v5_
+
+In addition to the old config `is_bundle: false` needs to be added:
+
+```yaml
+mappings:
+    translatable:
+        is_bundle: false
+        type: annotation # or attribute
+        alias: Gedmo
+        prefix: Gedmo\Translatable\Entity
+        # make sure vendor library location is correct
+        dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
+```
+
+Also check if the `dir` value is up to date with new path.
