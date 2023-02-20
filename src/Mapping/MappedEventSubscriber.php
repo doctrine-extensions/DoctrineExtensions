@@ -177,7 +177,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @return void
      *
-     * @note Providing any object is deprecated, as of 4.0 a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` will be required
+     * NOTE Providing any object is deprecated, as of 4.0 a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` will be required
      */
     public function setAnnotationReader($reader)
     {
