@@ -75,6 +75,8 @@ class SluggableListener extends MappedEventSubscriber
      * Transliteration callback for slugs
      *
      * @var callable
+     *
+     * @phpstan-var callable(string $text, string $separator, object $object): string
      */
     private $transliterator = [Urlizer::class, 'transliterate'];
 
@@ -82,6 +84,8 @@ class SluggableListener extends MappedEventSubscriber
      * Urlize callback for slugs
      *
      * @var callable
+     *
+     * @phpstan-var callable(string $text, string $separator, object $object): string
      */
     private $urlizer = [Urlizer::class, 'urlize'];
 
@@ -129,6 +133,8 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param callable $callable
      *
+     * @phpstan-param callable(string $text, string $separator): string $callable
+     *
      * @throws \Gedmo\Exception\InvalidArgumentException
      *
      * @return void
@@ -147,6 +153,10 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param callable $callable
      *
+     * @phpstan-param callable(string $text, string $separator, object $object): string $callable
+     *
+     * @throws \Gedmo\Exception\InvalidArgumentException
+     *
      * @return void
      */
     public function setUrlizer($callable)
@@ -161,6 +171,8 @@ class SluggableListener extends MappedEventSubscriber
      * Get currently used transliterator callable
      *
      * @return callable
+     *
+     * @phpstan-return callable(string $text, string $separator, object $object): string
      */
     public function getTransliterator()
     {
@@ -171,6 +183,8 @@ class SluggableListener extends MappedEventSubscriber
      * Get currently used urlizer callable
      *
      * @return callable
+     *
+     * @phpstan-return callable(string $text, string $separator, object $object): string
      */
     public function getUrlizer()
     {
