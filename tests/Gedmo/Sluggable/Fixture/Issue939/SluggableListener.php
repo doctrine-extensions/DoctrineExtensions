@@ -16,12 +16,12 @@ use Gedmo\Sluggable\SluggableListener as BaseSluggableListener;
 final class SluggableListener extends BaseSluggableListener
 {
     /**
-     * @var callable(string, string, object=): string
+     * @var callable(string, string, object): string
      */
     protected $originalTransliterator;
 
     /**
-     * @var callable(string, string, object=): string
+     * @var callable(string, string, object): string
      */
     protected $originalUrlizer;
 
@@ -36,7 +36,7 @@ final class SluggableListener extends BaseSluggableListener
         $this->setUrlizer([$this, 'urlizer']);
     }
 
-    public function transliterator(string $slug, string $separator = '-', ?object $object = null): string
+    public function transliterator(string $slug, string $separator, object $object): string
     {
         if ($object instanceof Article) {
             // custom transliteration here
@@ -48,7 +48,7 @@ final class SluggableListener extends BaseSluggableListener
         return $originalTransliterator($slug, $separator, $object);
     }
 
-    public function urlizer(string $slug, string $separator = '-', ?object $object = null): string
+    public function urlizer(string $slug, string $separator, object $object): string
     {
         if ($object instanceof Article) {
             // custom urlization here
