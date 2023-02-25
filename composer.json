@@ -59,7 +59,7 @@
         "doctrine/orm": "^2.10.2",
         "friendsofphp/php-cs-fixer": "^3.4.0,<3.10",
         "nesbot/carbon": "^2.55",
-        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan": "^1.10.2",
         "phpstan/phpstan-doctrine": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^8.5 || ^9.5",

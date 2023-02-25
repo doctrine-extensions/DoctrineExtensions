@@ -26,11 +26,6 @@ parameters:
 			path: src/Blameable/Mapping/Driver/Annotation.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
-			count: 1
-			path: src/Blameable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/Blameable/Mapping/Driver/Xml.php
@@ -42,11 +37,6 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/IpTraceable/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Annotation.php
 
@@ -82,11 +72,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: src/Mapping/Driver/AbstractAnnotationDriver.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: src/Mapping/Driver/AbstractAnnotationDriver.php
 
@@ -141,11 +126,6 @@ parameters:
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
-			message: "#^Call to protected method getCache\\(\\) of class Doctrine\\\\Persistence\\\\Mapping\\\\AbstractClassMetadataFactory\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\>\\.$#"
-			count: 1
-			path: src/Mapping/MappedEventSubscriber.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
@@ -164,11 +144,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isSingleValuedReference\\(\\)\\.$#"
 			count: 1
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
-			count: 1
-			path: src/References/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
@@ -251,11 +226,6 @@ parameters:
 			path: src/References/ReferencesListener.php
 
 		-
-			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
-			count: 2
-			path: src/References/ReferencesListener.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
 			count: 2
 			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
@@ -279,11 +249,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 3
 			path: src/Sluggable/Handler/TreeSlugHandler.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
-			count: 1
-			path: src/Sluggable/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Part \\$option \\(array\\{string, mixed\\}\\) of encapsed string cannot be cast to string\\.$#"
@@ -326,11 +291,6 @@ parameters:
 			path: src/Sluggable/SluggableListener.php
 
 		-
-			message: "#^Offset 'type' on array\\{type\\: string, fieldName\\: string, columnName\\: string, length\\?\\: int, id\\?\\: bool, nullable\\?\\: bool, notInsertable\\?\\: bool, notUpdatable\\?\\: bool, \\.\\.\\.\\} on left side of \\?\\? always exists and is not nullable\\.$#"
-			count: 1
-			path: src/SoftDeleteable/Mapping/Event/Adapter/ORM.php
-
-		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
 			count: 1
 			path: src/SoftDeleteable/Mapping/Validator.php
@@ -344,11 +304,6 @@ parameters:
 			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getDateValue\\(\\)\\.$#"
 			count: 1
 			path: src/SoftDeleteable/SoftDeleteableListener.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
-			count: 1
-			path: src/Sortable/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -386,17 +341,7 @@ parameters:
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: src/Sortable/SortableListener.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Driver/Annotation.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Annotation.php
 
@@ -409,11 +354,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Yaml.php
-
-		-
-			message: "#^Offset 'type' on array\\{type\\: string, fieldName\\: string, columnName\\: string, length\\?\\: int, id\\?\\: bool, nullable\\?\\: bool, notInsertable\\?\\: bool, notUpdatable\\?\\: bool, \\.\\.\\.\\} on left side of \\?\\? always exists and is not nullable\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Event/Adapter/ORM.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
@@ -429,11 +369,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
-			count: 1
-			path: src/Translatable/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Access to offset 'association' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
@@ -509,11 +444,6 @@ parameters:
 			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
 			count: 2
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
-			count: 1
-			path: src/Tree/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -596,11 +526,6 @@ parameters:
 			path: src/Uploadable/UploadableListener.php
 
 		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Loggable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\LogEntryRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Loggable\\\\Fixture\\\\Document\\\\Log\\\\Comment\\> will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Gedmo/Loggable/LoggableDocumentTest.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<T of object\\>\\:\\:mapField\\(\\)\\.$#"
 			count: 2
 			path: tests/Gedmo/Mapping/MetadataFactory/CustomDriverTest.php
@@ -619,11 +544,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
-			count: 1
-			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$dm is never written, only read\\.$#"
@@ -649,26 +569,6 @@ parameters:
 			message: "#^Method Gedmo\\\\Tests\\\\Timestampable\\\\Fixture\\\\ArticleCarbon\\:\\:getCreated\\(\\) should return Carbon\\\\Carbon\\|null but returns DateTime\\|null\\.$#"
 			count: 1
 			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
-
-		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Translatable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\TranslationRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Translatable\\\\Document\\\\Translation\\> will always evaluate to false\\.$#"
-			count: 4
-			path: tests/Gedmo/Translatable/TranslatableDocumentCollectionTest.php
-
-		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Gedmo\\\\\\\\Translatable\\\\\\\\Document\\\\\\\\Repository\\\\\\\\TranslationRepository' and Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Translatable\\\\Document\\\\Translation\\> will always evaluate to false\\.$#"
-			count: 2
-			path: tests/Gedmo/Translatable/TranslatableDocumentTest.php
-
-		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Doctrine\\\\\\\\ODM\\\\\\\\MongoDB\\\\\\\\Iterator\\\\\\\\Iterator' and array will always evaluate to false\\.$#"
-			count: 2
-			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
-
-		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Doctrine\\\\\\\\ODM\\\\\\\\MongoDB\\\\\\\\Iterator\\\\\\\\Iterator' and array\\|null will always evaluate to false\\.$#"
-			count: 2
-			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
 
 		-
 			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
