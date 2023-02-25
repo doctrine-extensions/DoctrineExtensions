@@ -606,7 +606,7 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Check if the given locale is valid
      */
-    private function isValidlocale(?string $locale): bool
+    private function isValidLocale(?string $locale): bool
     {
         return is_string($locale) && strlen($locale);
     }
