@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- SoftDeleteable: Fix issue with soft-deleting objects which proxy was not yet initialized
 
 ## [3.11.1] - 2023-02-20
 ### Fixed

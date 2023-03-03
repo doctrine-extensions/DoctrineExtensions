@@ -11,6 +11,7 @@ namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 
@@ -45,8 +46,26 @@ class SoftDeleteableListener extends MappedEventSubscriber
     {
         return [
             'loadClassMetadata',
+            'preRemove',
             'onFlush',
         ];
+    }
+
+    /**
+     * If it's a SoftDeleteable object
+     * make sure the object is initialized
+     */
+    public function preRemove(LifecycleEventArgs $args): void
+    {
+        $object = $args->getObject();
+        $om = $args->getObjectManager();
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->getName());
+
+        if (isset($config['softDeleteable']) && $config['softDeleteable']) {
+            // Ensure object is initialized to avoid Document is removed error
+            $om->initializeObject($object);
+        }
     }
 
     /**
