@@ -30,14 +30,17 @@ $finder = PhpCsFixer\Finder::create()
 return (new PhpCsFixer\Config())
     ->setRules([
         '@DoctrineAnnotation' => true,
+        '@PHP71Migration' => true,
+        '@PHP71Migration:risky' => true,
+        '@PHPUnit84Migration:risky' => true,
         '@PSR2' => true,
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_before_statement' => true,
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
-        // @todo: Uncomment the following rule in the next major release.
-        // 'declare_strict_types' => true,
+        // @todo: Change the following rule to `true` in the next major release.
+        'declare_strict_types' => false,
         'error_suppression' => true,
         'header_comment' => ['header' => $header],
         'is_null' => false,
@@ -68,6 +71,8 @@ return (new PhpCsFixer\Config())
         'static_lambda' => true,
         'strict_param' => true,
         'ternary_to_null_coalescing' => true,
+        // @todo: Change the following rule to `true` in the next major release.
+        'void_return' => false,
     ])
     ->setFinder($finder)
     ->setRiskyAllowed(true)

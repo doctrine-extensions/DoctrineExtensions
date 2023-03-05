@@ -518,7 +518,7 @@ class SluggableListener extends MappedEventSubscriber
                 $sameSlugs[] = $list[$config['slug']];
             }
 
-            $i = pow(10, $this->exponent);
+            $i = 10 ** $this->exponent;
             $uniqueSuffix = (string) $i;
             if ($recursing || in_array($generatedSlug, $sameSlugs, true)) {
                 do {
