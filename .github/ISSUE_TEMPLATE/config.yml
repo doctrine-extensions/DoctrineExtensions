@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+    - name: StackOverflow
+      url: https://stackoverflow.com/questions/tagged/doctrine-extensions
+      about: 'Questions tagged with "doctrine-extensions" on StackOverflow'
+    - name: Slack
+      url: https://symfony-devs.slack.com/archives/CCD2S9Y85
+      about: '#doctrineextensions channel on Symfony Devs Slack'
