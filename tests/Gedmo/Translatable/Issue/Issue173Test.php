@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Issue173\Article;
 use Gedmo\Tests\Translatable\Fixture\Issue173\Category;
@@ -90,7 +91,7 @@ final class Issue173Test extends BaseTestCaseORM
         ;
 
         return $query->getQuery()->setHint(
-            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            Query::HINT_CUSTOM_OUTPUT_WALKER,
             TranslationWalker::class
         )->getResult();
     }

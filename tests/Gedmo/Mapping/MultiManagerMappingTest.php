@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -28,17 +30,17 @@ use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
 final class MultiManagerMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em1;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em2;
 
     /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
+     * @var DocumentManager
      */
     private $dm1;
 
@@ -74,7 +76,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
     public function testTwoDifferentManagers(): void
     {
         $meta = $this->dm1->getClassMetadata(Article::class);
-        $dmArticle = new \Gedmo\Tests\Sluggable\Fixture\Document\Article();
+        $dmArticle = new Article();
         $dmArticle->setCode('code');
         $dmArticle->setTitle('title');
         $this->dm1->persist($dmArticle);
@@ -100,7 +102,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
 
         static::assertSame('title-code', $em1Article->getSlug());
 
-        $user = new \Gedmo\Tests\Mapping\Fixture\Yaml\User();
+        $user = new User();
         $user->setUsername('user');
         $user->setPassword('secret');
         $this->em2->persist($user);

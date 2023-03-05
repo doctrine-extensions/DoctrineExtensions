@@ -12,6 +12,7 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
@@ -151,7 +152,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         $insertResult = $collection->insertOne($data);
 
         if (false === $insertResult->isAcknowledged()) {
-            throw new \Gedmo\Exception\RuntimeException('Failed to insert new Translation record');
+            throw new RuntimeException('Failed to insert new Translation record');
         }
     }
 

@@ -11,17 +11,25 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Tools\SchemaTool;
+use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\TranslatableListener;
+use Gedmo\Tree\TreeListener;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class MappingTest extends \PHPUnit\Framework\TestCase
+final class MappingTest extends TestCase
 {
     public const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
     public const TEST_ENTITY_TRANSLATION = Translation::class;
@@ -38,26 +46,26 @@ final class MappingTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $config = new \Doctrine\ORM\Configuration();
+        $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         // $this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
-        $config->setMetadataDriverImpl(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($_ENV['annotation_reader']));
+        $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
 
         $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
         ];
 
-        $evm = new \Doctrine\Common\EventManager();
-        $evm->addEventSubscriber(new \Gedmo\Translatable\TranslatableListener());
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TranslatableListener());
         $this->timestampable = new TimestampableListener();
         $evm->addEventSubscriber($this->timestampable);
-        $evm->addEventSubscriber(new \Gedmo\Sluggable\SluggableListener());
-        $evm->addEventSubscriber(new \Gedmo\Tree\TreeListener());
+        $evm->addEventSubscriber(new SluggableListener());
+        $evm->addEventSubscriber(new TreeListener());
         $this->em = EntityManager::create($conn, $config, $evm);
 
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool = new SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
             $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY),

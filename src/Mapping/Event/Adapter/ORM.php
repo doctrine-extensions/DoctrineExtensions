@@ -25,12 +25,12 @@ use Gedmo\Mapping\Event\AdapterInterface;
 class ORM implements AdapterInterface
 {
     /**
-     * @var \Doctrine\Common\EventArgs
+     * @var EventArgs
      */
     private $args;
 
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var EntityManagerInterface
      */
     private $em;
 
@@ -158,10 +158,10 @@ class ORM implements AdapterInterface
     /**
      * Creates a ORM specific LifecycleEventArgs.
      *
-     * @param object                               $document
-     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     * @param object                 $document
+     * @param EntityManagerInterface $entityManager
      *
-     * @return \Doctrine\ORM\Event\LifecycleEventArgs
+     * @return LifecycleEventArgs
      */
     public function createLifecycleEventArgsInstance($document, $entityManager)
     {

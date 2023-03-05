@@ -18,6 +18,8 @@ use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
 use Doctrine\ORM\Query\SqlWalker;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
@@ -104,7 +106,7 @@ class SoftDeleteableWalker extends SqlWalker
                     ? new MultiTableDeleteExecutor($AST, $this, $this->meta, $this->getConnection()->getDatabasePlatform(), $this->configuration)
                     : new SingleTableDeleteUpdateExecutor($AST, $this);
             default:
-                throw new \Gedmo\Exception\UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
+                throw new UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
         }
     }
 
@@ -131,7 +133,7 @@ class SoftDeleteableWalker extends SqlWalker
     /**
      * Get the currently used SoftDeleteableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException if listener is not found
+     * @throws RuntimeException if listener is not found
      */
     private function getSoftDeleteableListener(): SoftDeleteableListener
     {
@@ -149,7 +151,7 @@ class SoftDeleteableWalker extends SqlWalker
             }
 
             if (null === $this->listener) {
-                throw new \Gedmo\Exception\RuntimeException('The SoftDeleteable listener could not be found.');
+                throw new RuntimeException('The SoftDeleteable listener could not be found.');
             }
         }
 

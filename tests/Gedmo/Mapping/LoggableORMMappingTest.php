@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Loggable\Entity\LogEntry;
@@ -29,7 +30,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
     public const YAML_CATEGORY = Category::class;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
 
@@ -54,7 +55,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
         $loggableListener = new LoggableListener();
         $loggableListener->setCacheItemPool($this->cache);
         $evm->addEventSubscriber($loggableListener);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = EntityManager::create($conn, $config, $evm);
     }
 
     public function testLoggableMapping(): void

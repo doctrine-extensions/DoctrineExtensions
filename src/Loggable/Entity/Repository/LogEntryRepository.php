@@ -12,6 +12,8 @@ namespace Gedmo\Loggable\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tool\Wrapper\EntityWrapper;
@@ -78,7 +80,7 @@ class LogEntryRepository extends EntityRepository
      * @param object $entity
      * @param int    $version
      *
-     * @throws \Gedmo\Exception\UnexpectedValueException
+     * @throws UnexpectedValueException
      *
      * @return void
      */
@@ -100,7 +102,7 @@ class LogEntryRepository extends EntityRepository
         $logs = $q->getResult();
 
         if ([] === $logs) {
-            throw new \Gedmo\Exception\UnexpectedValueException('Could not find any log entries under version: '.$version);
+            throw new UnexpectedValueException('Could not find any log entries under version: '.$version);
         }
 
         $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->getName());
@@ -142,7 +144,7 @@ class LogEntryRepository extends EntityRepository
     /**
      * Get the currently used LoggableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException if listener is not found
+     * @throws RuntimeException if listener is not found
      */
     private function getLoggableListener(): LoggableListener
     {
@@ -158,7 +160,7 @@ class LogEntryRepository extends EntityRepository
             }
 
             if (null === $this->listener) {
-                throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
+                throw new RuntimeException('The loggable listener could not be found');
             }
         }
 

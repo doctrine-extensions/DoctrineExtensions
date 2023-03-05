@@ -23,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -227,9 +228,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Get an event adapter to handle event specific
      * methods
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException if event is not recognized
+     * @throws InvalidArgumentException if event is not recognized
      *
-     * @return \Gedmo\Mapping\Event\AdapterInterface
+     * @return AdapterInterface
      */
     protected function getEventAdapter(EventArgs $args)
     {
@@ -247,7 +248,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
             return $this->adapters[$m[1]];
         }
 
-        throw new \Gedmo\Exception\InvalidArgumentException('Event mapper does not support event arg class: '.$class);
+        throw new InvalidArgumentException('Event mapper does not support event arg class: '.$class);
     }
 
     /**

@@ -9,6 +9,7 @@
 
 namespace Gedmo\SoftDeleteable\Filter;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
@@ -47,7 +48,7 @@ class SoftDeleteableFilter extends SQLFilter
      *
      * @return string
      *
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {

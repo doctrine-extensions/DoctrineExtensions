@@ -10,6 +10,7 @@
 namespace Gedmo\Loggable\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry;
 use Gedmo\Loggable\Document\Repository\LogEntryRepository;
 
 /**
@@ -26,7 +27,7 @@ use Gedmo\Loggable\Document\Repository\LogEntryRepository;
 #[MongoODM\Index(keys: ['loggedAt' => 'asc'])]
 #[MongoODM\Index(keys: ['objectClass' => 'asc'])]
 #[MongoODM\Index(keys: ['username' => 'asc'])]
-class LogEntry extends MappedSuperclass\AbstractLogEntry
+class LogEntry extends AbstractLogEntry
 {
     /*
      * All required columns are mapped through inherited superclass

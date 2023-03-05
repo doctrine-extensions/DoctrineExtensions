@@ -12,6 +12,9 @@ namespace Gedmo\Sortable\Entity\Repository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sortable\SortableListener;
 
 /**
@@ -53,7 +56,7 @@ class SortableRepository extends EntityRepository
         }
 
         if (null === $sortableListener) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ORM sortable listener');
+            throw new InvalidMappingException('This repository can be attached only to ORM sortable listener');
         }
 
         $this->listener = $sortableListener;
@@ -62,7 +65,7 @@ class SortableRepository extends EntityRepository
     }
 
     /**
-     * @return \Doctrine\ORM\Query
+     * @return Query
      */
     public function getBySortableGroupsQuery(array $groupValues = [])
     {
@@ -70,7 +73,7 @@ class SortableRepository extends EntityRepository
     }
 
     /**
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function getBySortableGroupsQueryBuilder(array $groupValues = [])
     {

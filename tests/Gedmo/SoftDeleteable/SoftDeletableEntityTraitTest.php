@@ -12,13 +12,14 @@ declare(strict_types=1);
 namespace Gedmo\Tests\SoftDeleteable;
 
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UsingTrait;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test for SoftDeletable Entity Trait
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class SoftDeletableEntityTraitTest extends \PHPUnit\Framework\TestCase
+final class SoftDeletableEntityTraitTest extends TestCase
 {
     /**
      * @var UsingTrait

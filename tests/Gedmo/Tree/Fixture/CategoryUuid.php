@@ -133,7 +133,7 @@ class CategoryUuid implements NodeInterface
     #[ORM\PrePersist]
     public function createId(): void
     {
-        $this->id = bin2hex(pack('N2', mt_rand(), mt_rand()));
+        $this->id = bin2hex(pack('N2', random_int(0, mt_getrandmax()), random_int(0, mt_getrandmax())));
     }
 
     public function getId(): ?string

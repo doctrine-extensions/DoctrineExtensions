@@ -13,6 +13,8 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
@@ -33,7 +35,7 @@ final class SluggableMappingTest extends ORMMappingTestCase
     public const SLUGGABLE = Sluggable::class;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
 
@@ -49,7 +51,7 @@ final class SluggableMappingTest extends ORMMappingTestCase
         );
         $reader = new AnnotationReader();
         $chainDriverImpl->addDriver(
-            new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader),
+            new AnnotationDriver($reader),
             'Gedmo\Tests\Mapping\Fixture'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
@@ -63,7 +65,7 @@ final class SluggableMappingTest extends ORMMappingTestCase
         $listener = new SluggableListener();
         $listener->setCacheItemPool($this->cache);
         $evm->addEventSubscriber($listener);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = EntityManager::create($conn, $config, $evm);
     }
 
     public function testShouldBeAbleToMapSluggableUsingYamlDriver(): void

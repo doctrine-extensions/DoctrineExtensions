@@ -232,8 +232,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException
-     * @throws \Gedmo\Exception\RuntimeException         if something fails in transaction
+     * @throws InvalidArgumentException
+     * @throws \Gedmo\Exception\RuntimeException if something fails in transaction
      *
      * @return void
      */
@@ -465,7 +465,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             }
         }
 
-        return $errors ?: true;
+        return [] !== $errors ? $errors : true;
     }
 
     /**

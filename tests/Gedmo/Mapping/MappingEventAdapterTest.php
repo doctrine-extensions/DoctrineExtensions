@@ -17,8 +17,9 @@ use Gedmo\Mapping\Event\Adapter\ORM as EventAdapterORM;
 use Gedmo\Tests\Mapping\Mock\EventSubscriberCustomMock;
 use Gedmo\Tests\Mapping\Mock\EventSubscriberMock;
 use Gedmo\Tests\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
+use PHPUnit\Framework\TestCase;
 
-final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
+final class MappingEventAdapterTest extends TestCase
 {
     public function testCustomizedAdapter(): void
     {

@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
 use Doctrine\ORM\PersistentCollection;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -214,7 +215,7 @@ class TreeObjectHydrator extends ObjectHydrator
     protected function getParentField()
     {
         if (!isset($this->config['parent'])) {
-            throw new \Gedmo\Exception\InvalidMappingException('The `parent` property is required for the TreeHydrator to work');
+            throw new InvalidMappingException('The `parent` property is required for the TreeHydrator to work');
         }
 
         return $this->config['parent'];
@@ -246,7 +247,7 @@ class TreeObjectHydrator extends ObjectHydrator
             return $associationMapping['fieldName'];
         }
 
-        throw new \Gedmo\Exception\InvalidMappingException('The children property could not found. It is identified through the `mappedBy` annotation to your parent property.');
+        throw new InvalidMappingException('The children property could not found. It is identified through the `mappedBy` annotation to your parent property.');
     }
 
     /**
@@ -262,7 +263,7 @@ class TreeObjectHydrator extends ObjectHydrator
             }
         }
 
-        throw new \Gedmo\Exception\InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
+        throw new InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
     }
 
     /**

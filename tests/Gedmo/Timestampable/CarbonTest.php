@@ -93,7 +93,7 @@ final class CarbonTest extends BaseTestCaseORM
         $author->setName('New author');
         $sport->setAuthor($author);
 
-        /** @var \Gedmo\Tests\Timestampable\Fixture\CommentCarbon $sportComment */
+        /** @var CommentCarbon $sportComment */
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         static::assertInstanceOf(DateTime::class, $sportComment->getModified(), 'Type TIME_MUTABLE should stay DateTime');
 

@@ -9,6 +9,8 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\Strategy;
 
@@ -27,7 +29,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @param object $rootNode
      *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function getTreeQueryBuilder($rootNode = null)
     {
@@ -39,7 +41,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @param object $rootNode
      *
-     * @return \Doctrine\ORM\Query
+     * @return Query
      */
     public function getTreeQuery($rootNode = null)
     {
@@ -78,7 +80,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function getPathQueryBuilder($node)
     {
@@ -124,7 +126,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @return \Doctrine\ORM\Query
+     * @return Query
      */
     public function getPathQuery($node)
     {

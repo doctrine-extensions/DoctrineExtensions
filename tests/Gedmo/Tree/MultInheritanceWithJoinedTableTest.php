@@ -54,7 +54,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $adminRight = $admins->getRight();
-        $userLdap = new \Gedmo\Tests\Tree\Fixture\UserLDAP('testname');
+        $userLdap = new UserLDAP('testname');
         $userLdap->init();
         $userLdap->setParent($admins);
         $this->em->persist($userLdap);
@@ -68,7 +68,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
     public function testShouldBeAbleToPopulateTree(): void
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
-        $user3 = new \Gedmo\Tests\Tree\Fixture\User('user3@test.com', 'secret');
+        $user3 = new User('user3@test.com', 'secret');
         $user3->init();
         $user3->setParent($admins);
 
@@ -126,19 +126,19 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 
     private function populate(): void
     {
-        $everyBody = new \Gedmo\Tests\Tree\Fixture\UserGroup('Everybody');
-        $admins = new \Gedmo\Tests\Tree\Fixture\UserGroup('Admins');
+        $everyBody = new UserGroup('Everybody');
+        $admins = new UserGroup('Admins');
         $admins->setParent($everyBody);
-        $visitors = new \Gedmo\Tests\Tree\Fixture\UserGroup('Visitors');
+        $visitors = new UserGroup('Visitors');
         $visitors->setParent($everyBody);
 
-        $user0 = new \Gedmo\Tests\Tree\Fixture\User('user0@test.com', 'secret');
+        $user0 = new User('user0@test.com', 'secret');
         $user0->init();
         $user0->setParent($admins);
-        $user1 = new \Gedmo\Tests\Tree\Fixture\User('user1@test.com', 'secret');
+        $user1 = new User('user1@test.com', 'secret');
         $user1->init();
         $user1->setParent($visitors);
-        $user2 = new \Gedmo\Tests\Tree\Fixture\User('user2@test.com', 'secret');
+        $user2 = new User('user2@test.com', 'secret');
         $user2->init();
         $user2->setParent($visitors);
 

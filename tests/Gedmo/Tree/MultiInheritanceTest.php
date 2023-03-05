@@ -92,35 +92,35 @@ final class MultiInheritanceTest extends BaseTestCaseORM
 
     private function populate(): void
     {
-        $root = new \Gedmo\Tests\Tree\Fixture\Node();
+        $root = new Node();
         $root->setTitle('Food');
         $root->setIdentifier('food');
 
-        $root2 = new \Gedmo\Tests\Tree\Fixture\Node();
+        $root2 = new Node();
         $root2->setTitle('Sports');
         $root2->setIdentifier('sport');
 
-        $child = new \Gedmo\Tests\Tree\Fixture\Node();
+        $child = new Node();
         $child->setTitle('Fruits');
         $child->setParent($root);
         $child->setIdentifier('fruit');
 
-        $child2 = new \Gedmo\Tests\Tree\Fixture\Node();
+        $child2 = new Node();
         $child2->setTitle('Vegitables');
         $child2->setParent($root);
         $child2->setIdentifier('vegie');
 
-        $childsChild = new \Gedmo\Tests\Tree\Fixture\Node();
+        $childsChild = new Node();
         $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
         $childsChild->setIdentifier('carrot');
 
-        $potatoes = new \Gedmo\Tests\Tree\Fixture\Node();
+        $potatoes = new Node();
         $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
         $potatoes->setIdentifier('potatoe');
 
-        $cabbages = new \Gedmo\Tests\Tree\Fixture\BaseNode();
+        $cabbages = new BaseNode();
         $cabbages->setIdentifier('cabbage');
         $cabbages->setParent($child2);
 

@@ -71,8 +71,8 @@ abstract class BaseTestCaseORM extends TestCase
             'memory' => true,
         ];
 
-        $config = null === $config ? $this->getDefaultConfiguration() : $config;
-        $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
+        $config = $config ?? $this->getDefaultConfiguration();
+        $em = EntityManager::create($conn, $config, $evm ?? $this->getEventManager());
 
         $schema = array_map(static function ($class) use ($em) {
             return $em->getClassMetadata($class);

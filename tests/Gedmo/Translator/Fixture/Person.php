@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translator\TranslationProxy;
 
 /**
  * @ORM\Entity
@@ -125,7 +126,7 @@ class Person
     }
 
     /**
-     * @return self|\Gedmo\Translator\TranslationProxy
+     * @return self|TranslationProxy
      */
     public function translate(string $locale = 'en')
     {
@@ -133,7 +134,7 @@ class Person
             return $this;
         }
 
-        return new \Gedmo\Translator\TranslationProxy($this,
+        return new TranslationProxy($this,
             $locale, // Locale
             ['name', 'lastName'], // List of translatable properties
             PersonTranslation::class, // Translation entity class

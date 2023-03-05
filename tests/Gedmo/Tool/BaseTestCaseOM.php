@@ -11,22 +11,18 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Tool;
 
-// common
 use Doctrine\Common\EventManager;
-// orm specific
-use Doctrine\DBAL\Driver;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
-// odm specific
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-// listeners
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver as AttributeDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -37,6 +33,7 @@ use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
 use MongoDB\Client;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
@@ -46,7 +43,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
+abstract class BaseTestCaseOM extends TestCase
 {
     /**
      * @var EventManager
@@ -85,7 +82,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     public function getORMDriver(array $paths = []): MappingDriver
     {
         if (PHP_VERSION_ID >= 80000) {
-            return new \Doctrine\ORM\Mapping\Driver\AttributeDriver($paths);
+            return new AttributeDriverORM($paths);
         }
 
         return new AnnotationDriverORM($_ENV['annotation_reader'], $paths);

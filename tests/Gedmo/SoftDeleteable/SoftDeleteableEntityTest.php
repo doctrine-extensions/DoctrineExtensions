@@ -17,6 +17,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Query;
 use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -179,7 +180,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         $query = $this->em->createQuery($dql);
         $query->setParameter($field, $value);
         $query->setHint(
-            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            Query::HINT_CUSTOM_OUTPUT_WALKER,
             SoftDeleteableWalker::class
         );
 
@@ -217,7 +218,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::PAGE_CLASS);
         $query = $this->em->createQuery($dql);
         $query->setHint(
-            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            Query::HINT_CUSTOM_OUTPUT_WALKER,
             SoftDeleteableWalker::class
         );
 
@@ -335,7 +336,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         $query = $this->em->createQuery($dql);
         $query->setParameter($field, $value);
         $query->setHint(
-            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            Query::HINT_CUSTOM_OUTPUT_WALKER,
             SoftDeleteableWalker::class
         );
 
@@ -373,7 +374,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::PAGE_CLASS);
         $query = $this->em->createQuery($dql);
         $query->setHint(
-            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            Query::HINT_CUSTOM_OUTPUT_WALKER,
             SoftDeleteableWalker::class
         );
 
