@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 
 /**
@@ -40,7 +41,7 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 #[Index(name: 'translations_lookup_idx', columns: ['locale', 'object_class', 'foreign_key'])]
 #[Index(name: 'general_translations_lookup_idx', columns: ['object_class', 'foreign_key'])]
 #[UniqueConstraint(name: 'lookup_unique_idx', columns: ['locale', 'object_class', 'field', 'foreign_key'])]
-class Translation extends MappedSuperclass\AbstractTranslation
+class Translation extends AbstractTranslation
 {
     /*
      * All required columns are mapped through inherited superclass

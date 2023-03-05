@@ -19,10 +19,12 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Persistence\Mapping\Driver\SymfonyFileLocator;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 use Gedmo\Mapping\Driver\AttributeAnnotationReader;
 use Gedmo\Mapping\Driver\AttributeDriverInterface;
 use Gedmo\Mapping\Driver\AttributeReader;
+use Gedmo\Mapping\Driver\Chain;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -39,7 +41,7 @@ class ExtensionMetadataFactory
     /**
      * Extension driver
      *
-     * @var \Gedmo\Mapping\Driver
+     * @var Driver
      */
     protected $driver;
 
@@ -155,9 +157,9 @@ class ExtensionMetadataFactory
      *
      * @param MappingDriver $omDriver
      *
-     * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
+     * @throws RuntimeException if driver was not found in extension
      *
-     * @return \Gedmo\Mapping\Driver
+     * @return Driver
      */
     protected function getDriver($omDriver)
     {
@@ -169,7 +171,7 @@ class ExtensionMetadataFactory
         $className = get_class($omDriver);
         $driverName = substr($className, strrpos($className, '\\') + 1);
         if ($omDriver instanceof MappingDriverChain || 'DriverChain' === $driverName) {
-            $driver = new Driver\Chain();
+            $driver = new Chain();
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
                 $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
             }
@@ -189,7 +191,7 @@ class ExtensionMetadataFactory
             if (!class_exists($driverClassName)) {
                 $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Annotation';
                 if (!class_exists($driverClassName)) {
-                    throw new \Gedmo\Exception\RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
+                    throw new RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
                 }
             }
             $driver = new $driverClassName();

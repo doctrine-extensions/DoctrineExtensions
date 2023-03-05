@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Uploadable\FileInfo;
 
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These are tests for the FileInfoArray class of the Uploadable behavior
@@ -19,7 +20,7 @@ use Gedmo\Uploadable\FileInfo\FileInfoArray;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class FileInfoArrayTest extends \PHPUnit\Framework\TestCase
+final class FileInfoArrayTest extends TestCase
 {
     public function testConstructorIfKeysAreNotValidOrSomeAreMissingThrowException(): void
     {

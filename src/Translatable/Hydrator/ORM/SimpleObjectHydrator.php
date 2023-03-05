@@ -10,6 +10,7 @@
 namespace Gedmo\Translatable\Hydrator\ORM;
 
 use Doctrine\ORM\Internal\Hydration\SimpleObjectHydrator as BaseSimpleObjectHydrator;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -58,7 +59,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException if listener is not found
+     * @throws RuntimeException if listener is not found
      *
      * @return TranslatableListener
      */
@@ -76,7 +77,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
         }
 
         if (null === $translatableListener) {
-            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
+            throw new RuntimeException('The translation listener could not be found');
         }
 
         return $translatableListener;

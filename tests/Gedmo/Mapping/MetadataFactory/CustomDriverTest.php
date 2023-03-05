@@ -11,18 +11,23 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\MetadataFactory;
 
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 use Gedmo\Timestampable\TimestampableListener;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These are mapping tests for tree extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class CustomDriverTest extends \PHPUnit\Framework\TestCase
+final class CustomDriverTest extends TestCase
 {
     /**
      * @var TimestampableListener
@@ -36,7 +41,7 @@ final class CustomDriverTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $config = new \Doctrine\ORM\Configuration();
+        $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $config->setMetadataDriverImpl(new CustomDriver());
@@ -46,13 +51,13 @@ final class CustomDriverTest extends \PHPUnit\Framework\TestCase
             'memory' => true,
         ];
 
-        $evm = new \Doctrine\Common\EventManager();
+        $evm = new EventManager();
         $this->timestampable = new TimestampableListener();
         $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
         $evm->addEventSubscriber($this->timestampable);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = EntityManager::create($conn, $config, $evm);
 
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool = new SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
             $this->em->getClassMetadata(Timestampable::class),
@@ -90,7 +95,7 @@ class CustomDriver implements MappingDriver
 
     public function loadMetadataForClass($className, ClassMetadata $metadata): void
     {
-        if ('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable' === $className) {
+        if (Timestampable::class === $className) {
             $id = [];
             $id['fieldName'] = 'id';
             $id['type'] = 'integer';

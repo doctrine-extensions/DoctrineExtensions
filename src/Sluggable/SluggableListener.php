@@ -12,6 +12,7 @@ namespace Gedmo\Sluggable;
 use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Handler\SlugHandlerInterface;
 use Gedmo\Sluggable\Handler\SlugHandlerWithUniqueCallbackInterface;
@@ -135,14 +136,14 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @phpstan-param callable(string $text, string $separator): string $callable
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return void
      */
     public function setTransliterator($callable)
     {
         if (!is_callable($callable)) {
-            throw new \Gedmo\Exception\InvalidArgumentException('Invalid transliterator callable parameter given');
+            throw new InvalidArgumentException('Invalid transliterator callable parameter given');
         }
         $this->transliterator = $callable;
     }
@@ -155,14 +156,14 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @phpstan-param callable(string $text, string $separator, object $object): string $callable
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return void
      */
     public function setUrlizer($callable)
     {
         if (!is_callable($callable)) {
-            throw new \Gedmo\Exception\InvalidArgumentException('Invalid urlizer callable parameter given');
+            throw new InvalidArgumentException('Invalid urlizer callable parameter given');
         }
         $this->urlizer = $callable;
     }
@@ -584,7 +585,7 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Retrieves a FilterCollection instance from the given ObjectManager.
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return mixed
      */
@@ -597,6 +598,6 @@ class SluggableListener extends MappedEventSubscriber
             return $om->getFilterCollection();
         }
 
-        throw new \Gedmo\Exception\InvalidArgumentException('ObjectManager does not support filters');
+        throw new InvalidArgumentException('ObjectManager does not support filters');
     }
 }

@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -30,7 +31,7 @@ use Gedmo\Uploadable\UploadableListener;
 final class UploadableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
 

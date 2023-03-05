@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Issue1123\BaseEntity;
 use Gedmo\Tests\Translatable\Fixture\Issue1123\ChildEntity;
@@ -75,9 +76,9 @@ final class Issue1123Test extends BaseTestCaseORM
         $qb = $this->em->createQueryBuilder()->select('e')->from(self::CHILD_ENTITY, 'e');
 
         $query = $qb->getQuery();
-        $query->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
-        $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'de');
-        $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 1);
+        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+        $query->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'de');
+        $query->setHint(TranslatableListener::HINT_FALLBACK, 1);
 
         $res = $query->getArrayResult();
         static::assertArrayHasKey('id', $res[0]);

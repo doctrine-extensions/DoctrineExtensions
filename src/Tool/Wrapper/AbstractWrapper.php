@@ -58,7 +58,7 @@ abstract class AbstractWrapper implements WrapperInterface
      *
      * @param object $object
      *
-     * @throws \Gedmo\Exception\UnsupportedObjectManagerException
+     * @throws UnsupportedObjectManagerException
      *
      * @return WrapperInterface
      */

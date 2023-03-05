@@ -932,7 +932,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $this->verifyTree($errors);
         }
 
-        return $errors ?: true;
+        return [] !== $errors ? $errors : true;
     }
 
     /**

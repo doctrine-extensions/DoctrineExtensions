@@ -24,6 +24,7 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use MongoDB\Client;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
@@ -33,7 +34,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
+abstract class BaseTestCaseMongoODM extends TestCase
 {
     /**
      * @var DocumentManager|null
@@ -67,8 +68,8 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     {
         $client = new Client($_ENV['MONGODB_SERVER'], [], ['typeMap' => DocumentManager::CLIENT_TYPEMAP]);
 
-        $config = $config ?: $this->getMockAnnotatedConfig();
-        $evm = $evm ?: $this->getEventManager();
+        $config = $config ?? $this->getMockAnnotatedConfig();
+        $evm = $evm ?? $this->getEventManager();
 
         return $this->dm = DocumentManager::create($client, $config, $evm);
     }

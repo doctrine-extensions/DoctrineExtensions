@@ -24,7 +24,7 @@ trait MaterializedPath
      */
     protected $path;
     /**
-     * @var self
+     * @var self|null
      */
     protected $parent;
     /**
@@ -32,7 +32,7 @@ trait MaterializedPath
      */
     protected $level;
     /**
-     * @var Collection|self[]
+     * @var Collection<int, self>|self[]|null
      */
     protected $children;
     /**
@@ -109,7 +109,7 @@ trait MaterializedPath
     }
 
     /**
-     * @param Collection|self[] $children
+     * @param Collection<int, self>|self[] $children
      *
      * @return self
      */
@@ -121,10 +121,10 @@ trait MaterializedPath
     }
 
     /**
-     * @return Collection|self[]
+     * @return Collection<int, self>|self[]
      */
     public function getChildren()
     {
-        return $this->children = $this->children ?: new ArrayCollection();
+        return $this->children = $this->children ?? new ArrayCollection();
     }
 }

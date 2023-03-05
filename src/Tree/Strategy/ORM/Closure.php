@@ -17,6 +17,7 @@ use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy;
@@ -396,7 +397,7 @@ class Closure implements Strategy
             $q = $em->createQuery($dql);
             $q->setParameters(compact('node', 'parent'));
             if ($q->getSingleScalarResult()) {
-                throw new \Gedmo\Exception\UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
+                throw new UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
             }
         }
 

@@ -13,6 +13,7 @@ use Doctrine\Common\Proxy\Proxy;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
@@ -196,7 +197,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
 
         $table = $meta->getTableName();
         if (!$em->getConnection()->insert($table, $data)) {
-            throw new \Gedmo\Exception\RuntimeException('Failed to insert new Translation record');
+            throw new RuntimeException('Failed to insert new Translation record');
         }
     }
 

@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -115,7 +116,7 @@ class Nested implements Strategy
     public function setNodePosition($oid, $position)
     {
         if (!in_array($position, self::ALLOWED_NODE_POSITIONS, true)) {
-            throw new \Gedmo\Exception\InvalidArgumentException("Position: {$position} is not valid in nested set tree");
+            throw new InvalidArgumentException("Position: {$position} is not valid in nested set tree");
         }
         $this->nodePositions[$oid] = $position;
     }
@@ -149,7 +150,7 @@ class Nested implements Strategy
 
         $changeSet = $uow->getEntityChangeSet($node);
         if (isset($config['root'], $changeSet[$config['root']])) {
-            throw new \Gedmo\Exception\UnexpectedValueException('Root cannot be changed manually, change parent instead');
+            throw new UnexpectedValueException('Root cannot be changed manually, change parent instead');
         }
 
         $oid = spl_object_id($node);
@@ -269,7 +270,7 @@ class Nested implements Strategy
      *
      * @phpstan-param value-of<self::ALLOWED_NODE_POSITIONS> $position
      *
-     * @throws \Gedmo\Exception\UnexpectedValueException
+     * @throws UnexpectedValueException
      *
      * @return void
      */
@@ -608,6 +609,8 @@ class Nested implements Strategy
                     continue;
                 }
 
+                assert(null !== $node);
+
                 $nodeMeta = $em->getClassMetadata(get_class($node));
 
                 if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
@@ -694,6 +697,8 @@ class Nested implements Strategy
                 if ($node instanceof Proxy && !$node->__isInitialized()) {
                     continue;
                 }
+
+                assert(null !== $node);
 
                 $nodeMeta = $em->getClassMetadata(get_class($node));
 

@@ -75,7 +75,7 @@ class User extends Role
         $num = strlen($set);
         $ret = '';
         for ($i = 0; $i < $length; ++$i) {
-            $ret .= $set[mt_rand(0, $num - 1)];
+            $ret .= $set[random_int(0, $num - 1)];
         }
 
         return $ret;

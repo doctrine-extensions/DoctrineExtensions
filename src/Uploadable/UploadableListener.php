@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\UploadableCantWriteException;
 use Gedmo\Exception\UploadableCouldntGuessMimeTypeException;
 use Gedmo\Exception\UploadableExtensionException;
@@ -89,7 +90,7 @@ class UploadableListener extends MappedEventSubscriber
     {
         parent::__construct();
 
-        $this->mimeTypeGuesser = $mimeTypeGuesser ? $mimeTypeGuesser : new MimeTypeGuesser();
+        $this->mimeTypeGuesser = $mimeTypeGuesser ?? new MimeTypeGuesser();
     }
 
     /**
@@ -209,10 +210,10 @@ class UploadableListener extends MappedEventSubscriber
      * @param object $object
      * @param string $action
      *
-     * @throws \Gedmo\Exception\UploadableNoPathDefinedException
-     * @throws \Gedmo\Exception\UploadableCouldntGuessMimeTypeException
-     * @throws \Gedmo\Exception\UploadableMaxSizeException
-     * @throws \Gedmo\Exception\UploadableInvalidMimeTypeException
+     * @throws UploadableNoPathDefinedException
+     * @throws UploadableCouldntGuessMimeTypeException
+     * @throws UploadableMaxSizeException
+     * @throws UploadableInvalidMimeTypeException
      *
      * @return void
      */
@@ -260,7 +261,7 @@ class UploadableListener extends MappedEventSubscriber
 
         if ($config['allowedTypes'] || $config['disallowedTypes']) {
             $ok = $config['allowedTypes'] ? false : true;
-            $mimes = $config['allowedTypes'] ? $config['allowedTypes'] : $config['disallowedTypes'];
+            $mimes = $config['allowedTypes'] ?: $config['disallowedTypes'];
 
             foreach ($mimes as $m) {
                 if ($mime === $m) {
@@ -378,15 +379,15 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @return array
      *
-     * @throws \Gedmo\Exception\UploadableUploadException
-     * @throws \Gedmo\Exception\UploadableNoFileException
-     * @throws \Gedmo\Exception\UploadableExtensionException
-     * @throws \Gedmo\Exception\UploadableIniSizeException
-     * @throws \Gedmo\Exception\UploadableFormSizeException
-     * @throws \Gedmo\Exception\UploadableFileAlreadyExistsException
-     * @throws \Gedmo\Exception\UploadablePartialException
-     * @throws \Gedmo\Exception\UploadableNoTmpDirException
-     * @throws \Gedmo\Exception\UploadableCantWriteException
+     * @throws UploadableUploadException
+     * @throws UploadableNoFileException
+     * @throws UploadableExtensionException
+     * @throws UploadableIniSizeException
+     * @throws UploadableFormSizeException
+     * @throws UploadableFileAlreadyExistsException
+     * @throws UploadablePartialException
+     * @throws UploadableNoTmpDirException
+     * @throws UploadableCantWriteException
      *
      * @phpstan-param class-string|false $filenameGeneratorClass
      */
@@ -559,7 +560,7 @@ class UploadableListener extends MappedEventSubscriber
         if (!is_string($defaultFileInfoClass) || !class_exists($defaultFileInfoClass) ||
             !is_subclass_of($defaultFileInfoClass, FileInfoInterface::class)
         ) {
-            throw new \Gedmo\Exception\InvalidArgumentException(sprintf('Default FileInfo class must be a valid class, and it must implement "%s".', FileInfoInterface::class));
+            throw new InvalidArgumentException(sprintf('Default FileInfo class must be a valid class, and it must implement "%s".', FileInfoInterface::class));
         }
 
         $this->defaultFileInfoClass = $defaultFileInfoClass;
@@ -629,7 +630,7 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @return \Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface
+     * @return MimeTypeGuesserInterface
      */
     public function getMimeTypeGuesser()
     {

@@ -11,6 +11,8 @@ namespace Gedmo\Loggable\Document\Repository;
 
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
@@ -66,7 +68,7 @@ class LogEntryRepository extends DocumentRepository
      * @param object $document
      * @param int    $version
      *
-     * @throws \Gedmo\Exception\UnexpectedValueException
+     * @throws UnexpectedValueException
      *
      * @return void
      */
@@ -89,7 +91,7 @@ class LogEntryRepository extends DocumentRepository
         }
 
         if ([] === $logs) {
-            throw new \Gedmo\Exception\UnexpectedValueException('Count not find any log entries under version: '.$version);
+            throw new UnexpectedValueException('Count not find any log entries under version: '.$version);
         }
 
         $data = [];
@@ -142,7 +144,7 @@ class LogEntryRepository extends DocumentRepository
     /**
      * Get the currently used LoggableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException if listener is not found
+     * @throws RuntimeException if listener is not found
      */
     private function getLoggableListener(): LoggableListener
     {
@@ -158,7 +160,7 @@ class LogEntryRepository extends DocumentRepository
             }
 
             if (null === $this->listener) {
-                throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
+                throw new RuntimeException('The loggable listener could not be found');
             }
         }
 

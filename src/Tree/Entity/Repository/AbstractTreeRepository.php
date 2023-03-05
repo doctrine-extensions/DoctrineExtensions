@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\RepositoryInterface;
 use Gedmo\Tree\RepositoryUtils;
@@ -52,12 +53,12 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
         }
 
         if (null === $treeListener) {
-            throw new \Gedmo\Exception\InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
+            throw new InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
         }
 
         $this->listener = $treeListener;
         if (!$this->validate()) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: '.$treeListener->getStrategy($em, $class->getName())->getName());
+            throw new InvalidMappingException('This repository cannot be used for tree type: '.$treeListener->getStrategy($em, $class->getName())->getName());
         }
 
         $this->repoUtils = new RepositoryUtils($this->_em, $this->getClassMetadata(), $this->listener, $this);
@@ -78,7 +79,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Returns the RepositoryUtilsInterface instance
      *
-     * @return \Gedmo\Tree\RepositoryUtilsInterface|null
+     * @return RepositoryUtilsInterface|null
      */
     public function getRepoUtils()
     {

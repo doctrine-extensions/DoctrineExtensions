@@ -10,8 +10,12 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tree\Mapping\Event\TreeAdapter;
 
@@ -103,19 +107,19 @@ class TreeListener extends MappedEventSubscriber
         if (!isset($this->strategies[$class])) {
             $config = $this->getConfiguration($om, $class);
             if (!$config) {
-                throw new \Gedmo\Exception\UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
+                throw new UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
             }
             $managerName = 'UnsupportedManager';
-            if ($om instanceof \Doctrine\ORM\EntityManagerInterface) {
+            if ($om instanceof EntityManagerInterface) {
                 $managerName = 'ORM';
-            } elseif ($om instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
+            } elseif ($om instanceof DocumentManager) {
                 $managerName = 'ODM\\MongoDB';
             }
             if (!isset($this->strategyInstances[$config['strategy']])) {
                 $strategyClass = $this->getNamespace().'\\Strategy\\'.$managerName.'\\'.ucfirst($config['strategy']);
 
                 if (!class_exists($strategyClass)) {
-                    throw new \Gedmo\Exception\InvalidArgumentException($managerName." TreeListener does not support tree type: {$config['strategy']}");
+                    throw new InvalidArgumentException($managerName." TreeListener does not support tree type: {$config['strategy']}");
                 }
                 $this->strategyInstances[$config['strategy']] = new $strategyClass($this);
             }

@@ -12,6 +12,7 @@ namespace Gedmo\Loggable;
 use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -83,7 +84,7 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @param mixed $username
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException Invalid username
+     * @throws InvalidArgumentException Invalid username
      *
      * @return void
      */
@@ -98,7 +99,7 @@ class LoggableListener extends MappedEventSubscriber
         } elseif (is_object($username) && method_exists($username, '__toString')) {
             $this->username = $username->__toString();
         } else {
-            throw new \Gedmo\Exception\InvalidArgumentException('Username must be a string, or object should have method getUserIdentifier, getUsername or __toString');
+            throw new InvalidArgumentException('Username must be a string, or object should have method getUserIdentifier, getUsername or __toString');
         }
     }
 

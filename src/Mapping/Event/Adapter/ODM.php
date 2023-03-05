@@ -25,12 +25,12 @@ use Gedmo\Mapping\Event\AdapterInterface;
 class ODM implements AdapterInterface
 {
     /**
-     * @var \Doctrine\Common\EventArgs
+     * @var EventArgs
      */
     private $args;
 
     /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
+     * @var DocumentManager
      */
     private $dm;
 
@@ -158,10 +158,10 @@ class ODM implements AdapterInterface
     /**
      * Creates a ODM specific LifecycleEventArgs.
      *
-     * @param object                                $document
-     * @param \Doctrine\ODM\MongoDB\DocumentManager $documentManager
+     * @param object          $document
+     * @param DocumentManager $documentManager
      *
-     * @return \Doctrine\ODM\MongoDB\Event\LifecycleEventArgs
+     * @return LifecycleEventArgs
      */
     public function createLifecycleEventArgsInstance($document, $documentManager)
     {

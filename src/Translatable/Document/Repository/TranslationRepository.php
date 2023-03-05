@@ -15,6 +15,9 @@ use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Doctrine\ODM\MongoDB\UnitOfWork;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation;
 use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
@@ -39,7 +42,7 @@ class TranslationRepository extends DocumentRepository
     public function __construct(DocumentManager $dm, UnitOfWork $uow, ClassMetadata $class)
     {
         if ($class->getReflectionClass()->isSubclassOf(AbstractPersonalTranslation::class)) {
-            throw new \Gedmo\Exception\UnexpectedValueException('This repository is useless for personal translations');
+            throw new UnexpectedValueException('This repository is useless for personal translations');
         }
         parent::__construct($dm, $uow, $class);
     }
@@ -61,7 +64,7 @@ class TranslationRepository extends DocumentRepository
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->dm, $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'], true)) {
-            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->getName()} does not translate field - {$field}");
+            throw new InvalidArgumentException("Document: {$meta->getName()} does not translate field - {$field}");
         }
         $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
             || $listener->getTranslatableLocale($document, $meta, $this->getDocumentManager()) === $locale
@@ -228,7 +231,7 @@ class TranslationRepository extends DocumentRepository
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException if listener is not found
+     * @throws RuntimeException if listener is not found
      */
     private function getTranslatableListener(): TranslatableListener
     {
@@ -241,7 +244,7 @@ class TranslationRepository extends DocumentRepository
                 }
             }
 
-            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
+            throw new RuntimeException('The translation listener could not be found');
         }
 
         return $this->listener;

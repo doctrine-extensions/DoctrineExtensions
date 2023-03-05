@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\OptimisticLockException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\ForeignRootCategory;
 use Gedmo\Tests\Tree\Fixture\RootCategory;
@@ -326,7 +327,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
     }
 
     /**
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      */
     public function testTreeWithRootPointingAtAnotherTable(): void
     {
@@ -502,7 +503,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
     }
 
     /**
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      */
     private function populate(): void
     {

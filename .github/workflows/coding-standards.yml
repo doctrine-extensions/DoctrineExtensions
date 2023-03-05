@@ -29,6 +29,30 @@ jobs:
       - name: "Run PHP-CS-Fixer"
         run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
 
+  rector:
+    name: "Rector"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+
+      - name: "Install PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: "none"
+          tools: "composer:v2"
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v2"
+        with:
+          dependency-versions: "highest"
+          composer-options: "--prefer-dist --prefer-stable"
+
+      - name: Rector
+        run: "bin/rector --no-progress-bar --dry-run"
+
   composer:
     name: Composer
 

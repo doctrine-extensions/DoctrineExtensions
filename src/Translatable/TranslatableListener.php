@@ -15,6 +15,8 @@ use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
@@ -331,14 +333,13 @@ class TranslatableListener extends MappedEventSubscriber
 
     /**
      * Gets the locale to use for translation. Loads object
-     * defined locale first..
+     * defined locale first.
      *
      * @param object        $object
      * @param ClassMetadata $meta
      * @param object        $om
      *
-     * @throws \Gedmo\Exception\RuntimeException if language or locale property is not
-     *                                           found in entity
+     * @throws RuntimeException if language or locale property is not found in entity
      *
      * @return string
      */
@@ -349,7 +350,7 @@ class TranslatableListener extends MappedEventSubscriber
         if (null !== $configurationLocale) {
             $class = $meta->getReflectionClass();
             if (!$class->hasProperty($configurationLocale)) {
-                throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$configurationLocale}) found on object: {$meta->getName()}");
+                throw new RuntimeException("There is no locale or language property ({$configurationLocale}) found on object: {$meta->getName()}");
             }
             $reflectionProperty = $class->getProperty($configurationLocale);
             $reflectionProperty->setAccessible(true);
@@ -592,14 +593,14 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @param string $locale locale to validate
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException if locale is not valid
+     * @throws InvalidArgumentException if locale is not valid
      *
      * @return void
      */
     protected function validateLocale($locale)
     {
         if (!$this->isValidLocale($locale)) {
-            throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
+            throw new InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
     }
 

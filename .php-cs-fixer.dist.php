@@ -22,7 +22,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__.'/src',
         __DIR__.'/tests',
     ])
-    ->append([__FILE__])
+    ->append([__FILE__, __DIR__.'/rector.php'])
     ->exclude([
         __DIR__.'/tests/data',
     ]);

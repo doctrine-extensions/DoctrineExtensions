@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Timestampable\Fixture;
 
+use Carbon\CarbonImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -59,7 +60,7 @@ class CommentCarbon implements Timestampable
     private $status;
 
     /**
-     * @var \Carbon\CarbonImmutable|null
+     * @var CarbonImmutable|null
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="status", value=1)
@@ -113,7 +114,7 @@ class CommentCarbon implements Timestampable
         return $this->modified;
     }
 
-    public function getClosed(): ?\Carbon\CarbonImmutable
+    public function getClosed(): ?CarbonImmutable
     {
         return $this->closed;
     }

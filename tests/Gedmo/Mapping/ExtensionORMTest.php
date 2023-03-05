@@ -16,6 +16,7 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tests\Mapping\Fixture\User;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ORM;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 final class ExtensionORMTest extends BaseTestCaseORM
@@ -82,7 +83,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
             $this->encoderListener,
             $loadClassMetadataEventArgs
         );
-        static::assertInstanceOf(\Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ORM::class, $eventAdapter);
+        static::assertInstanceOf(ORM::class, $eventAdapter);
     }
 
     protected function getUsedEntityFixtures(): array

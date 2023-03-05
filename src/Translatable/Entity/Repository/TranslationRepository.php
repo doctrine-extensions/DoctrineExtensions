@@ -14,6 +14,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableAdapterORM;
@@ -38,7 +41,7 @@ class TranslationRepository extends EntityRepository
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
         if ($class->getReflectionClass()->isSubclassOf(AbstractPersonalTranslation::class)) {
-            throw new \Gedmo\Exception\UnexpectedValueException('This repository is useless for personal translations');
+            throw new UnexpectedValueException('This repository is useless for personal translations');
         }
         parent::__construct($em, $class);
     }
@@ -52,7 +55,7 @@ class TranslationRepository extends EntityRepository
      * @param string $locale
      * @param mixed  $value
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return static
      */
@@ -62,7 +65,7 @@ class TranslationRepository extends EntityRepository
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->_em, $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'], true)) {
-            throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->getName()} does not translate field - {$field}");
+            throw new InvalidArgumentException("Entity: {$meta->getName()} does not translate field - {$field}");
         }
         $needsPersist = true;
         if ($locale === $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager())) {
@@ -225,7 +228,7 @@ class TranslationRepository extends EntityRepository
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException if listener is not found
+     * @throws RuntimeException if listener is not found
      */
     private function getTranslatableListener(): TranslatableListener
     {
@@ -238,7 +241,7 @@ class TranslationRepository extends EntityRepository
                 }
             }
 
-            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
+            throw new RuntimeException('The translation listener could not be found');
         }
 
         return $this->listener;

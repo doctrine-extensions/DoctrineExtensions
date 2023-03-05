@@ -11,8 +11,16 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\MetadataFactory;
 
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+use Doctrine\ORM\Events;
+use Doctrine\ORM\Id\IdentityGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 use Gedmo\Timestampable\TimestampableListener;
 use PHPUnit\Framework\TestCase;
@@ -36,11 +44,11 @@ final class ForcedMetadataTest extends TestCase
 
     protected function setUp(): void
     {
-        $config = new \Doctrine\ORM\Configuration();
+        $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $config->setMetadataDriverImpl(
-            new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($_ENV['annotation_reader'])
+            new AnnotationDriver($_ENV['annotation_reader'])
         );
 
         $conn = [
@@ -48,11 +56,11 @@ final class ForcedMetadataTest extends TestCase
             'memory' => true,
         ];
 
-        $evm = new \Doctrine\Common\EventManager();
-        $this->timestampable = new \Gedmo\Timestampable\TimestampableListener();
+        $evm = new EventManager();
+        $this->timestampable = new TimestampableListener();
         $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
         $evm->addEventSubscriber($this->timestampable);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = EntityManager::create($conn, $config, $evm);
     }
 
     public function testShouldWork(): void
@@ -100,17 +108,17 @@ final class ForcedMetadataTest extends TestCase
 
         $metadata->mapField($created);
         $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_IDENTITY);
-        $metadata->setIdGenerator(new \Doctrine\ORM\Id\IdentityGenerator(null));
+        $metadata->setIdGenerator(new IdentityGenerator(null));
         $metadata->setPrimaryTable(['name' => 'temp_test']);
         $cmf->setMetadataFor(Timestampable::class, $metadata);
 
         // trigger loadClassMetadata event
         $evm = $this->em->getEventManager();
-        $eventArgs = new \Doctrine\ORM\Event\LoadClassMetadataEventArgs($metadata, $this->em);
-        $evm->dispatchEvent(\Doctrine\ORM\Events::loadClassMetadata, $eventArgs);
+        $eventArgs = new LoadClassMetadataEventArgs($metadata, $this->em);
+        $evm->dispatchEvent(Events::loadClassMetadata, $eventArgs);
 
         $metadata->wakeupReflection($cmf->getReflectionService());
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool = new SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
             $this->em->getClassMetadata(Timestampable::class),

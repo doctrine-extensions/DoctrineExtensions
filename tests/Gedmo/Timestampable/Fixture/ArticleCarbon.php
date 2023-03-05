@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Timestampable\Fixture;
 
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -68,7 +70,7 @@ class ArticleCarbon implements Timestampable
     private $author;
 
     /**
-     * @var \DateTime|\Carbon\Carbon|null
+     * @var \DateTime|Carbon|null
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="date")
@@ -78,7 +80,7 @@ class ArticleCarbon implements Timestampable
     private $created;
 
     /**
-     * @var \DateTime|\Carbon\CarbonImmutable|null
+     * @var \DateTime|CarbonImmutable|null
      *
      * @ORM\Column(name="updated", type="datetime")
      * @Gedmo\Timestampable
@@ -88,7 +90,7 @@ class ArticleCarbon implements Timestampable
     private $updated;
 
     /**
-     * @var \DateTime|\Carbon\CarbonImmutable|null
+     * @var \DateTime|CarbonImmutable|null
      *
      * @ORM\Column(name="published", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
@@ -98,7 +100,7 @@ class ArticleCarbon implements Timestampable
     private $published;
 
     /**
-     * @var \DateTime|\Carbon\CarbonImmutable|null
+     * @var \DateTime|CarbonImmutable|null
      *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
@@ -106,8 +108,9 @@ class ArticleCarbon implements Timestampable
     #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
     private $contentChanged;
+
     /**
-     * @var \Carbon\CarbonImmutable|null
+     * @var CarbonImmutable|null
      *
      * @ORM\Column(name="author_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
@@ -195,7 +198,7 @@ class ArticleCarbon implements Timestampable
         $this->author = $author;
     }
 
-    public function getCreated(): ?\Carbon\Carbon
+    public function getCreated(): ?Carbon
     {
         return $this->created;
     }
@@ -205,7 +208,7 @@ class ArticleCarbon implements Timestampable
         $this->created = $created;
     }
 
-    public function getPublished(): ?\Carbon\CarbonImmutable
+    public function getPublished(): ?CarbonImmutable
     {
         return $this->published;
     }
@@ -215,7 +218,7 @@ class ArticleCarbon implements Timestampable
         $this->published = $published;
     }
 
-    public function getUpdated(): ?\Carbon\CarbonImmutable
+    public function getUpdated(): ?CarbonImmutable
     {
         return $this->updated;
     }
@@ -230,12 +233,12 @@ class ArticleCarbon implements Timestampable
         $this->contentChanged = $contentChanged;
     }
 
-    public function getContentChanged(): ?\Carbon\CarbonImmutable
+    public function getContentChanged(): ?CarbonImmutable
     {
         return $this->contentChanged;
     }
 
-    public function getAuthorChanged(): ?\Carbon\CarbonImmutable
+    public function getAuthorChanged(): ?CarbonImmutable
     {
         return $this->authorChanged;
     }
