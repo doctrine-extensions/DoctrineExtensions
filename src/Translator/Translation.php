@@ -13,6 +13,9 @@ namespace Gedmo\Translator;
  * Base translation class.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
+ * 
+ * @template T
+ * @template-implements TranslationInterface<T>
  */
 abstract class Translation implements TranslationInterface
 {

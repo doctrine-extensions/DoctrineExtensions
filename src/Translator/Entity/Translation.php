@@ -20,6 +20,9 @@ use Gedmo\Translator\Translation as BaseTranslation;
  * Entity translation class.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
+ * 
+ * @template T
+ * @template-extends BaseTranslation<T>
  *
  * @MappedSuperclass
  */

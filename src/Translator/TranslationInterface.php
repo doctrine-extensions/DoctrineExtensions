@@ -13,6 +13,8 @@ namespace Gedmo\Translator;
  * Object for managing translations.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
+ * 
+ * @template T
  */
 interface TranslationInterface
 {

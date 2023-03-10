@@ -15,6 +15,8 @@ use Doctrine\Common\Collections\Collection;
  * Proxy class for Entity/Document translations.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
+ * 
+ * @template-covariant TranslationT of TranslationInterface
  */
 class TranslationProxy
 {
@@ -33,11 +35,11 @@ class TranslationProxy
     /**
      * @var string
      *
-     * @phpstan-var class-string<TranslationInterface>
+     * @phpstan-var class-string<TranslationT>
      */
     protected $class;
     /**
-     * @var Collection<int, TranslationInterface>
+     * @var Collection<int, TranslationT>
      */
     protected $coll;
 
@@ -51,8 +53,8 @@ class TranslationProxy
      *
      * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
      *
-     * @phpstan-param class-string<TranslationInterface> $class
-     * @phpstan-param Collection<int, TranslationInterface> $coll
+     * @phpstan-param class-string<TranslationT> $class
+     * @phpstan-param Collection<int, TranslationT> $coll
      */
     public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
     {
