@@ -16,6 +16,7 @@ use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -74,7 +75,7 @@ abstract class BaseTestCaseORM extends TestCase
         $config = $config ?? $this->getDefaultConfiguration();
         $em = EntityManager::create($conn, $config, $evm ?? $this->getEventManager());
 
-        $schema = array_map(static function ($class) use ($em) {
+        $schema = array_map(static function (string $class) use ($em): ClassMetadata {
             return $em->getClassMetadata($class);
         }, $this->getUsedEntityFixtures());
 

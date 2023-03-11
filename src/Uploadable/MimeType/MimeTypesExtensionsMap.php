@@ -20,7 +20,7 @@ abstract class MimeTypesExtensionsMap
     /**
      * Map of mime types and their default extensions.
      *
-     * @var array
+     * @var array<string, string>
      */
     public static $map = [
         'application/andrew-inset' => 'ez',

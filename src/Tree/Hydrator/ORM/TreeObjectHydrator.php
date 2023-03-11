@@ -26,9 +26,9 @@ use Gedmo\Tree\TreeListener;
 class TreeObjectHydrator extends ObjectHydrator
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
-    private $config;
+    private $config = [];
 
     /**
      * @var string

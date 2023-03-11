@@ -58,21 +58,27 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Tree processing strategies for object classes
      *
-     * @var array
+     * @var array<string, string>
+     *
+     * @phpstan-var array<class-string, string>
      */
     private $strategies = [];
 
     /**
      * List of strategy instances
      *
-     * @var array
+     * @var array<string, Strategy>
+     *
+     * @phpstan-var array<value-of<self::strategies>, Strategy>
      */
     private $strategyInstances = [];
 
     /**
      * List of used classes on flush
      *
-     * @var array
+     * @var array<string, null>
+     *
+     * @phpstan-var array<class-string, null>
      */
     private $usedClassesOnFlush = [];
 
@@ -106,7 +112,7 @@ class TreeListener extends MappedEventSubscriber
     {
         if (!isset($this->strategies[$class])) {
             $config = $this->getConfiguration($om, $class);
-            if (!$config) {
+            if ([] === $config) {
                 throw new UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
             }
             $managerName = 'UnsupportedManager';
@@ -303,7 +309,11 @@ class TreeListener extends MappedEventSubscriber
      * Get the list of strategy instances used for
      * given object classes
      *
-     * @return Strategy[]
+     * @phpstan-param array<class-string, null> $classes
+     *
+     * @return array<string, Strategy>
+     *
+     * @phpstan-return array<value-of<self::strategies>, Strategy>
      */
     protected function getStrategiesUsedForObjects(array $classes)
     {

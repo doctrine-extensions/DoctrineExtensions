@@ -924,7 +924,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * options:
      * - treeRootNode: (object) Optional tree root node to verify, if not the whole forest (only available for forests, not for single trees).
      *
-     * @return array|bool true on success,error list on failure
+     * @return array|bool true on success, error list on failure
      */
     public function verify(/* array $options = [] */) // @phpstan-ignore-line
     {

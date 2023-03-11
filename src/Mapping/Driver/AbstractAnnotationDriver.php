@@ -94,6 +94,8 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     }
 
     /**
+     * @param array<string, mixed> $config
+     *
      * @return void
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)

@@ -95,7 +95,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * List of tree strategies available
      *
-     * @var array
+     * @var string[]
      */
     protected $strategies = [
         'nested',

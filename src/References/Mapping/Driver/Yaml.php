@@ -30,7 +30,7 @@ class Yaml extends File implements Driver
     protected $_extension = '.dcm.yml';
 
     /**
-     * @var array
+     * @var array<string, array<string, array<string, mixed>>>
      */
     private $validReferences = [
         'referenceOne' => [],

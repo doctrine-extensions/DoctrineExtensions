@@ -96,21 +96,25 @@ class SluggableListener extends MappedEventSubscriber
      * composition in number of persisted objects
      * during the same flush
      *
-     * @var array
+     * @var array<string, array<int, object>>
+     *
+     * @phpstan-var array<class-string, array<int, object>>
      */
     private $persisted = [];
 
     /**
      * List of initialized slug handlers
      *
-     * @var array
+     * @var array<string, SlugHandlerInterface>
+     *
+     * @phpstan-var array<class-string<SlugHandlerInterface>, SlugHandlerInterface>
      */
     private $handlers = [];
 
     /**
      * List of filters which are manipulated when slugs are generated
      *
-     * @var array
+     * @var array<string, array<string, mixed>>
      */
     private $managedFilters = [];
 
@@ -134,7 +138,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param callable $callable
      *
-     * @phpstan-param callable(string $text, string $separator): string $callable
+     * @phpstan-param callable(string $text, string $separator, object $object): string $callable
      *
      * @throws InvalidArgumentException
      *

@@ -17,13 +17,18 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadataInfo as EntityClassMetadata;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\ReferenceIntegrity\Mapping\Validator as ReferenceIntegrityValidator;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
+use Gedmo\Uploadable\Mapping\Validator as MappingValidator;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -101,9 +106,29 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * if cache driver is present it scans it also
      *
      * @param string $class
+     *
      * @phpstan-param class-string $class
      *
      * @return array<string, mixed>
+     *
+     * @phpstan-return array{
+     *  useObjectClass?: class-string,
+     *  referenceIntegrity?: array<string, array<string, value-of<ReferenceIntegrityValidator::INTEGRITY_ACTIONS>>>,
+     *  filePathField?: string,
+     *  uploadable?: bool,
+     *  fileNameField?: string,
+     *  allowOverwrite?: bool,
+     *  appendNumber?: bool,
+     *  maxSize?: float,
+     *  path?: string,
+     *  pathMethod?: string,
+     *  allowedTypes?: string[],
+     *  disallowedTypes?: string[],
+     *  filenameGenerator?: MappingValidator::FILENAME_GENERATOR_*|class-string<FilenameGeneratorInterface>,
+     *  fileMimeTypeField?: string,
+     *  fileSizeField?: string,
+     *  callback?: string,
+     * }
      */
     public function getConfiguration(ObjectManager $objectManager, $class)
     {
@@ -209,6 +234,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function loadMetadataForObjectClass(ObjectManager $objectManager, $metadata)
     {
+        assert($metadata instanceof DocumentClassMetadata || $metadata instanceof EntityClassMetadata);
+
         $factory = $this->getExtensionMetadataFactory($objectManager);
 
         try {

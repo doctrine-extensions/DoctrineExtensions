@@ -24,7 +24,7 @@ class Uploadable
     private $mimeType;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $fileInfo;
 

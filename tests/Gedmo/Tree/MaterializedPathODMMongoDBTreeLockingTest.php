@@ -28,7 +28,7 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
     public const ARTICLE = Article::class;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 

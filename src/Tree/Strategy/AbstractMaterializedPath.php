@@ -15,6 +15,7 @@ use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\TreeLockingException;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Tree\Node;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
 use MongoDB\BSON\UTCDateTime;
@@ -41,7 +42,7 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * Array of objects which were scheduled for path processes
      *
-     * @var array
+     * @var array<int, object|Node>
      */
     protected $scheduledForPathProcess = [];
 
@@ -50,35 +51,35 @@ abstract class AbstractMaterializedPath implements Strategy
      * This time, this array contains the objects with their ID
      * already set
      *
-     * @var array
+     * @var array<int, object|Node>
      */
     protected $scheduledForPathProcessWithIdSet = [];
 
     /**
      * Roots of trees which needs to be locked
      *
-     * @var array
+     * @var array<int, object|Node>
      */
     protected $rootsOfTreesWhichNeedsLocking = [];
 
     /**
      * Objects which are going to be inserted (set only if tree locking is used)
      *
-     * @var array
+     * @var array<int, object|Node>
      */
     protected $pendingObjectsToInsert = [];
 
     /**
      * Objects which are going to be updated (set only if tree locking is used)
      *
-     * @var array
+     * @var array<int, object|Node>
      */
     protected $pendingObjectsToUpdate = [];
 
     /**
      * Objects which are going to be removed (set only if tree locking is used)
      *
-     * @var array
+     * @var array<int, object|Node>
      */
     protected $pendingObjectsToRemove = [];
 

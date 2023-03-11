@@ -115,12 +115,16 @@ class ExtensionMetadataFactory
             foreach (array_reverse(class_parents($meta->getName())) as $parentClass) {
                 // read only inherited mapped classes
                 if ($cmf->hasMetadataFor($parentClass)) {
-                    /** @var DocumentClassMetadata|EntityClassMetadata $class */
+                    assert(class_exists($parentClass));
+
                     $class = $this->objectManager->getClassMetadata($parentClass);
+
+                    assert($class instanceof DocumentClassMetadata || $class instanceof EntityClassMetadata);
+
                     $this->driver->readExtendedMetadata($class, $config);
                     $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()
-                        && !$class->parentClasses
-                        && $config
+                        && [] === $class->parentClasses
+                        && [] !== $config
                     ;
                     if ($isBaseInheritanceLevel) {
                         $useObjectName = $class->getName();
@@ -129,7 +133,7 @@ class ExtensionMetadataFactory
             }
             $this->driver->readExtendedMetadata($meta, $config);
         }
-        if ($config) {
+        if ([] !== $config) {
             $config['useObjectClass'] = $useObjectName;
         }
 

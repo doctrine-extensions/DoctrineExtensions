@@ -12,6 +12,7 @@ namespace Gedmo\Mapping\Annotation;
 use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
 use Gedmo\Uploadable\Mapping\Validator;
 
 /**
@@ -54,6 +55,8 @@ final class Uploadable implements GedmoAnnotation
 
     /**
      * @var string
+     *
+     * @phpstan-var Validator::FILENAME_GENERATOR_*|class-string<FilenameGeneratorInterface>
      */
     public $filenameGenerator = Validator::FILENAME_GENERATOR_NONE;
 

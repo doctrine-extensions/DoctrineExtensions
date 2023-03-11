@@ -28,7 +28,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
     public const CATEGORY = MPCategory::class;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 

@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translator\TranslationInterface;
 use Gedmo\Translator\TranslationProxy;
 
 /**
@@ -60,7 +61,7 @@ class Person
     private $id;
 
     /**
-     * @var Collection<int, PersonTranslation>
+     * @var Collection<int, TranslationInterface>
      *
      * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
      */
@@ -134,7 +135,8 @@ class Person
             return $this;
         }
 
-        return new TranslationProxy($this,
+        return new TranslationProxy(
+            $this,
             $locale, // Locale
             ['name', 'lastName'], // List of translatable properties
             PersonTranslation::class, // Translation entity class

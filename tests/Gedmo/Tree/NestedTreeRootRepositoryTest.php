@@ -491,7 +491,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $this->em->clear(); // must clear cached entities
 
-        static::assertGreaterThan(0, count($repo->verify()));
+        static::assertGreaterThan(0, $repo->verify());
 
         $repo->recoverFast([
             'sortByField' => 'title',

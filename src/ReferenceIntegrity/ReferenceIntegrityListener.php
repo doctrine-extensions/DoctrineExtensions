@@ -74,6 +74,8 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                             throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->getName()));
                         }
 
+                        assert(class_exists($fieldMapping['targetDocument']));
+
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
 
                         if (!$subMeta->hasField($fieldMapping['mappedBy'])) {
@@ -97,6 +99,8 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         if (!isset($fieldMapping['mappedBy'])) {
                             throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->getName()));
                         }
+
+                        assert(class_exists($fieldMapping['targetDocument']));
 
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
 
