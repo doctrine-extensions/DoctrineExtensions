@@ -10,6 +10,7 @@
 namespace Gedmo\Loggable\Document\Repository;
 
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
@@ -112,6 +113,9 @@ class LogEntryRepository extends DocumentRepository
     {
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         $objectMeta = $wrapped->getMetadata();
+
+        assert($objectMeta instanceof ClassMetadata);
+
         $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->getName());
         $fields = $config['versioned'];
         foreach ($data as $field => $value) {
@@ -122,12 +126,16 @@ class LogEntryRepository extends DocumentRepository
             // Fill the embedded document
             if ($wrapped->isEmbeddedAssociation($field)) {
                 if (!empty($value)) {
+                    assert(class_exists($mapping['targetDocument']));
+
                     $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
                     $document = $embeddedMetadata->newInstance();
                     $this->fillDocument($document, $value);
                     $value = $document;
                 }
             } elseif ($objectMeta->isSingleValuedAssociation($field)) {
+                assert(class_exists($mapping['targetDocument']));
+
                 $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
             }
             $wrapped->setPropertyValue($field, $value);

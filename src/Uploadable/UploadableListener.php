@@ -68,13 +68,15 @@ class UploadableListener extends MappedEventSubscriber
      * Default FileInfoInterface class
      *
      * @var string
+     *
+     * @phpstan-var class-string<FileInfoInterface>
      */
     private $defaultFileInfoClass = FileInfoArray::class;
 
     /**
      * Array of files to remove on postFlush
      *
-     * @var array
+     * @var array<int, string>
      */
     private $pendingFileRemovals = [];
 
@@ -82,7 +84,9 @@ class UploadableListener extends MappedEventSubscriber
      * Array of FileInfoInterface objects. The index is the hash of the entity owner
      * of the FileInfoInterface object.
      *
-     * @var array
+     * @var array<int, array<string, object>>
+     *
+     * @phpstan-var array<int, array{entity: object, fileInfo: FileInfoInterface}>
      */
     private $fileInfoObjects = [];
 
@@ -116,7 +120,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function preFlush(EventArgs $args)
     {
-        if (empty($this->fileInfoObjects)) {
+        if ([] === $this->fileInfoObjects) {
             // Nothing to do
             return;
         }
@@ -192,7 +196,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function postFlush(EventArgs $args)
     {
-        if (!empty($this->pendingFileRemovals)) {
+        if ([] !== $this->pendingFileRemovals) {
             foreach ($this->pendingFileRemovals as $file) {
                 $this->removeFile($file);
             }
@@ -255,7 +259,7 @@ class UploadableListener extends MappedEventSubscriber
 
         $mime = $this->mimeTypeGuesser->guess($fileInfo->getTmpName());
 
-        if (!$mime) {
+        if (null === $mime) {
             throw new UploadableCouldntGuessMimeTypeException(sprintf('Couldn\'t guess mime type for file "%s".', $fileInfo->getName()));
         }
 
@@ -672,9 +676,9 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param ClassMetadata $meta
-     * @param array         $config
-     * @param object        $object Entity
+     * @param ClassMetadata        $meta
+     * @param array<string, mixed> $config
+     * @param object               $object Entity
      *
      * @return void
      */

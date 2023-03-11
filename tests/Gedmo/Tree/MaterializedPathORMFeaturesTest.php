@@ -27,7 +27,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     public const CATEGORY = MPFeaturesCategory::class;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 

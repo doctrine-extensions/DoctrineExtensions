@@ -20,6 +20,7 @@ use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Tree\Node;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
 use Psr\Cache\CacheItemPoolInterface;
@@ -47,7 +48,7 @@ class Closure implements Strategy
      * be post processed because of having a parent Node
      * which requires some additional calculations
      *
-     * @var array
+     * @var array<int, array<int, object|Node>>
      */
     private $pendingChildNodeInserts = [];
 
@@ -56,7 +57,9 @@ class Closure implements Strategy
      * new nodes. They have to wait until their parents are inserted
      * on DB to make the update
      *
-     * @var array
+     * @var array<int, array<string, mixed>>
+     *
+     * @phpstan-var array<int, array{node: object|Node, oldParent: mixed}>
      */
     private $pendingNodeUpdates = [];
 
@@ -64,7 +67,9 @@ class Closure implements Strategy
      * List of pending Nodes, which needs their "level"
      * field value set
      *
-     * @var array
+     * @var array<int|string, object|Node>
+     *
+     * @phpstan-var array<array-key, object|Node>
      */
     private $pendingNodesLevelProcess = [];
 
@@ -464,6 +469,9 @@ class Closure implements Strategy
         if (!empty($this->pendingNodesLevelProcess)) {
             $first = array_slice($this->pendingNodesLevelProcess, 0, 1);
             $first = array_shift($first);
+
+            assert(null !== $first);
+
             $meta = $em->getClassMetadata(get_class($first));
             unset($first);
             $identifier = $meta->getIdentifier();

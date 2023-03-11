@@ -25,9 +25,11 @@ class Validator
     /**
      * List of actions which are valid as integrity check
      *
-     * @var array
+     * @var string[]
+     *
+     * @phpstan-var array<int, self::NULLIFY|self::PULL|self::RESTRICT>
      */
-    private $integrityActions = [
+    public const INTEGRITY_ACTIONS = [
         self::NULLIFY,
         self::PULL,
         self::RESTRICT,
@@ -40,6 +42,6 @@ class Validator
      */
     public function getIntegrityActions()
     {
-        return $this->integrityActions;
+        return self::INTEGRITY_ACTIONS;
     }
 }

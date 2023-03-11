@@ -101,7 +101,7 @@ class TranslatableListener extends MappedEventSubscriber
      * key generated yet - MySQL case. These translations
      * will be updated with new keys on postPersist event
      *
-     * @var array
+     * @var array<int, array<int, object|Translatable>>
      */
     private $pendingTranslationInserts = [];
 
@@ -117,7 +117,7 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Tracks locale the objects currently translated in
      *
-     * @var array
+     * @var array<int, string>
      */
     private $translatedInLocale = [];
 
@@ -132,7 +132,7 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Tracks translation object for default locale
      *
-     * @var array
+     * @var array<int, array<string, object|Translatable>>
      */
     private $translationInDefaultLocale = [];
 
@@ -388,6 +388,9 @@ class TranslatableListener extends MappedEventSubscriber
 
         foreach ($this->translationInDefaultLocale as $oid => $fields) {
             $trans = reset($fields);
+
+            assert(false !== $trans);
+
             if ($ea->usesPersonalTranslation(get_class($trans))) {
                 $entity = $trans->getObject();
             } else {
@@ -548,9 +551,9 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Sets translation object which represents translation in default language.
      *
-     * @param int    $oid   hash of basic entity
-     * @param string $field field of basic entity
-     * @param mixed  $trans Translation object
+     * @param int                 $oid   hash of basic entity
+     * @param string              $field field of basic entity
+     * @param object|Translatable $trans Translation object
      *
      * @return void
      */
@@ -803,17 +806,11 @@ class TranslatableListener extends MappedEventSubscriber
      * @param int    $oid   hash of the basic entity
      * @param string $field field of basic entity
      *
-     * @return mixed Returns translation object if it exists or NULL otherwise
+     * @return object|Translatable|null Returns translation object if it exists or NULL otherwise
      */
     private function getTranslationInDefaultLocale(int $oid, string $field)
     {
-        if (array_key_exists($oid, $this->translationInDefaultLocale)) {
-            $ret = $this->translationInDefaultLocale[$oid][$field] ?? null;
-        } else {
-            $ret = null;
-        }
-
-        return $ret;
+        return $this->translationInDefaultLocale[$oid][$field] ?? null;
     }
 
     /**

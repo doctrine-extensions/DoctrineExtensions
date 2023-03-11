@@ -44,7 +44,7 @@ class Validator
     /**
      * List of types which are valid for UploadableFileMimeType field
      *
-     * @var array
+     * @var string[]
      */
     public static $validFileMimeTypeTypes = [
         'string',
@@ -53,7 +53,7 @@ class Validator
     /**
      * List of types which are valid for UploadableFileName field
      *
-     * @var array
+     * @var string[]
      */
     public static $validFileNameTypes = [
         'string',
@@ -62,7 +62,7 @@ class Validator
     /**
      * List of types which are valid for UploadableFilePath field
      *
-     * @var array
+     * @var string[]
      */
     public static $validFilePathTypes = [
         'string',
@@ -71,7 +71,7 @@ class Validator
     /**
      * List of types which are valid for UploadableFileSize field for ORM
      *
-     * @var array
+     * @var string[]
      */
     public static $validFileSizeTypes = [
         'decimal',
@@ -80,7 +80,7 @@ class Validator
     /**
      * List of types which are valid for UploadableFileSize field for ODM
      *
-     * @var array
+     * @var string[]
      */
     public static $validFileSizeTypesODM = [
         'float',
@@ -182,6 +182,8 @@ class Validator
     }
 
     /**
+     * @param array<string, mixed> $config
+     *
      * @return void
      */
     public static function validateConfiguration(ClassMetadata $meta, array &$config)

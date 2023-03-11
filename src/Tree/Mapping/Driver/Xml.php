@@ -30,7 +30,7 @@ class Xml extends BaseXml
     /**
      * List of tree strategies available
      *
-     * @var array
+     * @var string[]
      */
     private $strategies = [
         'nested',

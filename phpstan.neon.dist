@@ -4,7 +4,7 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 
 parameters:
-    level: 4
+    level: 5
     paths:
         - src
         - tests
@@ -14,9 +14,9 @@ parameters:
     checkMissingVarTagTypehint: true
     checkMissingTypehints: true
     ignoreErrors:
-        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.#'
-        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.#'
-        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is unused\.#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.$#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.$#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is unused\.$#'
 rules:
     - PHPStan\Rules\Constants\MissingClassConstantTypehintRule
     - PHPStan\Rules\Functions\MissingFunctionParameterTypehintRule

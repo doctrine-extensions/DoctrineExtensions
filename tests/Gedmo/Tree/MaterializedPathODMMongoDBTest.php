@@ -29,7 +29,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
     private const CATEGORY = Category::class;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 

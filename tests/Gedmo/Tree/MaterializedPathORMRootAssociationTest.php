@@ -27,7 +27,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
     public const CATEGORY = MPCategoryWithRootAssociation::class;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 

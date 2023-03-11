@@ -129,6 +129,7 @@ class CustomerType
 
             // @todo: This check can be removed when dropping support for doctrine/dbal 2.x.
             if (class_exists(LegacyPDOException::class)) {
+                // @phpstan-ignore-next-line
                 throw new ForeignKeyConstraintViolationException(sprintf('An exception occurred while deleting the customer type with id %s.', $this->getId()), new LegacyPDOException($pdoException));
             }
 

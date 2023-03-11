@@ -25,6 +25,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as AttributeDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
@@ -119,7 +120,9 @@ abstract class BaseTestCaseOM extends TestCase
         $config = $this->getMockORMConfig($mappingDriver);
         $em = EntityManager::create($conn, $config, $this->getEventManager());
 
-        $schema = array_map(static function (string $class) use ($em) {
+        $schema = array_map(static function (string $class) use ($em): ClassMetadata {
+            assert(class_exists($class));
+
             return $em->getClassMetadata($class);
         }, $fixtures);
 

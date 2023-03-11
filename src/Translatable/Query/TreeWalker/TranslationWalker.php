@@ -70,7 +70,9 @@ class TranslationWalker extends SqlWalker
     /**
      * Stores all component references from select clause
      *
-     * @var array
+     * @var array<string, array<string, mixed>>
+     *
+     * @phpstan-var array<string, array{metadata: ClassMetadata}>
      */
     private $translatedComponents = [];
 
@@ -92,14 +94,14 @@ class TranslationWalker extends SqlWalker
      * List of aliases to replace with translation
      * content reference
      *
-     * @var array
+     * @var array<string, string>
      */
     private $replacements = [];
 
     /**
      * List of joins for translated components in query
      *
-     * @var array
+     * @var array<string, string>
      */
     private $components = [];
 

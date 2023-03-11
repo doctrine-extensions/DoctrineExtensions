@@ -32,7 +32,7 @@ class SortableRepository extends EntityRepository
     protected $listener;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 

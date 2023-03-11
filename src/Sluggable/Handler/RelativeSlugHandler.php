@@ -43,7 +43,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     /**
      * Used options
      *
-     * @var array
+     * @var array<string, mixed>
      */
     private $usedOptions;
 

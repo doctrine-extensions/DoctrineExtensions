@@ -55,7 +55,7 @@ class SoftDeleteableWalker extends SqlWalker
     protected $listener;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $configuration;
 
@@ -100,6 +100,8 @@ class SoftDeleteableWalker extends SqlWalker
     {
         switch (true) {
             case $AST instanceof DeleteStatement:
+                assert(class_exists($AST->deleteClause->abstractSchemaName));
+
                 $primaryClass = $this->getEntityManager()->getClassMetadata($AST->deleteClause->abstractSchemaName);
 
                 return $primaryClass->isInheritanceTypeJoined()
@@ -118,6 +120,9 @@ class SoftDeleteableWalker extends SqlWalker
     public function walkDeleteClause(DeleteClause $deleteClause)
     {
         $em = $this->getEntityManager();
+
+        assert(class_exists($deleteClause->abstractSchemaName));
+
         $class = $em->getClassMetadata($deleteClause->abstractSchemaName);
         $tableName = $class->getTableName();
         $this->setSQLTableAlias($tableName, $tableName, $deleteClause->aliasIdentificationVariable);
