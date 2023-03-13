@@ -26,6 +26,8 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class TreeClosure implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /**
      * @var string
      * @phpstan-var string|class-string<AbstractClosure>
@@ -42,8 +44,14 @@ final class TreeClosure implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->class = $this->getAttributeValue($data, 'class', $args, 1, $class);
+
+            return;
         }
 
-        $this->class = $data['class'] ?? $class;
+        $this->class = $class;
     }
 }

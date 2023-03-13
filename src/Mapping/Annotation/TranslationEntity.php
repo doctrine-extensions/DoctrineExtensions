@@ -25,6 +25,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class TranslationEntity implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /** @var string @Required */
     public $class;
 
@@ -35,8 +37,14 @@ final class TranslationEntity implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->class = $this->getAttributeValue($data, 'class', $args, 1, $class);
+
+            return;
         }
 
-        $this->class = $data['class'] ?? $class;
+        $this->class = $class;
     }
 }

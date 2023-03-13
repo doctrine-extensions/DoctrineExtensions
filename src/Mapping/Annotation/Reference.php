@@ -21,6 +21,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  */
 abstract class Reference implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /**
      * @var string|null
      * @phpstan-var 'entity'|'document'|null
@@ -64,12 +66,22 @@ abstract class Reference implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->type = $this->getAttributeValue($data, 'type', $args, 1, $type);
+            $this->class = $this->getAttributeValue($data, 'class', $args, 2, $class);
+            $this->identifier = $this->getAttributeValue($data, 'identifier', $args, 3, $identifier);
+            $this->mappedBy = $this->getAttributeValue($data, 'mappedBy', $args, 4, $mappedBy);
+            $this->inversedBy = $this->getAttributeValue($data, 'inversedBy', $args, 5, $inversedBy);
+
+            return;
         }
 
-        $this->type = $data['type'] ?? $type;
-        $this->class = $data['class'] ?? $class;
-        $this->identifier = $data['identifier'] ?? $identifier;
-        $this->mappedBy = $data['mappedBy'] ?? $mappedBy;
-        $this->inversedBy = $data['inversedBy'] ?? $inversedBy;
+        $this->type = $type;
+        $this->class = $class;
+        $this->identifier = $identifier;
+        $this->mappedBy = $mappedBy;
+        $this->inversedBy = $inversedBy;
     }
 }

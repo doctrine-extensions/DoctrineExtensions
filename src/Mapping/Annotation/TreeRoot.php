@@ -25,6 +25,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class TreeRoot implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /** @var string|null */
     public $identifierMethod;
 
@@ -35,8 +37,14 @@ final class TreeRoot implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->identifierMethod = $this->getAttributeValue($data, 'identifierMethod', $args, 1, $identifierMethod);
+
+            return;
         }
 
-        $this->identifierMethod = $data['identifierMethod'] ?? $identifierMethod;
+        $this->identifierMethod = $identifierMethod;
     }
 }

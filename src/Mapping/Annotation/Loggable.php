@@ -28,6 +28,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class Loggable implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /**
      * @var string|null
      *
@@ -45,8 +47,14 @@ final class Loggable implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->logEntryClass = $this->getAttributeValue($data, 'logEntryClass', $args, 1, $logEntryClass);
+
+            return;
         }
 
-        $this->logEntryClass = $data['logEntryClass'] ?? $logEntryClass;
+        $this->logEntryClass = $logEntryClass;
     }
 }

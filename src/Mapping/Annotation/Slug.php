@@ -25,6 +25,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Slug implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /** @var string[] @Required */
     public $fields = [];
     /** @var bool */
@@ -68,17 +70,32 @@ final class Slug implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->fields = $this->getAttributeValue($data, 'fields', $args, 1, $fields);
+            $this->updatable = $this->getAttributeValue($data, 'updatable', $args, 2, $updatable);
+            $this->style = $this->getAttributeValue($data, 'style', $args, 3, $style);
+            $this->unique = $this->getAttributeValue($data, 'unique', $args, 4, $unique);
+            $this->unique_base = $this->getAttributeValue($data, 'unique_base', $args, 5, $unique_base);
+            $this->separator = $this->getAttributeValue($data, 'separator', $args, 6, $separator);
+            $this->prefix = $this->getAttributeValue($data, 'prefix', $args, 7, $prefix);
+            $this->suffix = $this->getAttributeValue($data, 'suffix', $args, 8, $suffix);
+            $this->handlers = $this->getAttributeValue($data, 'handlers', $args, 9, $handlers);
+            $this->dateFormat = $this->getAttributeValue($data, 'dateFormat', $args, 10, $dateFormat);
+
+            return;
         }
 
-        $this->fields = $data['fields'] ?? $fields;
-        $this->updatable = $data['updatable'] ?? $updatable;
-        $this->style = $data['style'] ?? $style;
-        $this->unique = $data['unique'] ?? $unique;
-        $this->unique_base = $data['unique_base'] ?? $unique_base;
-        $this->separator = $data['separator'] ?? $separator;
-        $this->prefix = $data['prefix'] ?? $prefix;
-        $this->suffix = $data['suffix'] ?? $suffix;
-        $this->handlers = $data['handlers'] ?? $handlers;
-        $this->dateFormat = $data['dateFormat'] ?? $dateFormat;
+        $this->fields = $fields;
+        $this->updatable = $updatable;
+        $this->style = $style;
+        $this->unique = $unique;
+        $this->unique_base = $unique_base;
+        $this->separator = $separator;
+        $this->prefix = $prefix;
+        $this->suffix = $suffix;
+        $this->handlers = $handlers;
+        $this->dateFormat = $dateFormat;
     }
 }
