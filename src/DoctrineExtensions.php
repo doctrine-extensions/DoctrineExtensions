@@ -9,13 +9,9 @@
 
 namespace Gedmo;
 
-use function class_exists;
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\ODM\MongoDB\Mapping\Driver as DriverMongodbODM;
 use Doctrine\ORM\Mapping\Driver as DriverORM;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -115,16 +111,8 @@ final class DoctrineExtensions
         // Purposefully no-op'd, all supported versions of `doctrine/annotations` support autoloading
     }
 
-    private static function createAnnotationReader(): AnnotationReader
+    private static function createAnnotationReader(): PsrCachedReader
     {
-        $reader = new AnnotationReader();
-
-        if (class_exists(ArrayAdapter::class)) {
-            $reader = new PsrCachedReader($reader, new ArrayAdapter());
-        } elseif (class_exists(ArrayCache::class)) {
-            $reader = new PsrCachedReader($reader, CacheAdapter::wrap(new ArrayCache()));
-        }
-
-        return $reader;
+        return new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
     }
 }

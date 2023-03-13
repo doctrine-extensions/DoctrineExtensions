@@ -11,10 +11,6 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\SoftDeleteable;
 
-use function class_exists;
-
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Query;
@@ -32,6 +28,7 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Page;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\User;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -492,11 +489,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
 
     public function testShouldFilterBeQueryCachedCorrectlyWhenToggledForEntity(): void
     {
-        if (!class_exists(ArrayCache::class)) {
-            static::markTestSkipped('Test only applies when doctrine/cache 1.x is installed');
-        }
-
-        $this->em->getConfiguration()->setQueryCache(CacheAdapter::wrap(new ArrayCache()));
+        $this->em->getConfiguration()->setQueryCache(new ArrayAdapter());
 
         $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         static::assertInstanceOf(SoftDeleteableFilter::class, $filter);

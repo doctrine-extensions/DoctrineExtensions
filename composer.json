@@ -69,7 +69,6 @@
         "symfony/yaml": "^4.4 || ^5.3 || ^6.0"
     },
     "conflict": {
-        "doctrine/cache": "<1.11",
         "doctrine/dbal": "<2.13.1 || ^3.0 <3.2",
         "doctrine/mongodb-odm": "<2.3",
         "doctrine/orm": "<2.10.2",
@@ -77,8 +76,7 @@
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
-        "doctrine/orm": "to use the extensions with the ORM",
-        "symfony/cache": "to cache parsed annotations"
+        "doctrine/orm": "to use the extensions with the ORM"
     },
     "autoload": {
         "psr-4": {
