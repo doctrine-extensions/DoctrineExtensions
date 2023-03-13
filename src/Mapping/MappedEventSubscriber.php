@@ -14,8 +14,6 @@ use function class_exists;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -83,7 +81,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private $annotationReader;
 
     /**
-     * @var AnnotationReader
+     * @var PsrCachedReader|null
      */
     private static $defaultAnnotationReader;
 
@@ -287,15 +285,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private function getDefaultAnnotationReader(): Reader
     {
         if (null === self::$defaultAnnotationReader) {
-            $reader = new AnnotationReader();
-
-            if (class_exists(ArrayAdapter::class)) {
-                $reader = new PsrCachedReader($reader, new ArrayAdapter());
-            } elseif (class_exists(ArrayCache::class)) {
-                $reader = new PsrCachedReader($reader, CacheAdapter::wrap(new ArrayCache()));
-            }
-
-            self::$defaultAnnotationReader = $reader;
+            self::$defaultAnnotationReader = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
         }
 
         return self::$defaultAnnotationReader;
