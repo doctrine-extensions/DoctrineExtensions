@@ -25,6 +25,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Timestampable implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /** @var string */
     public $on = 'update';
     /** @var string|string[] */
@@ -43,10 +45,18 @@ final class Timestampable implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->on = $this->getAttributeValue($data, 'on', $args, 1, $on);
+            $this->field = $this->getAttributeValue($data, 'field', $args, 2, $field);
+            $this->value = $this->getAttributeValue($data, 'value', $args, 3, $value);
+
+            return;
         }
 
-        $this->on = $data['on'] ?? $on;
-        $this->field = $data['field'] ?? $field;
-        $this->value = $data['value'] ?? $value;
+        $this->on = $on;
+        $this->field = $field;
+        $this->value = $value;
     }
 }

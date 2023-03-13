@@ -25,6 +25,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class TreeLevel implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /**
      * The level which root nodes will have
      *
@@ -41,8 +43,14 @@ final class TreeLevel implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->base = $this->getAttributeValue($data, 'base', $args, 1, $base);
+
+            return;
         }
 
-        $this->base = $data['base'] ?? $base;
+        $this->base = $base;
     }
 }

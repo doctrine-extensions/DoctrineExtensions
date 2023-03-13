@@ -27,6 +27,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class TreePath implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /** @var string */
     public $separator = ',';
 
@@ -51,11 +53,20 @@ final class TreePath implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->separator = $this->getAttributeValue($data, 'separator', $args, 1, $separator);
+            $this->appendId = $this->getAttributeValue($data, 'appendId', $args, 2, $appendId);
+            $this->startsWithSeparator = $this->getAttributeValue($data, 'startsWithSeparator', $args, 3, $startsWithSeparator);
+            $this->endsWithSeparator = $this->getAttributeValue($data, 'endsWithSeparator', $args, 4, $endsWithSeparator);
+
+            return;
         }
 
-        $this->separator = $data['separator'] ?? $separator;
-        $this->appendId = $data['appendId'] ?? $appendId;
-        $this->startsWithSeparator = $data['startsWithSeparator'] ?? $startsWithSeparator;
-        $this->endsWithSeparator = $data['endsWithSeparator'] ?? $endsWithSeparator;
+        $this->separator = $separator;
+        $this->appendId = $appendId;
+        $this->startsWithSeparator = $startsWithSeparator;
+        $this->endsWithSeparator = $endsWithSeparator;
     }
 }

@@ -25,6 +25,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Translatable implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /** @var bool|null */
     public $fallback;
 
@@ -35,8 +37,14 @@ final class Translatable implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->fallback = $this->getAttributeValue($data, 'fallback', $args, 1, $fallback);
+
+            return;
         }
 
-        $this->fallback = $data['fallback'] ?? $fallback;
+        $this->fallback = $fallback;
     }
 }

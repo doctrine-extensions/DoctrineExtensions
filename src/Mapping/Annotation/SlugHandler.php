@@ -25,6 +25,8 @@ use Gedmo\Sluggable\Handler\SlugHandlerInterface;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class SlugHandler implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /**
      * @var string
      * @phpstan-var string|class-string<SlugHandlerInterface>
@@ -49,9 +51,16 @@ final class SlugHandler implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->class = $this->getAttributeValue($data, 'class', $args, 1, $class);
+            $this->options = $this->getAttributeValue($data, 'options', $args, 2, $options);
+
+            return;
         }
 
-        $this->class = $data['class'] ?? $class;
-        $this->options = $data['options'] ?? $options;
+        $this->class = $class;
+        $this->options = $options;
     }
 }

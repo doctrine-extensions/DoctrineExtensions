@@ -25,6 +25,8 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class SoftDeleteable implements GedmoAnnotation
 {
+    use ForwardCompatibilityTrait;
+
     /** @var string */
     public $fieldName = 'deletedAt';
 
@@ -41,10 +43,18 @@ final class SoftDeleteable implements GedmoAnnotation
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
+
+            $args = func_get_args();
+
+            $this->fieldName = $this->getAttributeValue($data, 'fieldName', $args, 1, $fieldName);
+            $this->timeAware = $this->getAttributeValue($data, 'timeAware', $args, 2, $timeAware);
+            $this->hardDelete = $this->getAttributeValue($data, 'hardDelete', $args, 3, $hardDelete);
+
+            return;
         }
 
-        $this->fieldName = $data['fieldName'] ?? $fieldName;
-        $this->timeAware = $data['timeAware'] ?? $timeAware;
-        $this->hardDelete = $data['hardDelete'] ?? $hardDelete;
+        $this->fieldName = $fieldName;
+        $this->timeAware = $timeAware;
+        $this->hardDelete = $hardDelete;
     }
 }
