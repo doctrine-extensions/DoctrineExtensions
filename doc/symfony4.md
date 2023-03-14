@@ -206,6 +206,12 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
+            
+    Gedmo\IpTraceable\IpTraceableListener:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]            
 
 ```
 
@@ -283,7 +289,7 @@ class DoctrineExtensionSubscriber implements EventSubscriberInterface
     {
         if ($this->tokenStorage !== null &&
             $this->tokenStorage->getToken() !== null &&
-            $this->tokenStorage->getToken()->isAuthenticated() === true
+            $this->tokenStorage->getToken()->getUser() !== null
         ) {
             $this->blameableListener->setUserValue($this->tokenStorage->getToken()->getUser());
         }
