@@ -14,10 +14,13 @@ namespace Gedmo\Tests\Loggable\Fixture\Entity\Log;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
+use Gedmo\Tests\Loggable\Fixture\Document\Comment as CommentEntity;
 
 /**
  * @ORM\Table(name="test_comment_log_entries")
  * @ORM\Entity(repositoryClass="Gedmo\Loggable\Entity\Repository\LogEntryRepository")
+ *
+ * @phpstan-extends AbstractLogEntry<CommentEntity>
  */
 #[ORM\Table(name: 'test_comment_log_entries')]
 #[ORM\Entity(repositoryClass: LogEntryRepository::class)]

@@ -12,7 +12,7 @@ namespace Gedmo\Loggable;
 /**
  * Interface to be implemented by log entry models.
  *
- * @phpstan-template T of object
+ * @phpstan-template T of Loggable|object
  *
  * @author Javier Spagnoletti <phansys@gmail.com>
  */

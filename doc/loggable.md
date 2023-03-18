@@ -49,11 +49,16 @@ on how to setup and use the extensions in most optimized way.
 In order to set the username, when adding the loggable listener you need to set it this way:
 
 ```php
-$loggableListener = new Gedmo\Loggable\LoggableListener;
+<?php
+
+use Gedmo\Loggable\LoggableListener;
+
+$loggableListener = new LoggableListener();
 $loggableListener->setAnnotationReader($cachedAnnotationReader);
 $loggableListener->setUsername('admin');
 $evm->addEventSubscriber($loggableListener);
 ```
+
 <a name="entity-mapping"></a>
 
 ## Loggable Entity example:
@@ -67,11 +72,13 @@ one of them, not both.
 
 ```php
 <?php
+
 namespace Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Loggable\Loggable;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -79,7 +86,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[Gedmo\Loggable]
-class Article
+class Article implements Loggable
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -122,11 +129,13 @@ class Article
 
 ```php
 <?php
+
 namespace Document;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
+use Gedmo\Loggable\Loggable;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="articles")
@@ -134,7 +143,7 @@ use Doctrine\ODM\MongoDB\Types\Type;
  */
 #[Gedmo\Loggable]
 #[ODM\Document(collection: 'articles')]
-class Article
+class Article implements Loggable
 {
     /** @ODM\Id */
     #[ODM\Id]
@@ -243,7 +252,10 @@ class ParameterHistory extends AbstractLogEntry
 
 ```php
 <?php
-$article = new Entity\Article;
+
+use Entity\Article;
+
+$article = new Article();
 $article->setTitle('my title');
 $em->persist($article);
 $em->flush();
@@ -257,8 +269,11 @@ Now lets update our article:
 
 ```php
 <?php
+
+use Entity\Article;
+
 // first load the article
-$article = $em->find('Entity\Article', 1 /*article id*/);
+$article = $em->find(Article::class, 1 /*article id*/);
 $article->setTitle('my new title');
 $em->persist($article);
 $em->flush();
@@ -269,9 +284,13 @@ Now lets revert it to previous version:
 
 ```php
 <?php
+
+use Entity\Article;
+use Gedmo\Loggable\Entity\LogEntry;
+
 // first check our log entries
-$repo = $em->getRepository('Gedmo\Loggable\Entity\LogEntry'); // we use default log entry class
-$article = $em->find('Entity\Article', 1 /*article id*/);
+$repo = $em->getRepository(LogEntry::class); // we use default log entry class
+$article = $em->find(Article::class, 1 /*article id*/);
 $logs = $repo->getLogEntries($article);
 /* $logs contains 2 logEntries */
 // lets revert to first version
