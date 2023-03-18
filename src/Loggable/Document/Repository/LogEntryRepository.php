@@ -15,6 +15,7 @@ use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Loggable\Document\LogEntry;
+use Gedmo\Loggable\Loggable;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
@@ -23,13 +24,17 @@ use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
  * to interact with log entries.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-template T of Loggable|object
+ *
+ * @phpstan-extends DocumentRepository<T>
  */
 class LogEntryRepository extends DocumentRepository
 {
     /**
      * Currently used loggable listener
      *
-     * @var LoggableListener
+     * @var LoggableListener<T>
      */
     private $listener;
 
@@ -40,6 +45,10 @@ class LogEntryRepository extends DocumentRepository
      * @param object $document
      *
      * @return LogEntry[]
+     *
+     * @phpstan-param T $document
+     *
+     * @phpstan-return array<array-key, LogEntry<T>>
      */
     public function getLogEntries($document)
     {
@@ -72,6 +81,8 @@ class LogEntryRepository extends DocumentRepository
      * @throws UnexpectedValueException
      *
      * @return void
+     *
+     * @phpstan-param T $document
      */
     public function revert($document, $version = 1)
     {
@@ -108,6 +119,8 @@ class LogEntryRepository extends DocumentRepository
      * @param object $document
      *
      * @return void
+     *
+     * @phpstan-param T $document
      */
     protected function fillDocument($document, array $data)
     {
@@ -153,6 +166,8 @@ class LogEntryRepository extends DocumentRepository
      * Get the currently used LoggableListener
      *
      * @throws RuntimeException if listener is not found
+     *
+     * @phpstan-return LoggableListener<T>
      */
     private function getLoggableListener(): LoggableListener
     {

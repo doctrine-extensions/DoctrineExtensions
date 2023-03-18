@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Loggable;
 
 use Gedmo\Loggable\Entity\LogEntry;
+use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
 use Gedmo\Tests\Loggable\Fixture\Entity\Address;
 use Gedmo\Tests\Loggable\Fixture\Entity\Article;
 use Gedmo\Tests\Loggable\Fixture\Entity\Comment;
@@ -102,10 +103,12 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     public function testVersionControl(): void
     {
         $this->populate();
+        /** @var LogEntryRepository<Comment> $commentLogRepo */
         $commentLogRepo = $this->em->getRepository(self::COMMENT_LOG);
         $commentRepo = $this->em->getRepository(self::COMMENT);
 
         $comment = $commentRepo->find(1);
+        static::assertInstanceOf(Comment::class, $comment);
         static::assertSame('m-v5', $comment->getMessage());
         static::assertSame('s-v3', $comment->getSubject());
         static::assertSame(2, $comment->getArticle()->getId());
@@ -128,7 +131,7 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     public function testLogEmbedded(): void
     {
         $address = $this->populateEmbedded();
-
+        /** @var LogEntryRepository<Address> $logRepo */
         $logRepo = $this->em->getRepository(LogEntry::class);
 
         $logEntries = $logRepo->getLogEntries($address);

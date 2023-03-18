@@ -25,7 +25,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  *
  * @phpstan-type LoggableConfiguration = array{
  *   loggable?: bool,
- *   logEntryClass?: class-string<LogEntryInterface>,
+ *   logEntryClass?: class-string<LogEntryInterface<T>>,
  *   useObjectClass?: class-string,
  *   versioned?: string[],
  * }
@@ -33,6 +33,8 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * @phpstan-method LoggableConfiguration getConfiguration(ObjectManager $objectManager, $class)
  *
  * @method LoggableAdapter getEventAdapter(EventArgs $args)
+ *
+ * @phpstan-template T of Loggable|object
  */
 class LoggableListener extends MappedEventSubscriber
 {
@@ -64,6 +66,8 @@ class LoggableListener extends MappedEventSubscriber
      * will be updated with new keys on postPersist event
      *
      * @var array<int, LogEntryInterface>
+     *
+     * @phpstan-var array<int, LogEntryInterface<T>>
      */
     protected $pendingLogEntryInserts = [];
 
@@ -75,7 +79,7 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @var array<int, array<int, array<string, LogEntryInterface|string>>>
      *
-     * @phpstan-var array<int, array<int, array{log: LogEntryInterface, field: string}>>
+     * @phpstan-var array<int, array<int, array{log: LogEntryInterface<T>, field: string}>>
      */
     protected $pendingRelatedObjects = [];
 
@@ -204,7 +208,7 @@ class LoggableListener extends MappedEventSubscriber
      * @phpstan-param class-string $class
      *
      * @return string
-     * @phpstan-return class-string<LogEntryInterface>
+     * @phpstan-return class-string<LogEntryInterface<T>>
      */
     protected function getLogEntryClass(LoggableAdapter $ea, $class)
     {
@@ -219,6 +223,9 @@ class LoggableListener extends MappedEventSubscriber
      * @param object            $object   The object being Logged
      *
      * @return void
+     *
+     * @phpstan-param LogEntryInterface<T> $logEntry
+     * @phpstan-param T $object
      */
     protected function prePersistLogEntry($logEntry, $object)
     {
@@ -236,7 +243,10 @@ class LoggableListener extends MappedEventSubscriber
      * @param object            $object
      * @param LogEntryInterface $logEntry
      *
-     * @return array
+     * @return array<string, mixed>
+     *
+     * @phpstan-param T $object
+     * @phpstan-param LogEntryInterface<T> $logEntry
      */
     protected function getObjectChangeSetData($ea, $object, $logEntry)
     {
@@ -279,9 +289,12 @@ class LoggableListener extends MappedEventSubscriber
      * @param string $action
      * @param object $object
      *
-     * @phpstan-param LogEntryInterface::ACTION_CREATE|LogEntryInterface::ACTION_UPDATE|LogEntryInterface::ACTION_REMOVE $action
-     *
      * @return LogEntryInterface|null
+     *
+     * @phpstan-param LogEntryInterface::ACTION_CREATE|LogEntryInterface::ACTION_UPDATE|LogEntryInterface::ACTION_REMOVE $action
+     * @phpstan-param T $object
+     *
+     * @phpstan-return LogEntryInterface<T>|null
      */
     protected function createLogEntry($action, $object, LoggableAdapter $ea)
     {

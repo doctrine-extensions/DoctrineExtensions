@@ -39,6 +39,8 @@ final class LoggableMappingTest extends BaseTestCaseOM
 
     /**
      * @var LoggableListener
+     *
+     * @phpstan-var LoggableListener<Loggable>
      */
     private $loggable;
 

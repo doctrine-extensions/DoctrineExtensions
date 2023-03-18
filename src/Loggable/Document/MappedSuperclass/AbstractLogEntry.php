@@ -12,9 +12,10 @@ namespace Gedmo\Loggable\Document\MappedSuperclass;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Loggable\LogEntryInterface;
+use Gedmo\Loggable\Loggable;
 
 /**
- * @phpstan-template T of object
+ * @phpstan-template T of Loggable|object
  *
  * @phpstan-implements LogEntryInterface<T>
  *

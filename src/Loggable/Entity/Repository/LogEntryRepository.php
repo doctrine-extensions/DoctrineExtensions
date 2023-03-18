@@ -15,6 +15,7 @@ use Doctrine\ORM\Query;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
+use Gedmo\Loggable\Loggable;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 
@@ -23,6 +24,10 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  * to interact with log entries.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-template T of Loggable|object
+ *
+ * @phpstan-extends EntityRepository<AbstractLogEntry<T>>
  */
 class LogEntryRepository extends EntityRepository
 {
@@ -30,6 +35,8 @@ class LogEntryRepository extends EntityRepository
      * Currently used loggable listener
      *
      * @var LoggableListener
+     *
+     * @phpstan-var LoggableListener<T>
      */
     private $listener;
 
@@ -39,6 +46,10 @@ class LogEntryRepository extends EntityRepository
      * @param object $entity
      *
      * @return AbstractLogEntry[]
+     *
+     * @phpstan-param T $entity
+     *
+     * @phpstan-return array<array-key, AbstractLogEntry<T>>
      */
     public function getLogEntries($entity)
     {
@@ -53,6 +64,8 @@ class LogEntryRepository extends EntityRepository
      * @param object $entity
      *
      * @return Query
+     *
+     * @phpstan-param T $entity
      */
     public function getLogEntriesQuery($entity)
     {
@@ -83,6 +96,8 @@ class LogEntryRepository extends EntityRepository
      * @throws UnexpectedValueException
      *
      * @return void
+     *
+     * @phpstan-param T $entity
      */
     public function revert($entity, $version = 1)
     {
@@ -130,6 +145,8 @@ class LogEntryRepository extends EntityRepository
      * @param mixed  $value
      *
      * @return void
+     *
+     * @phpstan-param ClassMetadata<T> $objectMeta
      */
     protected function mapValue(ClassMetadata $objectMeta, $field, &$value)
     {
@@ -145,6 +162,8 @@ class LogEntryRepository extends EntityRepository
      * Get the currently used LoggableListener
      *
      * @throws RuntimeException if listener is not found
+     *
+     * @phpstan-return LoggableListener<T>
      */
     private function getLoggableListener(): LoggableListener
     {

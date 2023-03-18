@@ -51,12 +51,12 @@ parameters:
 			path: src/IpTraceable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\<T of object\\>\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
 			count: 1
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\>\\:\\:newInstance\\(\\)\\.$#"
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\<T of object\\>\\>\\:\\:newInstance\\(\\)\\.$#"
 			count: 1
 			path: src/Loggable/LoggableListener.php
 
