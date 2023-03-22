@@ -61,5 +61,7 @@ class Annotation extends AbstractAnnotationDriver
         }
 
         $this->validateFullMetadata($meta, $config);
+
+        return $config;
     }
 }

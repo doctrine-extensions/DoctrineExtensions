@@ -122,5 +122,7 @@ class Annotation extends AbstractAnnotationDriver
                 throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 }

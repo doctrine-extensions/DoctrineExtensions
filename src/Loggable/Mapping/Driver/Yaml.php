@@ -118,7 +118,7 @@ class Yaml extends File
                         }
                         // fields cannot be overrided and throws mapping exception
                         $mapping = $this->_getMapping($fieldMapping['class']);
-                        $this->inspectEmbeddedForVersioned($field, $mapping, $config);
+                        $config = $this->inspectEmbeddedForVersioned($field, $mapping, $config);
                     }
                 }
             }
@@ -132,6 +132,8 @@ class Yaml extends File
                 throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 
     protected function _loadMappingFile($file)
@@ -142,13 +144,17 @@ class Yaml extends File
     /**
      * @param array<string, array<string, array<string, mixed>>> $mapping
      * @param array<string, mixed>                               $config
+     *
+     * @return array<string, mixed>
      */
-    private function inspectEmbeddedForVersioned(string $field, array $mapping, array &$config): void
+    private function inspectEmbeddedForVersioned(string $field, array $mapping, array $config): array
     {
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $property => $fieldMapping) {
                 $config['versioned'][] = $field.'.'.$property;
             }
         }
+
+        return $config;
     }
 }

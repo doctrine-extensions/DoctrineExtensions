@@ -86,6 +86,8 @@ class Annotation extends AbstractAnnotationDriver
                 }
             }
         }
+
+        return $config;
     }
 
     /**
