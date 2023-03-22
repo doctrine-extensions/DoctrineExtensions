@@ -95,6 +95,8 @@ class Annotation extends AbstractAnnotationDriver
                 throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 
     /**

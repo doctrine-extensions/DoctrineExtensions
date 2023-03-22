@@ -121,7 +121,16 @@ class ExtensionMetadataFactory
 
                     assert($class instanceof DocumentClassMetadata || $class instanceof EntityClassMetadata);
 
-                    $this->driver->readExtendedMetadata($class, $config);
+                    $extendedMetadata = $this->driver->readExtendedMetadata($class, $config);
+
+                    if (\is_array($extendedMetadata)) {
+                        $config = $extendedMetadata;
+                    }
+
+                    // @todo: In the next major release remove the assignment to `$extendedMetadata`, the previous conditional
+                    // block and uncomment the following line.
+                    // $config = $this->driver->readExtendedMetadata($class, $config);
+
                     $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()
                         && [] === $class->parentClasses
                         && [] !== $config
@@ -131,7 +140,16 @@ class ExtensionMetadataFactory
                     }
                 }
             }
-            $this->driver->readExtendedMetadata($meta, $config);
+
+            $extendedMetadata = $this->driver->readExtendedMetadata($meta, $config);
+
+            if (\is_array($extendedMetadata)) {
+                $config = $extendedMetadata;
+            }
+
+            // @todo: In the next major release remove the assignment to `$extendedMetadata`, the previous conditional
+            // block and uncomment the following line.
+            // $config = $this->driver->readExtendedMetadata($meta, $config);
         }
         if ([] !== $config) {
             $config['useObjectClass'] = $useObjectName;

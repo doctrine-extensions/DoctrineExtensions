@@ -80,9 +80,11 @@ class Yaml extends File implements Driver
                     }
                 }
 
-                Validator::validateConfiguration($meta, $config);
+                $config = Validator::validateConfiguration($meta, $config);
             }
         }
+
+        return $config;
     }
 
     protected function _loadMappingFile($file)

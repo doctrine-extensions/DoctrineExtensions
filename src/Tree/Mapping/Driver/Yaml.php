@@ -211,6 +211,8 @@ class Yaml extends File implements Driver
                 throw new InvalidMappingException("Cannot find Tree type for class: {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 
     protected function _loadMappingFile($file)

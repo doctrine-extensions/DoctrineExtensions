@@ -88,5 +88,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config[$blameable->on][] = $field;
             }
         }
+
+        return $config;
     }
 }

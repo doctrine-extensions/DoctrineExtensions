@@ -26,6 +26,8 @@ interface Driver
     /**
      * Read the extended metadata configuration for a single mapped class.
      *
+     * @todo In the next major release stop receiving by reference the `$config` parameter and use `array` as return type declaration
+     *
      * @param ClassMetadata        $meta
      * @param array<string, mixed> $config
      *

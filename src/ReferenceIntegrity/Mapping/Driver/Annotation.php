@@ -60,5 +60,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config['referenceIntegrity'][$property] = $referenceIntegrity->value;
             }
         }
+
+        return $config;
     }
 }

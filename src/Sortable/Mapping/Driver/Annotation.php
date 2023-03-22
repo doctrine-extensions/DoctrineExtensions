@@ -91,5 +91,7 @@ class Annotation extends AbstractAnnotationDriver
                 throw new InvalidMappingException("Missing property: 'position' in class - {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 }

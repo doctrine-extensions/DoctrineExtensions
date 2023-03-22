@@ -60,5 +60,7 @@ class Xml extends BaseXml
                 }
             }
         }
+
+        return $config;
     }
 }

@@ -97,6 +97,8 @@ class Annotation implements AnnotationDriverInterface
                 }
             }
         }
+
+        return $config;
     }
 
     /**
