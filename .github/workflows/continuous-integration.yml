@@ -11,7 +11,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.dbal-version && format(' - DBAL {0}', matrix.dbal-version) || '' }}${{ matrix.mongodb-odm-version && format(' - MongoDB ODM {0}', matrix.mongodb-odm-version) || '' }}"
+    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.dbal-version && format(' - DBAL {0}', matrix.dbal-version) || '' }}"
     runs-on: "ubuntu-20.04"
 
     services:
@@ -33,8 +33,6 @@ jobs:
           - "highest"
         dbal-version:
           - ""
-        mongodb-odm-version:
-          - ""
         include:
           - deps: "lowest"
             php-version: "7.2"
@@ -46,7 +44,6 @@ jobs:
             dbal-version: "^3.2"
           - deps: "highest"
             php-version: "8.1"
-            mongodb-odm-version: "^2.5@dev"
 
     steps:
       - name: "Checkout"
@@ -64,11 +61,6 @@ jobs:
       - name: "Restrict DBAL version"
         if: "${{ matrix.dbal-version }}"
         run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
-
-      # @todo: Remove this step and references to "mongodb-odm-version" once MongoDB ODM 2.5 is released
-      - name: "Use dev version of MongoDB ODM"
-        if: "${{ matrix.mongodb-odm-version }}"
-        run: "composer require --dev --no-update doctrine/mongodb-odm:${{ matrix.mongodb-odm-version }}"
 
       # Remove PHP-CS-Fixer to avoid conflicting dependency ranges (i.e. doctrine/annotations)
       - name: "Remove PHP-CS-Fixer"
