@@ -74,10 +74,11 @@ jobs:
       - name: "Run PHPUnit"
         run: "bin/phpunit -c tests --coverage-clover coverage.xml"
 
-      - name: "Send coverage to Codecov"
-        uses: "codecov/codecov-action@v2"
+      - name: "Upload coverage file"
+        uses: "actions/upload-artifact@v3"
         with:
-          file: "coverage.xml"
+          name: "${{ github.job }}-${{ matrix.php-version }}.coverage"
+          path: "coverage.xml"
 
   lint-doctrine-xml-schema:
     name: Lint Doctrine XML schemas
@@ -104,3 +105,25 @@ jobs:
 
       - name: Lint xml files
         run: make lint-doctrine-xml-schema
+
+  upload_coverage:
+    name: "Upload coverage to Codecov"
+    runs-on: "ubuntu-22.04"
+    needs:
+      - "phpunit"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+        with:
+          fetch-depth: 2
+
+      - name: "Download coverage files"
+        uses: "actions/download-artifact@v3"
+        with:
+          path: "reports"
+
+      - name: "Upload to Codecov"
+        uses: "codecov/codecov-action@v3"
+        with:
+          directory: reports
