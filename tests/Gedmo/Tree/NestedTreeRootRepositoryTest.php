@@ -482,6 +482,29 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertSame(2, $potatoes->getLeft());
         static::assertSame(3, $potatoes->getRight());
 
+        // recover with specified order with multiple fields
+
+        $repo->recover([
+            'flush' => true,
+            'treeRootNode' => $repo->find(1),
+            'skipVerify' => true,
+            'sortByField' => [
+                0 => 'title',
+                1 => 'title',
+            ],
+            'sortDirection' => [
+                0 => 'ASC',
+                1 => 'DESC',
+            ],
+        ]);
+        static::assertTrue($repo->verify());
+
+        $this->em->clear();
+        $potatoes = $repo->findOneBy(['title' => 'Potatoes']);
+
+        static::assertSame(8, $potatoes->getLeft());
+        static::assertSame(9, $potatoes->getRight());
+
         // test fast recover
 
         $dql = 'UPDATE '.self::CATEGORY.' node';

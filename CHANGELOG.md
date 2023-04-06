@@ -20,6 +20,7 @@ a release.
 ## [Unreleased]
 ### Added
 - Tree: `setSibling()` and `getSibling()` methods in the `Node` interface through the BC `@method` annotation
+- Tree: Support array of fields and directions in the `$sortByField` and `$direction` parameters at `AbstractTreeRepository::recover()`
 
 ### Changed
 - Named arguments have precedence over the values passed in the `$data` array in annotation classes at `Gedmo\Mapping\Annotation\`
