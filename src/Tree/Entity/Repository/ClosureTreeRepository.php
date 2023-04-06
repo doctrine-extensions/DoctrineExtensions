@@ -38,8 +38,15 @@ class ClosureTreeRepository extends AbstractTreeRepository
             ->from($config['useObjectClass'], 'node')
             ->where('node.'.$config['parent'].' IS NULL');
 
-        if ($sortByField) {
-            $qb->orderBy('node.'.$sortByField, 'asc' === strtolower($direction) ? 'asc' : 'desc');
+        if (null !== $sortByField) {
+            $sortByField = (array) $sortByField;
+            $direction = (array) $direction;
+            foreach ($sortByField as $key => $field) {
+                $fieldDirection = $direction[$key] ?? 'asc';
+                if ($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) {
+                    $qb->addOrderBy('node.'.$field, 'asc' === strtolower($fieldDirection) ? 'asc' : 'desc');
+                }
+            }
         }
 
         return $qb;

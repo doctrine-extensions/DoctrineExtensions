@@ -165,8 +165,8 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Get all root nodes query builder
      *
-     * @param string|null $sortByField Sort by field
-     * @param string      $direction   Sort direction ("asc" or "desc")
+     * @param string|string[]|null $sortByField Sort by field
+     * @param string|string[]      $direction   Sort direction ("asc" or "desc")
      *
      * @return QueryBuilder QueryBuilder object
      */
@@ -175,8 +175,8 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Get all root nodes query
      *
-     * @param string|null $sortByField Sort by field
-     * @param string      $direction   Sort direction ("asc" or "desc")
+     * @param string|string[]|null $sortByField Sort by field
+     * @param string|string[]      $direction   Sort direction ("asc" or "desc")
      *
      * @return Query Query object
      */
