@@ -53,7 +53,7 @@ class MaterializedPath extends AbstractMaterializedPath
             ->toIterable();
 
         foreach ($results as $node) {
-            $uow->scheduleForDelete($node);
+            $om->remove($node);
         }
     }
 
