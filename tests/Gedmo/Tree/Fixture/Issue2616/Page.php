@@ -20,6 +20,17 @@ use Doctrine\ORM\Mapping as ORM;
 class Page
 {
     /**
+     * @var Category|null
+     *
+     * @ORM\OneToOne(targetEntity="Page", inversedBy="page")
+     * @ORM\JoinColumn(name="entity_id", referencedColumnName="category_id", nullable=false)
+     */
+    #[
+        ORM\OneToOne(targetEntity: Category::class, inversedBy: 'page'),
+        ORM\JoinColumn(name: 'entity_id', referencedColumnName: 'category_id', nullable: false),
+    ]
+    protected $category;
+    /**
      * @var int|null
      *
      * @ORM\Column(name="page_id", type="integer")
@@ -41,18 +52,6 @@ class Page
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private $title;
 
-    /**
-     * @var Category|null
-     *
-     * @ORM\OneToOne(targetEntity="Page", inversedBy="page")
-     * @ORM\JoinColumn(name="entity_id", referencedColumnName="category_id", nullable=false)
-     */
-    #[
-        ORM\OneToOne(targetEntity: Category::class, inversedBy: 'page'),
-        ORM\JoinColumn(name: 'entity_id', referencedColumnName: 'category_id', nullable: false),
-    ]
-    protected $category;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -68,17 +67,11 @@ class Page
         $this->category = $category;
     }
 
-    /**
-     * @return string|null
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param string|null $title
-     */
     public function setTitle(?string $title): void
     {
         $this->title = $title;

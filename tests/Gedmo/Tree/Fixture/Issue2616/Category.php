@@ -26,30 +26,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Category
 {
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="category_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @Gedmo\TreePathSource
-     */
-    #[
-        ORM\Id,
-        ORM\GeneratedValue,
-        ORM\Column(name: 'category_id', type: Types::INTEGER),
-        Gedmo\TreePathSource
-    ]
-    private $id;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="title", type="string", length=64)
-     */
-    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
-
-    /**
      * @ORM\ManyToOne(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2616\Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="category_id", onDelete="cascade")
      * @Gedmo\TreeParent
@@ -72,6 +48,29 @@ class Category
      */
     #[ORM\OneToOne(targetEntity: Page::class, mappedBy: 'category', cascade: ['remove'])]
     protected $page;
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="category_id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @Gedmo\TreePathSource
+     */
+    #[
+        ORM\Id,
+        ORM\GeneratedValue,
+        ORM\Column(name: 'category_id', type: Types::INTEGER),
+        Gedmo\TreePathSource
+    ]
+    private $id;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="title", type="string", length=64)
+     */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    private $title;
 
     /**
      * @Gedmo\TreeLevel
@@ -134,22 +133,20 @@ class Category
         return $this->path;
     }
 
-    public function setPath($path): void
+    /**
+     * @param string $path
+     * @return void
+     */
+    public function setPath($path)
     {
         $this->path = $path;
     }
 
-    /**
-     * @return string|null
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param string|null $title
-     */
     public function setTitle(?string $title): void
     {
         $this->title = $title;
