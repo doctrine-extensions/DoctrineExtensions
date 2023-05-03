@@ -29,6 +29,8 @@ class Category
      * @ORM\ManyToOne(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2616\Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="category_id", onDelete="cascade")
      * @Gedmo\TreeParent
+     *
+     * @var Category|null
      */
     #[
         ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children'),
@@ -39,12 +41,16 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2616\Category", mappedBy="parent", fetch="EXTRA_LAZY")
+     *
+     * @var Category[]|null
      */
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, fetch: 'EXTRA_LAZY')]
     protected $children;
 
     /**
      * @ORM\OneToOne(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2616\Page", mappedBy="category", cascade={"remove"})
+     *
+     * @var Page|null
      */
     #[ORM\OneToOne(targetEntity: Page::class, mappedBy: 'category', cascade: ['remove'])]
     protected $page;
@@ -75,6 +81,8 @@ class Category
     /**
      * @Gedmo\TreeLevel
      * @ORM\Column(name="level", type="integer", nullable=true)
+     *
+     * @var int|null
      */
     #[
         Gedmo\TreeLevel,
@@ -85,6 +93,8 @@ class Category
     /**
      * @Gedmo\TreePath(separator="/", endsWithSeparator=false)
      * @ORM\Column(name="path", type="string", nullable=true)
+     *
+     * @var string|null
      */
     #[
         ORM\Column(name: 'path', type: Types::STRING, nullable: true),
@@ -97,16 +107,25 @@ class Category
         return $this->id;
     }
 
+    /**
+     * @return Category|null
+     */
     public function getParent()
     {
         return $this->parent;
     }
 
+    /**
+     * @param Category|null $parent
+     */
     public function setParent($parent): void
     {
         $this->parent = $parent;
     }
 
+    /**
+     * @return Page|null
+     */
     public function getPage()
     {
         return $this->page;
@@ -118,16 +137,25 @@ class Category
         $page->setCategory($this);
     }
 
+    /**
+     * @return int
+     */
     public function getLevel()
     {
         return $this->level;
     }
 
+    /**
+     * @param int $level
+     */
     public function setLevel($level): void
     {
         $this->level = $level;
     }
 
+    /**
+     * @return string|null
+     */
     public function getPath()
     {
         return $this->path;
@@ -135,6 +163,7 @@ class Category
 
     /**
      * @param string $path
+     *
      * @return void
      */
     public function setPath($path)
