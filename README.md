@@ -71,7 +71,7 @@ can be easily implemented using Mapping extension to handle the additional metad
 | 2.4 | 2.5+ |
 | 2.3 | 2.2 - 2.4 |
 
-If you are setting up the Entity Manager without a framework, see the [the example](/example/em.php) to prevent issues like #1310
+If you are setting up the Entity Manager without a framework, see the [example](/example/em.php) to prevent issues like #1310
 
 ### XML Mapping
 
@@ -116,13 +116,13 @@ To set up and run example, follow these steps:
 
 ### Contributors
 
-Thanks to [everyone participating](http://github.com/doctrine-extensions/DoctrineExtensions/contributors) in
+Thanks to [everyone participating](https://github.com/doctrine-extensions/DoctrineExtensions/contributors) in
 the development of these great Doctrine extensions!
 
 And especially ones who create and maintain new extensions:
 
-- Lukas Botsch [lbotsch](http://github.com/lbotsch)
-- Gustavo Adrian [comfortablynumb](http://github.com/comfortablynumb)
-- Boussekeyt Jules [gordonslondon](http://github.com/gordonslondon)
-- Kudryashov Konstantin [everzet](http://github.com/everzet)
+- Lukas Botsch [lbotsch](https://github.com/lbotsch)
+- Gustavo Adrian [comfortablynumb](https://github.com/comfortablynumb)
+- Boussekeyt Jules [gordonslondon](https://github.com/gordonslondon)
+- Kudryashov Konstantin [everzet](https://github.com/everzet)
 - David Buchmann [dbu](https://github.com/dbu)
