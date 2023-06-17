@@ -25,9 +25,11 @@ a release.
 - Named arguments have precedence over the values passed in the `$data` array in annotation classes at `Gedmo\Mapping\Annotation\`
   namespace
 - Removed conflict against "doctrine/cache" < 1.11, as this library is not used
+- Return type from `TranslationProxy::__set()` (from `TranslationProxy` to `void`)
 
 ### Fixed
 - Tree: Creation of dynamic `Node::$sibling` property, which is deprecated as of PHP >= 8.2
+- Return type from `TranslationProxy::__set()` in order to honor its original signature (`void`)
 
 ### Deprecated
 - Tree: Not implementing `Node` interface in classes that are used as nodes
