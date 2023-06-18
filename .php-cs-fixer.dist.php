@@ -52,6 +52,7 @@ return (new PhpCsFixer\Config())
         'no_homoglyph_names' => true,
         'no_null_property_initialization' => true,
         'no_superfluous_elseif' => true,
+        'no_superfluous_phpdoc_tags' => false,
         'no_unset_on_property' => true,
         'no_useless_else' => true,
         'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => true],
