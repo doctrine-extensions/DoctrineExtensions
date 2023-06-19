@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
@@ -118,7 +119,10 @@ abstract class BaseTestCaseOM extends TestCase
         ];
 
         $config = $this->getMockORMConfig($mappingDriver);
-        $em = EntityManager::create($conn, $config, $this->getEventManager());
+
+        $connection = DriverManager::getConnection($conn, $config);
+
+        $em = new EntityManager($connection, $config, $this->getEventManager());
 
         $schema = array_map(static function (string $class) use ($em): ClassMetadata {
             assert(class_exists($class));

@@ -157,7 +157,8 @@ $connection = array(
     'password' => ''
 );
 // Finally, create entity manager
-$em = Doctrine\ORM\EntityManager::create($connection, $config, $evm);
+$connection = DriverManager::getConnection($connection, $config);
+$em = new EntityManager($connection, $config, $evm);
 ```
 
 **Note:** that Symfony StofDoctrineExtensionsBundle does it automatically this
