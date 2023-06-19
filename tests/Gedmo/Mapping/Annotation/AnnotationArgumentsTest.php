@@ -46,7 +46,7 @@ final class AnnotationArgumentsTest extends TestCase
         }
     }
 
-    public function getGedmoAnnotations(): iterable
+    public static function getGedmoAnnotations(): iterable
     {
         yield 'args_without_data' => [['on' => 'delete', 'field' => 'some'], Blameable::class, [[], 'delete', 'some']];
         yield 'default_values_without_args' => [['on' => 'update', 'field' => null, 'value' => null], Blameable::class, []];

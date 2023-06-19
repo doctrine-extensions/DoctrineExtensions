@@ -257,7 +257,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         ]);
     }
 
-    public function invalidStringMethods(): iterable
+    public static function invalidStringMethods(): iterable
     {
         yield [null];
         yield [123];

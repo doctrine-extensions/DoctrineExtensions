@@ -17,7 +17,7 @@ use Gedmo\Tests\Mapping\Fixture\Attribute\TranslationEntityModel as AttributeTra
 
 final class TranslationEntityTestCase extends BaseClassAnnotationTestCase
 {
-    public function getValidParameters(): iterable
+    public static function getValidParameters(): iterable
     {
         return [
             ['class', \stdClass::class],

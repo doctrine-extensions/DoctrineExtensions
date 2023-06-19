@@ -40,7 +40,7 @@ abstract class BaseClassAnnotationTestCase extends TestCase
         static::assertSame($annotation->$annotationProperty, $expectedReturn);
     }
 
-    abstract public function getValidParameters(): iterable;
+    abstract public static function getValidParameters(): iterable;
 
     abstract protected function getAnnotationClass(): string;
 
