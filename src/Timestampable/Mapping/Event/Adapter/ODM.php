@@ -26,15 +26,18 @@ final class ODM extends BaseAdapterODM implements TimestampableAdapter
      */
     public function getDateValue($meta, $field)
     {
+        $datetime = new \DateTime();
         $mapping = $meta->getFieldMapping($field);
-        if (isset($mapping['type']) && 'timestamp' === $mapping['type']) {
-            return time();
-        }
-        if (isset($mapping['type']) && in_array($mapping['type'], ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
-            return new \DateTimeImmutable();
+        $type = $mapping['type'] ?? null;
+
+        if ('timestamp' === $type) {
+            return (int) $datetime->format('U');
         }
 
-        return \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''))
-            ->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
+        if (in_array($type, ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
+            return \DateTimeImmutable::createFromMutable($datetime);
+        }
+
+        return $datetime;
     }
 }
