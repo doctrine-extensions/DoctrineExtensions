@@ -17,12 +17,12 @@ namespace Gedmo\Timestampable\Traits;
 trait Timestampable
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     protected $updatedAt;
 
@@ -41,7 +41,7 @@ trait Timestampable
     /**
      * Returns createdAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getCreatedAt()
     {
@@ -63,7 +63,7 @@ trait Timestampable
     /**
      * Returns updatedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getUpdatedAt()
     {
