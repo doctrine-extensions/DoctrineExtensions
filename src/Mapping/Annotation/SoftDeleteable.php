@@ -26,14 +26,11 @@ final class SoftDeleteable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string */
-    public $fieldName = 'deletedAt';
+    public string $fieldName = 'deletedAt';
 
-    /** @var bool */
-    public $timeAware = false;
+    public bool $timeAware = false;
 
-    /** @var bool */
-    public $hardDelete = true;
+    public bool $hardDelete = true;
 
     /**
      * @param array<string, mixed> $data

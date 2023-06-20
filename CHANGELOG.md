@@ -35,6 +35,7 @@ a release.
   namespace
 - Removed conflict against "doctrine/cache" < 1.11, as this library is not used
 - Return type from `TranslationProxy::__set()` (from `TranslationProxy` to `void`)
+- Dropped support for PHP < 7.4
 
 ### Fixed
 - Tree: Creation of dynamic `Node::$sibling` property, which is deprecated as of PHP >= 8.2

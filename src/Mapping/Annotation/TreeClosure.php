@@ -28,10 +28,9 @@ final class TreeClosure implements GedmoAnnotation
     use ForwardCompatibilityTrait;
 
     /**
-     * @var string
      * @phpstan-var string|class-string<AbstractClosure>
      */
-    public $class;
+    public string $class;
 
     /**
      * @param array<string, mixed> $data

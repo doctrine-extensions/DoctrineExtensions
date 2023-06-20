@@ -29,52 +29,32 @@ final class Uploadable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /**
-     * @var bool
-     */
-    public $allowOverwrite = false;
+    public bool $allowOverwrite = false;
+
+    public bool $appendNumber = false;
+
+    public string $path = '';
+
+    public string $pathMethod = '';
+
+    public string $callback = '';
 
     /**
-     * @var bool
-     */
-    public $appendNumber = false;
-
-    /**
-     * @var string
-     */
-    public $path = '';
-
-    /**
-     * @var string
-     */
-    public $pathMethod = '';
-
-    /**
-     * @var string
-     */
-    public $callback = '';
-
-    /**
-     * @var string
-     *
      * @phpstan-var Validator::FILENAME_GENERATOR_*|class-string<FilenameGeneratorInterface>
      */
-    public $filenameGenerator = Validator::FILENAME_GENERATOR_NONE;
+    public string $filenameGenerator = Validator::FILENAME_GENERATOR_NONE;
 
-    /**
-     * @var string
-     */
-    public $maxSize = '0';
+    public string $maxSize = '0';
 
     /**
      * @var string A list of comma separate values of allowed types, like "text/plain,text/css"
      */
-    public $allowedTypes = '';
+    public string $allowedTypes = '';
 
     /**
      * @var string A list of comma separate values of disallowed types, like "video/jpeg,text/html"
      */
-    public $disallowedTypes = '';
+    public string $disallowedTypes = '';
 
     /**
      * @param array<string, mixed> $data

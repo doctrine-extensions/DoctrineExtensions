@@ -27,19 +27,16 @@ final class Tree implements GedmoAnnotation
     use ForwardCompatibilityTrait;
 
     /**
-     * @var string
      * @phpstan-var 'closure'|'materializedPath'|'nested'
      */
-    public $type = 'nested';
+    public string $type = 'nested';
 
-    /** @var bool */
-    public $activateLocking = false;
+    public bool $activateLocking = false;
 
     /**
-     * @var int
      * @phpstan-var positive-int
      */
-    public $lockingTimeout = 3;
+    public int $lockingTimeout = 3;
 
     /**
      * @var string|null

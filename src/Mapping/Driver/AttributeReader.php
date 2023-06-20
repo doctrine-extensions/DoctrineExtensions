@@ -19,7 +19,7 @@ use Gedmo\Mapping\Annotation\Annotation;
 final class AttributeReader
 {
     /** @var array<string,bool> */
-    private $isRepeatableAttribute = [];
+    private array $isRepeatableAttribute = [];
 
     /**
      * @phpstan-param \ReflectionClass<object> $class

@@ -28,10 +28,8 @@ final class TreeLevel implements GedmoAnnotation
 
     /**
      * The level which root nodes will have
-     *
-     * @var int
      */
-    public $base = 0;
+    public int $base = 0;
 
     /**
      * @param array<string, mixed> $data
