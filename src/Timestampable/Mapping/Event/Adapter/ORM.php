@@ -44,15 +44,17 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
      */
     private function getRawDateValue(array $mapping)
     {
-        if (isset($mapping['type']) && 'integer' === $mapping['type']) {
-            return time();
+        $datetime = new \DateTime();
+        $type = $mapping['type'] ?? null;
+
+        if ('integer' === $type) {
+            return (int) $datetime->format('U');
         }
 
-        if (isset($mapping['type']) && in_array($mapping['type'], ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
-            return new \DateTimeImmutable();
+        if (in_array($type, ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
+            return \DateTimeImmutable::createFromMutable($datetime);
         }
 
-        return \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''))
-            ->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
+        return $datetime;
     }
 }

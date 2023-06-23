@@ -123,24 +123,22 @@ class TranslationProxy
     /**
      * @param string $property
      * @param mixed  $value
-     *
-     * @return self
      */
     public function __set($property, $value)
     {
         if (in_array($property, $this->properties, true)) {
             if (method_exists($this, $setter = 'set'.ucfirst($property))) {
-                return $this->$setter($value);
+                $this->$setter($value);
+
+                return;
             }
 
             $this->setTranslatedValue($property, $value);
 
-            return $this;
+            return;
         }
 
         $this->translatable->$property = $value;
-
-        return $this;
     }
 
     /**

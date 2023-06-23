@@ -21,7 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait TimestampableEntity
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -30,7 +30,7 @@ trait TimestampableEntity
     protected $createdAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -53,7 +53,7 @@ trait TimestampableEntity
     /**
      * Returns createdAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getCreatedAt()
     {
@@ -75,7 +75,7 @@ trait TimestampableEntity
     /**
      * Returns updatedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getUpdatedAt()
     {

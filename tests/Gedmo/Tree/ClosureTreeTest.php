@@ -333,7 +333,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertCount(6, $closures);
     }
 
-    public function provideNodeOrders(): array
+    public static function provideNodeOrders(): array
     {
         $grandpa = new Category();
         $grandpa->setTitle('grandpa');

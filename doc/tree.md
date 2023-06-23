@@ -1224,8 +1224,8 @@ And that's it!
 There are repository methods that are available for you in all the strategies:
 
 * **getRootNodes** / **getRootNodesQuery** / **getRootNodesQueryBuilder**: Returns an array with the available root nodes. Arguments:
-  - *sortByField*: An optional field to order the root nodes. Defaults to "null".
-  - *direction*: In case the first argument is used, you can pass the direction here: "asc" or "desc". Defaults to "asc".
+  - *sortByField*: array<string> || string - An optional array of fields or field to order the root nodes. Defaults to "null".
+  - *direction*: array<string> || string - In case the first argument is used, you can pass the direction here: array of values or single value: "asc" or "desc". Defaults to "asc".
 * **getChildren** / **getChildrenQuery** / **getChildrenQueryBuilder**: Returns an array of children nodes. Arguments:
   - *node*: If you pass a node, the method will return its children. Defaults to "null" (this means it will return ALL nodes).
   - *direct*: If you pass true as a value for this argument, you'll get only the direct children of the node
