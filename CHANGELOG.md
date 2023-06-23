@@ -28,6 +28,7 @@ a release.
 
 ### Fixed
 - Tree: Creation of dynamic `Node::$sibling` property, which is deprecated as of PHP >= 8.2
+- Sluggable: Use `TranslationWalker` hint only for Translatable objects when looking for similar slugs (`getSimilarSlugs` method)
 
 ### Deprecated
 - Tree: Not implementing `Node` interface in classes that are used as nodes
