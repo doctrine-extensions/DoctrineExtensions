@@ -195,7 +195,9 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             }
         }
 
-        $table = $meta->getTableName();
+        $platform = $em->getConnection()->getDatabasePlatform();
+        $quoteStrategy = $em->getConfiguration()->getQuoteStrategy();
+        $table = $quoteStrategy->getTableName($meta, $platform);
         if (!$em->getConnection()->insert($table, $data)) {
             throw new RuntimeException('Failed to insert new Translation record');
         }
