@@ -78,7 +78,7 @@ a release.
 
 ### Fixed
 - Tree: Creation of dynamic `Node::$sibling` property, which is deprecated as of PHP >= 8.2
-- Sluggable: Use `TranslationWalker` hint only for Translatable objects when looking for similar slugs (`getSimilarSlugs` method) (#100, #2530)
+- Sluggable: Use `TranslationWalker` hint when looking for similar slugs (`getSimilarSlugs` method) for entities which implement `Translatable` interface (#100, #2530)
 - Return type from `TranslationProxy::__set()` in order to honor its original signature (`void`)
 - Sluggable: Use `TranslationWalker` hint only for Translatable objects when looking for similar slugs (`getSimilarSlugs` method)
 

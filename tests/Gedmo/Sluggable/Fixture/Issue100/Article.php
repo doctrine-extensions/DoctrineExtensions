@@ -91,7 +91,7 @@ class Article implements Sluggable, Translatable
         return $this->slug;
     }
 
-    public function setTranslatableLocale(?string $locale)
+    public function setTranslatableLocale(?string $locale): void
     {
         $this->locale = $locale;
     }
