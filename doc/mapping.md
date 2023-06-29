@@ -192,14 +192,14 @@ class EncoderListener extends MappedEventSubscriber
     {
         // this will check for our metadata
         $this->loadMetadataForObjectClass(
-            $args->getEntityManager(),
+            $args->getObjectManager(),
             $args->getClassMetadata()
         );
     }
 
     public function onFlush(EventArgs $args)
     {
-        $em = $args->getEntityManager();
+        $em = $args->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         // check all pending updates
