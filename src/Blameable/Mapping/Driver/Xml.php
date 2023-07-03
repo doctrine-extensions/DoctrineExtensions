@@ -34,6 +34,7 @@ class Xml extends BaseXml
         'one',
         'string',
         'int',
+        'uuid',
     ];
 
     public function readExtendedMetadata($meta, array &$config)
