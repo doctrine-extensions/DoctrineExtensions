@@ -37,6 +37,8 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if (null !== $class && $annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
+            assert($annot instanceof SoftDeleteable);
+
             $config['softDeleteable'] = true;
 
             Validator::validateField($meta, $annot->fieldName);
@@ -57,6 +59,11 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException('hardDelete must be boolean. '.gettype($annot->hardDelete).' provided.');
                 }
                 $config['hardDelete'] = $annot->hardDelete;
+            }
+
+            // add the setter method for the field?
+            if (isset($annot->setterMethod)) {
+                $this->setSetterMethod($annot->fieldName, $annot->setterMethod, $config);
             }
         }
 

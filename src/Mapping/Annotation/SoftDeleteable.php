@@ -35,10 +35,13 @@ final class SoftDeleteable implements GedmoAnnotation
 
     public bool $hardDelete = true;
 
+    /** @var string|null */
+    public $setterMethod;
+
     /**
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data = [], string $fieldName = 'deletedAt', bool $timeAware = false, bool $hardDelete = true)
+    public function __construct(array $data = [], string $fieldName = 'deletedAt', bool $timeAware = false, bool $hardDelete = true, string $setterMethod = null)
     {
         if ([] !== $data) {
             Deprecation::trigger(
@@ -53,6 +56,7 @@ final class SoftDeleteable implements GedmoAnnotation
             $this->fieldName = $this->getAttributeValue($data, 'fieldName', $args, 1, $fieldName);
             $this->timeAware = $this->getAttributeValue($data, 'timeAware', $args, 2, $timeAware);
             $this->hardDelete = $this->getAttributeValue($data, 'hardDelete', $args, 3, $hardDelete);
+            $this->setterMethod = $this->getAttributeValue($data, 'setterMethod', $args, 4, $setterMethod);
 
             return;
         }
@@ -60,5 +64,6 @@ final class SoftDeleteable implements GedmoAnnotation
         $this->fieldName = $fieldName;
         $this->timeAware = $timeAware;
         $this->hardDelete = $hardDelete;
+        $this->setterMethod = $setterMethod;
     }
 }
