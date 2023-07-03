@@ -37,6 +37,7 @@ class Yaml extends File implements Driver
         'one',
         'string',
         'int',
+        'uuid',
     ];
 
     /**

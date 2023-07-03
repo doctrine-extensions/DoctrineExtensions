@@ -39,6 +39,7 @@ class Annotation extends AbstractAnnotationDriver
         'one',
         'string',
         'int',
+        'uuid',
     ];
 
     public function readExtendedMetadata($meta, array &$config)
