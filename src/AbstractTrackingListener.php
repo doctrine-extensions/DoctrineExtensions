@@ -20,6 +20,7 @@ use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -89,7 +90,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                     $new = array_key_exists($field, $changeSet) ? $changeSet[$field][1] : false;
                     if (null === $new) { // let manual values
                         $needChanges = true;
-                        $this->updateField($object, $ea, $meta, $field);
+                        $this->updateField($object, $ea, $meta, $field, $config);
                     }
                 }
             }
@@ -101,7 +102,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                         && null === $changeSet[$field][1];
                     if (!isset($changeSet[$field]) || $isInsertAndNull) { // let manual values
                         $needChanges = true;
-                        $this->updateField($object, $ea, $meta, $field);
+                        $this->updateField($object, $ea, $meta, $field, $config);
                     }
                 }
             }
@@ -152,7 +153,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
 
                             if (null === $configuredValues || ($singleField && in_array($value, $configuredValues, true))) {
                                 $needChanges = true;
-                                $this->updateField($object, $ea, $meta, $options['field']);
+                                $this->updateField($object, $ea, $meta, $options['field'], $config);
                             }
                         }
                     }
@@ -184,14 +185,14 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
                     if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
-                        $this->updateField($object, $ea, $meta, $field);
+                        $this->updateField($object, $ea, $meta, $field, $config);
                     }
                 }
             }
             if (isset($config['create'])) {
                 foreach ($config['create'] as $field) {
                     if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
-                        $this->updateField($object, $ea, $meta, $field);
+                        $this->updateField($object, $ea, $meta, $field, $config);
                     }
                 }
             }
@@ -216,10 +217,11 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * @param AdapterInterface $eventAdapter
      * @param ClassMetadata    $meta
      * @param string           $field
+     * @param array            $config
      *
      * @return void
      */
-    protected function updateField($object, $eventAdapter, $meta, $field)
+    protected function updateField($object, $eventAdapter, $meta, $field, array $config = [])
     {
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
@@ -235,7 +237,18 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             }
         }
 
-        $property->setValue($object, $newValue);
+        if (!empty($config['setterMethod'][$field])) {
+            $reflectionClass = $meta->getReflectionClass();
+            $setterName = $config['setterMethod'][$field];
+
+            if (!$reflectionClass->hasMethod($setterName)) {
+                throw new InvalidMappingException("Setter method - [{$setterName}] does not exist in class - {$meta->getName()}");
+            }
+
+            $reflectionClass->getMethod($setterName)->invoke($object, $newValue);
+        } else {
+            $property->setValue($object, $newValue);
+        }
 
         if ($object instanceof NotifyPropertyChanged) {
             $uow = $eventAdapter->getObjectManager()->getUnitOfWork();

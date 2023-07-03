@@ -45,13 +45,16 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // property annotations
         foreach ($class->getProperties() as $property) {
-            if ($meta->isMappedSuperclass && !$property->isPrivate()
-                || $meta->isInheritedField($property->name)
-                || isset($meta->associationMappings[$property->name]['inherited'])
+            if (
+                isset($meta->associationMappings[$property->name]['inherited']) ||
+                ($meta->isMappedSuperclass && !$property->isPrivate()) ||
+                $meta->isInheritedField($property->name)
             ) {
                 continue;
             }
             if ($ipTraceable = $this->reader->getPropertyAnnotation($property, self::IP_TRACEABLE)) {
+                assert($ipTraceable instanceof IpTraceable);
+
                 $field = $property->getName();
 
                 if (!$meta->hasField($field)) {
@@ -76,6 +79,8 @@ class Annotation extends AbstractAnnotationDriver
                         'value' => $ipTraceable->value,
                     ];
                 }
+                // add the setter method for the field
+                $this->setSetterMethod($field, $ipTraceable->setterMethod, $config);
                 // properties are unique and mapper checks that, no risk here
                 $config[$ipTraceable->on][] = $field;
             }

@@ -35,14 +35,21 @@ final class IpTraceable implements GedmoAnnotation
     public $field;
     /** @var mixed */
     public $value;
+    /** @var string|null */
+    public $setterMethod;
 
     /**
      * @param array<string, mixed> $data
      * @param string|string[]|null $field
      * @param mixed                $value
      */
-    public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
-    {
+    public function __construct(
+        array $data = [],
+        string $on = 'update',
+        $field = null,
+        $value = null,
+        string $setterMethod = null
+    ) {
         if ([] !== $data) {
             Deprecation::trigger(
                 'gedmo/doctrine-extensions',
@@ -56,6 +63,7 @@ final class IpTraceable implements GedmoAnnotation
             $this->on = $this->getAttributeValue($data, 'on', $args, 1, $on);
             $this->field = $this->getAttributeValue($data, 'field', $args, 2, $field);
             $this->value = $this->getAttributeValue($data, 'value', $args, 3, $value);
+            $this->setterMethod = $this->getAttributeValue($data, 'setterMethod', $args, 4, $setterMethod);
 
             return;
         }
@@ -63,5 +71,6 @@ final class IpTraceable implements GedmoAnnotation
         $this->on = $on;
         $this->field = $field;
         $this->value = $value;
+        $this->setterMethod = $setterMethod;
     }
 }

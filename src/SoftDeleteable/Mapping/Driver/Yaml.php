@@ -53,6 +53,10 @@ class Yaml extends File implements Driver
 
                 Validator::validateField($meta, $fieldName);
 
+                if (isset($classMapping['soft_deleteable']['setterMethod'])) {
+                    $this->setSetterMethod($fieldName, $classMapping['soft_deleteable']['setterMethod'], $config);
+                }
+
                 $config['fieldName'] = $fieldName;
 
                 $config['timeAware'] = false;
