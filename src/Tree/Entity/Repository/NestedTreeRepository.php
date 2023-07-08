@@ -86,7 +86,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     if (!$node instanceof Node) {
                         @trigger_error(\sprintf(
                             'Not implementing the "%s" interface from node "%s" is deprecated since gedmo/doctrine-extensions'
-                            .' 3.x and will throw a "%s" error in version 4.0.',
+                            .' 3.12 and will throw a "%s" error in version 4.0.',
                             Node::class,
                             \get_class($node),
                             \TypeError::class
