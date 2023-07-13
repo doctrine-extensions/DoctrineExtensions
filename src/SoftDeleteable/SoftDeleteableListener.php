@@ -17,6 +17,10 @@ use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\SoftDeleteable\Event\ODM\PostSoftDeleteEventArgs as OdmPostSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\ODM\PreSoftDeleteEventArgs as OdmPreSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\ORM\PostSoftDeleteEventArgs as OrmPreSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\ORM\PreSoftDeleteEventArgs as OrmPostSoftDeleteEventArgs;
 
 /**
  * SoftDeleteable listener
@@ -83,7 +87,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::PRE_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
+                    $this->createAppropriatePreSoftDeleteEventArgs($object, $om)
                 );
 
                 $reflProp->setValue($object, $date);
@@ -100,7 +104,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::POST_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
+                    $this->createAppropriatePostSoftDeleteEventArgs($object, $om)
                 );
             }
         }
@@ -123,5 +127,43 @@ class SoftDeleteableListener extends MappedEventSubscriber
     protected function getNamespace()
     {
         return __NAMESPACE__;
+    }
+
+    /**
+     * create the appropriate event args for pre_soft_delete event
+     *
+     * @param $object
+     * @param ObjectManager $om
+     *
+     * @return OdmPreSoftDeleteEventArgs|OrmPreSoftDeleteEventArgs|void
+     */
+    private function createAppropriatePreSoftDeleteEventArgs($object, ObjectManager $om)
+    {
+        if ($om instanceof EntityManagerInterface) {
+            return new OrmPreSoftDeleteEventArgs($object, $om);
+        } elseif ($om instanceof DocumentManager) {
+            return new OdmPreSoftDeleteEventArgs($object, $om);
+        } else {
+            // TODO : implement unknown object manager case
+        }
+    }
+
+    /**
+     * create the appropriate event args for post_soft_delete event
+     *
+     * @param $object
+     * @param ObjectManager $om
+     *
+     * @return OdmPostSoftDeleteEventArgs|OrmPostSoftDeleteEventArgs|void
+     */
+    private function createAppropriatePostSoftDeleteEventArgs($object, ObjectManager $om)
+    {
+        if ($om instanceof EntityManagerInterface) {
+            return new OrmPostSoftDeleteEventArgs($object, $om);
+        } elseif ($om instanceof DocumentManager) {
+            return new OdmPostSoftDeleteEventArgs($object, $om);
+        } else {
+            // TODO : implement unknown object manager case
+        }
     }
 }
