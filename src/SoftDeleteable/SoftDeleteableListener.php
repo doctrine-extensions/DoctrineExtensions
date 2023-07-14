@@ -132,38 +132,36 @@ class SoftDeleteableListener extends MappedEventSubscriber
     /**
      * create the appropriate event args for pre_soft_delete event
      *
-     * @param $object
-     * @param ObjectManager $om
-     *
-     * @return OdmPreSoftDeleteEventArgs|OrmPreSoftDeleteEventArgs|void
+     * @return OdmPreSoftDeleteEventArgs|OrmPreSoftDeleteEventArgs
      */
-    private function createAppropriatePreSoftDeleteEventArgs($object, ObjectManager $om)
+    private function createAppropriatePreSoftDeleteEventArgs(object $object, ObjectManager $om)
     {
         if ($om instanceof EntityManagerInterface) {
             return new OrmPreSoftDeleteEventArgs($object, $om);
-        } elseif ($om instanceof DocumentManager) {
-            return new OdmPreSoftDeleteEventArgs($object, $om);
-        } else {
-            // TODO : implement unknown object manager case
         }
+
+        if ($om instanceof DocumentManager) {
+            return new OdmPreSoftDeleteEventArgs($object, $om);
+        }
+
+        throw new \RuntimeException('Not supported object manager');
     }
 
     /**
      * create the appropriate event args for post_soft_delete event
      *
-     * @param $object
-     * @param ObjectManager $om
-     *
-     * @return OdmPostSoftDeleteEventArgs|OrmPostSoftDeleteEventArgs|void
+     * @return OdmPostSoftDeleteEventArgs|OrmPostSoftDeleteEventArgs
      */
-    private function createAppropriatePostSoftDeleteEventArgs($object, ObjectManager $om)
+    private function createAppropriatePostSoftDeleteEventArgs(object $object, ObjectManager $om)
     {
         if ($om instanceof EntityManagerInterface) {
             return new OrmPostSoftDeleteEventArgs($object, $om);
-        } elseif ($om instanceof DocumentManager) {
-            return new OdmPostSoftDeleteEventArgs($object, $om);
-        } else {
-            // TODO : implement unknown object manager case
         }
+
+        if ($om instanceof DocumentManager) {
+            return new OdmPostSoftDeleteEventArgs($object, $om);
+        }
+
+        throw new \RuntimeException('Not supported object manager');
     }
 }
