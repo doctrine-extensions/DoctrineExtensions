@@ -47,6 +47,7 @@ a release.
 - Loggable: Remove unfixable deprecation when extending `LoggableListener`
 - Remove unfixable deprecations when extending repository classes
 - Fix error caused by the attempt of "doctrine/annotations" parsing a `@note` annotation
+- Fix bug collecting metadata for inherited mapped classes
 
 ## [3.11.0] - 2023-01-26
 ### Added
