@@ -288,7 +288,9 @@ class Closure implements Strategy
 
         foreach ($this->pendingChildNodeInserts[$emHash] as $node) {
             $nodeClass = get_class($node);
-            if ($entityClass !== $nodeClass) continue;
+            if ($entityClass !== $nodeClass) {
+                continue;
+            }
             unset($this->pendingChildNodeInserts[$emHash][spl_object_id($node)]);
             $meta = $em->getClassMetadata(get_class($node));
             $config = $this->listener->getConfiguration($em, $meta->getName());
@@ -371,7 +373,9 @@ class Closure implements Strategy
                     $ancestorColumnName => $closure[$ancestorColumnName],
                     $descendantColumnName => $closure[$descendantColumnName],
                 ]);
-                if (count($existing)) continue;
+                if (count($existing)) {
+                    continue;
+                }
                 if (!$em->getConnection()->insert($closureTable, $closure)) {
                     throw new RuntimeException('Failed to insert new Closure record');
                 }
