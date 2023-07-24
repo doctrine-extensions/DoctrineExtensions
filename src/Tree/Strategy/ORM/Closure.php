@@ -288,7 +288,6 @@ class Closure implements Strategy
 
         foreach ($this->pendingChildNodeInserts[$emHash] as $node) {
             $nodeClass = get_class($node);
-            //print_r("$nodeClass $entityClass\n");
             if ($entityClass !== $nodeClass) continue;
             unset($this->pendingChildNodeInserts[$emHash][spl_object_id($node)]);
             $meta = $em->getClassMetadata(get_class($node));
@@ -365,15 +364,14 @@ class Closure implements Strategy
                 $levelProp->setValue($node, 1);
             }
 
-            //print_r($entries);
             foreach ($entries as $key => $closure) {
-                //$ancestorColumnName = $entriesMeta[$key]['ancestorColumnName'];
-                //$descendantColumnName = $entriesMeta[$key]['descendantColumnName'];
-                //$existing = $em->getRepository($entriesMeta[$key]['class'])->findBy([
-                //    $ancestorColumnName => $closure[$ancestorColumnName],
-                //    $descendantColumnName => $closure[$descendantColumnName],
-                //]);
-                //if (count($existing)) continue;
+                $ancestorColumnName = $entriesMeta[$key]['ancestorColumnName'];
+                $descendantColumnName = $entriesMeta[$key]['descendantColumnName'];
+                $existing = $em->getRepository($entriesMeta[$key]['class'])->findBy([
+                    $ancestorColumnName => $closure[$ancestorColumnName],
+                    $descendantColumnName => $closure[$descendantColumnName],
+                ]);
+                if (count($existing)) continue;
                 if (!$em->getConnection()->insert($closureTable, $closure)) {
                     throw new RuntimeException('Failed to insert new Closure record');
                 }
