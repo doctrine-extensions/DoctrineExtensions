@@ -16,17 +16,11 @@ use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Closure\Category;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
-use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel;
-use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevelClosure;
-use Gedmo\Tests\Tree\Fixture\Closure\News;
-use Gedmo\Tests\Tree\Fixture\Closure\Person;
-use Gedmo\Tests\Tree\Fixture\Closure\PersonClosure;
-use Gedmo\Tests\Tree\Fixture\Closure\User;
+use Gedmo\Tests\Tree\Fixture\Issue2652\Category2;
+use Gedmo\Tests\Tree\Fixture\Issue2652\Category2Closure;
 use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tree\TreeListener;
 
-use Gedmo\Tests\Tree\Fixture\Issue2652\Category2;
-use Gedmo\Tests\Tree\Fixture\Issue2652\Category2Closure;
 
 /**
  * These are tests for Tree behavior
@@ -38,13 +32,6 @@ final class Issue2652Test extends BaseTestCaseORM
 {
     public const CATEGORY = Category::class;
     public const CLOSURE = CategoryClosure::class;
-    public const PERSON = Person::class;
-    public const USER = User::class;
-    public const PERSON_CLOSURE = PersonClosure::class;
-    public const NEWS = News::class;
-    public const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
-    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
-
     public const CATEGORY2 = Category2::class;
     public const CLOSURE2 = Category2Closure::class;
 
@@ -71,7 +58,6 @@ final class Issue2652Test extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
 
         $food = $repo->findOneBy(['title' => 'Food']);
-        print_r($food);
         $dql = 'SELECT c FROM '.self::CLOSURE.' c';
         $dql .= ' WHERE c.ancestor = :ancestor';
         $query = $this->em->createQuery($dql);
