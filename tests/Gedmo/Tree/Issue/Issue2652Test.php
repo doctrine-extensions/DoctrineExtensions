@@ -12,13 +12,11 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Closure\Category;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
 use Gedmo\Tests\Tree\Fixture\Issue2652\Category2;
 use Gedmo\Tests\Tree\Fixture\Issue2652\Category2Closure;
-use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tree\TreeListener;
 
 
