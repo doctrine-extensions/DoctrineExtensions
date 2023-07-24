@@ -19,7 +19,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     # Install PHP extensions
-    && docker-php-ext-install zip \
+    # && docker-php-ext-install zip \
     && docker-php-ext-install pcntl \
     && docker-php-ext-install bcmath \
     && pecl install mongodb \
