@@ -19,7 +19,6 @@ use Gedmo\Tests\Tree\Fixture\Issue2652\Category2;
 use Gedmo\Tests\Tree\Fixture\Issue2652\Category2Closure;
 use Gedmo\Tree\TreeListener;
 
-
 /**
  * These are tests for Tree behavior
  *
@@ -28,15 +27,15 @@ use Gedmo\Tree\TreeListener;
  */
 final class Issue2652Test extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const CLOSURE = CategoryClosure::class;
-    public const CATEGORY2 = Category2::class;
-    public const CLOSURE2 = Category2Closure::class;
+    private const CATEGORY = Category::class;
+    private const CLOSURE = CategoryClosure::class;
+    private const CATEGORY2 = Category2::class;
+    private const CLOSURE2 = Category2Closure::class;
 
     /**
      * @var TreeListener
      */
-    protected $listener;
+    private $listener;
 
     protected function setUp(): void
     {
