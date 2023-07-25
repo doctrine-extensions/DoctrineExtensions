@@ -289,8 +289,11 @@ class Closure implements Strategy
         foreach ($this->pendingChildNodeInserts[$emHash] as $node) {
             $nodeClass = get_class($node);
             if ($entityClass !== $nodeClass) {
+                // Do not update if it's a different type of entity from what has been persisted
+                // otherwise it's not guaranteed that the entity has actually been persisted
                 continue;
             }
+
             unset($this->pendingChildNodeInserts[$emHash][spl_object_id($node)]);
             $meta = $em->getClassMetadata(get_class($node));
             $config = $this->listener->getConfiguration($em, $meta->getName());
@@ -369,11 +372,11 @@ class Closure implements Strategy
             foreach ($entries as $key => $closure) {
                 $ancestorColumnName = $entriesMeta[$key]['ancestorColumnName'];
                 $descendantColumnName = $entriesMeta[$key]['descendantColumnName'];
-                $existing = $em->getRepository($entriesMeta[$key]['class'])->findBy([
+                $existingClosure = $em->getRepository($entriesMeta[$key]['class'])->findBy([
                     $ancestorColumnName => $closure[$ancestorColumnName],
                     $descendantColumnName => $closure[$descendantColumnName],
                 ]);
-                if (count($existing)) {
+                if ([] !== $existingClosure) {
                     continue;
                 }
                 if (!$em->getConnection()->insert($closureTable, $closure)) {
