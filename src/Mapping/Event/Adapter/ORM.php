@@ -11,8 +11,8 @@ namespace Gedmo\Mapping\Event\Adapter;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -185,39 +185,36 @@ class ORM implements AdapterInterface
     /**
      * Creates a ORM specific LifecycleEventArgs.
      *
-     * @param object                 $document
-     * @param EntityManagerInterface $entityManager
+     * @param EntityManagerInterface $manager
      *
      * @deprecated Use createPreSoftDeleteEventArgs() or createPostSoftDeleteEventArgs() instead
-     *
-     * @return LifecycleEventArgs
      */
-    public function createLifecycleEventArgsInstance($document, $entityManager)
+    public function createLifecycleEventArgsInstance(object $object, ObjectManager $manager): LifecycleEventArgs
     {
-        return new LifecycleEventArgs($document, $entityManager);
+        return new LifecycleEventArgs($object, $manager);
     }
 
     /**
      * Creates a ORM specific PreSoftDeleteEventArgs.
      *
-     * @param EntityManagerInterface $entityManager
+     * @param EntityManagerInterface $manager
      *
      * @return PreSoftDeleteEventArgs
      */
-    public function createPreSoftDeleteEventArgs(object $document, ObjectManager $entityManager): LifecycleEventArgs
+    public function createPreSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
     {
-        return new PreSoftDeleteEventArgs($document, $entityManager);
+        return new PreSoftDeleteEventArgs($object, $manager);
     }
 
     /**
      * Creates a ORM specific PostSoftDeleteEventArgs.
      *
-     * @param EntityManagerInterface $entityManager
+     * @param EntityManagerInterface $manager
      *
      * @return PostSoftDeleteEventArgs
      */
-    public function createPostSoftDeleteEventArgs(object $document, ObjectManager $entityManager): LifecycleEventArgs
+    public function createPostSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
     {
-        return new PostSoftDeleteEventArgs($document, $entityManager);
+        return new PostSoftDeleteEventArgs($object, $manager);
     }
 }

@@ -155,39 +155,36 @@ class ODM implements AdapterInterface
     /**
      * Creates a ODM specific LifecycleEventArgs.
      *
-     * @param object          $document
-     * @param DocumentManager $documentManager
+     * @param DocumentManager $manager
      *
      * @deprecated Use createPreSoftDeleteEventArgs() or createPostSoftDeleteEventArgs() instead
-     *
-     * @return LifecycleEventArgs
      */
-    public function createLifecycleEventArgsInstance($document, $documentManager)
+    public function createLifecycleEventArgsInstance(object $object, ObjectManager $manager): LifecycleEventArgs
     {
-        return new LifecycleEventArgs($document, $documentManager);
+        return new LifecycleEventArgs($object, $manager);
     }
 
     /**
      * Creates a ODM specific PreSoftDeleteEventArgs.
      *
-     * @param DocumentManager $documentManager
+     * @param DocumentManager $manager
      *
      * @return PreSoftDeleteEventArgs
      */
-    public function createPreSoftDeleteEventArgs(object $document, ObjectManager $documentManager): LifecycleEventArgs
+    public function createPreSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
     {
-        return new PreSoftDeleteEventArgs($document, $documentManager);
+        return new PreSoftDeleteEventArgs($object, $manager);
     }
 
     /**
      * Creates a ODM specific PostSoftDeleteEventArgs.
      *
-     * @param DocumentManager $documentManager
+     * @param DocumentManager $manager
      *
      * @return PostSoftDeleteEventArgs
      */
-    public function createPostSoftDeleteEventArgs(object $document, ObjectManager $documentManager): LifecycleEventArgs
+    public function createPostSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
     {
-        return new PostSoftDeleteEventArgs($document, $documentManager);
+        return new PostSoftDeleteEventArgs($object, $manager);
     }
 }
