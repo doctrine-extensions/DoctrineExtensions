@@ -13,6 +13,7 @@ use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -87,7 +88,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::PRE_SOFT_DELETE,
-                    $this->createAppropriatePreSoftDeleteEventArgs($object, $om)
+                    $this->createPreSoftDeleteEventArgs($object, $om)
                 );
 
                 $reflProp->setValue($object, $date);
@@ -104,7 +105,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::POST_SOFT_DELETE,
-                    $this->createAppropriatePostSoftDeleteEventArgs($object, $om)
+                    $this->createPostSoftDeleteEventArgs($object, $om)
                 );
             }
         }
@@ -134,7 +135,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
      *
      * @return OdmPreSoftDeleteEventArgs|OrmPreSoftDeleteEventArgs
      */
-    private function createAppropriatePreSoftDeleteEventArgs(object $object, ObjectManager $om)
+    private function createPreSoftDeleteEventArgs(object $object, ObjectManager $om): LifecycleEventArgs
     {
         if ($om instanceof EntityManagerInterface) {
             return new OrmPreSoftDeleteEventArgs($object, $om);
@@ -144,7 +145,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
             return new OdmPreSoftDeleteEventArgs($object, $om);
         }
 
-        throw new \RuntimeException('Not supported object manager');
+        throw new \TypeError(\sprintf('Not supported object manager "%s".', \get_class($om)));
     }
 
     /**
@@ -152,7 +153,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
      *
      * @return OdmPostSoftDeleteEventArgs|OrmPostSoftDeleteEventArgs
      */
-    private function createAppropriatePostSoftDeleteEventArgs(object $object, ObjectManager $om)
+    private function createPostSoftDeleteEventArgs(object $object, ObjectManager $om): LifecycleEventArgs
     {
         if ($om instanceof EntityManagerInterface) {
             return new OrmPostSoftDeleteEventArgs($object, $om);
@@ -162,6 +163,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
             return new OdmPostSoftDeleteEventArgs($object, $om);
         }
 
-        throw new \RuntimeException('Not supported object manager');
+        throw new \TypeError(\sprintf('Not supported object manager "%s".', \get_class($om)));
     }
 }
