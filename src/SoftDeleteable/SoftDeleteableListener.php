@@ -13,15 +13,10 @@ use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
-use Gedmo\SoftDeleteable\Event\ODM\PostSoftDeleteEventArgs as OdmPostSoftDeleteEventArgs;
-use Gedmo\SoftDeleteable\Event\ODM\PreSoftDeleteEventArgs as OdmPreSoftDeleteEventArgs;
-use Gedmo\SoftDeleteable\Event\ORM\PostSoftDeleteEventArgs as OrmPreSoftDeleteEventArgs;
-use Gedmo\SoftDeleteable\Event\ORM\PreSoftDeleteEventArgs as OrmPostSoftDeleteEventArgs;
 
 /**
  * SoftDeleteable listener
@@ -88,7 +83,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::PRE_SOFT_DELETE,
-                    $this->createPreSoftDeleteEventArgs($object, $om)
+                    $ea->createPreSoftDeleteEventArgs($object, $om)
                 );
 
                 $reflProp->setValue($object, $date);
@@ -105,7 +100,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::POST_SOFT_DELETE,
-                    $this->createPostSoftDeleteEventArgs($object, $om)
+                    $ea->createPostSoftDeleteEventArgs($object, $om)
                 );
             }
         }
@@ -128,41 +123,5 @@ class SoftDeleteableListener extends MappedEventSubscriber
     protected function getNamespace()
     {
         return __NAMESPACE__;
-    }
-
-    /**
-     * create the appropriate event args for pre_soft_delete event
-     *
-     * @return OdmPreSoftDeleteEventArgs|OrmPreSoftDeleteEventArgs
-     */
-    private function createPreSoftDeleteEventArgs(object $object, ObjectManager $om): LifecycleEventArgs
-    {
-        if ($om instanceof EntityManagerInterface) {
-            return new OrmPreSoftDeleteEventArgs($object, $om);
-        }
-
-        if ($om instanceof DocumentManager) {
-            return new OdmPreSoftDeleteEventArgs($object, $om);
-        }
-
-        throw new \TypeError(\sprintf('Not supported object manager "%s".', \get_class($om)));
-    }
-
-    /**
-     * create the appropriate event args for post_soft_delete event
-     *
-     * @return OdmPostSoftDeleteEventArgs|OrmPostSoftDeleteEventArgs
-     */
-    private function createPostSoftDeleteEventArgs(object $object, ObjectManager $om): LifecycleEventArgs
-    {
-        if ($om instanceof EntityManagerInterface) {
-            return new OrmPostSoftDeleteEventArgs($object, $om);
-        }
-
-        if ($om instanceof DocumentManager) {
-            return new OdmPostSoftDeleteEventArgs($object, $om);
-        }
-
-        throw new \TypeError(\sprintf('Not supported object manager "%s".', \get_class($om)));
     }
 }

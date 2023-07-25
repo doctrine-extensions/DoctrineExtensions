@@ -13,8 +13,11 @@ use Doctrine\Common\EventArgs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\SoftDeleteable\Event\ORM\PostSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\ORM\PreSoftDeleteEventArgs;
 
 /**
  * Doctrine event adapter for ORM specific
@@ -185,10 +188,36 @@ class ORM implements AdapterInterface
      * @param object                 $document
      * @param EntityManagerInterface $entityManager
      *
+     * @deprecated Use createPreSoftDeleteEventArgs() or createPostSoftDeleteEventArgs() instead
+     *
      * @return LifecycleEventArgs
      */
     public function createLifecycleEventArgsInstance($document, $entityManager)
     {
         return new LifecycleEventArgs($document, $entityManager);
+    }
+
+    /**
+     * Creates a ORM specific PreSoftDeleteEventArgs.
+     *
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return PreSoftDeleteEventArgs
+     */
+    public function createPreSoftDeleteEventArgs(object $document, ObjectManager $entityManager): LifecycleEventArgs
+    {
+        return new PreSoftDeleteEventArgs($document, $entityManager);
+    }
+
+    /**
+     * Creates a ORM specific PostSoftDeleteEventArgs.
+     *
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return PostSoftDeleteEventArgs
+     */
+    public function createPostSoftDeleteEventArgs(object $document, ObjectManager $entityManager): LifecycleEventArgs
+    {
+        return new PostSoftDeleteEventArgs($document, $entityManager);
     }
 }
