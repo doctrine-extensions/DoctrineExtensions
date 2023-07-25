@@ -289,8 +289,8 @@ class Closure implements Strategy
         foreach ($this->pendingChildNodeInserts[$emHash] as $node) {
             $nodeClass = get_class($node);
             if ($entityClass !== $nodeClass) {
-                // Do not update if it's a different type of entity from what has been persisted
-                // otherwise it's not guaranteed that the entity has actually been persisted
+                // Do not update if this node is a different type of entity from what has been persisted
+                // otherwise it's not guaranteed that the node has actually been persisted
                 continue;
             }
 
