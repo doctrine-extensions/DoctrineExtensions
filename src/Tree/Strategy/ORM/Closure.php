@@ -305,13 +305,6 @@ class Closure implements Strategy
                     $depthColumnName => 0,
                 ],
             ];
-            $entriesMeta = [
-                [
-                    'class' => $closureClass,
-                    'ancestorColumnName' => $ancestorColumnName,
-                    'descendantColumnName' => $descendantColumnName,
-                ],
-            ];
 
             if ($parent) {
                 $dql = "SELECT c, a FROM {$closureMeta->getName()} c";
@@ -329,11 +322,6 @@ class Closure implements Strategy
                         $ancestorColumnName => $ancestor['ancestor'][$identifier],
                         $descendantColumnName => $nodeId,
                         $depthColumnName => $ancestor['depth'] + 1,
-                    ];
-                    $entriesMeta[] = [
-                        'class' => $closureClass,
-                        'ancestorColumnName' => $ancestorColumnName,
-                        'descendantColumnName' => $descendantColumnName,
                     ];
                 }
 
@@ -354,10 +342,8 @@ class Closure implements Strategy
                 $levelProp->setValue($node, 1);
             }
 
-            foreach ($entries as $key => $closure) {
-                $ancestorColumnName = $entriesMeta[$key]['ancestorColumnName'];
-                $descendantColumnName = $entriesMeta[$key]['descendantColumnName'];
-                $existingClosure = $em->getRepository($entriesMeta[$key]['class'])->findBy([
+            foreach ($entries as $closure) {
+                $existingClosure = $em->getRepository($closureClass)->findBy([
                     $ancestorColumnName => $closure[$ancestorColumnName],
                     $descendantColumnName => $closure[$descendantColumnName],
                 ]);
