@@ -39,7 +39,7 @@ final class QueryAnalyzer implements SQLLogger
         $this->platform = $platform;
     }
 
-    public function startQuery($sql, array $params = null, array $types = null): void
+    public function startQuery($sql, ?array $params = null, ?array $types = null): void
     {
         $this->queries[] = $this->generateSql($sql, $params, $types);
     }

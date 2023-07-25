@@ -63,7 +63,7 @@ class RelativeSlug
     #[ODM\ReferenceOne(targetDocument: Article::class)]
     private $article;
 
-    public function setArticle(Article $article = null): void
+    public function setArticle(?Article $article = null): void
     {
         $this->article = $article;
     }

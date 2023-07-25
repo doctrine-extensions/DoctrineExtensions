@@ -65,7 +65,7 @@ abstract class BaseTestCaseORM extends TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      */
-    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null): EntityManager
+    protected function getDefaultMockSqliteEntityManager(?EventManager $evm = null, ?Configuration $config = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',

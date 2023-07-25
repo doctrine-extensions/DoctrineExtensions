@@ -71,7 +71,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * @return void
      */
-    public function startQuery($sql, array $params = null, array $types = null)
+    public function startQuery($sql, ?array $params = null, ?array $types = null)
     {
         $this->queryStartTime = microtime(true);
         $this->queries[] = $this->generateSql($sql, $params, $types);
