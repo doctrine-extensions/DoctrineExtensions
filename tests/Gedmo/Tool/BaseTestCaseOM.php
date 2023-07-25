@@ -93,7 +93,7 @@ abstract class BaseTestCaseOM extends TestCase
      * DocumentManager mock object together with
      * annotation mapping driver and database
      */
-    protected function getMockDocumentManager(string $dbName, MappingDriver $mappingDriver = null): DocumentManager
+    protected function getMockDocumentManager(string $dbName, ?MappingDriver $mappingDriver = null): DocumentManager
     {
         if (!extension_loaded('mongodb')) {
             static::markTestSkipped('Missing Mongo extension.');
@@ -110,7 +110,7 @@ abstract class BaseTestCaseOM extends TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      */
-    protected function getDefaultMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null): EntityManager
+    protected function getDefaultMockSqliteEntityManager(array $fixtures, ?MappingDriver $mappingDriver = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
@@ -153,7 +153,7 @@ abstract class BaseTestCaseOM extends TestCase
     /**
      * Get annotation mapping configuration
      */
-    private function getMockODMMongoDBConfig(string $dbName, MappingDriver $mappingDriver = null): Configuration
+    private function getMockODMMongoDBConfig(string $dbName, ?MappingDriver $mappingDriver = null): Configuration
     {
         if (null === $mappingDriver) {
             $mappingDriver = $this->getMongoDBDriver();
@@ -176,7 +176,7 @@ abstract class BaseTestCaseOM extends TestCase
     /**
      * Get annotation mapping configuration for ORM
      */
-    private function getMockORMConfig(MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
+    private function getMockORMConfig(?MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);

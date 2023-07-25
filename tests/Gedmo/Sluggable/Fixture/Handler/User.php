@@ -67,7 +67,7 @@ class User
     #[ORM\ManyToOne(targetEntity: Company::class)]
     private $company;
 
-    public function setCompany(Company $company = null): void
+    public function setCompany(?Company $company = null): void
     {
         $this->company = $company;
     }

@@ -90,7 +90,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     private $fileInfoObjects = [];
 
-    public function __construct(MimeTypeGuesserInterface $mimeTypeGuesser = null)
+    public function __construct(?MimeTypeGuesserInterface $mimeTypeGuesser = null)
     {
         parent::__construct();
 

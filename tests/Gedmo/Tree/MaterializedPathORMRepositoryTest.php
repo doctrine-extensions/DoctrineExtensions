@@ -388,7 +388,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     /**
      * @phpstan-param class-string|null $class
      */
-    private function populate(string $class = null): void
+    private function populate(?string $class = null): void
     {
         $root = $this->createCategory($class);
         $root->setTitle('Food');

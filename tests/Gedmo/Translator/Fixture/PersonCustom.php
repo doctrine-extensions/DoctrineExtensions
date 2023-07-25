@@ -92,7 +92,7 @@ class PersonCustom
     /**
      * @return self|CustomProxy
      */
-    public function translate(string $locale = null)
+    public function translate(?string $locale = null)
     {
         if (null === $locale) {
             return $this;

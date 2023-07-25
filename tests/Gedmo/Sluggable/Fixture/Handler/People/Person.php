@@ -67,7 +67,7 @@ class Person
     #[ORM\ManyToOne(targetEntity: Occupation::class)]
     private $occupation;
 
-    public function setOccupation(Occupation $occupation = null): void
+    public function setOccupation(?Occupation $occupation = null): void
     {
         $this->occupation = $occupation;
     }

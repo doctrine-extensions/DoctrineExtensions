@@ -45,7 +45,7 @@ trait MaterializedPath
      *
      * @return self
      */
-    public function setParent(self $parent = null)
+    public function setParent(?self $parent = null)
     {
         $this->parent = $parent;
 

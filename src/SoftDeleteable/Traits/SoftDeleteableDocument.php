@@ -34,7 +34,7 @@ trait SoftDeleteableDocument
      *
      * @return self
      */
-    public function setDeletedAt(DateTime $deletedAt = null)
+    public function setDeletedAt(?DateTime $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
 

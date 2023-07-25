@@ -67,7 +67,7 @@ class ArticleRelativeSlug
     #[ORM\ManyToOne(targetEntity: Article::class)]
     private $article;
 
-    public function setArticle(Article $article = null): void
+    public function setArticle(?Article $article = null): void
     {
         $this->article = $article;
     }

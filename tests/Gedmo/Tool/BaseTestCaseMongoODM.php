@@ -74,7 +74,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
         return $this->dm = DocumentManager::create($client, $config, $evm);
     }
 
-    protected function getDefaultDocumentManager(EventManager $evm = null): DocumentManager
+    protected function getDefaultDocumentManager(?EventManager $evm = null): DocumentManager
     {
         return $this->getMockDocumentManager($evm, $this->getDefaultConfiguration());
     }
@@ -83,7 +83,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
      * DocumentManager mock object with
      * annotation mapping driver
      */
-    protected function getMockMappedDocumentManager(EventManager $evm = null, Configuration $config = null): DocumentManager
+    protected function getMockMappedDocumentManager(?EventManager $evm = null, ?Configuration $config = null): DocumentManager
     {
         $conn = $this->createStub(Client::class);
 
