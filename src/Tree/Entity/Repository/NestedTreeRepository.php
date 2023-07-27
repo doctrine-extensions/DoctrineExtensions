@@ -1220,8 +1220,6 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object|null       $node              Current node. If null, first node will be returned
      * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
      * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
-     *
-     * @return Query
      */
     public function getNextNodesQuery($root, $node = null, int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER)
     {
