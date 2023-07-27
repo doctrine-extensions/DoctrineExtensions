@@ -1269,7 +1269,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @return array<object>
      */
-    public function getNextNodes($root, $node = null, int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER)
+    public function getNextNodes($root, $node = null, int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): array
     {
         return $this->getNextNodesQuery($root, $node, $limit, $traversalStrategy)->getArrayResult();
     }
