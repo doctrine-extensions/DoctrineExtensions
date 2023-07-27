@@ -1194,7 +1194,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @return QueryBuilder QueryBuilder object
      */
-    public function getNextNodesQueryBuilder($root, $node = null, int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER)
+    public function getNextNodesQueryBuilder($root, $node = null, int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): QueryBuilder
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->getName());
