@@ -23,6 +23,7 @@ a release.
 
 ### Added
 - IP address provider for use with extensions with IP address references (#2928)
+- Mapping Driver: Configure usage separately with Doctrine `.orm.xml` -> `.gedmo.xml` files, also add an alternative option - force the use of AttributeReader and ignore the configuration of the Doctrine chain driver (#2613)
 
 ## [3.19.0] - 2025-02-24
 ### Added

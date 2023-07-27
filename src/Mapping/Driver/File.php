@@ -120,20 +120,56 @@ abstract class File implements Driver
      */
     protected function _getMapping($className)
     {
-        // try loading mapping from original driver first
+        $mapping = null;
+        $separatedFile = strpos($this->locator->getFileExtension(), '.gedmo') === 0;
+
+        if($separatedFile){
+            // try loading mapping from gedmo driver first
+            $mapping = $this->getMappingFromGedmoFileDriver($className);
+        }
+
+        // if no mapping found try to load mapping file from original driver again
+        if (null === $mapping) {
+            // read .orm.xml
+            $mapping = $this->getMappingFromOriginalDriver($className);
+        }
+        if (!$separatedFile && null === $mapping) {
+            // if no mapping found try to load mapping file again
+            $mapping = $this->getMappingFromGedmoFileDriver($className);
+        }
+
+        return $mapping;
+    }
+    /**
+     * Tries to get a mapping for a given class from gedmo driver.
+     *
+     * @param string $className
+     *
+     * @return array|object|null
+     */
+    private function getMappingFromGedmoFileDriver($className){
+        if(!$this->locator->fileExists($className)){
+            return null;
+        }
+
+        $mapping = $this->_loadMappingFile($this->locator->findMappingFile($className));
+        return $mapping[$className] ?? null;
+    }
+
+    /**
+     * Tries to get a mapping for a given class from original doctrine driver.
+     *
+     * @param string $className
+     *
+     * @return array|object|null
+     */
+    private function getMappingFromOriginalDriver($className){
         $mapping = null;
         if (null !== $this->_originalDriver) {
             if ($this->_originalDriver instanceof FileDriver) {
                 $mapping = $this->_originalDriver->getElement($className);
             }
         }
-
-        // if no mapping found try to load mapping file again
-        if (null === $mapping) {
-            $yaml = $this->_loadMappingFile($this->locator->findMappingFile($className));
-            $mapping = $yaml[$className];
-        }
-
         return $mapping;
     }
 
