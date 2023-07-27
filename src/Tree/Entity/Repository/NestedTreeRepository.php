@@ -1168,8 +1168,6 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
      *
      * @throws InvalidArgumentException if input is invalid
-     *
-     * @return QueryBuilder QueryBuilder object
      */
     public function getNextNodesQueryBuilder($root, $node = null, int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): QueryBuilder
     {
