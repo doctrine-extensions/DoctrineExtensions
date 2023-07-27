@@ -99,11 +99,34 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
     private ?ClockInterface $clock = null;
 
+    /**
+     * Ignore doctrine driver class and force  use attribute reader for gedmo properties
+     * @var bool
+     */
+    private $forceUseAttributeReader = false;
+
+    /**
+     * Search mapping in .gedmo.xml and does not use doctrine *.orm.xml or *.dcm.xml file
+     * @var bool
+     */
+    private $separateXmlMapping = false;
+
+
     public function __construct()
     {
         $parts = explode('\\', $this->getNamespace());
         $this->name = end($parts);
     }
+
+
+    public  function setForceUseAttributeReader(bool $forceUseAttributeReader) {
+        $this->forceUseAttributeReader = $forceUseAttributeReader;
+    }
+    public  function setSeparateXmlMapping(bool $separateXmlMapping) {
+        $this->separateXmlMapping = $separateXmlMapping;
+    }
+
+
 
     /**
      * Get the configuration for specific object class
@@ -183,7 +206,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 $objectManager,
                 $this->getNamespace(),
                 $this->annotationReader,
-                $this->getCacheItemPool($objectManager)
+                $this->getCacheItemPool($objectManager),
+                $this->forceUseAttributeReader,
+                $this->separateXmlMapping
             );
         }
 
