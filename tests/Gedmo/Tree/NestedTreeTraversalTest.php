@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\OptimisticLockException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\RootCategory;
 use Gedmo\Tree\TreeListener;
@@ -82,7 +83,7 @@ final class NestedTreeTraversalTest extends BaseTestCaseORM
     }
 
     /**
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      */
     private function populate(): void
     {
