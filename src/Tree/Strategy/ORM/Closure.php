@@ -294,7 +294,9 @@ class Closure implements Strategy
                 continue;
             }
 
+            // The closure for this node will now be inserted. Remove the node from the list of pending inserts to indicate this.
             unset($this->pendingChildNodeInserts[$emHash][spl_object_id($node)]);
+
             $meta = $em->getClassMetadata(get_class($node));
             $config = $this->listener->getConfiguration($em, $meta->getName());
 
