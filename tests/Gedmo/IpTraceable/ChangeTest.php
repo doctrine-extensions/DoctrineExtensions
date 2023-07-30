@@ -23,8 +23,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class ChangeTest extends BaseTestCaseORM
 {
-    public const TEST_IP = '34.234.1.10';
-    public const FIXTURE = TitledArticle::class;
+    private const TEST_IP = '34.234.1.10';
+    private const FIXTURE = TitledArticle::class;
 
     /**
      * @var IpTraceableListener

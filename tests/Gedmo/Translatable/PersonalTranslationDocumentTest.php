@@ -24,8 +24,7 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = Article::class;
-    public const TRANSLATION = ArticleTranslation::class;
+    private const ARTICLE = Article::class;
 
     /**
      * @var TranslatableListener

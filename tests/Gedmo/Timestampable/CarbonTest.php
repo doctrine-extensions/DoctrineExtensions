@@ -27,9 +27,9 @@ use Gedmo\Timestampable\TimestampableListener;
 
 final class CarbonTest extends BaseTestCaseORM
 {
-    public const ARTICLE = ArticleCarbon::class;
-    public const COMMENT = CommentCarbon::class;
-    public const TYPE = Type::class;
+    private const ARTICLE = ArticleCarbon::class;
+    private const COMMENT = CommentCarbon::class;
+    private const TYPE = Type::class;
 
     protected function setUp(): void
     {

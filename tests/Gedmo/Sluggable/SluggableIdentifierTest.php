@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableIdentifierTest extends BaseTestCaseORM
 {
-    public const TARGET = Identifier::class;
+    private const TARGET = Identifier::class;
 
     protected function setUp(): void
     {

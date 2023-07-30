@@ -30,12 +30,12 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 abstract class LoggableEntityTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const COMMENT = Comment::class;
-    public const COMPOSITE = Composite::class;
-    public const COMPOSITE_RELATION = CompositeRelation::class;
-    public const RELATED_ARTICLE = RelatedArticle::class;
-    public const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment::class;
+    private const ARTICLE = Article::class;
+    private const COMMENT = Comment::class;
+    private const COMPOSITE = Composite::class;
+    private const COMPOSITE_RELATION = CompositeRelation::class;
+    private const RELATED_ARTICLE = RelatedArticle::class;
+    private const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment::class;
 
     public function testShouldHandleClonedEntity(): void
     {

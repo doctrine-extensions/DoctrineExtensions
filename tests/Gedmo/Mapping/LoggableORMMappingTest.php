@@ -31,9 +31,9 @@ use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableCompositeRelation;
  */
 final class LoggableORMMappingTest extends ORMMappingTestCase
 {
-    public const YAML_CATEGORY = Category::class;
-    public const COMPOSITE = LoggableComposite::class;
-    public const COMPOSITE_RELATION = LoggableCompositeRelation::class;
+    private const YAML_CATEGORY = Category::class;
+    private const COMPOSITE = LoggableComposite::class;
+    private const COMPOSITE_RELATION = LoggableCompositeRelation::class;
 
     /**
      * @var EntityManager

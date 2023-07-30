@@ -25,10 +25,10 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableFltersTest extends BaseTestCaseORM
 {
-    public const TARGET = Article::class;
+    private const TARGET = Article::class;
 
-    public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
-    public const FAKE_FILTER_NAME = 'fake-filter';
+    private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    private const FAKE_FILTER_NAME = 'fake-filter';
 
     protected function setUp(): void
     {

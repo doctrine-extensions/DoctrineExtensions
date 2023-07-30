@@ -24,10 +24,9 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const TEST_IP = '34.234.1.10';
+    private const TEST_IP = '34.234.1.10';
 
-    public const ARTICLE = Article::class;
-    public const TYPE = Type::class;
+    private const ARTICLE = Article::class;
 
     protected function setUp(): void
     {

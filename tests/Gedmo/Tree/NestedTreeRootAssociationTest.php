@@ -23,7 +23,7 @@ use Gedmo\Tree\TreeListener;
  */
 final class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    public const CATEGORY = RootAssociationCategory::class;
+    private const CATEGORY = RootAssociationCategory::class;
 
     protected function setUp(): void
     {

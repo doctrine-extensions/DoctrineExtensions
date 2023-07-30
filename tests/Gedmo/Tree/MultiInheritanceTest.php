@@ -24,10 +24,10 @@ use Gedmo\Translatable\Entity\Translation;
  */
 final class MultiInheritanceTest extends BaseTestCaseORM
 {
-    public const NODE = Node::class;
-    public const BASE_NODE = BaseNode::class;
-    public const ANODE = ANode::class;
-    public const TRANSLATION = Translation::class;
+    private const NODE = Node::class;
+    private const BASE_NODE = BaseNode::class;
+    private const ANODE = ANode::class;
+    private const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {

@@ -33,16 +33,16 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SortableTest extends BaseTestCaseORM
 {
-    public const NODE = Node::class;
-    public const NOTIFY_NODE = NotifyNode::class;
-    public const ITEM = Item::class;
-    public const CATEGORY = Category::class;
-    public const SIMPLE_LIST_ITEM = SimpleListItem::class;
-    public const AUTHOR = Author::class;
-    public const PAPER = Paper::class;
-    public const EVENT = Event::class;
-    public const CUSTOMER = Customer::class;
-    public const CUSTOMER_TYPE = CustomerType::class;
+    private const NODE = Node::class;
+    private const NOTIFY_NODE = NotifyNode::class;
+    private const ITEM = Item::class;
+    private const CATEGORY = Category::class;
+    private const SIMPLE_LIST_ITEM = SimpleListItem::class;
+    private const AUTHOR = Author::class;
+    private const PAPER = Paper::class;
+    private const EVENT = Event::class;
+    private const CUSTOMER = Customer::class;
+    private const CUSTOMER_TYPE = CustomerType::class;
 
     /**
      * @var int|null

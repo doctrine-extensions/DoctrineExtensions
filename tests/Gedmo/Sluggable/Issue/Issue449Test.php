@@ -27,8 +27,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue449Test extends BaseTestCaseORM
 {
-    public const TARGET = Article::class;
-    public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    private const TARGET = Article::class;
+    private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     /**
      * @var SoftDeleteableListener

@@ -19,7 +19,7 @@ use Gedmo\Tree\TreeListener;
 
 final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
-    public const TARGET = TreeSlugPrefixSuffix::class;
+    private const TARGET = TreeSlugPrefixSuffix::class;
 
     protected function setUp(): void
     {

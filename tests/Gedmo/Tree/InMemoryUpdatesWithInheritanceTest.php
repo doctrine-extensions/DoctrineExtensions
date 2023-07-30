@@ -25,9 +25,9 @@ use Gedmo\Tree\TreeListener;
  */
 final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
-    public const PERSON = Person::class;
-    public const MAN = Man::class;
-    public const WOMAN = Woman::class;
+    private const PERSON = Person::class;
+    private const MAN = Man::class;
+    private const WOMAN = Woman::class;
 
     protected function setUp(): void
     {

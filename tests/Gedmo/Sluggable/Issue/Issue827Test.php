@@ -28,10 +28,10 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue827Test extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const CATEGORY = Category::class;
-    public const COMMENT = Comment::class;
-    public const POST = Post::class;
+    private const ARTICLE = Article::class;
+    private const CATEGORY = Category::class;
+    private const COMMENT = Comment::class;
+    private const POST = Post::class;
 
     protected function setUp(): void
     {

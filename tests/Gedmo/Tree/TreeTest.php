@@ -25,8 +25,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeTest extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const CATEGORY_UUID = CategoryUuid::class;
+    private const CATEGORY = Category::class;
+    private const CATEGORY_UUID = CategoryUuid::class;
 
     protected function setUp(): void
     {

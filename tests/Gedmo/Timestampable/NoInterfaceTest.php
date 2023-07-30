@@ -23,7 +23,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class NoInterfaceTest extends BaseTestCaseORM
 {
-    public const FIXTURE = WithoutInterface::class;
+    private const FIXTURE = WithoutInterface::class;
 
     protected function setUp(): void
     {

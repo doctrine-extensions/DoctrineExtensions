@@ -31,8 +31,8 @@ use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
  */
 final class SluggableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = Category::class;
-    public const SLUGGABLE = Sluggable::class;
+    private const TEST_YAML_ENTITY_CLASS = Category::class;
+    private const SLUGGABLE = Sluggable::class;
 
     /**
      * @var EntityManager

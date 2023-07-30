@@ -23,8 +23,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class TraitUsageTest extends BaseTestCaseORM
 {
-    public const TEST_IP = '34.234.1.10';
-    public const TARGET = UsingTrait::class;
+    private const TEST_IP = '34.234.1.10';
+    private const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {

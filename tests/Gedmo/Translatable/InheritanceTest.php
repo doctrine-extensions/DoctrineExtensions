@@ -29,12 +29,12 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class InheritanceTest extends BaseTestCaseORM
 {
-    public const ARTICLE = TemplatedArticle::class;
-    public const TRANSLATION = Translation::class;
-    public const FILE = File::class;
-    public const IMAGE = Image::class;
+    private const ARTICLE = TemplatedArticle::class;
+    private const TRANSLATION = Translation::class;
+    private const FILE = File::class;
+    private const IMAGE = Image::class;
 
-    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
+    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener

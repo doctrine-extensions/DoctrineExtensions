@@ -31,8 +31,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class MappingTest extends TestCase
 {
-    public const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
-    public const TEST_ENTITY_TRANSLATION = Translation::class;
+    private const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
+    private const TEST_ENTITY_TRANSLATION = Translation::class;
 
     /**
      * @var EntityManager

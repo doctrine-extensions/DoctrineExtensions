@@ -39,17 +39,17 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  */
 final class SoftDeleteableEntityTest extends BaseTestCaseORM
 {
-    public const ARTICLE_CLASS = Article::class;
-    public const COMMENT_CLASS = Comment::class;
-    public const PAGE_CLASS = Page::class;
-    public const MEGA_PAGE_CLASS = MegaPage::class;
-    public const MODULE_CLASS = Module::class;
-    public const OTHER_ARTICLE_CLASS = OtherArticle::class;
-    public const OTHER_COMMENT_CLASS = OtherComment::class;
-    public const USER_CLASS = User::class;
-    public const MAPPED_SUPERCLASS_CHILD_CLASS = Child::class;
-    public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
-    public const USER_NO_HARD_DELETE_CLASS = UserNoHardDelete::class;
+    private const ARTICLE_CLASS = Article::class;
+    private const COMMENT_CLASS = Comment::class;
+    private const PAGE_CLASS = Page::class;
+    private const MEGA_PAGE_CLASS = MegaPage::class;
+    private const MODULE_CLASS = Module::class;
+    private const OTHER_ARTICLE_CLASS = OtherArticle::class;
+    private const OTHER_COMMENT_CLASS = OtherComment::class;
+    private const USER_CLASS = User::class;
+    private const MAPPED_SUPERCLASS_CHILD_CLASS = Child::class;
+    private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    private const USER_NO_HARD_DELETE_CLASS = UserNoHardDelete::class;
 
     /**
      * @var SoftDeleteableListener

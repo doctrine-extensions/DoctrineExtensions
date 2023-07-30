@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class ChangeTest extends BaseTestCaseORM
 {
-    public const FIXTURE = TitledArticle::class;
+    private const FIXTURE = TitledArticle::class;
 
     /**
      * @var BlameableListener
