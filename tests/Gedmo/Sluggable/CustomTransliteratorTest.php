@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class CustomTransliteratorTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
+    private const ARTICLE = Article::class;
 
     public function testStandardTransliteratorFailsOnChineseCharacters(): void
     {

@@ -29,10 +29,10 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableSlugTest extends BaseTestCaseORM
 {
-    public const ARTICLE = TranslatableArticle::class;
-    public const COMMENT = Comment::class;
-    public const PAGE = Page::class;
-    public const TRANSLATION = Translation::class;
+    private const ARTICLE = TranslatableArticle::class;
+    private const COMMENT = Comment::class;
+    private const PAGE = Page::class;
+    private const TRANSLATION = Translation::class;
 
     /**
      * @var int|null

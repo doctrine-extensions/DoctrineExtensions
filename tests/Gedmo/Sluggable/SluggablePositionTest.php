@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggablePositionTest extends BaseTestCaseORM
 {
-    public const POSITION = Position::class;
+    private const POSITION = Position::class;
 
     protected function setUp(): void
     {

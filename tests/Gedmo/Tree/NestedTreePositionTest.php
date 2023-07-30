@@ -24,8 +24,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class NestedTreePositionTest extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const ROOT_CATEGORY = RootCategory::class;
+    private const CATEGORY = Category::class;
+    private const ROOT_CATEGORY = RootCategory::class;
 
     protected function setUp(): void
     {

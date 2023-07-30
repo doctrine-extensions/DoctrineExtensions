@@ -23,7 +23,7 @@ use Gedmo\Tree\TreeListener;
  */
 final class InMemoryUpdatesTest extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
+    private const CATEGORY = Category::class;
 
     protected function setUp(): void
     {

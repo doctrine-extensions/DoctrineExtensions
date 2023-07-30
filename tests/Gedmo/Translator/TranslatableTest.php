@@ -24,8 +24,8 @@ use Gedmo\Tests\Translator\Fixture\PersonCustom;
  */
 final class TranslatableTest extends BaseTestCaseORM
 {
-    public const PERSON = Person::class;
-    public const PERSON_CUSTOM_PROXY = PersonCustom::class;
+    private const PERSON = Person::class;
+    private const PERSON_CUSTOM_PROXY = PersonCustom::class;
 
     protected function setUp(): void
     {

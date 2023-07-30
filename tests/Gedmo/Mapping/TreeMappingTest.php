@@ -29,9 +29,9 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = Category::class;
-    public const YAML_CLOSURE_CATEGORY = ClosureCategory::class;
-    public const YAML_MATERIALIZED_PATH_CATEGORY = MaterializedPathCategory::class;
+    private const TEST_YAML_ENTITY_CLASS = Category::class;
+    private const YAML_CLOSURE_CATEGORY = ClosureCategory::class;
+    private const YAML_MATERIALIZED_PATH_CATEGORY = MaterializedPathCategory::class;
 
     /**
      * @var EntityManager

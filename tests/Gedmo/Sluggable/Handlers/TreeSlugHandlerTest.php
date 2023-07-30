@@ -24,7 +24,7 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeSlugHandlerTest extends BaseTestCaseORM
 {
-    public const TARGET = TreeSlug::class;
+    private const TARGET = TreeSlug::class;
 
     protected function setUp(): void
     {

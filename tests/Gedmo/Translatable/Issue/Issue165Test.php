@@ -14,7 +14,6 @@ namespace Gedmo\Tests\Translatable\Issue;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Translatable\Fixture\Issue165\SimpleArticle;
-use Gedmo\Translatable\Document\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -24,9 +23,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue165Test extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = SimpleArticle::class;
-    public const TRANSLATION = Translation::class;
-
     /**
      * @var TranslatableListener
      */

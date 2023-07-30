@@ -30,10 +30,10 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue173Test extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const ARTICLE = Article::class;
-    public const PRODUCT = Product::class;
-    public const TRANSLATION = Translation::class;
+    private const CATEGORY = Category::class;
+    private const ARTICLE = Article::class;
+    private const PRODUCT = Product::class;
+    private const TRANSLATION = Translation::class;
 
     /**
      * @var TranslatableListener

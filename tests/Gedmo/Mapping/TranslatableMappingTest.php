@@ -28,7 +28,7 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = User::class;
+    private const TEST_YAML_ENTITY_CLASS = User::class;
 
     /**
      * @var TranslatableListener

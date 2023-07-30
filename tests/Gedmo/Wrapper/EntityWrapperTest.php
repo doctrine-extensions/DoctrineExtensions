@@ -26,9 +26,9 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  */
 final class EntityWrapperTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const COMPOSITE = Composite::class;
-    public const COMPOSITE_RELATION = CompositeRelation::class;
+    private const ARTICLE = Article::class;
+    private const COMPOSITE = Composite::class;
+    private const COMPOSITE_RELATION = CompositeRelation::class;
 
     protected function setUp(): void
     {

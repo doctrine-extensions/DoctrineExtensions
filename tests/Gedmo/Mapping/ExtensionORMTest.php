@@ -21,7 +21,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 final class ExtensionORMTest extends BaseTestCaseORM
 {
-    public const USER = User::class;
+    private const USER = User::class;
 
     /**
      * @var EncoderListener

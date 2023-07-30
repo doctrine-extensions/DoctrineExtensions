@@ -16,7 +16,7 @@ use Doctrine\DBAL\Types\Type;
 
 class Custom extends Type
 {
-    public const NAME = 'custom';
+    private const NAME = 'custom';
 
     /**
      * @return string

@@ -24,7 +24,7 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 {
-    public const CATEGORY = MPFeaturesCategory::class;
+    private const CATEGORY = MPFeaturesCategory::class;
 
     /**
      * @var array<string, mixed>

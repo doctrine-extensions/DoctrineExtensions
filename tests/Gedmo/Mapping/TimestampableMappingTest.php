@@ -26,7 +26,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TimestampableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = Category::class;
+    private const TEST_YAML_ENTITY_CLASS = Category::class;
 
     /**
      * @var EntityManager

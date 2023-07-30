@@ -21,7 +21,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 final class ExtensionODMTest extends BaseTestCaseMongoODM
 {
-    public const USER = User::class;
+    private const USER = User::class;
 
     /**
      * @var EncoderListener

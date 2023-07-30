@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    public const SLUG = TreeSlug::class;
+    private const SLUG = TreeSlug::class;
 
     protected function setUp(): void
     {

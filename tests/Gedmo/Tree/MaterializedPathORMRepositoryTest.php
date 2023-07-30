@@ -27,8 +27,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = MPCategory::class;
-    public const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
+    private const CATEGORY = MPCategory::class;
+    private const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
 
     /** @var MaterializedPathRepository */
     protected $repo;

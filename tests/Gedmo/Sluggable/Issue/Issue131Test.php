@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue131Test extends BaseTestCaseORM
 {
-    public const TARGET = Article::class;
+    private const TARGET = Article::class;
 
     protected function setUp(): void
     {
