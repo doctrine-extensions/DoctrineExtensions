@@ -46,7 +46,7 @@ final class NestedTreeTraversalTest extends BaseTestCaseORM
         $result = [];
 
         $current = null;
-        while ($current = $repo->getNextNode($lvl1, $current, $strategy)) {
+        while (null !== ($current = $repo->getNextNode($lvl1, $current, $strategy))) {
             $result[] = $current->getTitle();
         }
         static::assertSame($expected, $result);
