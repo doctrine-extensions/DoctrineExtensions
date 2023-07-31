@@ -78,6 +78,7 @@ a release.
 ### Fixed
 - References: fixed condition in `XML` Driver that did not allow to retrieve from the entity definition the `mappedBy` and `inversedBy` fields.
 - Fix bug collecting metadata for inherited mapped classes
+- Tree: Fix issue with null ids inserted into closure table when persisting more than one type of entity using the closure strategy (#2653)
 
 ## [3.12.0] - 2023-07-08
 ### Added
