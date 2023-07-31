@@ -1205,7 +1205,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 ;
             }
         } else {
-            throw new InvalidArgumentException('Invalid traversal strategy.');
+            throw new InvalidArgumentException(\sprintf('Invalid traversal strategy "%s".', $traversalStrategy));
         }
 
         if (null !== $limit) {
