@@ -22,7 +22,7 @@ use Gedmo\Tree\TreeListener;
  */
 final class NestedTreeTraversalTest extends BaseTestCaseORM
 {
-    public const CATEGORY = RootCategory::class;
+    private const CATEGORY = RootCategory::class;
 
     protected function setUp(): void
     {
