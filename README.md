@@ -98,7 +98,7 @@ To set up and run the tests, follow these steps:
 
 - Install [Docker](https://www.docker.com/) and ensure you have `docker compose`
 - From the project root, run `docker compose up -d` to start containers in daemon mode
-- Enter the container via `docker compose exec php bash` and navigate to the root directory: `cd /var/www`
+- Enter the container via `docker compose exec php bash` (you are now in the root directory: `/var/www`)
 - Install Composer dependencies via `composer install`
 - Run the tests: `bin/phpunit -c tests/`
 
@@ -107,8 +107,8 @@ To set up and run the tests, follow these steps:
 To set up and run example, follow these steps:
 
 - go to the root directory of extensions
-- download composer: `wget https://getcomposer.org/composer.phar`
-- install dev libraries: `php composer.phar install`
+- [download composer](https://getcomposer.org/download/)
+- install dev libraries: `composer install`
 - edit `example/em.php` and configure your database on top of the file
 - run: `php example/bin/console` or `php example/bin/console` for console commands
 - run: `php example/bin/console orm:schema-tool:create` to create the schema
