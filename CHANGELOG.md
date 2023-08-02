@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Changed
+- Add conflict with "doctrine/orm" >=2.16 (temporary change until code is fixed)
 
 ## [3.12.0] - 2023-07-08
 ### Added
