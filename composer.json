@@ -71,7 +71,7 @@
     "conflict": {
         "doctrine/dbal": "<2.13.1 || ^3.0 <3.2",
         "doctrine/mongodb-odm": "<2.3",
-        "doctrine/orm": "<2.10.2",
+        "doctrine/orm": "<2.10.2 || >= 2.16.0",
         "sebastian/comparator": "<2.0"
     },
     "suggest": {
