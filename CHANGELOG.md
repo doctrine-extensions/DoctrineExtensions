@@ -38,6 +38,9 @@ a release.
 - References: fixed condition in `XML` Driver that did not allow to retrieve from the entity definition the `mappedBy` and `inversedBy` fields.
 - Fix bug collecting metadata for inherited mapped classes
 
+### Deprecated
+- SoftDeleteable: function `createLifecycleEventArgsInstance` is deprecated. Use `createPreSoftDeleteEventArgs` and `createPostSoftDeleteEventArgs` instead.
+
 ## [3.12.0] - 2023-07-08
 ### Added
 - Tree: `setSibling()` and `getSibling()` methods in the `Node` interface through the BC `@method` annotation
