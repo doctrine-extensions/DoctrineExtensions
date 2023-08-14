@@ -1,6 +1,6 @@
-# Install Gedmo Doctrine extensions in Symfony 4
+# Install Gedmo Doctrine extensions in Symfony
 
-Configure full featured [Doctrine extensions](https://github.com/doctrine-extensions/DoctrineExtensions) for your Symfony 4 project.
+Configure full featured [Doctrine extensions](https://github.com/doctrine-extensions/DoctrineExtensions) for your Symfony project.
 This post will show you - how to create a simple configuration file to manage extensions with
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
@@ -11,7 +11,7 @@ over management of extensions.
 
 Content:
 
-- [Symfony 4](#sf4-app) application
+- [Symfony](#sf-app) application
 - Extensions metadata [mapping](#ext-mapping)
 - Extensions filters [filtering](#ext-filtering)
 - Extension [listeners](#ext-listeners)
@@ -19,11 +19,11 @@ Content:
 - Some [tips](#more-tips)
 - [Alternative](#alternative) over configuration
 
-<a name="sf4-app"></a>
+<a name="sf-app"></a>
 
-## Symfony 4 application
+## Symfony application
 
-First of all, we will need a symfony 4 startup application, let's say [symfony-standard edition
+First of all, we will need a symfony startup application, let's say [symfony-standard edition
 with composer](https://symfony.com/doc/current/best_practices/creating-the-project.html)
 
 - `composer create-project symfony/skeleton [project name]`
@@ -46,15 +46,15 @@ To do so, add some mapping info to your **doctrine.orm** configuration, edit **c
 ```yaml
 doctrine:
     dbal:
-# your dbal config here
+    # your dbal config here
 
     orm:
-        auto_generate_proxy_classes: %kernel.debug%
+        auto_generate_proxy_classes: '%kernel.debug%'
         auto_mapping: true
-# only these lines are added additionally
+        # only these lines are added additionally
         mappings:
             translatable:
-                type: annotation # or attribute
+                type: attribute # or annotation or xml
                 alias: Gedmo
                 prefix: Gedmo\Translatable\Entity
                 # make sure vendor library location is correct
@@ -79,7 +79,7 @@ to you also. To skip mapping of these entities, you can map **only superclasses*
 ```yaml
 mappings:
     translatable:
-        type: annotation # or attribute
+        type: attribute # or annotation or xml
         alias: Gedmo
         prefix: Gedmo\Translatable\Entity
         # make sure vendor library location is correct
@@ -101,23 +101,23 @@ everything the extensions provide:
 ```yaml
 # only orm config branch of doctrine
 orm:
-    auto_generate_proxy_classes: %kernel.debug%
+    auto_generate_proxy_classes: '%kernel.debug%'
     auto_mapping: true
-# only these lines are added additionally
+    # only these lines are added additionally
     mappings:
         translatable:
-            type: annotation # or attribute
+            type: attribute # or annotation or xml
             alias: Gedmo
             prefix: Gedmo\Translatable\Entity
             # make sure vendor library location is correct
             dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
         loggable:
-            type: annotation # or attribute
+            type: attribute # or annotation or xml
             alias: Gedmo
             prefix: Gedmo\Loggable\Entity
             dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
         tree:
-            type: annotation # or attribute
+            type: attribute # or annotation or xml
             alias: Gedmo
             prefix: Gedmo\Tree\Entity
             dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
@@ -130,11 +130,11 @@ To do so, add this filter info to your **doctrine.orm** configuration, edit **co
 ```yaml
 doctrine:
     dbal:
-# your dbal config here
+    # your dbal config here
     orm:
-        auto_generate_proxy_classes: %kernel.debug%
+        auto_generate_proxy_classes: '%kernel.debug%'
         auto_mapping: true
-# only these lines are added additionally
+        # only these lines are added additionally
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
@@ -155,13 +155,24 @@ services:
     gedmo.listener.tree:
         class: Gedmo\Tree\TreeListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'prePersist'}
+            - { name: doctrine.event_listener, event: 'preUpdate'}
+            - { name: doctrine.event_listener, event: 'preRemove'}
+            - { name: doctrine.event_listener, event: 'onFlush'}
+            - { name: doctrine.event_listener, event: 'loadClassMetadata'}
+            - { name: doctrine.event_listener, event: 'postPersist'}
+            - { name: doctrine.event_listener, event: 'postUpdate'}
+            - { name: doctrine.event_listener, event: 'postRemove'}
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     Gedmo\Translatable\TranslatableListener:
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'postLoad' }
+            - { name: doctrine.event_listener, event: 'postPersist' }
+            - { name: doctrine.event_listener, event: 'preFlush' }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
             - [ setDefaultLocale, [ "%locale%" ] ]
@@ -170,46 +181,63 @@ services:
     gedmo.listener.timestampable:
         class: Gedmo\Timestampable\TimestampableListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'prePersist' }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sluggable:
         class: Gedmo\Sluggable\SluggableListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'prePersist' }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sortable:
         class: Gedmo\Sortable\SortableListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
+            - { name: doctrine.event_listener, event: 'prePersist' }
+            - { name: doctrine.event_listener, event: 'postPersist' }
+            - { name: doctrine.event_listener, event: 'preUpdate' }
+            - { name: doctrine.event_listener, event: 'postRemove' }
+            - { name: doctrine.event_listener, event: 'postFlush' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
-            
+
     gedmo.listener.softdeleteable:
         class: Gedmo\SoftDeleteable\SoftDeleteableListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
             
     Gedmo\Loggable\LoggableListener:
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
+            - { name: doctrine.event_listener, event: 'postPersist' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     Gedmo\Blameable\BlameableListener:
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'prePersist' }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
             
     Gedmo\IpTraceable\IpTraceableListener:
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'prePersist' }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]            
 
@@ -224,15 +252,19 @@ You will need to create this subscriber class if you use **loggable** , **transl
 behaviors. This listener will set the **locale used** from request and **username** to
 loggable and blameable. So, to finish the setup create **EventSubscriber\DoctrineExtensionSubscriber**
 
-## Register event subscriber for [Symfony Doctrine MongoDB Bundle](https://github.com/doctrine/DoctrineMongoDBBundle)
+## Register event listener for [Symfony Doctrine MongoDB Bundle](https://github.com/doctrine/DoctrineMongoDBBundle)
 
-Because DoctrineExtensions does not implement `EventSubscriberInterface` from MongoDBBundle, you need to manually tag 
-the listeners. Otherwise, the listeners will not be listening to the triggered events of Doctrine.
+You also need to manually tag the listeners. Otherwise, the listeners will not be listening to the triggered events
+of Doctrine.
 
 ```yaml
 Gedmo\Loggable\LoggableListener:
-    tags:
-        - { name: doctrine_mongodb.odm.event_subscriber }
+        tags:
+            - { name: doctrine_mongodb.odm.event_listener, event: 'onFlush' }
+            - { name: doctrine_mongodb.odm.event_listener, event: 'loadClassMetadata' }
+            - { name: doctrine_mongodb.odm.event_listener, event: 'postPersist' }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 ```
 
 ```php
@@ -245,7 +277,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class DoctrineExtensionSubscriber implements EventSubscriberInterface
+final class DoctrineExtensionSubscriber implements EventSubscriberInterface
 {
     /**
      * @var BlameableListener
@@ -278,7 +310,7 @@ class DoctrineExtensionSubscriber implements EventSubscriberInterface
     }    
 
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest',
@@ -318,13 +350,17 @@ if you do not believe me, let's create a simple entity in our project:
 
 namespace App\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo; // gedmo annotations
-use Doctrine\ORM\Mapping as ORM; // doctrine orm annotations
+use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
+#[ORM\Entity]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 class BlogPost
 {
     /**
@@ -332,62 +368,72 @@ class BlogPost
      * @ORM\Id
      * @ORM\Column(length=32, unique=true)
      */
-    private $id;
+    #[Gedmo\Slug(fields: ['title',  updatable: false, separator: '_'])]
+    #[ORM\Id]
+    #[ORM\Column(lenght: 32, unique: true)]
+    private ?int $id;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(length=64)
      */
-    private $title;
+    #[Gedmo\Translatable]
+    #[ORM\Column(length: 64)]
+    private ?string $title;
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="datetime")
+     * @ORM\Column(name="created", type="datetime_immutable")
      */
-    private $created;
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(name: 'created', type: Types::DATETIME_IMMUTABLE)]
+    private ?DateTimeImmutable $created;
 
     /**
-     * @ORM\Column(name="updated", type="datetime")
+     * @ORM\Column(name="updated", type="datetime_immutable")
      * @Gedmo\Timestampable(on="update")
      */
-    private $updated;
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_IMMUTABLE)]
+    private ?DateTimeImmutable $updated;
     
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private $deletedAt;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $deletedAt;
     
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getCreated()
+    public function getCreated(): ?DateTimeImmutable
     {
         return $this->created;
     }
 
-    public function getUpdated()
+    public function getUpdated(): ?DateTimeImmutable
     {
         return $this->updated;
     }
 
-    public function getDeletedAt(): ?Datetime
+    public function getDeletedAt(): ?DateTimeImmutable
     {
         return $this->deletedAt;
     }
     
-    public function setDeletedAt(?Datetime $deletedAt): void
+    public function setDeletedAt(?DateTimeImmutable $deletedAt): void
     {
         $this->deletedAt = $deletedAt;
     }
@@ -409,9 +455,8 @@ and add an action to test how it works:
 /**
  * @Route("/posts", name="_demo_posts")
  */
-public function postsAction()
+public function postsAction(EntityManagerInterface $em): Response
 {
-    $em = $this->getDoctrine()->getManager();
     $repository = $em->getRepository(App\Entity\BlogPost::class);
     // create some posts in case if there aren't any
     if (!$repository->find('hello_world')) {
@@ -463,7 +508,7 @@ doctrine_mongodb:
             auto_mapping: true
             mappings:
                 translatable:
-                    type: annotation # or attribute
+                    type: attribute # or annotation or xml
                     alias: GedmoDocument
                     prefix: Gedmo\Translatable\Document
                     # make sure vendor library location is correct
