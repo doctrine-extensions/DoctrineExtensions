@@ -284,24 +284,21 @@ class Closure implements Strategy
     {
         $uow = $em->getUnitOfWork();
         $emHash = spl_object_id($em);
-        $entityClass = get_class($entity);
 
         foreach ($this->pendingChildNodeInserts[$emHash] as $node) {
-            $nodeClass = get_class($node);
-            if ($entityClass !== $nodeClass) {
-                // Do not update if this node is a different type of entity from what has been persisted
-                // otherwise it's not guaranteed that the node has actually been persisted
+            $meta = $em->getClassMetadata(get_class($node));
+            $identifier = $meta->getSingleIdentifierFieldName();
+            $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
+
+            if (is_null($nodeId)) {
+                // Do not update if the node has not been persisted yet
                 continue;
             }
 
             // The closure for this node will now be inserted. Remove the node from the list of pending inserts to indicate this.
             unset($this->pendingChildNodeInserts[$emHash][spl_object_id($node)]);
 
-            $meta = $em->getClassMetadata(get_class($node));
             $config = $this->listener->getConfiguration($em, $meta->getName());
-
-            $identifier = $meta->getSingleIdentifierFieldName();
-            $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
             $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
 
             $closureClass = $config['closure'];
