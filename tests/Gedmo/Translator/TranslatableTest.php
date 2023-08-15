@@ -102,7 +102,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $person->translate('ru')->setDescription('multilingual description');
 
         $parent = new Person();
-        $parent->setName('Jen');
+        $parent->setName('Jen parent');
         $parent->translate('ru')->setName('Женя starshai');
         $parent->translate('fr')->setName('zenia');
         $parent->setDescription('description');
