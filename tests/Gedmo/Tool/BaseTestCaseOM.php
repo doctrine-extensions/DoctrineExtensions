@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
@@ -25,7 +27,6 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as AttributeDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
@@ -128,7 +129,8 @@ abstract class BaseTestCaseOM extends TestCase
         ];
 
         $config = $this->getMockORMConfig($mappingDriver);
-        $em = EntityManager::create($conn, $config, $this->getEventManager());
+        $connection = DriverManager::getConnection($conn, $config);
+        $em = new EntityManager($connection, $config, $this->getEventManager());
 
         $schema = array_map(static function (string $class) use ($em): ClassMetadata {
             assert(class_exists($class));

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -72,7 +73,8 @@ final class TreeMappingTest extends ORMMappingTestCase
         $this->listener->setCacheItemPool($this->cache);
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
-        $this->em = EntityManager::create($conn, $config, $evm);
+        $connection = DriverManager::getConnection($conn, $config);
+        $this->em = new EntityManager($connection, $config, $evm);
     }
 
     /**

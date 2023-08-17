@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping\MetadataFactory;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,7 +61,8 @@ final class ForcedMetadataTest extends TestCase
         $this->timestampable = new TimestampableListener();
         $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
         $evm->addEventSubscriber($this->timestampable);
-        $this->em = EntityManager::create($conn, $config, $evm);
+        $connection = DriverManager::getConnection($conn, $config);
+        $this->em = new EntityManager($connection, $config, $evm);
     }
 
     public function testShouldWork(): void
