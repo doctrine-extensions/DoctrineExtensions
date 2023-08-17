@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
@@ -44,7 +45,8 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
             'memory' => true,
         ];
 
-        $this->em = EntityManager::create($conn, $config, new EventManager());
+        $connection = DriverManager::getConnection($conn, $config);
+        $this->em = new EntityManager($connection, $config, new EventManager());
     }
 
     public function testGetMetadataFactoryCacheFromDoctrineForSluggable(): void

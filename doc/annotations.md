@@ -149,7 +149,7 @@ $evm->addEventSubscriber($sortableListener);
 // mysql set names UTF-8 if required
 $evm->addEventSubscriber(new Doctrine\DBAL\Event\Listeners\MysqlSessionInit());
 // DBAL connection
-$connection = array(
+$driverParams = array(
     'driver' => 'pdo_mysql',
     'host' => '127.0.0.1',
     'dbname' => 'test',
@@ -157,7 +157,8 @@ $connection = array(
     'password' => ''
 );
 // Finally, create entity manager
-$em = Doctrine\ORM\EntityManager::create($connection, $config, $evm);
+$connection = DriverManager::getConnection($driverParams, $config);
+$em = new EntityManager($connection, $config, $evm);
 ```
 
 **Note:** that Symfony StofDoctrineExtensionsBundle does it automatically this
