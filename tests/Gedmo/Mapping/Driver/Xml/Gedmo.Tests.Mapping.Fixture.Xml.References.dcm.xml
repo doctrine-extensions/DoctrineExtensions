@@ -5,6 +5,6 @@
             <generator strategy="AUTO"/>
         </id>
         <field name="name" type="string" length="128"/>
-        <gedmo:reference field="users" reference="referenceMany" type="document" identifier="referecesId" class="Gedmo\Tests\Mapping\Fixture\Document\User" mappedBy="reference" />
+        <gedmo:reference field="users" reference="referenceMany" type="document" identifier="referecesId" class="Gedmo\Tests\Mapping\Fixture\Document\User" mappedBy="reference"/>
     </entity>
 </doctrine-mapping>

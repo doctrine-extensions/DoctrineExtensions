@@ -24,8 +24,7 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
 /**
  * These are mapping tests for SoftDeleteable extension
  *
- * @author Gustavo Falco <comfortablynumb84@gmail.com>
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Guillermo Fuentes <guillermofuentesquijada@gmail.com>
  */
 final class ReferencesMappingTest extends BaseTestCaseOM
 {
@@ -46,7 +45,7 @@ final class ReferencesMappingTest extends BaseTestCaseOM
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
 
-        $xmlDriver = new XmlDriver(__DIR__ . '/../Driver/Xml');
+        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
@@ -68,16 +67,16 @@ final class ReferencesMappingTest extends BaseTestCaseOM
 
         static::assertArrayHasKey('referenceMany', $config);
         static::assertArrayHasKey('useObjectClass', $config);
-        static::assertEquals(References::class, $config['useObjectClass']);
+        static::assertSame(References::class, $config['useObjectClass']);
         $configInternal = $config['referenceMany'];
         static::assertArrayHasKey('users', $configInternal);
         $configUsers = $configInternal['users'];
         static::assertArrayHasKey('field', $configUsers);
         static::assertArrayHasKey('type', $configUsers);
-        static::assertEquals('document', $configUsers['type']);
+        static::assertSame('document', $configUsers['type']);
         static::assertArrayHasKey('class', $configUsers);
         static::assertArrayHasKey('identifier', $configUsers);
         static::assertArrayHasKey('mappedBy', $configUsers);
-        static::assertEquals('reference', $configUsers['mappedBy']);
+        static::assertSame('reference', $configUsers['mappedBy']);
     }
 }
