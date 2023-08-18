@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
+use Gedmo\Tests\Mapping\Fixture\Document\User;
+
 class References
 {
     /**
