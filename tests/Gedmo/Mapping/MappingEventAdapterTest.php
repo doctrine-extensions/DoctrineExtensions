@@ -53,10 +53,10 @@ final class MappingEventAdapterTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $eventArgsMock->expects(static::once())
-            ->method('getEntityManager');
+            ->method('getObjectManager');
 
         $eventArgsMock->expects(static::once())
-            ->method('getEntity')
+            ->method('getObject')
             ->willReturn(new \stdClass());
 
         $eventAdapter = new EventAdapterORM();

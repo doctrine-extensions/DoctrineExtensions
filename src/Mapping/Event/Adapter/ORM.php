@@ -95,6 +95,10 @@ class ORM implements AdapterInterface
             throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
         }
 
+        if (\method_exists($this->args, 'getObjectManager')) {
+            return $this->args->getObjectManager();
+        }
+
         return $this->args->getEntityManager();
     }
 
@@ -102,6 +106,10 @@ class ORM implements AdapterInterface
     {
         if (null === $this->args) {
             throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        if (\method_exists($this->args, 'getObject')) {
+            return $this->args->getObject();
         }
 
         return $this->args->getEntity();
