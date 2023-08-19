@@ -21,6 +21,9 @@ a release.
 ### Changed
 - Add conflict with "doctrine/orm" >=2.16 (temporary change until code is fixed)
 
+### Fixed
+- Fix bug collecting metadata for inherited mapped classes
+
 ## [3.12.0] - 2023-07-08
 ### Added
 - Tree: `setSibling()` and `getSibling()` methods in the `Node` interface through the BC `@method` annotation
