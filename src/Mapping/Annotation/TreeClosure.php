@@ -23,7 +23,7 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class TreeClosure implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

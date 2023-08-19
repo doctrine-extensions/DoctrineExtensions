@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author David Buchmann <mail@davidbu.ch>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Blameable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

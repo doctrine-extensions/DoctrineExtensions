@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class IpTraceable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

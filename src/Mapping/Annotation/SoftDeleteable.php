@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @NamedArgumentConstructor
  * @Target("CLASS")
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class SoftDeleteable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

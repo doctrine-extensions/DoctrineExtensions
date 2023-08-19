@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Slug implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

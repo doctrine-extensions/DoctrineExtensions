@@ -24,7 +24,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author <rocco@roccosportal.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class TreePath implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

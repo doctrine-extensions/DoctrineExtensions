@@ -22,7 +22,7 @@ use Gedmo\Sluggable\Handler\SlugHandlerInterface;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 final class SlugHandler implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class ReferenceIntegrity implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

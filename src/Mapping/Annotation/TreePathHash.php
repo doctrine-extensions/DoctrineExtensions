@@ -21,7 +21,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author <rocco@roccosportal.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class TreePathHash implements GedmoAnnotation
 {
 }

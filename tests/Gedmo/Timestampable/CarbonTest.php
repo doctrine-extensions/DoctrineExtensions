@@ -95,7 +95,7 @@ final class CarbonTest extends BaseTestCaseORM
 
         /** @var CommentCarbon $sportComment */
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
-        static::assertInstanceOf(DateTime::class, $sportComment->getModified(), 'Type TIME_MUTABLE should stay DateTime');
+        static::assertInstanceOf(\DateTime::class, $sportComment->getModified(), 'Type TIME_MUTABLE should stay DateTime');
 
         static::assertNotNull($scm = $sportComment->getModified());
         static::assertNull($sportComment->getClosed());
