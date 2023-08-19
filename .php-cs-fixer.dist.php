@@ -68,6 +68,7 @@ return (new PhpCsFixer\Config())
         'php_unit_test_case_static_method_calls' => true,
         'psr_autoloading' => true,
         'random_api_migration' => true,
+        'return_assignment' => true,
         'self_accessor' => true,
         'static_lambda' => true,
         'strict_param' => true,
