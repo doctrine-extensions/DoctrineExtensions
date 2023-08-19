@@ -17,7 +17,7 @@ use Attribute;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class ReferenceManyEmbed extends Reference
 {
 }

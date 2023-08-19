@@ -42,6 +42,7 @@ return (new PhpCsFixer\Config())
         // @todo: Change the following rule to `true` in the next major release.
         'declare_strict_types' => false,
         'error_suppression' => true,
+        'global_namespace_import' => ['import_classes' => false, 'import_constants' => false, 'import_functions' => false],
         'header_comment' => ['header' => $header],
         'is_null' => false,
         'list_syntax' => ['syntax' => 'short'],

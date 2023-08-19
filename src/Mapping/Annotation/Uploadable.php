@@ -25,7 +25,7 @@ use Gedmo\Uploadable\Mapping\Validator;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class Uploadable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;

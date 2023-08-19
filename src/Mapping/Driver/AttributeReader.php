@@ -9,9 +9,7 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Attribute;
 use Gedmo\Mapping\Annotation\Annotation;
-use ReflectionClass;
 
 /**
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -26,7 +24,7 @@ final class AttributeReader
     /**
      * @return array<Annotation|Annotation[]>
      */
-    public function getClassAnnotations(ReflectionClass $class): array
+    public function getClassAnnotations(\ReflectionClass $class): array
     {
         return $this->convertToAttributeInstances($class->getAttributes());
     }
@@ -36,7 +34,7 @@ final class AttributeReader
      *
      * @return Annotation|Annotation[]|null
      */
-    public function getClassAnnotation(ReflectionClass $class, string $annotationName)
+    public function getClassAnnotation(\ReflectionClass $class, string $annotationName)
     {
         return $this->getClassAnnotations($class)[$annotationName] ?? null;
     }
@@ -99,9 +97,9 @@ final class AttributeReader
             return $this->isRepeatableAttribute[$attributeClassName];
         }
 
-        $reflectionClass = new ReflectionClass($attributeClassName);
+        $reflectionClass = new \ReflectionClass($attributeClassName);
         $attribute = $reflectionClass->getAttributes()[0]->newInstance();
 
-        return $this->isRepeatableAttribute[$attributeClassName] = ($attribute->flags & Attribute::IS_REPEATABLE) > 0;
+        return $this->isRepeatableAttribute[$attributeClassName] = ($attribute->flags & \Attribute::IS_REPEATABLE) > 0;
     }
 }
