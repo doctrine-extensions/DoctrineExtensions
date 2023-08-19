@@ -105,7 +105,7 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
 
         $config = $subscriber->getExtensionMetadataFactory($this->em)->getExtensionMetadata($classMetadata);
 
-        self::assertSame([
+        static::assertSame([
             'content' => [
                 'type' => 'md5',
                 'secret' => null,
