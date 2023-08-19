@@ -58,6 +58,12 @@ return (new PhpCsFixer\Config())
         'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => true],
         'ordered_class_elements' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
+        'phpdoc_order' => ['order' => ['param', 'throws', 'return']],
+        'phpdoc_separation' => ['groups' => [
+            ['Gedmo\\*'],
+            ['ODM\\*'],
+            ['ORM\\*'],
+        ]],
         'phpdoc_summary' => false,
         'phpdoc_to_comment' => false,
         'php_unit_construct' => true,
