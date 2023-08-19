@@ -170,9 +170,8 @@ class TranslationWalker extends SqlWalker
     public function walkSelectClause($selectClause)
     {
         $result = parent::walkSelectClause($selectClause);
-        $result = $this->replace($this->replacements, $result);
 
-        return $result;
+        return $this->replace($this->replacements, $result);
     }
 
     /**
@@ -221,9 +220,7 @@ class TranslationWalker extends SqlWalker
      */
     public function walkSubselect($subselect)
     {
-        $result = parent::walkSubselect($subselect);
-
-        return $result;
+        return parent::walkSubselect($subselect);
     }
 
     /**

@@ -670,9 +670,8 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         Validator::validatePath($path);
-        $path = rtrim($path, '\/');
 
-        return $path;
+        return rtrim($path, '\/');
     }
 
     /**
