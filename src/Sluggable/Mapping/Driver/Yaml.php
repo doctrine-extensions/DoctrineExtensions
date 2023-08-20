@@ -11,6 +11,7 @@ namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
 
@@ -122,10 +123,10 @@ class Yaml extends File implements Driver
                 $config['slugs'][$field]['handlers'] = $handlers;
                 $config['slugs'][$field]['slug'] = $field;
                 $config['slugs'][$field]['style'] = isset($slug['style']) ?
-                    (string) $slug['style'] : 'default';
+                    (string) $slug['style'] : Slug::STYLE_ORIGINAL;
 
                 $config['slugs'][$field]['dateFormat'] = isset($slug['dateFormat']) ?
-                    (string) $slug['dateFormat'] : 'Y-m-d-H:i';
+                    (string) $slug['dateFormat'] : Slug::DATE_FORMAT_DEFAULT;
 
                 $config['slugs'][$field]['updatable'] = isset($slug['updatable']) ?
                     (bool) $slug['updatable'] : true;

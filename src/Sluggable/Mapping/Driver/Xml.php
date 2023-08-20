@@ -11,6 +11,7 @@ namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
@@ -121,11 +122,11 @@ class Xml extends BaseXml
                 'fields' => $fields,
                 'slug' => $field,
                 'style' => $this->_isAttributeSet($slug, 'style') ?
-                    $this->_getAttribute($slug, 'style') : 'default',
+                    $this->_getAttribute($slug, 'style') : Slug::STYLE_ORIGINAL,
                 'updatable' => $this->_isAttributeSet($slug, 'updatable') ?
                     $this->_getBooleanAttribute($slug, 'updatable') : true,
                 'dateFormat' => $this->_isAttributeSet($slug, 'dateFormat') ?
-                    $this->_getAttribute($slug, 'dateFormat') : 'Y-m-d-H:i',
+                    $this->_getAttribute($slug, 'dateFormat') : Slug::DATE_FORMAT_DEFAULT,
                 'unique' => $this->_isAttributeSet($slug, 'unique') ?
                     $this->_getBooleanAttribute($slug, 'unique') : true,
                 'unique_base' => $this->_isAttributeSet($slug, 'unique-base') ?
