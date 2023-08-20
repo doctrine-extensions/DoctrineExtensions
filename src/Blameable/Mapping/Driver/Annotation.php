@@ -11,6 +11,7 @@ namespace Gedmo\Blameable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\Blameable;
+use Gedmo\Mapping\Annotation\TrackingAwareAnnotationInterface;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -68,7 +69,7 @@ class Annotation extends AbstractAnnotationDriver
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->getName()}");
                     }
                 }
-                if (!in_array($blameable->on, ['update', 'create', 'change'], true)) {
+                if (!in_array($blameable->on, TrackingAwareAnnotationInterface::EVENTS, true)) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
                 if ('change' === $blameable->on) {

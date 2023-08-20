@@ -27,12 +27,22 @@ final class Slug implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
+    public const STYLE_LOWER = 'lower';
+    public const STYLE_UPPER = 'upper';
+    public const STYLE_CAMEL = 'camel';
+    public const STYLE_ORIGINAL = 'default';
+    public const DATE_FORMAT_DEFAULT = 'Y-m-d-H:i';
+
     /** @var string[] @Required */
     public $fields = [];
     /** @var bool */
     public $updatable = true;
-    /** @var string */
-    public $style = 'default'; // or "camel"
+    /**
+     * @var string
+     *
+     * @phpstan-var self::STYLE_*
+     */
+    public $style = self::STYLE_ORIGINAL;
     /** @var bool */
     public $unique = true;
     /** @var string|null */
@@ -46,24 +56,26 @@ final class Slug implements GedmoAnnotation
     /** @var SlugHandler[] */
     public $handlers = [];
     /** @var string */
-    public $dateFormat = 'Y-m-d-H:i';
+    public $dateFormat = self::DATE_FORMAT_DEFAULT;
 
     /**
      * @param string[]      $fields
      * @param SlugHandler[] $handlers
+     *
+     * @phpstan-param self::STYLE_* $style
      */
     public function __construct(
         array $data = [],
         array $fields = [],
         bool $updatable = true,
-        string $style = 'default',
+        string $style = self::STYLE_ORIGINAL,
         bool $unique = true,
         ?string $unique_base = null,
         string $separator = '-',
         string $prefix = '',
         string $suffix = '',
         array $handlers = [],
-        string $dateFormat = 'Y-m-d-H:i'
+        string $dateFormat = self::DATE_FORMAT_DEFAULT
     ) {
         if ([] !== $data) {
             @trigger_error(sprintf(

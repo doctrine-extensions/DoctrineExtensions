@@ -47,7 +47,7 @@ class WithoutInterface
      * @ORM\Column(type="string", length=45)
      */
     #[ORM\Column(type: Types::STRING, length: 45)]
-    #[Gedmo\IpTraceable(on: 'create')]
+    #[Gedmo\IpTraceable(on: Gedmo\IpTraceable::EVENT_CREATE)]
     private $created;
 
     /**
@@ -56,7 +56,7 @@ class WithoutInterface
      * @Gedmo\IpTraceable(on="update")
      */
     #[ORM\Column(type: Types::STRING, length: 45)]
-    #[Gedmo\IpTraceable(on: 'update')]
+    #[Gedmo\IpTraceable(on: Gedmo\IpTraceable::EVENT_UPDATE)]
     private $updated;
 
     public function getId(): ?int

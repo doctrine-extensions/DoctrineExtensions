@@ -47,7 +47,7 @@ class WithoutInterface
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="date")
      */
-    #[Gedmo\Timestampable(on: 'create')]
+    #[Gedmo\Timestampable(on: Gedmo\Timestampable::EVENT_CREATE)]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private $created;
 
@@ -58,7 +58,7 @@ class WithoutInterface
      * @Gedmo\Timestampable(on="update")
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Gedmo\Timestampable(on: 'update')]
+    #[Gedmo\Timestampable(on: Gedmo\Timestampable::EVENT_UPDATE)]
     private $updated;
 
     public function getId(): ?int
