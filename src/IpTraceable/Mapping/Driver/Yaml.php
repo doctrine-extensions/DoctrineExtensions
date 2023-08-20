@@ -11,6 +11,7 @@ namespace Gedmo\IpTraceable\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\TrackingAwareAnnotationInterface;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
 
@@ -55,7 +56,7 @@ class Yaml extends File implements Driver
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' in class - {$meta->getName()}");
                     }
-                    if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], ['update', 'create', 'change'], true)) {
+                    if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], TrackingAwareAnnotationInterface::EVENTS, true)) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
 
@@ -86,7 +87,7 @@ class Yaml extends File implements Driver
                     if (!$meta->isSingleValuedAssociation($field)) {
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->getName()}");
                     }
-                    if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], ['update', 'create', 'change'], true)) {
+                    if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], TrackingAwareAnnotationInterface::EVENTS, true)) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
 

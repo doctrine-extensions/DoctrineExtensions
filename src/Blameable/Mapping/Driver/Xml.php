@@ -11,6 +11,7 @@ namespace Gedmo\Blameable\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\TrackingAwareAnnotationInterface;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
@@ -60,7 +61,7 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a reference in class - {$meta->getName()}");
                     }
-                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), ['update', 'create', 'change'], true)) {
+                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), TrackingAwareAnnotationInterface::EVENTS, true)) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
 
@@ -90,7 +91,7 @@ class Xml extends BaseXml
                     if (!$meta->isSingleValuedAssociation($field)) {
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->getName()}");
                     }
-                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), ['update', 'create', 'change'], true)) {
+                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), TrackingAwareAnnotationInterface::EVENTS, true)) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
 

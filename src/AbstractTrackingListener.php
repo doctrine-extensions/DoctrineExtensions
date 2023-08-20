@@ -19,6 +19,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\UnexpectedValueException;
+use Gedmo\Mapping\Annotation\TrackingAwareAnnotationInterface;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
@@ -75,8 +76,8 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             $changeSet = $ea->getObjectChangeSet($uow, $object);
             $needChanges = false;
 
-            if ($uow->isScheduledForInsert($object) && isset($config['create'])) {
-                foreach ($config['create'] as $field) {
+            if ($uow->isScheduledForInsert($object) && isset($config[TrackingAwareAnnotationInterface::EVENT_CREATE])) {
+                foreach ($config[TrackingAwareAnnotationInterface::EVENT_CREATE] as $field) {
                     // Field can not exist in change set, i.e. when persisting an embedded object without a parent
                     $new = array_key_exists($field, $changeSet) ? $changeSet[$field][1] : false;
                     if (null === $new) { // let manual values
@@ -86,8 +87,8 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                 }
             }
 
-            if (isset($config['update'])) {
-                foreach ($config['update'] as $field) {
+            if (isset($config[TrackingAwareAnnotationInterface::EVENT_UPDATE])) {
+                foreach ($config[TrackingAwareAnnotationInterface::EVENT_UPDATE] as $field) {
                     $isInsertAndNull = $uow->isScheduledForInsert($object)
                         && array_key_exists($field, $changeSet)
                         && null === $changeSet[$field][1];
@@ -98,8 +99,8 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                 }
             }
 
-            if (!$uow->isScheduledForInsert($object) && isset($config['change'])) {
-                foreach ($config['change'] as $options) {
+            if (!$uow->isScheduledForInsert($object) && isset($config[TrackingAwareAnnotationInterface::EVENT_CHANGE])) {
+                foreach ($config[TrackingAwareAnnotationInterface::EVENT_CHANGE] as $options) {
                     if (isset($changeSet[$options['field']])) {
                         continue; // value was set manually
                     }
@@ -169,15 +170,15 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
         if ($config = $this->getConfiguration($om, $meta->getName())) {
-            if (isset($config['update'])) {
-                foreach ($config['update'] as $field) {
+            if (isset($config[TrackingAwareAnnotationInterface::EVENT_UPDATE])) {
+                foreach ($config[TrackingAwareAnnotationInterface::EVENT_UPDATE] as $field) {
                     if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
             }
-            if (isset($config['create'])) {
-                foreach ($config['create'] as $field) {
+            if (isset($config[TrackingAwareAnnotationInterface::EVENT_CREATE])) {
+                foreach ($config[TrackingAwareAnnotationInterface::EVENT_CREATE] as $field) {
                     if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
                         $this->updateField($object, $ea, $meta, $field);
                     }

@@ -48,7 +48,7 @@ class WithoutInterface
      * @ORM\Column(type="string")
      */
     #[ORM\Column(type: Types::STRING)]
-    #[Gedmo\Blameable(on: 'create')]
+    #[Gedmo\Blameable(on: Gedmo\Blameable::EVENT_CREATE)]
     private $created;
 
     /**
@@ -58,7 +58,7 @@ class WithoutInterface
      * @Gedmo\Blameable(on="update")
      */
     #[ORM\Column(type: Types::STRING)]
-    #[Gedmo\Blameable(on: 'update')]
+    #[Gedmo\Blameable(on: Gedmo\Blameable::EVENT_UPDATE)]
     private $updated;
 
     public function getId(): ?int

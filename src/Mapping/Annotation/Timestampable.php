@@ -11,7 +11,6 @@ namespace Gedmo\Mapping\Annotation;
 
 use Attribute;
 use Doctrine\Common\Annotations\Annotation;
-use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * Timestampable annotation for Timestampable behavioral extension
@@ -23,12 +22,16 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Timestampable implements GedmoAnnotation
+final class Timestampable implements TrackingAwareAnnotationInterface
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string */
-    public $on = 'update';
+    /**
+     * @var string
+     *
+     * @phpstan-var self::EVENT_*
+     */
+    public $on = self::EVENT_UPDATE;
     /** @var string|string[] */
     public $field;
     /** @var mixed */
@@ -37,8 +40,10 @@ final class Timestampable implements GedmoAnnotation
     /**
      * @param string|string[] $field
      * @param mixed           $value
+     *
+     * @phpstan-param self::EVENT_* $on
      */
-    public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
+    public function __construct(array $data = [], string $on = self::EVENT_UPDATE, $field = null, $value = null)
     {
         if ([] !== $data) {
             @trigger_error(sprintf(

@@ -11,7 +11,6 @@ namespace Gedmo\Mapping\Annotation;
 
 use Attribute;
 use Doctrine\Common\Annotations\Annotation;
-use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * Blameable annotation for Blameable behavioral extension
@@ -23,12 +22,16 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author David Buchmann <mail@davidbu.ch>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Blameable implements GedmoAnnotation
+final class Blameable implements TrackingAwareAnnotationInterface
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string */
-    public $on = 'update';
+    /**
+     * @var string
+     *
+     * @phpstan-var self::EVENT_*
+     */
+    public $on = self::EVENT_UPDATE;
     /** @var string|string[] */
     public $field;
     /** @var mixed */
@@ -37,8 +40,10 @@ final class Blameable implements GedmoAnnotation
     /**
      * @param string|string[]|null $field
      * @param mixed                $value
+     *
+     * @phpstan-param self::EVENT_* $on
      */
-    public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
+    public function __construct(array $data = [], string $on = self::EVENT_UPDATE, $field = null, $value = null)
     {
         if ([] !== $data) {
             @trigger_error(sprintf(

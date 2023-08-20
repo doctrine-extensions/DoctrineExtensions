@@ -11,6 +11,7 @@ namespace Gedmo\IpTraceable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\IpTraceable;
+use Gedmo\Mapping\Annotation\TrackingAwareAnnotationInterface;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -59,7 +60,7 @@ class Annotation extends AbstractAnnotationDriver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->getName()}");
                 }
-                if (!in_array($ipTraceable->on, ['update', 'create', 'change'], true)) {
+                if (!in_array($ipTraceable->on, TrackingAwareAnnotationInterface::EVENTS, true)) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
                 if ('change' === $ipTraceable->on) {

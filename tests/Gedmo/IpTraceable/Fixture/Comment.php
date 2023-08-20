@@ -65,7 +65,7 @@ class Comment implements IpTraceable
      * @Gedmo\IpTraceable(on="change", field="status", value=1)
      */
     #[ORM\Column(name: 'closed', type: Types::STRING, length: 45, nullable: true)]
-    #[Gedmo\IpTraceable(on: 'change', field: 'status', value: 1)]
+    #[Gedmo\IpTraceable(on: Gedmo\IpTraceable::EVENT_CHANGE, field: 'status', value: 1)]
     private $closed;
 
     /**
@@ -75,7 +75,7 @@ class Comment implements IpTraceable
      * @Gedmo\IpTraceable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::STRING, length: 45)]
-    #[Gedmo\IpTraceable(on: 'update')]
+    #[Gedmo\IpTraceable(on: Gedmo\IpTraceable::EVENT_UPDATE)]
     private $modified;
 
     public function setArticle(?Article $article): void

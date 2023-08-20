@@ -65,7 +65,7 @@ class Comment implements Blameable
      * @Gedmo\Blameable(on="change", field="status", value=1)
      */
     #[ORM\Column(name: 'closed', type: Types::STRING, nullable: true)]
-    #[Gedmo\Blameable(on: 'change', field: 'status', value: 1)]
+    #[Gedmo\Blameable(on: Gedmo\Blameable::EVENT_CHANGE, field: 'status', value: 1)]
     private $closed;
 
     /**
@@ -75,7 +75,7 @@ class Comment implements Blameable
      * @Gedmo\Blameable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::STRING)]
-    #[Gedmo\Blameable(on: 'update')]
+    #[Gedmo\Blameable(on: Gedmo\Blameable::EVENT_UPDATE)]
     private $modified;
 
     public function setArticle(?Article $article): void

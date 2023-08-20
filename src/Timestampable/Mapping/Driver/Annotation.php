@@ -11,6 +11,7 @@ namespace Gedmo\Timestampable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\Timestampable;
+use Gedmo\Mapping\Annotation\TrackingAwareAnnotationInterface;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -68,7 +69,7 @@ class Annotation extends AbstractAnnotationDriver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->getName()}");
                 }
-                if (!in_array($timestampable->on, ['update', 'create', 'change'], true)) {
+                if (!in_array($timestampable->on, TrackingAwareAnnotationInterface::EVENTS, true)) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
                 if ('change' === $timestampable->on) {

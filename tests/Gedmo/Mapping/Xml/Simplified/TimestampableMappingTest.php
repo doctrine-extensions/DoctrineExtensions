@@ -15,6 +15,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Mapping\Annotation\TrackingAwareAnnotationInterface;
 use Gedmo\Tests\Mapping\Fixture\Xml\Status;
 use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -48,12 +49,12 @@ final class TimestampableMappingTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata(Timestampable::class);
         $config = $this->timestampable->getConfiguration($this->em, $meta->getName());
 
-        static::assertArrayHasKey('create', $config);
-        static::assertSame('created', $config['create'][0]);
-        static::assertArrayHasKey('update', $config);
-        static::assertSame('updated', $config['update'][0]);
-        static::assertArrayHasKey('change', $config);
-        $onChange = $config['change'][0];
+        static::assertArrayHasKey(TrackingAwareAnnotationInterface::EVENT_CREATE, $config);
+        static::assertSame('created', $config[TrackingAwareAnnotationInterface::EVENT_CREATE][0]);
+        static::assertArrayHasKey(TrackingAwareAnnotationInterface::EVENT_UPDATE, $config);
+        static::assertSame('updated', $config[TrackingAwareAnnotationInterface::EVENT_UPDATE][0]);
+        static::assertArrayHasKey(TrackingAwareAnnotationInterface::EVENT_CHANGE, $config);
+        $onChange = $config[TrackingAwareAnnotationInterface::EVENT_CHANGE][0];
 
         static::assertSame('published', $onChange['field']);
         static::assertSame('status.title', $onChange['trackedField']);
