@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Loggable\LogEntryInterface;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
