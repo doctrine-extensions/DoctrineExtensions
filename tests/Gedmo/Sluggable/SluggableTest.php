@@ -12,9 +12,12 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\Sluggable;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Article;
+use Gedmo\Tests\Sluggable\Fixture\ArticleWithoutFields;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -24,8 +27,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-
     /**
      * @var int|null
      */
@@ -44,7 +45,7 @@ final class SluggableTest extends BaseTestCaseORM
 
     public function testShouldInsertNewSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
 
         static::assertInstanceOf(Sluggable::class, $article);
         static::assertSame('the-title-my-code', $article->getSlug());
@@ -134,7 +135,7 @@ final class SluggableTest extends BaseTestCaseORM
 
     public function testShouldUpdateSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         $article->setTitle('the title updated');
         $this->em->persist($article);
         $this->em->flush();
@@ -144,7 +145,7 @@ final class SluggableTest extends BaseTestCaseORM
 
     public function testShouldBeAbleToForceRegenerationOfSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         $article->setSlug(null);
         $this->em->persist($article);
         $this->em->flush();
@@ -154,7 +155,7 @@ final class SluggableTest extends BaseTestCaseORM
 
     public function testShouldBeAbleToForceTheSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         $article->setSlug('my-forced-slug');
         $this->em->persist($article);
 
@@ -206,7 +207,7 @@ final class SluggableTest extends BaseTestCaseORM
 
     public function testShouldAllowForcingEmptySlugAndRegenerateIfNullIssue807(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         $article->setSlug('');
 
         $this->em->persist($article);
@@ -230,10 +231,29 @@ final class SluggableTest extends BaseTestCaseORM
         static::assertSame('the-title-my-code-1', $same->getSlug());
     }
 
+    public function testRequiredFields(): void
+    {
+        $eventManager = new EventManager();
+        $eventManager->addEventSubscriber(new SluggableListener());
+
+        $em = EntityManager::create([
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
+        ], $this->getDefaultConfiguration(), $eventManager);
+
+        $this->expectException(InvalidMappingException::class);
+        $this->expectExceptionMessage(\sprintf(
+            'Slug must contain at least one field for slug generation in class - %s',
+            ArticleWithoutFields::class
+        ));
+
+        $em->getClassMetadata(ArticleWithoutFields::class);
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
+            Article::class,
         ];
     }
 

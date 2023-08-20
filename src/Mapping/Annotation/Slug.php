@@ -27,7 +27,11 @@ final class Slug implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string[] @Required */
+    /**
+     * @var string[]
+     *
+     * @Required
+     */
     public $fields = [];
     /** @var bool */
     public $updatable = true;
