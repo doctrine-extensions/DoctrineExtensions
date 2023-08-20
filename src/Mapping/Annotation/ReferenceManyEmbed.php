@@ -9,8 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
-
 /**
  * @NamedArgumentConstructor
  * @Annotation

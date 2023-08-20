@@ -9,8 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
-
 /**
  * Reference annotation for ORM -> ODM references extension
  * to be user like "@ReferenceMany(type="entity", class="MyEntity", identifier="entity_id")"
