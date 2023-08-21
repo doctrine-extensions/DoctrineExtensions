@@ -1,8 +1,9 @@
 services:
   php:
     build:
-      context: .docker/php
+      context: .
       target: php
+      dockerfile: ./.docker/php/Dockerfile
       args:
         PHP_VERSION: ${PHP_VERSION:-8.2-cli}
     volumes:
