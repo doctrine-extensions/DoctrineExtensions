@@ -217,7 +217,6 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * @param AdapterInterface $eventAdapter
      * @param ClassMetadata    $meta
      * @param string           $field
-     * @param array            $config
      *
      * @return void
      */
