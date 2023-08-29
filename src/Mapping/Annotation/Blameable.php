@@ -47,7 +47,7 @@ final class Blameable implements GedmoAnnotation
         string $on = 'update',
         $field = null,
         $value = null,
-        string $setterMethod = null
+        ?string $setterMethod = null
     ) {
         if ([] !== $data) {
             Deprecation::trigger(
