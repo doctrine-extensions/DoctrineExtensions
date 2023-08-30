@@ -22,8 +22,6 @@ use Gedmo\Tests\Mapping\Fixture\Xml\References;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
- * These are mapping tests for SoftDeleteable extension
- *
  * @author Guillermo Fuentes <guillermofuentesquijada@gmail.com>
  */
 final class ReferencesMappingTest extends BaseTestCaseOM
