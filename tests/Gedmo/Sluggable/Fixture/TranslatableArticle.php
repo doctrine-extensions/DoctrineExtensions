@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sluggable\Fixture;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -92,6 +93,11 @@ class TranslatableArticle implements Sluggable, Translatable
      */
     #[Gedmo\Language]
     private $locale;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function addComment(Comment $comment): void
     {
