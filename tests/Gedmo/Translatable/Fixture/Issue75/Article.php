@@ -73,6 +73,7 @@ class Article
         // $images is not an array, its a collection
         // if you want to do such operations you have to construct it
         $this->images = new ArrayCollection();
+        $this->files = new ArrayCollection();
     }
 
     public function getId(): ?int
