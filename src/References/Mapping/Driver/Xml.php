@@ -93,10 +93,10 @@ class Xml extends BaseXml
                         'identifier' => $identifier,
                     ];
 
-                    if (!$this->_isAttributeSet($element, 'mappedBy')) {
+                    if ($this->_isAttributeSet($element, 'mappedBy')) {
                         $config[$reference][$field]['mappedBy'] = $this->_getAttribute($element, 'mappedBy');
                     }
-                    if (!$this->_isAttributeSet($element, 'inversedBy')) {
+                    if ($this->_isAttributeSet($element, 'inversedBy')) {
                         $config[$reference][$field]['inversedBy'] = $this->_getAttribute($element, 'inversedBy');
                     }
                 }

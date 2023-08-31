@@ -20,6 +20,8 @@ a release.
 ## [Unreleased]
 ### Changed
 - Add conflict with "doctrine/orm" >=2.16 (temporary change until code is fixed)
+### Fixed
+- References: fixed condition in `XML` Driver that did not allow to retrieve from the entity definition the `mappedBy` and `inversedBy` fields.
 
 ### Fixed
 - Fix bug collecting metadata for inherited mapped classes
