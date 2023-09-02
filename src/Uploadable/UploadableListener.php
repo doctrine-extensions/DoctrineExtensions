@@ -381,7 +381,7 @@ class UploadableListener extends MappedEventSubscriber
      * @param bool        $appendNumber
      * @param object      $object
      *
-     * @return array
+     * @return array<string, int|string|null>
      *
      * @throws UploadableUploadException
      * @throws UploadableNoFileException

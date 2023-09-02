@@ -116,7 +116,7 @@ class TranslationRepository extends EntityRepository
      *
      * @param object $entity Must implement Translatable
      *
-     * @return array list of translations in locale groups
+     * @return array<string, array<string, string>> list of translations in locale groups
      */
     public function findTranslations($entity)
     {
@@ -199,7 +199,7 @@ class TranslationRepository extends EntityRepository
      *
      * @param mixed $id primary key value of an entity
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
     public function findTranslationsByObjectId($id)
     {

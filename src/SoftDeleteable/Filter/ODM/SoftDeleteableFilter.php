@@ -39,7 +39,9 @@ class SoftDeleteableFilter extends BsonFilter
     /**
      * Gets the criteria part to add to a query.
      *
-     * @return array The criteria array, if there is available, empty array otherwise
+     * @return array<string, array<int, array<string, array<string, \DateTime>|null>>|null> The criteria array, if there is available, empty array otherwise
+     *
+     * @phpstan-return array<string, array<int, array<string, array{'$gt': \DateTime}|null>>|null>
      */
     public function addFilterCriteria(ClassMetadata $targetEntity): array
     {
@@ -96,7 +98,7 @@ class SoftDeleteableFilter extends BsonFilter
     }
 
     /**
-     * @return SoftDeleteableListener|null
+     * @return SoftDeleteableListener
      */
     protected function getListener()
     {

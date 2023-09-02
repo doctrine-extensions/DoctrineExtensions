@@ -467,7 +467,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * @param array<string, mixed> $config       config
      * @param string               $originalPath original path of object
      *
-     * @return array|\Traversable
+     * @return array<int, object>|\Traversable<int, object>
      */
     abstract public function getChildren($om, $meta, $config, $originalPath);
 

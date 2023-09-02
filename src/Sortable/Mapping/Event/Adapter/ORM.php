@@ -112,6 +112,9 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $q->getSingleScalarResult();
     }
 
+    /**
+     * @param iterable<string, mixed> $groups
+     */
     private function addGroupWhere(QueryBuilder $qb, ClassMetadata $metadata, iterable $groups): void
     {
         $i = 1;

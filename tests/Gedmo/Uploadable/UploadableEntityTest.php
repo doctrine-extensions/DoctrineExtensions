@@ -15,6 +15,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\UploadableCantWriteException;
 use Gedmo\Exception\UploadableCouldntGuessMimeTypeException;
+use Gedmo\Exception\UploadableException;
 use Gedmo\Exception\UploadableExtensionException;
 use Gedmo\Exception\UploadableFileAlreadyExistsException;
 use Gedmo\Exception\UploadableFormSizeException;
@@ -512,6 +513,9 @@ final class UploadableEntityTest extends BaseTestCaseORM
         static::assertFalse($this->listener->removeFile('non_existent_file'));
     }
 
+    /**
+     * @return array<string, array<string, string>>
+     */
     public static function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): array
     {
         return [
@@ -741,6 +745,10 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     // Data Providers
+
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function invalidFileInfoClassesProvider(): array
     {
         return [
@@ -753,6 +761,11 @@ final class UploadableEntityTest extends BaseTestCaseORM
         ];
     }
 
+    /**
+     * @return array<int, array<int, string>>
+     *
+     * @phpstan-return array<int, array<int, class-string<UploadableException>>>
+     */
     public static function uploadExceptionsProvider(): array
     {
         return [
@@ -792,6 +805,9 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     // Util
 
+    /**
+     * @return array<string, string|int|bool>
+     */
     private function generateUploadedFile(?string $filePath = null, ?string $filename = null, array $info = []): array
     {
         $defaultInfo = [

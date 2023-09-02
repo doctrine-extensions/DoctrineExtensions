@@ -66,7 +66,7 @@ parameters:
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Method Gedmo\\\\Tool\\\\WrapperInterface\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\>\\:\\:getIdentifier\\(\\) invoked with 2 parameters, 0-1 required\\.#"
+			message: "#^Method Gedmo\\\\Tool\\\\WrapperInterface\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\>\\:\\:getIdentifier\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
 			count: 2
 			path: src/Loggable/LoggableListener.php
 
@@ -361,17 +361,7 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^PHPDoc tag \\@param references unknown parameter\\: \\$flatten$#"
-			count: 1
-			path: src/Tool/WrapperInterface.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
-			message: "#^Method Gedmo\\\\Tool\\\\Wrapper\\\\EntityWrapper\\:\\:getIdentifier\\(\\) has parameter \\$flatten with no type specified\\.$#"
 			count: 1
 			path: src/Tool/Wrapper/EntityWrapper.php
 
@@ -388,11 +378,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Method Gedmo\\\\Tool\\\\Wrapper\\\\MongoDocumentWrapper\\:\\:getIdentifier\\(\\) has parameter \\$flatten with no type specified\\.$#"
-			count: 1
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
 		-
@@ -476,6 +461,11 @@ parameters:
 			path: src/Tree/Mapping/Validator.php
 
 		-
+			message: "#^Method Gedmo\\\\Tree\\\\RepositoryUtils\\:\\:buildTreeArray\\(\\) should return array\\<int, array\\<string, mixed\\>\\> but returns array\\<int\\<0, max\\>, ArrayAccess\\>\\.$#"
+			count: 1
+			path: src/Tree/RepositoryUtils.php
+
+		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 2
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
@@ -516,13 +506,28 @@ parameters:
 			path: src/Tree/TreeListener.php
 
 		-
+			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:getExtensionConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 2
+			path: src/Uploadable/Event/UploadableBaseEventArgs.php
+
+		-
 			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config is never read, only written\\.$#"
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
+			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
+			count: 2
+			path: src/Uploadable/Event/UploadableBaseEventArgs.php
+
+		-
 			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration is never written, only read\\.$#"
 			count: 1
+			path: src/Uploadable/Event/UploadableBaseEventArgs.php
+
+		-
+			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration type has no value type specified in iterable type array\\.$#"
+			count: 2
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-

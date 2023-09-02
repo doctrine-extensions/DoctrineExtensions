@@ -30,7 +30,7 @@ class EntityWrapper extends AbstractWrapper
     /**
      * Entity identifier
      *
-     * @var array|null
+     * @var array<string, mixed>|null
      */
     private $identifier;
 
@@ -78,6 +78,9 @@ class EntityWrapper extends AbstractWrapper
         return $this->meta->rootEntityName;
     }
 
+    /**
+     * @param bool $flatten
+     */
     public function getIdentifier($single = true, $flatten = false)
     {
         $flatten = 1 < \func_num_args() && true === func_get_arg(1);

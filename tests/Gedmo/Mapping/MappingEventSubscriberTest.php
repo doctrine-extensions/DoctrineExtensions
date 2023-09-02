@@ -21,7 +21,6 @@ use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Mapping\Fixture\Sluggable;
 use Gedmo\Tests\Mapping\Fixture\SuperClassExtension;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
-use Gedmo\Tests\SoftDeleteable\Fixture\Entity\MappedSuperclass;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -111,13 +110,5 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
                 'secret' => null,
             ],
         ], $config['encode']);
-    }
-
-    protected function getUsedEntityFixtures(): array
-    {
-        return [
-            Sluggable::class,
-            MappedSuperclass::class,
-        ];
     }
 }

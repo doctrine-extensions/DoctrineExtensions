@@ -27,6 +27,7 @@ interface Driver
      * Read the extended metadata configuration for a single mapped class.
      *
      * @param ClassMetadata&(OdmClassMetadata|OrmClassMetadata) $meta
+     * @param array<string, mixed> $config
      *
      * @return void
      *

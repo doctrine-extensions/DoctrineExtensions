@@ -4,7 +4,7 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - src
         - tests
@@ -13,10 +13,15 @@ parameters:
     treatPhpDocTypesAsCertain: false
     checkMissingVarTagTypehint: true
     checkMissingTypehints: true
+    # @todo: Remove the "checkGenericClassInNonGenericObjectType" definition.
+    checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.$#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.$#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is unused\.$#'
+        # @todo: Remove the following ignored error when the parameters are correctly declared.
+        - '#^Method Gedmo\\[^:]+::[^\(]+\(\) has parameter \$\w+ with no value type specified in iterable type array\.$#'
+
 rules:
     - PHPStan\Rules\Constants\MissingClassConstantTypehintRule
     - PHPStan\Rules\Functions\MissingFunctionParameterTypehintRule

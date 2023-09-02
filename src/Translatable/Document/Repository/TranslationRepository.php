@@ -111,7 +111,7 @@ class TranslationRepository extends DocumentRepository
      *
      * @param object $document
      *
-     * @return array list of translations in locale groups
+     * @return array<string, array<string, string>> list of translations in locale groups
      */
     public function findTranslations($document)
     {
@@ -203,7 +203,7 @@ class TranslationRepository extends DocumentRepository
      *
      * @param mixed $id primary key value of document
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
     public function findTranslationsByObjectId($id)
     {

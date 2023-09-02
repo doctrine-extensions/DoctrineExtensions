@@ -22,6 +22,7 @@ use Gedmo\Tests\Tree\Fixture\Closure\News;
 use Gedmo\Tests\Tree\Fixture\Closure\Person;
 use Gedmo\Tests\Tree\Fixture\Closure\PersonClosure;
 use Gedmo\Tests\Tree\Fixture\Closure\User;
+use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tree\TreeListener;
 
@@ -333,6 +334,9 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertCount(6, $closures);
     }
 
+    /**
+     * @return array<string, array<int, Category>>
+     */
     public static function provideNodeOrders(): array
     {
         $grandpa = new Category();
@@ -370,6 +374,9 @@ final class ClosureTreeTest extends BaseTestCaseORM
         ];
     }
 
+    /**
+     * @param iterable<int, AbstractClosure> $closures
+     */
     private function hasAncestor(iterable $closures, string $name): bool
     {
         foreach ($closures as $closure) {
