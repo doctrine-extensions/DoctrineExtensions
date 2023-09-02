@@ -101,7 +101,7 @@ class SortableRepository extends EntityRepository
     }
 
     /**
-     * @return array
+     * @return array<int, object>
      */
     public function getBySortableGroups(array $groupValues = [])
     {

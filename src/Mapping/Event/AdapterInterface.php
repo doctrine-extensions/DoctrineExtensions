@@ -92,7 +92,9 @@ interface AdapterInterface
      * @param ORMUnitOfWork|MongoDBUnitOfWork $uow    The UnitOfWork as provided by the object manager
      * @param object                          $object
      *
-     * @return array
+     * @return array<string, array<int, mixed>|object>
+     *
+     * @phpstan-return array<string, array{0: mixed, 1: mixed}|object>
      */
     public function getObjectChangeSet($uow, $object);
 
@@ -123,7 +125,7 @@ interface AdapterInterface
      *
      * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
-     * @return array
+     * @return array<int|string, object>
      */
     public function getScheduledObjectUpdates($uow);
 
@@ -132,7 +134,7 @@ interface AdapterInterface
      *
      * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
-     * @return array
+     * @return array<int|string, object>
      */
     public function getScheduledObjectInsertions($uow);
 
@@ -141,7 +143,7 @@ interface AdapterInterface
      *
      * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
-     * @return array
+     * @return array<int|string, object>
      */
     public function getScheduledObjectDeletions($uow);
 

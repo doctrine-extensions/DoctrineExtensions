@@ -33,7 +33,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      */
     public function getTreeQueryBuilder($rootNode = null)
     {
-        return $this->getChildrenQueryBuilder($rootNode, false, null, 'asc', true);
+        return $this->getChildrenQueryBuilder($rootNode, false, null, 'ASC', true);
     }
 
     /**
@@ -53,7 +53,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @param object $rootNode
      *
-     * @return array
+     * @return array<int, object>
      */
     public function getTree($rootNode = null)
     {
@@ -138,7 +138,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @return array list of Nodes in path
+     * @return array<int, object> list of Nodes in path
      */
     public function getPath($node)
     {
@@ -206,7 +206,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         }
 
         $orderByField = null === $sortByField ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
-        $orderByDir = 'asc' === $direction ? 'asc' : 'desc';
+        $orderByDir = 'asc' === strtolower($direction) ? 'asc' : 'desc';
         $qb->orderBy($orderByField, $orderByDir);
 
         return $qb;

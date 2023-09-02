@@ -28,7 +28,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     /**
      * Document identifier
      *
-     * @var mixed
+     * @var string|null
      */
     private $identifier;
 
@@ -76,6 +76,11 @@ class MongoDocumentWrapper extends AbstractWrapper
         return (bool) $this->getIdentifier();
     }
 
+    /**
+     * @param bool $flatten
+     *
+     * @return string
+     */
     public function getIdentifier($single = true, $flatten = false)
     {
         if (!$this->identifier) {

@@ -61,7 +61,7 @@ class TreeObjectHydrator extends ObjectHydrator
     /**
      * We hook into the `hydrateAllData` to map the children collection of the entity
      *
-     * @return mixed[]
+     * @return array<int, object>
      */
     protected function hydrateAllData()
     {
@@ -93,9 +93,9 @@ class TreeObjectHydrator extends ObjectHydrator
      * [parentId => [child1, child2, ...], ...]
      * ```
      *
-     * @param array $nodes
+     * @param array<int, object> $nodes
      *
-     * @return array
+     * @return array<int|string, array<int, object>>
      */
     protected function buildChildrenHashmap($nodes)
     {
@@ -116,8 +116,8 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
-     * @param array $nodes
-     * @param array $childrenHashmap
+     * @param array<int, object>                    $nodes
+     * @param array<int|string, array<int, object>> $childrenHashmap
      *
      * @return void
      */
@@ -152,7 +152,7 @@ class TreeObjectHydrator extends ObjectHydrator
     /**
      * @param array $nodes
      *
-     * @return array
+     * @return array<int, object>
      */
     protected function getRootNodes($nodes)
     {
@@ -182,7 +182,7 @@ class TreeObjectHydrator extends ObjectHydrator
      * [node1.id => true, node2.id => true, ...]
      * ```
      *
-     * @return array
+     * @return array<mixed, true>
      */
     protected function buildIdHashmap(array $nodes)
     {

@@ -49,7 +49,7 @@ interface TranslatableAdapter extends AdapterInterface
      * @phpstan-param class-string $translationClass
      * @phpstan-param class-string $objectClass
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function loadTranslations($object, $translationClass, $locale, $objectClass);
 

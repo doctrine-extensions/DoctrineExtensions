@@ -257,6 +257,9 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         ]);
     }
 
+    /**
+     * @phpstan-return iterable<int, array{0: string|int|null}>
+     */
     public static function invalidStringMethods(): iterable
     {
         yield [null];

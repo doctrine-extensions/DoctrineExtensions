@@ -116,6 +116,10 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      * @param string        $name     the related object class name
      *
      * @return string related class name or empty string if does not exist
+     *
+     * @phpstan-param class-string|string $name
+     *
+     * @phpstan-return class-string|''
      */
     protected function getRelatedClassName($metadata, $name)
     {

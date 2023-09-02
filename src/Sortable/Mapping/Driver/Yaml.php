@@ -98,6 +98,9 @@ class Yaml extends File implements Driver
         return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 
+    /**
+     * @param iterable<string, array<string, mixed>> $mapping
+     */
     private function readSortableGroups(iterable $mapping, array &$config): void
     {
         foreach ($mapping as $field => $fieldMapping) {

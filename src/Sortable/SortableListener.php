@@ -565,7 +565,7 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param array $groups
+     * @param array<string, mixed> $groups
      *
      * @return string
      */
@@ -668,11 +668,11 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param array         $config
-     * @param ClassMetadata $meta
-     * @param object        $object
+     * @param ClassMetadata                        $meta
+     * @param array<string, array<string, string>> $config
+     * @param object                               $object
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function getGroups($meta, $config, $object)
     {

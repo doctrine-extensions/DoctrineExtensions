@@ -100,7 +100,7 @@ class ExtensionMetadataFactory
      *
      * @param ClassMetadata&(DocumentClassMetadata|EntityClassMetadata) $meta
      *
-     * @return array the metatada configuration
+     * @return array<string, mixed> the metatada configuration
      */
     public function getExtensionMetadata($meta)
     {

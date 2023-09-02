@@ -187,6 +187,9 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Create the SQL with mapped parameters
+     *
+     * @param array<int|string, mixed>|null       $params
+     * @param array<int|string, string|Type>|null $types
      */
     private function generateSql(string $sql, ?array $params, ?array $types): string
     {
@@ -210,6 +213,11 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Get the converted parameter list
+     *
+     * @param array<int|string, mixed>       $params
+     * @param array<int|string, string|Type> $types
+     *
+     * @return array<int|string, mixed>
      */
     private function getConvertedParams(array $params, array $types): array
     {

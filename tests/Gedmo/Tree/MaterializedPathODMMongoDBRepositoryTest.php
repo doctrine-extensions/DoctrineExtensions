@@ -319,13 +319,6 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         return new $class();
     }
 
-    protected function getUsedEntityFixtures(): array
-    {
-        return [
-            self::CATEGORY,
-        ];
-    }
-
     private function populate(): void
     {
         $root = $this->createCategory();

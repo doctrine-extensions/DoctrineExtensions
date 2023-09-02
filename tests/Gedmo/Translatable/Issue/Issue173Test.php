@@ -66,7 +66,20 @@ final class Issue173Test extends BaseTestCaseORM
         static::assertCount(1, $categories, '$category3 has no associations');
     }
 
-    public function getCategoriesThatHasNoAssociations(): array
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::CATEGORY,
+            self::ARTICLE,
+            self::PRODUCT,
+            self::TRANSLATION,
+        ];
+    }
+
+    /**
+     * @return array<int, Category>
+     */
+    private function getCategoriesThatHasNoAssociations(): array
     {
         $query = $this->em->createQueryBuilder();
         $query2 = $this->em->createQueryBuilder();
@@ -94,16 +107,6 @@ final class Issue173Test extends BaseTestCaseORM
             Query::HINT_CUSTOM_OUTPUT_WALKER,
             TranslationWalker::class
         )->getResult();
-    }
-
-    protected function getUsedEntityFixtures(): array
-    {
-        return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::PRODUCT,
-            self::TRANSLATION,
-        ];
     }
 
     private function populate(): void

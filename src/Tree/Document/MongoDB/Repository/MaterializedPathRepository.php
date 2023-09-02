@@ -73,7 +73,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
     public function getRootNodes($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQuery($sortByField, $direction)->execute();
+        return $this->getRootNodesQuery($sortByField, $direction)->getIterator();
     }
 
     public function childCount($node = null, $direct = false)
@@ -137,7 +137,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->field($config['path'])->equals(new Regex($regex));
         }
 
-        $qb->sort($sortByField ?? $config['path'], 'asc' === $direction ? 'asc' : 'desc');
+        $qb->sort($sortByField ?? $config['path'], 'asc' === strtolower($direction) ? 'asc' : 'desc');
 
         return $qb;
     }

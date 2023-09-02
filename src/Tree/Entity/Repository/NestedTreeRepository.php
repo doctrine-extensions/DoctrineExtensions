@@ -308,10 +308,12 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -382,10 +384,12 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object|null          $node        if null, all tree nodes will be taken
      * @param bool                 $direct      true to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
      * @return Query Query object
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -396,10 +400,12 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object|null          $node        The object to fetch children for; if null, all nodes will be retrieved
      * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array|null List of children or null on failure
+     * @return array<int, object> List of children
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -408,15 +414,6 @@ class NestedTreeRepository extends AbstractTreeRepository
         return $q->getResult();
     }
 
-    /**
-     * @param object|null          $node        if null, all tree nodes will be taken
-     * @param bool                 $direct      true to take only direct children
-     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
-     * @param bool                 $includeNode Include the root node in results?
-     *
-     * @return QueryBuilder Query object
-     */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
@@ -427,6 +424,9 @@ class NestedTreeRepository extends AbstractTreeRepository
         return $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
     }
 
+    /**
+     * @return array<int, object>
+     */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         return $this->children($node, $direct, $sortByField, $direction, $includeNode);
@@ -442,6 +442,8 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @throws InvalidArgumentException if input is not valid
      *
      * @return QueryBuilder
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
      */
     public function getLeafsQueryBuilder($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -494,6 +496,8 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
      * @return Query
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
      */
     public function getLeafsQuery($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -507,7 +511,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
-     * @return array
+     * @return array<int, object>
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
      */
     public function getLeafs($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -587,7 +593,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool   $includeSelf include the node itself
      *
-     * @return array
+     * @return array<int, object>
      */
     public function getNextSiblings($node, $includeSelf = false)
     {
@@ -666,7 +672,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool   $includeSelf include the node itself
      *
-     * @return array
+     * @return array<int, object>
      */
     public function getPrevSiblings($node, $includeSelf = false)
     {
@@ -931,7 +937,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * options:
      * - treeRootNode: (object) Optional tree root node to verify, if not the whole forest (only available for forests, not for single trees).
      *
-     * @return array|bool true on success, error list on failure
+     * @return array<int, string>|bool true on success, error list on failure
      */
     public function verify(/* array $options = [] */) // @phpstan-ignore-line
     {
@@ -1166,6 +1172,8 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Collect errors on given tree if
      * where are any
+     *
+     * @param $errors array<int, string>
      */
     private function verifyTree(array &$errors, ?object $root = null): void
     {

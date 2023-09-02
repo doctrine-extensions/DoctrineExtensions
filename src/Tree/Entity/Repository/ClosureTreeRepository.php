@@ -98,7 +98,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @return array list of Nodes in path
+     * @return array<int, object|null> list of Nodes in path
      */
     public function getPath($node)
     {
@@ -111,10 +111,12 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * @param object|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -186,10 +188,12 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * @param object|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
      * @return Query Query object
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -200,10 +204,12 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * @param object|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return array|null List of children or null on failure
+     * @return array<int, object|null> List of children or null on failure
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -227,6 +233,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
     }
 
+    /**
+     * @return array<int, object|null>
+     */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         return $this->children($node, $direct, $sortByField, $direction, $includeNode);
@@ -306,14 +315,6 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $node = null;
     }
 
-    /**
-     * Process nodes and produce an array with the
-     * structure of the tree
-     *
-     * @param array $nodes Array of nodes
-     *
-     * @return array Array with tree structure
-     */
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
@@ -411,7 +412,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @return array|bool
+     * @return array<int, string>|bool
      */
     public function verify()
     {
