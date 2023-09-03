@@ -59,14 +59,8 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($wrapped->getMetadata()->getName());
         $qb->sort('version', 'DESC');
-        $q = $qb->getQuery();
 
-        $result = $q->execute();
-        if ($result instanceof Iterator) {
-            $result = $result->toArray();
-        }
-
-        return $result;
+        return $qb->getQuery()->getIterator()->toArray();
     }
 
     /**
@@ -95,12 +89,8 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectClass')->equals($objectMeta->getName());
         $qb->field('version')->lte((int) $version);
         $qb->sort('version', 'ASC');
-        $q = $qb->getQuery();
 
-        $logs = $q->execute();
-        if ($logs instanceof Iterator) {
-            $logs = $logs->toArray();
-        }
+        $logs = $qb->getQuery()->getIterator()->toArray();
 
         if ([] === $logs) {
             throw new UnexpectedValueException('Count not find any log entries under version: '.$version);

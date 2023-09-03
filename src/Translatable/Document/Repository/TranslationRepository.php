@@ -142,12 +142,9 @@ class TranslationRepository extends DocumentRepository
                 ->getQuery();
 
             $q->setHydrate(false);
-            $data = $q->execute();
 
-            if (is_iterable($data)) {
-                foreach ($data as $row) {
-                    $result[$row['locale']][$row['field']] = $row['content'];
-                }
+            foreach ($q->getIterator() as $row) {
+                $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
 
@@ -182,11 +179,7 @@ class TranslationRepository extends DocumentRepository
             ->getQuery();
 
         $q->setHydrate(false);
-        $result = $q->execute();
-
-        if ($result instanceof Iterator) {
-            $result = $result->toArray();
-        }
+        $result = $q->getIterator()->toArray();
 
         $id = $result[0]['foreign_key'] ?? null;
 
@@ -216,12 +209,9 @@ class TranslationRepository extends DocumentRepository
                 ->getQuery();
 
             $q->setHydrate(false);
-            $data = $q->execute();
 
-            if (is_iterable($data)) {
-                foreach ($data as $row) {
-                    $result[$row['locale']][$row['field']] = $row['content'];
-                }
+            foreach ($q->getIterator() as $row) {
+                $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
 

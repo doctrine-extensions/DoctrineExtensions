@@ -90,12 +90,8 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             ;
         }
         $q->setHydrate(false);
-        $result = $q->execute();
-        if ($result instanceof Iterator) {
-            $result = $result->toArray();
-        }
 
-        return $result;
+        return $q->getIterator()->toArray();
     }
 
     public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)
