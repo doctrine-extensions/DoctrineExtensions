@@ -81,7 +81,12 @@ class TranslationRepository extends EntityRepository
             $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->_em->getClassMetadata($class);
-            $trans = $this->findOneBy(compact('locale', 'objectClass', 'field', 'foreignKey'));
+            $trans = $this->findOneBy([
+                'locale' => $locale,
+                'objectClass' => $objectClass,
+                'field' => $field,
+                'foreignKey' => $foreignKey,
+            ]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
                 $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
@@ -180,7 +185,11 @@ class TranslationRepository extends EntityRepository
             $dql .= ' AND trans.field = :field';
             $dql .= ' AND trans.content = :value';
             $q = $this->_em->createQuery($dql);
-            $q->setParameters(compact('class', 'field', 'value'));
+            $q->setParameters([
+                'class' => $class,
+                'field' => $field,
+                'value' => $value,
+            ]);
             $q->setMaxResults(1);
             $result = $q->getArrayResult();
             $id = $result[0]['foreignKey'] ?? null;

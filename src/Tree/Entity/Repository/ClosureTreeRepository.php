@@ -88,7 +88,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $dql .= ' WHERE c.descendant = :node';
         $dql .= ' ORDER BY c.depth DESC';
         $q = $this->_em->createQuery($dql);
-        $q->setParameters(compact('node'));
+        $q->setParameter('node', $node);
 
         return $q;
     }
@@ -271,7 +271,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $dql = "SELECT node FROM {$config['useObjectClass']} node";
         $dql .= " WHERE node.{$config['parent']} = :node";
         $q = $this->_em->createQuery($dql);
-        $q->setParameters(compact('node'));
+        $q->setParameter('node', $node);
         $nodesToReparent = $q->getResult();
         // process updates in transaction
         $this->_em->getConnection()->beginTransaction();
@@ -286,7 +286,10 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 $dql .= " WHERE node.{$pk} = :id";
 
                 $q = $this->_em->createQuery($dql);
-                $q->setParameters(compact('parent', 'id'));
+                $q->setParameters([
+                    'parent' => $parent,
+                    'id' => $id,
+                ]);
                 $q->getSingleScalarResult();
 
                 $this->listener
@@ -301,7 +304,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             $dql .= " WHERE node.{$pk} = :nodeId";
 
             $q = $this->_em->createQuery($dql);
-            $q->setParameters(compact('nodeId'));
+            $q->setParameter('nodeId', $nodeId);
             $q->getSingleScalarResult();
             $this->_em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -388,7 +391,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
         if (null !== $node) {
             $q->where('c.ancestor = :node');
-            $q->setParameters(compact('node'));
+            $q->setParameter('node', $node);
         } else {
             $q->groupBy('c.descendant');
         }

@@ -81,7 +81,12 @@ class TranslationRepository extends DocumentRepository
             $foreignKey = $meta->getReflectionProperty($meta->getIdentifier()[0])->getValue($document);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->dm->getClassMetadata($class);
-            $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
+            $trans = $this->findOneBy([
+                'locale' => $locale,
+                'field' => $field,
+                'objectClass' => $objectClass,
+                'foreignKey' => $foreignKey,
+            ]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
                 $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);

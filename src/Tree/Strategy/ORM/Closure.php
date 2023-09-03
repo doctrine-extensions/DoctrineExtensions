@@ -301,7 +301,7 @@ class Closure implements Strategy
                 $dql .= ' JOIN c.ancestor a';
                 $dql .= ' WHERE c.descendant = :parent';
                 $q = $em->createQuery($dql);
-                $q->setParameters(compact('parent'));
+                $q->setParameter('parent', $parent);
                 $ancestors = $q->getArrayResult();
 
                 if ([] === $ancestors) {
@@ -400,7 +400,10 @@ class Closure implements Strategy
             $dql .= ' WHERE c.ancestor = :node';
             $dql .= ' AND c.descendant = :parent';
             $q = $em->createQuery($dql);
-            $q->setParameters(compact('node', 'parent'));
+            $q->setParameters([
+                'node' => $node,
+                'parent' => $parent,
+            ]);
             if ($q->getSingleScalarResult()) {
                 throw new UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
             }
@@ -411,7 +414,7 @@ class Closure implements Strategy
             $subQuery .= " JOIN {$table} c2 ON c1.descendant = c2.descendant";
             $subQuery .= ' WHERE c1.ancestor = :nodeId AND c2.depth > c1.depth';
 
-            $ids = $conn->executeQuery($subQuery, compact('nodeId'))->fetchFirstColumn();
+            $ids = $conn->executeQuery($subQuery, ['nodeId' => $nodeId])->fetchFirstColumn();
             if ([] !== $ids) {
                 // using subquery directly, sqlite acts unfriendly
                 $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).')';
@@ -429,7 +432,7 @@ class Closure implements Strategy
             $query .= ' WHERE c1.descendant = :parentId';
             $query .= ' AND c2.ancestor = :nodeId';
 
-            $closures = $conn->executeQuery($query, compact('nodeId', 'parentId'))->fetchAllAssociative();
+            $closures = $conn->executeQuery($query, ['nodeId' => $nodeId, 'parentId' => $parentId])->fetchAllAssociative();
 
             foreach ($closures as $closure) {
                 if (!$conn->insert($table, $closure)) {

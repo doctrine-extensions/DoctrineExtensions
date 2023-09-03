@@ -50,7 +50,7 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return iterable|null List of children
+     * @return iterable<int|string, object> List of children
      *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
