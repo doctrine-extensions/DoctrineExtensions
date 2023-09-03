@@ -13,9 +13,15 @@ services:
       MONGODB_SERVER: 'mongodb://mongodb:27017'
     tty: true
     stdin_open: true
+    init: true
 
   mysql:
     image: mysql:8.0
+    healthcheck:
+      test: ['CMD', 'mysql', '-h', 'mysql', '--user=root', '--password=${MYSQL_ROOT_PASSWORD}', '-e', 'status']
+      interval: 10s
+      timeout: 2s
+      retries: 5
     environment:
       MYSQL_ROOT_PASSWORD: de_root_password
       MYSQL_DATABASE: de_testing
