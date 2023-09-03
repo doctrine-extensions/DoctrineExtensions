@@ -66,7 +66,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());
@@ -84,7 +84,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());
@@ -208,7 +208,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());
@@ -226,7 +226,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());

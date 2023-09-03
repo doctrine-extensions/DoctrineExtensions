@@ -120,7 +120,7 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->remove($category2);
         $this->em->flush();
 
-        $result = $this->em->createQueryBuilder()->select('c')->from(self::CATEGORY, 'c')->getQuery()->execute();
+        $result = $this->em->createQueryBuilder()->select('c')->from(self::CATEGORY, 'c')->getQuery()->getResult();
 
         $firstResult = $result[0];
 

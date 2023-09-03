@@ -38,7 +38,7 @@ class MaterializedPath extends AbstractMaterializedPath
             ->find($meta->getName())
             ->field($config['path'])->equals(new Regex('^'.preg_quote($wrapped->getPropertyValue($config['path'])).'.?+'))
             ->getQuery()
-            ->execute();
+            ->getIterator();
 
         foreach ($results as $node) {
             $uow->scheduleForDelete($node);
@@ -55,7 +55,7 @@ class MaterializedPath extends AbstractMaterializedPath
             ->field($config['path'])->equals(new Regex('^'.preg_quote($originalPath).'.+'))
             ->sort($config['path'], 'asc')      // This may save some calls to updateNode
             ->getQuery()
-            ->execute();
+            ->getIterator();
     }
 
     /**

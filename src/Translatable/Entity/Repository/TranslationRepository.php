@@ -141,14 +141,14 @@ class TranslationRepository extends EntityRepository
             $qb->select('trans.content, trans.field, trans.locale')
                 ->from($translationClass, 'trans')
                 ->where('trans.foreignKey = :entityId', 'trans.objectClass = :entityClass')
-                ->orderBy('trans.locale');
+                ->orderBy('trans.locale')
+                ->setParameters([
+                    'entityId' => $entityId,
+                    'entityClass' => $entityClass,
+                ]);
             $q = $qb->getQuery();
-            $data = $q->execute(
-                compact('entityId', 'entityClass'),
-                Query::HYDRATE_ARRAY
-            );
 
-            foreach ($data as $row) {
+            foreach ($q->getArrayResult() as $row) {
                 $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
@@ -210,14 +210,11 @@ class TranslationRepository extends EntityRepository
             $qb->select('trans.content, trans.field, trans.locale')
                 ->from($translationMeta->rootEntityName, 'trans')
                 ->where('trans.foreignKey = :entityId')
-                ->orderBy('trans.locale');
+                ->orderBy('trans.locale')
+                ->setParameter('entityId', $id);
             $q = $qb->getQuery();
-            $data = $q->execute(
-                ['entityId' => $id],
-                Query::HYDRATE_ARRAY
-            );
 
-            foreach ($data as $row) {
+            foreach ($q->getArrayResult() as $row) {
                 $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
