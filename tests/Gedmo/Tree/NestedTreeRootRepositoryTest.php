@@ -131,7 +131,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneBy(['title' => 'Food']);
         $decorate = true;
-        $defaultHtmlTree = $repo->childrenHierarchy($food, false, compact('decorate'));
+        $defaultHtmlTree = $repo->childrenHierarchy($food, false, ['decorate' => $decorate]);
 
         static::assertSame(
             '<ul><li>Fruits</li><li>Vegitables<ul><li>Carrots</li><li>Potatoes</li></ul></li></ul>',
@@ -146,7 +146,10 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $decoratedHtmlTree = $repo->childrenHierarchy(
             $food,
             false,
-            compact('decorate', 'nodeDecorator')
+            [
+                'decorate' => $decorate,
+                'nodeDecorator' => $nodeDecorator,
+            ]
         );
 
         static::assertSame(
@@ -165,7 +168,14 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $decoratedCliTree = $repo->childrenHierarchy(
             $food,
             false,
-            compact('decorate', 'nodeDecorator', 'rootOpen', 'rootClose', 'childOpen', 'childClose')
+            [
+                'decorate' => $decorate,
+                'nodeDecorator' => $nodeDecorator,
+                'rootOpen' => $rootOpen,
+                'rootClose' => $rootClose,
+                'childOpen' => $childOpen,
+                'childClose' => $childClose,
+            ]
         );
         static::assertSame(
             "-Fruits\n-Vegitables\n--Carrots\n--Potatoes\n",
@@ -185,7 +195,13 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $decoratedHtmlTree = $repo->childrenHierarchy(
             $food,
             false,
-            compact('decorate', 'rootOpen', 'rootClose', 'childOpen', 'childClose')
+            [
+                'decorate' => $decorate,
+                'rootOpen' => $rootOpen,
+                'rootClose' => $rootClose,
+                'childOpen' => $childOpen,
+                'childClose' => $childClose,
+            ]
         );
 
         static::assertSame(
