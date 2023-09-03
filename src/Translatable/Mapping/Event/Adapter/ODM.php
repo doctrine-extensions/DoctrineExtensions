@@ -9,7 +9,6 @@
 
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
-use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Exception\RuntimeException;

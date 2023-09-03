@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Tests\Translatable\Fixture\Comment;
@@ -144,12 +143,10 @@ final class TranslatableTest extends BaseTestCaseORM
         $qb = $this->em->createQueryBuilder();
         $qb->select('art')
             ->from(self::ARTICLE, 'art')
-            ->where('art.id = :id');
+            ->where('art.id = :id')
+            ->setParameter('id', $article->getId());
         $q = $qb->getQuery();
-        $result = $q->execute(
-            ['id' => $article->getId()],
-            Query::HYDRATE_ARRAY
-        );
+        $result = $q->getArrayResult();
         static::assertCount(1, $result);
         static::assertSame('title in en', $result[0]['title']);
         static::assertSame('content in en', $result[0]['content']);

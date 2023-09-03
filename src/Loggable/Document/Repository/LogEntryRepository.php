@@ -9,7 +9,6 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
-use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Exception\RuntimeException;

@@ -111,7 +111,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->remove($category2);
         $this->dm->flush();
 
-        $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->execute();
+        $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->getIterator();
 
         static::assertInstanceOf(Iterator::class, $result);
 

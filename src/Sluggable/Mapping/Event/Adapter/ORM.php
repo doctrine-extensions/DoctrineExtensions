@@ -10,7 +10,6 @@
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Query;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -76,10 +75,8 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
                 $qb->setParameter($namedId, $value, $meta->getTypeOfField($namedId));
             }
         }
-        $q = $qb->getQuery();
-        $q->setHydrationMode(Query::HYDRATE_ARRAY);
 
-        return $q->execute();
+        return $qb->getQuery()->getArrayResult();
     }
 
     public function replaceRelative($object, array $config, $target, $replacement)
