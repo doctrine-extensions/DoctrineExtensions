@@ -409,9 +409,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        $q = $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
-
-        return $q->getResult();
+        return $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode)->getResult();
     }
 
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
@@ -802,7 +800,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
                     $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], ':pid'));
                     $qb->setParameter('pid', $nodeId);
-                    $nodes = $qb->getQuery()->getArrayResult();
+                    $nodes = $qb->getQuery()->toIterable([], Query::HYDRATE_ARRAY);
 
                     // go through each of the node's children
                     foreach ($nodes as $newRoot) {
@@ -1235,13 +1233,17 @@ class NestedTreeRepository extends AbstractTreeRepository
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
             $qb->setParameter('rid', $rootId);
         }
-        $nodes = $qb->getQuery()->getArrayResult();
-        if ([] !== $nodes) {
-            foreach ($nodes as $node) {
-                $errors[] = "node [{$node[$identifier]}] has missing parent".($root ? ' on tree root: '.$rootId : '');
-            }
 
-            return; // loading broken relation can cause infinite loop
+        $areMissingParents = false;
+
+        foreach ($qb->getQuery()->toIterable([], Query::HYDRATE_ARRAY) as $node) {
+            $areMissingParents = true;
+            $errors[] = "node [{$node[$identifier]}] has missing parent".($root ? ' on tree root: '.$rootId : '');
+        }
+
+        // loading broken relation can cause infinite loop
+        if ($areMissingParents) {
+            return;
         }
 
         // check for nodes that have a right value lower than the left
@@ -1272,9 +1274,8 @@ class NestedTreeRepository extends AbstractTreeRepository
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
             $qb->setParameter('rid', $rootId);
         }
-        $nodes = $qb->getQuery()->getResult(Query::HYDRATE_OBJECT);
 
-        foreach ($nodes as $node) {
+        foreach ($qb->getQuery()->toIterable() as $node) {
             $right = $meta->getReflectionProperty($config['right'])->getValue($node);
             $left = $meta->getReflectionProperty($config['left'])->getValue($node);
             $id = $meta->getReflectionProperty($identifier)->getValue($node);

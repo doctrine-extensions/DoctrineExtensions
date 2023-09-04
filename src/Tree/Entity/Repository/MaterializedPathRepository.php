@@ -250,7 +250,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $nodes = $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode)->getArrayResult();
         usort(
             $nodes,
-            static function ($a, $b) use ($path) {
+            static function (array $a, array $b) use ($path): int {
                 return strcmp($a[$path], $b[$path]);
             }
         );

@@ -13,6 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -302,21 +303,24 @@ class Closure implements Strategy
                 $dql .= ' WHERE c.descendant = :parent';
                 $q = $em->createQuery($dql);
                 $q->setParameter('parent', $parent);
-                $ancestors = $q->getArrayResult();
 
-                if ([] === $ancestors) {
-                    // The parent has been persisted after the child, postpone the evaluation
-                    $this->pendingChildNodeInserts[$emHash][] = $node;
+                $mustPostpone = true;
 
-                    continue;
-                }
+                foreach ($q->toIterable([], Query::HYDRATE_ARRAY) as $ancestor) {
+                    $mustPostpone = false;
 
-                foreach ($ancestors as $ancestor) {
                     $entries[] = [
                         $ancestorColumnName => $ancestor['ancestor'][$identifier],
                         $descendantColumnName => $nodeId,
                         $depthColumnName => $ancestor['depth'] + 1,
                     ];
+                }
+
+                if ($mustPostpone) {
+                    // The parent has been persisted after the child, postpone the evaluation
+                    $this->pendingChildNodeInserts[$emHash][] = $node;
+
+                    continue;
                 }
 
                 if (isset($config['level'])) {

@@ -53,9 +53,7 @@ class LogEntryRepository extends EntityRepository
      */
     public function getLogEntries($entity)
     {
-        $q = $this->getLogEntriesQuery($entity);
-
-        return $q->getResult();
+        return $this->getLogEntriesQuery($entity)->getResult();
     }
 
     /**
@@ -112,7 +110,7 @@ class LogEntryRepository extends EntityRepository
         $dql .= ' WHERE log.objectId = :objectId';
         $dql .= ' AND log.objectClass = :objectClass';
         $dql .= ' AND log.version <= :version';
-        $dql .= ' ORDER BY log.version ASC';
+        $dql .= ' ORDER BY log.version DESC';
 
         $objectId = (string) $wrapped->getIdentifier(false, true);
         $q = $this->_em->createQuery($dql);
@@ -121,16 +119,18 @@ class LogEntryRepository extends EntityRepository
             'objectClass' => $objectClass,
             'version' => $version,
         ]);
-        $logs = $q->getResult();
-
-        if ([] === $logs) {
-            throw new UnexpectedValueException('Could not find any log entries under version: '.$version);
-        }
 
         $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->getName());
         $fields = $config['versioned'];
         $filled = false;
-        while (($log = array_pop($logs)) && !$filled) {
+        $logsFound = false;
+
+        $logs = $q->toIterable();
+        assert($logs instanceof \Generator);
+
+        while ((null !== $log = $logs->current()) && !$filled) {
+            $logsFound = true;
+            $logs->next();
             if ($data = $log->getData()) {
                 foreach ($data as $field => $value) {
                     if (in_array($field, $fields, true)) {
@@ -142,6 +142,11 @@ class LogEntryRepository extends EntityRepository
             }
             $filled = [] === $fields;
         }
+
+        if (!$logsFound) {
+            throw new UnexpectedValueException('Could not find any log entries under version: '.$version);
+        }
+
         /*if (count($fields)) {
             throw new \Gedmo\Exception\UnexpectedValueException('Could not fully revert the entity to version: '.$version);
         }*/

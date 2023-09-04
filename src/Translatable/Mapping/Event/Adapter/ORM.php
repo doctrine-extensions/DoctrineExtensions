@@ -162,13 +162,8 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         }
         $q = $qb->getQuery();
         $q->setMaxResults(1);
-        $result = $q->getResult();
 
-        if ($result) {
-            return array_shift($result);
-        }
-
-        return null;
+        return $q->getOneOrNullResult();
     }
 
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)

@@ -43,9 +43,9 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $query = $qb->getQuery();
         $query->useQueryCache(false);
         $query->disableResultCache();
-        $res = $query->getResult();
+        $query->setMaxResults(1);
 
-        return $res[0][1];
+        return $query->getSingleScalarResult();
     }
 
     /**
