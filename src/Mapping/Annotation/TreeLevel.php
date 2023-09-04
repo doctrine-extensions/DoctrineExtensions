@@ -33,6 +33,9 @@ final class TreeLevel implements GedmoAnnotation
      */
     public $base = 0;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(
         array $data = [],
         int $base = 0

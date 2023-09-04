@@ -447,7 +447,7 @@ class Closure implements Strategy
     }
 
     /**
-     * @param array $association
+     * @param array<string, mixed> $association
      *
      * @return string|null
      */

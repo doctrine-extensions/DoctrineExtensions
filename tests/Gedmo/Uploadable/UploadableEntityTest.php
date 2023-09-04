@@ -806,6 +806,8 @@ final class UploadableEntityTest extends BaseTestCaseORM
     // Util
 
     /**
+     * @param array<string, mixed> $info
+     *
      * @return array<string, string|int|bool>
      */
     private function generateUploadedFile(?string $filePath = null, ?string $filename = null, array $info = []): array

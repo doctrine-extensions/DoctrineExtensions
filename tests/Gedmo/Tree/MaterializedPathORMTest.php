@@ -141,14 +141,24 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    public function createCategory(): MPCategory
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::CATEGORY,
+        ];
+    }
+
+    private function createCategory(): MPCategory
     {
         $class = self::CATEGORY;
 
         return new $class();
     }
 
-    public function generatePath(array $sources): string
+    /**
+     * @param array<int|string, int|string|null> $sources
+     */
+    private function generatePath(array $sources): string
     {
         $path = '';
 
@@ -157,13 +167,6 @@ final class MaterializedPathORMTest extends BaseTestCaseORM
         }
 
         return $path;
-    }
-
-    protected function getUsedEntityFixtures(): array
-    {
-        return [
-            self::CATEGORY,
-        ];
     }
 
     private function getTreeRootValueOfRootNode(MPCategory $category): string

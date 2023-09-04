@@ -185,10 +185,10 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Obtain direct children?
-     * @param array  $options     Options
-     * @param bool   $includeNode Include node in results?
+     * @param object               $node        Root node
+     * @param bool                 $direct      Obtain direct children?
+     * @param array<string, mixed> $options     Options
+     * @param bool                 $includeNode Include node in results?
      *
      * @return QueryBuilder QueryBuilder object
      */
@@ -197,10 +197,10 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Obtain direct children?
-     * @param array  $options     Options
-     * @param bool   $includeNode Include node in results?
+     * @param object               $node        Root node
+     * @param bool                 $direct      Obtain direct children?
+     * @param array<string, mixed> $options     Options
+     * @param bool                 $includeNode Include node in results?
      *
      * @return Query Query object
      */

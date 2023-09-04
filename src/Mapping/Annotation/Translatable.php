@@ -29,6 +29,9 @@ final class Translatable implements GedmoAnnotation
     /** @var bool|null */
     public $fallback;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [], ?bool $fallback = null)
     {
         if ([] !== $data) {

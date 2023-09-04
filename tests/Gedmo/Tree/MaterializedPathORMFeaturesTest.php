@@ -92,14 +92,24 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         static::assertSame($category4->getTitle(), $category4->getTreeRootValue());
     }
 
-    public function createCategory(): MPFeaturesCategory
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::CATEGORY,
+        ];
+    }
+
+    private function createCategory(): MPFeaturesCategory
     {
         $class = self::CATEGORY;
 
         return new $class();
     }
 
-    public function generatePath(array $sources): string
+    /**
+     * @param array<int|string, int|string|null> $sources
+     */
+    private function generatePath(array $sources): string
     {
         $path = '';
         foreach ($sources as $p => $id) {
@@ -109,15 +119,11 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         return $path;
     }
 
-    public function generatePathHash(array $sources): string
+    /**
+     * @param array<int|string, int|string|null> $sources
+     */
+    private function generatePathHash(array $sources): string
     {
         return md5($this->generatePath($sources));
-    }
-
-    protected function getUsedEntityFixtures(): array
-    {
-        return [
-            self::CATEGORY,
-        ];
     }
 }

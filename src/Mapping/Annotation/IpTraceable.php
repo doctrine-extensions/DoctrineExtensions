@@ -34,6 +34,7 @@ final class IpTraceable implements GedmoAnnotation
     public $value;
 
     /**
+     * @param array<string, mixed> $data
      * @param string|string[]|null $field
      * @param mixed                $value
      */

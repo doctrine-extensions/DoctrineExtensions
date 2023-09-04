@@ -91,6 +91,9 @@ class Xml extends BaseXml
         return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     private function readSortableGroups(\SimpleXMLElement $mapping, array &$config, string $fieldAttr = 'field'): void
     {
         foreach ($mapping as $mappingDoctrine) {

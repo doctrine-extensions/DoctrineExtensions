@@ -66,6 +66,9 @@ class EncoderListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     private function encode(EventAdapterInterface $ea, object $object, array $config): void
     {
         $om = $ea->getObjectManager();

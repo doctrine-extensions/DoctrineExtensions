@@ -51,6 +51,8 @@ interface WrapperInterface
      *
      * Populates the wrapped object with the given property values.
      *
+     * @param array<string, mixed> $data
+     *
      * @return $this
      */
     public function populate(array $data);

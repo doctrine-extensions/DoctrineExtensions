@@ -642,7 +642,8 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param object $object Entity
+     * @param array<string, mixed> $config
+     * @param object               $object Entity
      *
      * @return string
      *
@@ -726,7 +727,8 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the path of the entity's file
      *
-     * @param object $object
+     * @param array<string, mixed> $config
+     * @param object               $object
      *
      * @return string
      */
@@ -738,7 +740,8 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the name of the entity's file
      *
-     * @param object $object
+     * @param array<string, mixed> $config
+     * @param object               $object
      *
      * @return string
      */

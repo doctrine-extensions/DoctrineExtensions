@@ -76,6 +76,9 @@ final class Uploadable implements GedmoAnnotation
      */
     public $disallowedTypes = '';
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(
         array $data = [],
         bool $allowOverwrite = false,

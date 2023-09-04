@@ -1173,7 +1173,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Collect errors on given tree if
      * where are any
      *
-     * @param $errors array<int, string>
+     * @param array<int, string> $errors
      */
     private function verifyTree(array &$errors, ?object $root = null): void
     {

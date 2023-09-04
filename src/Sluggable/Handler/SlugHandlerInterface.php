@@ -32,9 +32,10 @@ interface SlugHandlerInterface
      * Hook on slug handlers before the decision is made whether
      * the slug needs to be recalculated.
      *
-     * @param object $object
-     * @param string $slug
-     * @param bool   $needToChangeSlug
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param string               $slug
+     * @param bool                 $needToChangeSlug
      *
      * @return void
      */
@@ -43,8 +44,9 @@ interface SlugHandlerInterface
     /**
      * Hook on slug handlers called after the slug is built.
      *
-     * @param object $object
-     * @param string $slug
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param string               $slug
      *
      * @return void
      */
@@ -53,8 +55,9 @@ interface SlugHandlerInterface
     /**
      * Hook for slug handlers called after the slug is completed.
      *
-     * @param object $object
-     * @param string $slug
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param string               $slug
      *
      * @return void
      */
@@ -67,6 +70,8 @@ interface SlugHandlerInterface
 
     /**
      * Validates the options for the handler.
+     *
+     * @param array<string, mixed> $options
      *
      * @throws InvalidMappingException if the configuration is invalid
      *

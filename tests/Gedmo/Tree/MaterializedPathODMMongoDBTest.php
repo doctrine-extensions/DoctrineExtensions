@@ -134,14 +134,17 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->flush();
     }
 
-    public function createCategory(): Category
+    private function createCategory(): Category
     {
         $class = self::CATEGORY;
 
         return new $class();
     }
 
-    public function generatePath(array $sources): string
+    /**
+     * @param array<int|string, int|string|null> $sources
+     */
+    private function generatePath(array $sources): string
     {
         $path = '';
 

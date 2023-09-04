@@ -100,6 +100,7 @@ class Yaml extends File implements Driver
 
     /**
      * @param iterable<string, array<string, mixed>> $mapping
+     * @param array<string, mixed>                   $config
      */
     private function readSortableGroups(iterable $mapping, array &$config): void
     {

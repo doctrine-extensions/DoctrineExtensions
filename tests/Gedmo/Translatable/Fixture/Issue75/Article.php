@@ -86,6 +86,9 @@ class Article
         $this->images[] = $image;
     }
 
+    /**
+     * @param array<int, Image> $images
+     */
     public function setImages(array $images): void
     {
         foreach ($images as $img) {

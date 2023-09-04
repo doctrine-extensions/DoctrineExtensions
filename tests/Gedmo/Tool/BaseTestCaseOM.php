@@ -71,7 +71,10 @@ abstract class BaseTestCaseOM extends TestCase
         }
     }
 
-    public function getMongoDBDriver(array $paths = []): MappingDriver
+    /**
+     * @param string[] $paths
+     */
+    protected function getMongoDBDriver(array $paths = []): MappingDriver
     {
         if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
             return new AttributeDriver($paths);
@@ -80,7 +83,10 @@ abstract class BaseTestCaseOM extends TestCase
         return new AnnotationDriverODM($_ENV['annotation_reader'], $paths);
     }
 
-    public function getORMDriver(array $paths = []): MappingDriver
+    /**
+     * @param string[] $paths
+     */
+    protected function getORMDriver(array $paths = []): MappingDriver
     {
         if (PHP_VERSION_ID >= 80000) {
             return new AttributeDriverORM($paths);
@@ -109,6 +115,10 @@ abstract class BaseTestCaseOM extends TestCase
      * EntityManager mock object together with
      * annotation mapping driver and pdo_sqlite
      * database in memory
+     *
+     * @param string[] $fixtures
+     *
+     * @phpstan-assert class-string[] $fixtures
      */
     protected function getDefaultMockSqliteEntityManager(array $fixtures, ?MappingDriver $mappingDriver = null): EntityManager
     {

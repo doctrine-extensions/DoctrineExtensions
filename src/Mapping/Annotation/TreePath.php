@@ -40,6 +40,9 @@ final class TreePath implements GedmoAnnotation
     /** @var bool */
     public $endsWithSeparator = true;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(
         array $data = [],
         string $separator = ',',

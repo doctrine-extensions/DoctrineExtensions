@@ -32,10 +32,10 @@ interface RepositoryInterface extends RepositoryUtilsInterface
     /**
      * Returns an array of nodes optimized for building a tree.
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Flag indicating whether only direct children should be retrieved
-     * @param array  $options     Options, see {@see RepositoryUtilsInterface::buildTree()} for supported keys
-     * @param bool   $includeNode Flag indicating whether the given node should be included in the results
+     * @param object               $node        Root node
+     * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
+     * @param array<string, mixed> $options     Options, see {@see RepositoryUtilsInterface::buildTree()} for supported keys
+     * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
      * @return array<int|string, object>
      */
