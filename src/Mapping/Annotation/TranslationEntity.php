@@ -33,6 +33,9 @@ final class TranslationEntity implements GedmoAnnotation
      */
     public $class;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [], string $class = '')
     {
         if ([] !== $data) {

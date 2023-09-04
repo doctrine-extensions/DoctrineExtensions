@@ -392,6 +392,10 @@ class TranslationWalker extends SqlWalker
 
     /**
      * Search for translated components in the select clause
+     *
+     * @param array<string, array<string, ClassMetadata>> $queryComponents
+     *
+     * @phpstan-param array<string, array{metadata: ClassMetadata}> $queryComponents
      */
     private function extractTranslatedComponents(array $queryComponents): void
     {
@@ -430,6 +434,8 @@ class TranslationWalker extends SqlWalker
     /**
      * Replaces given sql $str with required
      * results
+     *
+     * @param array<string, string> $repl
      */
     private function replace(array $repl, string $str): string
     {

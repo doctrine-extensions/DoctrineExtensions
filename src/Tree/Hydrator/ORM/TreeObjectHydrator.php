@@ -150,7 +150,7 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
-     * @param array $nodes
+     * @param array<int, object> $nodes
      *
      * @return array<int, object>
      */
@@ -181,6 +181,8 @@ class TreeObjectHydrator extends ObjectHydrator
      * ```
      * [node1.id => true, node2.id => true, ...]
      * ```
+     *
+     * @param array<int, object> $nodes
      *
      * @return array<mixed, true>
      */
@@ -267,7 +269,7 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
-     * @param array $data
+     * @param array<int, object> $data
      *
      * @return string
      */

@@ -178,7 +178,8 @@ class Validator
     /**
      * Validates metadata for nested type tree
      *
-     * @param ClassMetadata $meta
+     * @param ClassMetadata        $meta
+     * @param array<string, mixed> $config
      *
      * @throws InvalidMappingException
      *
@@ -204,7 +205,8 @@ class Validator
     /**
      * Validates metadata for closure type tree
      *
-     * @param ClassMetadata $meta
+     * @param ClassMetadata        $meta
+     * @param array<string, mixed> $config
      *
      * @throws InvalidMappingException
      *
@@ -227,7 +229,8 @@ class Validator
     /**
      * Validates metadata for materialized path type tree
      *
-     * @param ClassMetadata $meta
+     * @param ClassMetadata        $meta
+     * @param array<string, mixed> $config
      *
      * @throws InvalidMappingException
      *

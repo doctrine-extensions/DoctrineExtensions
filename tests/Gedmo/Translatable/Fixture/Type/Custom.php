@@ -19,6 +19,8 @@ class Custom extends Type
     private const NAME = 'custom';
 
     /**
+     * @param mixed[] $fieldDeclaration
+     *
      * @return string
      */
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)

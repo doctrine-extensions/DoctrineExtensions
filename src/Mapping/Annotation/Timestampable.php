@@ -34,8 +34,9 @@ final class Timestampable implements GedmoAnnotation
     public $value;
 
     /**
-     * @param string|string[] $field
-     * @param mixed           $value
+     * @param array<string, mixed> $data
+     * @param string|string[]      $field
+     * @param mixed                $value
      */
     public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
     {

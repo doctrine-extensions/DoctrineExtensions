@@ -86,6 +86,10 @@ class Yaml extends File implements Driver
         return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 
+    /**
+     * @param array<string, mixed> $fieldMapping
+     * @param array<string, mixed> $config
+     */
     private function buildFieldConfiguration(string $field, array $fieldMapping, ClassMetadata $meta, array &$config): void
     {
         if (isset($fieldMapping['gedmo'])) {

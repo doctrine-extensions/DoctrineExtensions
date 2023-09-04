@@ -632,7 +632,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param array $association
+     * @param array<string, mixed> $association
      *
      * @return string|null
      */

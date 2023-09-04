@@ -51,6 +51,8 @@ abstract class Reference implements GedmoAnnotation
     public $inversedBy;
 
     /**
+     * @param array<string, mixed> $data
+     *
      * @phpstan-param class-string|null $class
      */
     public function __construct(

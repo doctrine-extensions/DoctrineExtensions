@@ -49,6 +49,8 @@ final class Tree implements GedmoAnnotation
     public $identifierMethod;
 
     /**
+     * @param array<string, mixed> $data
+     *
      * @phpstan-param 'closure'|'materializedPath'|'nested'|null $type
      */
     public function __construct(

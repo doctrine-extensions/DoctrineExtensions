@@ -37,6 +37,8 @@ final class Loggable implements GedmoAnnotation
     public $logEntryClass;
 
     /**
+     * @param array<string, mixed> $data
+     *
      * @phpstan-param class-string<T>|null $logEntryClass
      */
     public function __construct(array $data = [], ?string $logEntryClass = null)

@@ -312,7 +312,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    public function createCategory(): Category
+    private function createCategory(): Category
     {
         $class = self::CATEGORY;
 

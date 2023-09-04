@@ -77,6 +77,9 @@ class Xml extends BaseXml
         return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     private function buildFieldConfiguration(ClassMetadata $meta, string $field, \SimpleXMLElement $mapping, array &$config): void
     {
         /**

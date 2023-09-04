@@ -139,6 +139,10 @@ class Yaml extends File
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 
+    /**
+     * @param array<string, array<string, array<string, mixed>>> $mapping
+     * @param array<string, mixed>                               $config
+     */
     private function inspectEmbeddedForVersioned(string $field, array $mapping, array &$config): void
     {
         if (isset($mapping['fields'])) {

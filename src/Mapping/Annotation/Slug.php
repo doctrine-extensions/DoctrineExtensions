@@ -52,8 +52,9 @@ final class Slug implements GedmoAnnotation
     public $dateFormat = 'Y-m-d-H:i';
 
     /**
-     * @param string[]      $fields
-     * @param SlugHandler[] $handlers
+     * @param array<string, mixed> $data
+     * @param string[]             $fields
+     * @param SlugHandler[]        $handlers
      */
     public function __construct(
         array $data = [],

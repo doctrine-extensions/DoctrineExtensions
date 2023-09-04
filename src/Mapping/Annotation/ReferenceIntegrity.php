@@ -30,7 +30,7 @@ final class ReferenceIntegrity implements GedmoAnnotation
     public $value;
 
     /**
-     * @param string|array|null $data
+     * @param string|array<string, mixed>|null $data
      */
     public function __construct($data = [], ?string $value = null)
     {

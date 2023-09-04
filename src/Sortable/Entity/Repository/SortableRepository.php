@@ -65,6 +65,8 @@ class SortableRepository extends EntityRepository
     }
 
     /**
+     * @param array<string, mixed> $groupValues
+     *
      * @return Query
      */
     public function getBySortableGroupsQuery(array $groupValues = [])
@@ -73,6 +75,8 @@ class SortableRepository extends EntityRepository
     }
 
     /**
+     * @param array<string, mixed> $groupValues
+     *
      * @return QueryBuilder
      */
     public function getBySortableGroupsQueryBuilder(array $groupValues = [])
@@ -101,6 +105,8 @@ class SortableRepository extends EntityRepository
     }
 
     /**
+     * @param array<string, mixed> $groupValues
+     *
      * @return array<int, object>
      */
     public function getBySortableGroups(array $groupValues = [])

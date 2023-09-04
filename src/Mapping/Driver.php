@@ -26,12 +26,14 @@ interface Driver
     /**
      * Read the extended metadata configuration for a single mapped class.
      *
-     * @param ClassMetadata&(OdmClassMetadata|OrmClassMetadata) $meta
+     * @param ClassMetadata        $meta
      * @param array<string, mixed> $config
      *
      * @return void
      *
      * @throws InvalidMappingException if the mapping configuration is invalid
+     *
+     * @phpstan-param ClassMetadata&(OdmClassMetadata|OrmClassMetadata) $meta
      */
     public function readExtendedMetadata($meta, array &$config);
 

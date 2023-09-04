@@ -31,8 +31,8 @@ interface AdapterInterface
      *
      * Calls a method on the event args object.
      *
-     * @param string $method
-     * @param array  $args
+     * @param string            $method
+     * @param array<int, mixed> $args
      *
      * @return mixed
      */

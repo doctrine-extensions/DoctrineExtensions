@@ -86,6 +86,8 @@ class Xml extends BaseXml
 
     /**
      * Searches mappings on element for versioned fields
+     *
+     * @param array<string, mixed> $config
      */
     private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, ClassMetadata $meta): void
     {

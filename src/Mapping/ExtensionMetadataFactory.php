@@ -225,6 +225,9 @@ class ExtensionMetadataFactory
         return $driver;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     private function storeConfiguration(string $className, array $config): void
     {
         if (null === $this->cacheItemPool) {

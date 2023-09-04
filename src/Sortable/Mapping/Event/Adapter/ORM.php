@@ -26,8 +26,9 @@ use Gedmo\Sortable\SortableListener;
 final class ORM extends BaseAdapterORM implements SortableAdapter
 {
     /**
-     * @param ClassMetadata $meta
-     * @param array         $groups
+     * @param array<string, mixed>    $config
+     * @param ClassMetadata           $meta
+     * @param iterable<string, mixed> $groups
      *
      * @return int|null
      */
@@ -48,9 +49,9 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
     }
 
     /**
-     * @param array $relocation
-     * @param array $delta
-     * @param array $config
+     * @param array<string, mixed> $relocation
+     * @param array<string, mixed> $delta
+     * @param array<string, mixed> $config
      * @phpstan-param SortableRelocation $relocation
      *
      * @return void

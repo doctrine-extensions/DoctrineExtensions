@@ -365,24 +365,24 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    /**
-     * @phpstan-param class-string|null $class
-     */
-    public function createCategory(?string $class = null): object
-    {
-        if (!$class) {
-            $class = self::CATEGORY;
-        }
-
-        return new $class();
-    }
-
     protected function getUsedEntityFixtures(): array
     {
         return [
             self::CATEGORY,
             self::CATEGORY_WITH_TRIMMED_SEPARATOR,
         ];
+    }
+
+    /**
+     * @phpstan-param class-string|null $class
+     */
+    private function createCategory(?string $class = null): object
+    {
+        if (!$class) {
+            $class = self::CATEGORY;
+        }
+
+        return new $class();
     }
 
     /**

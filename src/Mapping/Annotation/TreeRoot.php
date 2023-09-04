@@ -29,6 +29,9 @@ final class TreeRoot implements GedmoAnnotation
     /** @var string|null */
     public $identifierMethod;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [], ?string $identifierMethod = null)
     {
         if ([] !== $data) {

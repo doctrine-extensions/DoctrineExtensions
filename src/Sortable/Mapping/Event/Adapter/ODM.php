@@ -23,8 +23,9 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 final class ODM extends BaseAdapterODM implements SortableAdapter
 {
     /**
-     * @param ClassMetadata $meta
-     * @param array         $groups
+     * @param array<string, mixed>    $config
+     * @param ClassMetadata           $meta
+     * @param iterable<string, mixed> $groups
      *
      * @return int
      */
@@ -51,9 +52,9 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
     }
 
     /**
-     * @param array $relocation
-     * @param array $delta
-     * @param array $config
+     * @param array<string, mixed> $relocation
+     * @param array<string, mixed> $delta
+     * @param array<string, mixed> $config
      *
      * @return void
      */

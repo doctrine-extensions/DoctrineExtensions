@@ -35,9 +35,9 @@ interface ReferencesAdapter extends AdapterInterface
     /**
      * Gets a single reference from the provided object manager for a class and identifier.
      *
-     * @param ObjectManager    $om
-     * @param string           $class
-     * @param array|string|int $identifier
+     * @param ObjectManager                       $om
+     * @param string                              $class
+     * @param array<int|string, mixed>|string|int $identifier
      *
      * @phpstan-param class-string $class
      *
