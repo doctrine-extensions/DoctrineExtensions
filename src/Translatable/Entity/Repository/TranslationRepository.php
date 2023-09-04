@@ -151,9 +151,8 @@ class TranslationRepository extends EntityRepository
                     'entityId' => $entityId,
                     'entityClass' => $entityClass,
                 ]);
-            $q = $qb->getQuery();
 
-            foreach ($q->getArrayResult() as $row) {
+            foreach ($qb->getQuery()->toIterable([], Query::HYDRATE_ARRAY) as $row) {
                 $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
@@ -191,8 +190,7 @@ class TranslationRepository extends EntityRepository
                 'value' => $value,
             ]);
             $q->setMaxResults(1);
-            $result = $q->getArrayResult();
-            $id = $result[0]['foreignKey'] ?? null;
+            $id = $q->getSingleScalarResult();
 
             if (null !== $id) {
                 $entity = $this->_em->find($class, $id);
@@ -223,7 +221,7 @@ class TranslationRepository extends EntityRepository
                 ->setParameter('entityId', $id);
             $q = $qb->getQuery();
 
-            foreach ($q->getArrayResult() as $row) {
+            foreach ($q->toIterable([], Query::HYDRATE_ARRAY) as $row) {
                 $result[$row['locale']][$row['field']] = $row['content'];
             }
         }

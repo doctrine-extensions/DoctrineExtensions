@@ -223,8 +223,7 @@ class Nested implements Strategy
             }
             $q = $qb->getQuery();
             // get nodes for deletion
-            $nodes = $q->getResult();
-            foreach ((array) $nodes as $removalNode) {
+            foreach ($q->toIterable() as $removalNode) {
                 $uow->scheduleForDelete($removalNode);
             }
         }

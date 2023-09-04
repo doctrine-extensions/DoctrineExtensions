@@ -272,7 +272,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $dql .= " WHERE node.{$config['parent']} = :node";
         $q = $this->_em->createQuery($dql);
         $q->setParameter('node', $node);
-        $nodesToReparent = $q->getResult();
+        $nodesToReparent = $q->toIterable();
         // process updates in transaction
         $this->_em->getConnection()->beginTransaction();
 

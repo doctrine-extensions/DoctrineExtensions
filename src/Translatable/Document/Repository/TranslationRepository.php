@@ -183,9 +183,9 @@ class TranslationRepository extends DocumentRepository
             ->getQuery();
 
         $q->setHydrate(false);
-        $result = $q->getIterator()->toArray();
+        $result = $q->getSingleResult();
 
-        $id = $result[0]['foreign_key'] ?? null;
+        $id = $result['foreign_key'] ?? null;
 
         if (null === $id) {
             return null;
