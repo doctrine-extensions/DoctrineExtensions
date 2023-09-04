@@ -18,7 +18,7 @@ services:
   mysql:
     image: mysql:8.0
     healthcheck:
-      test: ['CMD', 'mysql', '-h', 'mysql', '--user=root', '--password=${MYSQL_ROOT_PASSWORD}', '-e', 'status']
+      test: ["CMD-SHELL", "mysql -h mysql --user=root --password=$${MYSQL_ROOT_PASSWORD} -e status"]
       interval: 10s
       timeout: 2s
       retries: 5
