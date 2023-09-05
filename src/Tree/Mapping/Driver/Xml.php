@@ -213,6 +213,11 @@ class Xml extends BaseXml
                             throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->getName()}");
                         }
                         $config['root'] = $field;
+
+                        $identifierMethod = $this->_getAttribute($manyToOneMapping->{'tree-root'}, 'identifier-method');
+                        if (!empty($identifierMethod)) {
+                            $config['rootIdentifierMethod'] = $this->_getAttribute($manyToOneMapping->{'tree-root'}, 'identifier-method');
+                        }
                     }
                 }
             }
