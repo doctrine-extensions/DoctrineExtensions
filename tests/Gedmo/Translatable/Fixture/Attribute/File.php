@@ -32,12 +32,9 @@ class File
     #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
-    private $title;
+    private ?string $title = null;
 
     public function getId(): ?int
     {

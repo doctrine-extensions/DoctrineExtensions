@@ -31,15 +31,9 @@ final class TranslatableMappingTest extends ORMMappingTestCase
 {
     private const TEST_YAML_ENTITY_CLASS = User::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
     protected function setUp(): void
     {

@@ -26,10 +26,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
 {
     private const ARTICLE = ConfigurationArticle::class;
 
-    /**
-     * @var int|null
-     */
-    private $articleId;
+    private ?int $articleId = null;
 
     protected function setUp(): void
     {

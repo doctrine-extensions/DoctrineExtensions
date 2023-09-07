@@ -24,15 +24,9 @@ use Gedmo\Mapping\Event\AdapterInterface;
  */
 class ODM implements AdapterInterface
 {
-    /**
-     * @var EventArgs
-     */
-    private $args;
+    private ?EventArgs $args = null;
 
-    /**
-     * @var DocumentManager
-     */
-    private $dm;
+    private ?DocumentManager $dm = null;
 
     public function __call($method, $args)
     {

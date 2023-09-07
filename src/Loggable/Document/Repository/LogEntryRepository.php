@@ -33,9 +33,9 @@ class LogEntryRepository extends DocumentRepository
     /**
      * Currently used loggable listener
      *
-     * @var LoggableListener<T>
+     * @var LoggableListener<T>|null
      */
-    private $listener;
+    private ?LoggableListener $listener = null;
 
     /**
      * Loads all log entries for the

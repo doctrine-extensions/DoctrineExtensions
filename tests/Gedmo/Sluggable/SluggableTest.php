@@ -27,10 +27,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableTest extends BaseTestCaseORM
 {
-    /**
-     * @var int|null
-     */
-    private $articleId;
+    private ?int $articleId = null;
 
     protected function setUp(): void
     {

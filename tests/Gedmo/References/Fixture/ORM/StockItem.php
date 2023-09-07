@@ -35,44 +35,34 @@ class StockItem
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column
      */
     #[ORM\Column]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column
      */
     #[ORM\Column]
-    private $sku;
+    private ?string $sku = null;
 
     /**
-     * @var int|null
-     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
-    private $quantity;
+    private ?int $quantity = null;
 
     /**
-     * @var Product|null
-     *
      * @Gedmo\ReferenceOne(type="document", class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
      */
     #[Gedmo\ReferenceOne(type: 'document', class: Product::class, inversedBy: 'stockItems', identifier: 'productId')]
-    private $product;
+    private ?Product $product = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string")
      */
     #[ORM\Column(type: Types::STRING)]
-    private $productId;
+    private ?string $productId = null;
 
     public function getId(): ?int
     {

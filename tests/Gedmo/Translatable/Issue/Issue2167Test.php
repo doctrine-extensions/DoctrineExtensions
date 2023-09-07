@@ -22,10 +22,7 @@ class Issue2167Test extends BaseTestCaseORM
     private const TRANSLATION = Translation::class;
     private const ENTITY = Article::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

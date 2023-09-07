@@ -22,30 +22,24 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id(strategy="NONE")
      */
     #[ODM\Id(strategy: 'NONE')]
-    private $id;
+    private ?string $id = null;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(separator="-", updatable=true, fields={"title"})
      * @ODM\Field(type="string")
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
     #[ODM\Field(type: Type::STRING)]
-    private $slug;
+    private ?string $slug = null;
 
     public function setId(?string $id): self
     {

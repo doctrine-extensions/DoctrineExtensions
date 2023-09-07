@@ -35,12 +35,10 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string")
      */
     #[ORM\Column(name: 'title', type: Types::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Collection<int, File>
@@ -50,10 +48,7 @@ class Article
     #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'article', cascade: ['persist', 'remove'])]
     private $files;
 
-    /**
-     * @var string|null
-     */
-    private $filePath;
+    private ?string $filePath = null;
 
     public function __construct()
     {

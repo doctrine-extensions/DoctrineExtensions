@@ -30,11 +30,9 @@ class User
 
     /**
      * @ODM\Field(type="string")
-     *
-     * @var string|null
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $username;
+    private ?string $username = null;
 
     public function getId(): ?string
     {

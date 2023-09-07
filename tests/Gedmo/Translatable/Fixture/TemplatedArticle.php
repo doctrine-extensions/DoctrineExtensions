@@ -35,14 +35,12 @@ class TemplatedArticle extends ArticleTemplate
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="string", length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::STRING, length: 128)]
-    private $name;
+    private ?string $name = null;
 
     public function setName(?string $name): void
     {

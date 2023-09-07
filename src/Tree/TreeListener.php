@@ -63,7 +63,7 @@ class TreeListener extends MappedEventSubscriber
      *
      * @phpstan-var array<class-string, string>
      */
-    private $strategies = [];
+    private array $strategies = [];
 
     /**
      * List of strategy instances
@@ -72,7 +72,7 @@ class TreeListener extends MappedEventSubscriber
      *
      * @phpstan-var array<value-of<self::strategies>, Strategy>
      */
-    private $strategyInstances = [];
+    private array $strategyInstances = [];
 
     /**
      * List of used classes on flush
@@ -81,7 +81,7 @@ class TreeListener extends MappedEventSubscriber
      *
      * @phpstan-var array<class-string, null>
      */
-    private $usedClassesOnFlush = [];
+    private array $usedClassesOnFlush = [];
 
     /**
      * Specifies the list of events to listen

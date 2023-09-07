@@ -21,12 +21,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Child extends MappedSuperclass
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string")
      */
     #[ORM\Column(name: 'title', type: Types::STRING)]
-    private $title;
+    private ?string $title = null;
 
     public function setTitle(?string $title): void
     {

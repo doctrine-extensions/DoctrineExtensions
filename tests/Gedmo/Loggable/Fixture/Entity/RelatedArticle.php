@@ -38,22 +38,20 @@ class RelatedArticle implements Loggable
     private $id;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ORM\Column(type="text")
      */
     #[ORM\Column(Types::TEXT)]
     #[Gedmo\Versioned]
-    private $content;
+    private ?string $content = null;
 
     /**
      * @var Collection<int, Comment>

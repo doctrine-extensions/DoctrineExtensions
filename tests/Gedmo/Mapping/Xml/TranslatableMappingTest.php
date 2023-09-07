@@ -30,15 +30,9 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatable;
+    private TranslatableListener $translatable;
 
     protected function setUp(): void
     {

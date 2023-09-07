@@ -30,15 +30,9 @@ use Gedmo\Uploadable\UploadableListener;
  */
 final class UploadableMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var UploadableListener
-     */
-    private $listener;
+    private UploadableListener $listener;
 
     protected function setUp(): void
     {

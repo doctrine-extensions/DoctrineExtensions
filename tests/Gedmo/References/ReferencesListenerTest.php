@@ -23,15 +23,9 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 final class ReferencesListenerTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var DocumentManager
-     */
-    private $dm;
+    private DocumentManager $dm;
 
     protected function setUp(): void
     {

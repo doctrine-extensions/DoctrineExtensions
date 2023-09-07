@@ -36,47 +36,36 @@ class Image
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string")
      */
     #[ORM\Column(name: 'title', type: Types::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="path", type="string", nullable=true)
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     #[Gedmo\UploadableFilePath]
-    private $filePath;
+    private ?string $filePath = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="size", type="decimal", nullable=true)
      * @Gedmo\UploadableFileSize
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL, nullable: true)]
     #[Gedmo\UploadableFileSize]
-    private $size;
+    private ?string $size = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="mime_type", type="string", nullable=true)
      * @Gedmo\UploadableFileMimeType
      */
     #[ORM\Column(name: 'mime_type', type: Types::STRING, nullable: true)]
     #[Gedmo\UploadableFileMimeType]
-    private $mime;
+    private ?string $mime = null;
 
-    /**
-     * @var bool
-     */
-    private $useBasePath = false;
+    private bool $useBasePath = false;
 
     public function getId(): ?int
     {

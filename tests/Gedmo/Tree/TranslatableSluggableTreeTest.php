@@ -34,10 +34,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
     private const COMMENT = Comment::class;
     private const TRANSLATION = Translation::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

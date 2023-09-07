@@ -42,7 +42,7 @@ class Validator
      *
      * @var string[]
      */
-    private $validPathTypes = [
+    private array $validPathTypes = [
         'string',
         'text',
     ];
@@ -52,7 +52,7 @@ class Validator
      *
      * @var string[]
      */
-    private $validPathSourceTypes = [
+    private array $validPathSourceTypes = [
         'id',
         'integer',
         'smallint',
@@ -67,7 +67,7 @@ class Validator
      *
      * @var string[]
      */
-    private $validPathHashTypes = [
+    private array $validPathHashTypes = [
         'string',
     ];
 
@@ -76,7 +76,7 @@ class Validator
      *
      * @var string[]
      */
-    private $validRootTypes = [
+    private array $validRootTypes = [
         'integer',
         'smallint',
         'bigint',

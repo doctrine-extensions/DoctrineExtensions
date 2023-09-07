@@ -33,14 +33,12 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Mongo\Field(type="string")
      * @Gedmo\TreePathSource
      */
     #[Mongo\Field(type: Type::STRING)]
     #[Gedmo\TreePathSource]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -53,14 +51,12 @@ class Article
     private $path;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @Mongo\ReferenceOne(targetDocument="Article")
      */
     #[Mongo\ReferenceOne(targetDocument: self::class)]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Tree\Fixture\Document\Article $parent = null;
 
     /**
      * @var int|null

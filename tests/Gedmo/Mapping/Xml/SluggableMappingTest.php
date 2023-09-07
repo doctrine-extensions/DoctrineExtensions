@@ -28,10 +28,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableMappingTest extends BaseTestCaseORM
 {
-    /**
-     * @var SluggableListener
-     */
-    private $sluggable;
+    private SluggableListener $sluggable;
 
     protected function setUp(): void
     {

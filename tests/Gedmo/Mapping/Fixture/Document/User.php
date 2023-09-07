@@ -27,20 +27,16 @@ class User
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Ext\Encode(type="sha1", secret="xxx")
      * @ODM\Field(type="string")
      */
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var string|null
-     *
      * @Ext\Encode(type="md5")
      * @ODM\Field(type="string")
      */
-    private $password;
+    private ?string $password = null;
 
     public function setName(?string $name): void
     {

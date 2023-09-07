@@ -66,10 +66,7 @@ class ExtensionMetadataFactory
      */
     protected $annotationReader;
 
-    /**
-     * @var CacheItemPoolInterface|null
-     */
-    private $cacheItemPool;
+    private ?CacheItemPoolInterface $cacheItemPool = null;
 
     /**
      * @param Reader|AttributeReader|object $annotationReader

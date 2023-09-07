@@ -125,6 +125,6 @@ trait MaterializedPath
      */
     public function getChildren()
     {
-        return $this->children = $this->children ?? new ArrayCollection();
+        return $this->children ??= new ArrayCollection();
     }
 }

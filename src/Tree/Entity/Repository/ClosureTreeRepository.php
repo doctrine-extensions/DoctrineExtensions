@@ -102,9 +102,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
      */
     public function getPath($node)
     {
-        return array_map(static function (AbstractClosure $closure) {
-            return $closure->getAncestor();
-        }, $this->getPathQuery($node)->getResult());
+        return array_map(static fn (AbstractClosure $closure) => $closure->getAncestor(), $this->getPathQuery($node)->getResult());
     }
 
     /**
@@ -215,9 +213,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     {
         $result = $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode)->getResult();
         if ($node) {
-            $result = array_map(static function (AbstractClosure $closure) {
-                return $closure->getDescendant();
-            }, $result);
+            $result = array_map(static fn (AbstractClosure $closure) => $closure->getDescendant(), $result);
         }
 
         return $result;
@@ -574,9 +570,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $q = $this->getEntityManager()->createQuery($dql)->setMaxResults($batchSize)->setCacheable(false);
 
         while (($ids = $q->getScalarResult()) && [] !== $ids) {
-            $ids = array_map(static function (array $el) {
-                return $el['id'];
-            }, $ids);
+            $ids = array_map(static fn (array $el) => $el['id'], $ids);
             $query = "DELETE FROM {$closureTableName} WHERE id IN (".implode(', ', $ids).')';
             if (0 === $conn->executeStatement($query)) {
                 throw new \RuntimeException('Failed to remove incorrect closures');

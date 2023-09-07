@@ -22,28 +22,28 @@ class TitledArticle implements Timestampable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private ?string $title;
+    private ?string $title = null;
 
     #[ORM\Column(name: 'text', type: Types::STRING, length: 128)]
-    private ?string $text;
+    private ?string $text = null;
 
     #[ORM\Column(name: 'state', type: Types::STRING, length: 128)]
-    private ?string $state;
+    private ?string $state = null;
 
     #[ORM\Column(name: 'chtext', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'text')]
-    private ?\DateTime $chText;
+    private ?\DateTime $chText = null;
 
     #[ORM\Column(name: 'chtitle', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'title')]
-    private ?\DateTime $chTitle;
+    private ?\DateTime $chTitle = null;
 
     #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'state', value: ['Published', 'Closed'])]
-    private ?\DateTime $closed;
+    private ?\DateTime $closed = null;
 
     public function setChText(\DateTime $chText): void
     {

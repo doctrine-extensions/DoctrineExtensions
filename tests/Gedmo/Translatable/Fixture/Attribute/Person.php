@@ -22,11 +22,11 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $id;
+    private ?int $id = null;
 
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    private ?string $name;
+    private ?string $name = null;
 
     public function getId(): ?int
     {

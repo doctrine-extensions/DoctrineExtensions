@@ -34,44 +34,36 @@ class Post
     private $id;
 
     /**
-     * @var \DateTime|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="datetime", nullable=true)
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Translatable]
-    private $publishedAt;
+    private ?\DateTime $publishedAt = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="time")
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     #[Gedmo\Translatable]
-    private $timestampAt;
+    private ?\DateTime $timestampAt = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="date")
      */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Gedmo\Translatable]
-    private $dateAt;
+    private ?\DateTime $dateAt = null;
 
     /**
-     * @var bool|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="boolean")
      */
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Gedmo\Translatable]
-    private $boolean;
+    private ?bool $boolean = null;
 
     public function getId(): ?int
     {

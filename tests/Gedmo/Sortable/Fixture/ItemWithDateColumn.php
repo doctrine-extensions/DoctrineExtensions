@@ -21,8 +21,6 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 class ItemWithDateColumn
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -30,27 +28,23 @@ class ItemWithDateColumn
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var int
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
-    private $position = 0;
+    private int $position = 0;
 
     /**
-     * @var \DateTime|null
-     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="date")
      */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private $date;
+    private ?\DateTime $date = null;
 
     public function getId(): ?int
     {

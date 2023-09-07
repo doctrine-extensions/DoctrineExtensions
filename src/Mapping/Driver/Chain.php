@@ -23,17 +23,15 @@ class Chain implements Driver
 {
     /**
      * The default driver
-     *
-     * @var Driver|null
      */
-    private $defaultDriver;
+    private ?Driver $defaultDriver = null;
 
     /**
      * List of drivers nested
      *
-     * @var Driver[]
+     * @var array<string, Driver>
      */
-    private $_drivers = [];
+    private array $_drivers = [];
 
     /**
      * Add a nested driver.
@@ -50,7 +48,7 @@ class Chain implements Driver
     /**
      * Get the array of nested drivers.
      *
-     * @return Driver[] $drivers
+     * @return array<string, Driver>
      */
     public function getDrivers()
     {

@@ -27,10 +27,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TimestampableMappingTest extends BaseTestCaseORM
 {
-    /**
-     * @var TimestampableListener
-     */
-    private $timestampable;
+    private TimestampableListener $timestampable;
 
     protected function setUp(): void
     {

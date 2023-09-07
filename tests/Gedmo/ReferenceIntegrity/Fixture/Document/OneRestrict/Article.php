@@ -29,20 +29,16 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var Type|null
-     *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Type", inversedBy="articles")
      */
     #[ODM\ReferenceOne(targetDocument: Type::class, inversedBy: 'articles')]
-    private $type;
+    private ?\Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Type $type = null;
 
     public function getId(): ?string
     {

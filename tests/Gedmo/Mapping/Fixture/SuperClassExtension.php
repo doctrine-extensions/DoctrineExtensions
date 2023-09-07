@@ -20,12 +20,10 @@ use Doctrine\ORM\Mapping as ORM;
 class SuperClassExtension extends MappedSuperClass
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
-    private $title;
+    private ?string $title = null;
 
     public function setTitle(?string $title): void
     {

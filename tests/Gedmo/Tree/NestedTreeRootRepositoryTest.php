@@ -139,9 +139,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         );
 
         // custom title
-        $nodeDecorator = static function ($node) {
-            return '<span>'.$node['title'].'</span>';
-        };
+        $nodeDecorator = static fn ($node) => '<span>'.$node['title'].'</span>';
 
         $decoratedHtmlTree = $repo->childrenHierarchy(
             $food,
@@ -161,9 +159,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $rootClose = '';
         $childOpen = '';
         $childClose = '';
-        $nodeDecorator = static function ($node) {
-            return str_repeat('-', $node['level'] - 1).$node['title']."\n";
-        };
+        $nodeDecorator = static fn ($node) => str_repeat('-', $node['level'] - 1).$node['title']."\n";
 
         $decoratedCliTree = $repo->childrenHierarchy(
             $food,
@@ -182,16 +178,12 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             $decoratedCliTree
         );
 
-        $rootOpen = static function () {return '<ul class="group">'; };
+        $rootOpen = static fn () => '<ul class="group">';
         // check support of the closures in rootClose
-        $rootClose = static function () {return '</ul><!--rootCloseClosure-->'; };
-        $childOpen = static function (&$node) {
-            return '<li class="depth'.($node['level'] - 1).'">';
-        };
+        $rootClose = static fn () => '</ul><!--rootCloseClosure-->';
+        $childOpen = static fn (&$node) => '<li class="depth'.($node['level'] - 1).'">';
         // check support of the closures in childClose
-        $childClose = static function (&$node) {
-            return '</li><!--childCloseClosure-->';
-        };
+        $childClose = static fn (&$node) => '</li><!--childCloseClosure-->';
         $decoratedHtmlTree = $repo->childrenHierarchy(
             $food,
             false,

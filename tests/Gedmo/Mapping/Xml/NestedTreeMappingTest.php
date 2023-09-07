@@ -26,15 +26,9 @@ use Gedmo\Tree\TreeListener;
  */
 final class NestedTreeMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var TreeListener
-     */
-    private $tree;
+    private TreeListener $tree;
 
     protected function setUp(): void
     {

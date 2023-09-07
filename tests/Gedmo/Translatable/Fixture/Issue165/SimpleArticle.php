@@ -30,32 +30,26 @@ class SimpleArticle
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
-    private $content;
+    private ?string $content = null;
 
     /**
-     * @var string|null
-     *
      * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
-    private $untranslated;
+    private ?string $untranslated = null;
 
     public function getId(): ?string
     {

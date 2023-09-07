@@ -35,28 +35,21 @@ class TransArticleManySlug implements Sluggable, Translatable
     #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
-    /**
-     * @var int|null
-     */
-    private $page;
+    private ?int $page = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="string", length=64)
      */
     #[ORM\Column(type: Types::STRING, length: 64)]
     #[Gedmo\Translatable]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", length=64)
      */
     #[ORM\Column(type: Types::STRING, length: 64)]
-    private $uniqueTitle;
+    private ?string $uniqueTitle = null;
 
     /**
      * @var string|null
@@ -69,14 +62,12 @@ class TransArticleManySlug implements Sluggable, Translatable
     private $uniqueSlug;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="string", length=16)
      */
     #[ORM\Column(type: Types::STRING, length: 16)]
     #[Gedmo\Translatable]
-    private $code;
+    private ?string $code = null;
 
     /**
      * @var string|null
@@ -91,13 +82,11 @@ class TransArticleManySlug implements Sluggable, Translatable
     private $slug;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      */
     #[Gedmo\Locale]
-    private $locale;
+    private ?string $locale = null;
 
     public function setPage(?int $page): void
     {

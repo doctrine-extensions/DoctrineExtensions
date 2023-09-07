@@ -25,10 +25,7 @@ final class ChangeTest extends BaseTestCaseORM
 {
     private const FIXTURE = TitledArticle::class;
 
-    /**
-     * @var BlameableListener
-     */
-    private $listener;
+    private BlameableListener $listener;
 
     protected function setUp(): void
     {

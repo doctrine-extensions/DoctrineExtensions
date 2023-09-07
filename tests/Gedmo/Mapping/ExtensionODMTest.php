@@ -23,10 +23,7 @@ final class ExtensionODMTest extends BaseTestCaseMongoODM
 {
     private const USER = User::class;
 
-    /**
-     * @var EncoderListener
-     */
-    private $encoderListener;
+    private EncoderListener $encoderListener;
 
     protected function setUp(): void
     {

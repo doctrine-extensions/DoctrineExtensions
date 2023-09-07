@@ -34,32 +34,26 @@ class Page
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var User|null
-     *
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Sluggable\Fixture\Issue1058\User")
      * @ORM\JoinColumn(nullable=false)
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private ?User $user = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(separator="-", fields={"title"}, unique=true, unique_base="user")
      * @ORM\Column(name="slug", type="string", length=64)
      */
     #[Gedmo\Slug(separator: '-', unique: true, unique_base: 'user', fields: ['title'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64)]
-    private $slug;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {

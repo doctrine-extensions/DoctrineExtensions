@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class TranslatableModel
 {
     #[Gedmo\Translatable]
-    private ?string $title;
+    private ?string $title = null;
 
     /**
      * @var string|null

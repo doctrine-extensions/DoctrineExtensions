@@ -34,12 +34,10 @@ class WithoutInterface
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var \DateTime|null

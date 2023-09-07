@@ -34,13 +34,11 @@ class MappedSuperClass
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=32)
      * @Ext\Encode(type="md5")
      */
     #[ORM\Column(length: 32)]
-    private $content;
+    private ?string $content = null;
 
     public function setContent(?string $content): void
     {

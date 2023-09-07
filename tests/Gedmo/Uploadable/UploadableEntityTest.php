@@ -68,10 +68,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     private const FILE_WITH_ALLOWED_TYPES_CLASS = FileWithAllowedTypes::class;
     private const FILE_WITH_DISALLOWED_TYPES_CLASS = FileWithDisallowedTypes::class;
 
-    /**
-     * @var UploadableListenerStub
-     */
-    private $listener;
+    private UploadableListenerStub $listener;
 
     /** @var string */
     private $testFile;
@@ -88,32 +85,23 @@ final class UploadableEntityTest extends BaseTestCaseORM
     /** @var string */
     private $testFileWithSpaces;
 
-    /** @var string */
-    private $destinationTestDir;
+    private string $destinationTestDir;
 
-    /** @var string */
-    private $destinationTestFile;
+    private string $destinationTestFile;
 
-    /** @var false|string */
-    private $testFilename;
+    private string $testFilename;
 
-    /** @var false|string */
-    private $testFilename2;
+    private string $testFilename2;
 
-    /** @var false|string */
-    private $testFilename3;
+    private string $testFilename3;
 
-    /** @var false|string */
-    private $testFilenameWithoutExt;
+    private string $testFilenameWithoutExt;
 
-    /** @var false|string */
-    private $testFilenameWithSpaces;
+    private string $testFilenameWithSpaces;
 
-    /** @var int */
-    private $testFileSize;
+    private int $testFileSize;
 
-    /** @var string */
-    private $testFileMimeType;
+    private string $testFileMimeType;
 
     protected function setUp(): void
     {

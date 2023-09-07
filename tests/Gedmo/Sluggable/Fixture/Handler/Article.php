@@ -36,20 +36,16 @@ class Article implements Sluggable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="code", type="string", length=16)
      */
     #[ORM\Column(name: 'code', type: Types::STRING, length: 16)]
-    private $code;
+    private ?string $code = null;
 
     /**
      * @var string|null

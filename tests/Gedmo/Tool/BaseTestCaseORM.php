@@ -73,13 +73,11 @@ abstract class BaseTestCaseORM extends TestCase
             'memory' => true,
         ];
 
-        $config = $config ?? $this->getDefaultConfiguration();
+        $config ??= $this->getDefaultConfiguration();
         $connection = DriverManager::getConnection($conn, $config);
         $em = new EntityManager($connection, $config, $evm ?? $this->getEventManager());
 
-        $schema = array_map(static function (string $class) use ($em): ClassMetadata {
-            return $em->getClassMetadata($class);
-        }, $this->getUsedEntityFixtures());
+        $schema = array_map(static fn (string $class): ClassMetadata => $em->getClassMetadata($class), $this->getUsedEntityFixtures());
 
         $schemaTool = new SchemaTool($em);
         $schemaTool->dropSchema([]);

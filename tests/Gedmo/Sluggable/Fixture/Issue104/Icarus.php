@@ -21,12 +21,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Icarus extends Bus
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var string|null

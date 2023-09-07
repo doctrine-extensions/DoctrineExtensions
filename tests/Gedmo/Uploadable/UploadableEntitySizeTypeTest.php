@@ -27,15 +27,9 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
 {
     private const IMAGE_WITH_TYPED_PROPERTIES_CLASS = ImageWithTypedProperties::class;
 
-    /**
-     * @var UploadableListenerStub
-     */
-    private $listener;
+    private UploadableListenerStub $listener;
 
-    /**
-     * @var string
-     */
-    private $destinationTestDir;
+    private string $destinationTestDir;
 
     protected function setUp(): void
     {

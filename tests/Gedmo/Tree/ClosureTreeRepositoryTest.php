@@ -474,14 +474,12 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         static::assertSame('Milk', $tree[2]['title']);
 
         // Helper Closures
-        $getTree = static function ($includeNode) use ($repo, $roots, $sortOption) {
-            return $repo->childrenHierarchy(
-                $roots[0],
-                true,
-                array_merge($sortOption, ['decorate' => true]),
-                $includeNode
-            );
-        };
+        $getTree = static fn ($includeNode) => $repo->childrenHierarchy(
+            $roots[0],
+            true,
+            array_merge($sortOption, ['decorate' => true]),
+            $includeNode
+        );
         $getTreeHtml = static function ($includeNode) {
             $baseHtml = '<li>Boring Food<ul><li>Vegitables<ul><li>Cabbages</li><li>Carrots</li></ul></li></ul></li><li>Fruits<ul><li>Berries<ul><li>Strawberries</li></ul></li><li>Lemons</li><li>Oranges</li></ul></li><li>Milk<ul><li>Cheese<ul><li>Mould cheese</li></ul></li></ul></li></ul>';
 

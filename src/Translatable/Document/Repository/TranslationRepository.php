@@ -35,10 +35,8 @@ class TranslationRepository extends DocumentRepository
     /**
      * Current TranslatableListener instance used
      * in EntityManager
-     *
-     * @var TranslatableListener|null
      */
-    private $listener;
+    private ?TranslatableListener $listener = null;
 
     public function __construct(DocumentManager $dm, UnitOfWork $uow, ClassMetadata $class)
     {

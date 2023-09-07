@@ -35,12 +35,10 @@ class Category
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, Item>
@@ -48,7 +46,7 @@ class Category
      * @ORM\OneToMany(targetEntity="Item", mappedBy="category")
      */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Item::class)]
-    private $items;
+    private Collection $items;
 
     public function __construct()
     {

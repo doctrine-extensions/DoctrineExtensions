@@ -60,19 +60,15 @@ class UploadableListener extends MappedEventSubscriber
 
     /**
      * Mime type guesser
-     *
-     * @var MimeTypeGuesserInterface
      */
-    private $mimeTypeGuesser;
+    private MimeTypeGuesserInterface $mimeTypeGuesser;
 
     /**
      * Default FileInfoInterface class
      *
-     * @var string
-     *
      * @phpstan-var class-string<FileInfoInterface>
      */
-    private $defaultFileInfoClass = FileInfoArray::class;
+    private string $defaultFileInfoClass = FileInfoArray::class;
 
     /**
      * Array of files to remove on postFlush
@@ -659,9 +655,7 @@ class UploadableListener extends MappedEventSubscriber
         if ('' === $path) {
             $defaultPath = $this->getDefaultPath();
             if ('' !== $config['pathMethod']) {
-                $getPathMethod = \Closure::bind(function (string $pathMethod, ?string $defaultPath): string {
-                    return $this->{$pathMethod}($defaultPath);
-                }, $object, $meta->getReflectionClass()->getName());
+                $getPathMethod = \Closure::bind(fn (string $pathMethod, ?string $defaultPath): string => $this->{$pathMethod}($defaultPath), $object, $meta->getReflectionClass()->getName());
 
                 $path = $getPathMethod($config['pathMethod'], $defaultPath);
             } elseif (null !== $defaultPath) {
@@ -720,9 +714,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     protected function getPropertyValueFromObject(ClassMetadata $meta, $propertyName, $object)
     {
-        $getFilePath = \Closure::bind(function (string $propertyName) {
-            return $this->{$propertyName};
-        }, $object, $meta->getReflectionClass()->getName());
+        $getFilePath = \Closure::bind(fn (string $propertyName) => $this->{$propertyName}, $object, $meta->getReflectionClass()->getName());
 
         return $getFilePath($propertyName);
     }

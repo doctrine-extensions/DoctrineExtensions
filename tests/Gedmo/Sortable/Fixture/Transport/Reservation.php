@@ -34,52 +34,42 @@ class Reservation
     private $id;
 
     /**
-     * @var Bus|null
-     *
      * @ORM\ManyToOne(targetEntity="Bus")
      */
     #[ORM\ManyToOne(targetEntity: Bus::class)]
-    private $bus;
+    private ?Bus $bus = null;
 
     /**
      * Bus destination
-     *
-     * @var string|null
      *
      * @Gedmo\SortableGroup
      * @ORM\Column(length=191)
      */
     #[Gedmo\SortableGroup]
     #[ORM\Column(length: 191)]
-    private $destination;
+    private ?string $destination = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $travelDate;
+    private ?\DateTime $travelDate = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
-    private $seat;
+    private ?int $seat = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=191)
      */
     #[ORM\Column(length: 191)]
-    private $name;
+    private ?string $name = null;
 
     public function getId(): ?int
     {

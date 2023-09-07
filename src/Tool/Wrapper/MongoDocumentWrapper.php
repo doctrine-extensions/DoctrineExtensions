@@ -27,17 +27,13 @@ class MongoDocumentWrapper extends AbstractWrapper
 {
     /**
      * Document identifier
-     *
-     * @var string|null
      */
-    private $identifier;
+    private ?string $identifier = null;
 
     /**
      * True if document or proxy is loaded
-     *
-     * @var bool
      */
-    private $initialized = false;
+    private bool $initialized = false;
 
     /**
      * Wrap document
@@ -123,9 +119,7 @@ class MongoDocumentWrapper extends AbstractWrapper
                         $identifier = $this->getIdentifier();
                     } else {
                         // this may not happen but in case
-                        $getIdentifier = \Closure::bind(function () {
-                            return $this->identifier;
-                        }, $this->object, get_class($this->object));
+                        $getIdentifier = \Closure::bind(fn () => $this->identifier, $this->object, get_class($this->object));
 
                         $identifier = $getIdentifier();
                     }

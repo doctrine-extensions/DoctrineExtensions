@@ -30,10 +30,7 @@ final class Issue449Test extends BaseTestCaseORM
     private const TARGET = Article::class;
     private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
-    /**
-     * @var SoftDeleteableListener
-     */
-    private $softDeleteableListener;
+    private SoftDeleteableListener $softDeleteableListener;
 
     protected function setUp(): void
     {

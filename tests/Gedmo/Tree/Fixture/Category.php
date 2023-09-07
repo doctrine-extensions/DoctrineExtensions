@@ -40,12 +40,10 @@ class Category implements NodeInterface
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var int|null
@@ -68,8 +66,6 @@ class Category implements NodeInterface
     private $rgt;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumns({
@@ -79,7 +75,7 @@ class Category implements NodeInterface
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parentId;
+    private ?\Gedmo\Tests\Tree\Fixture\Category $parentId = null;
 
     /**
      * @var int|null
@@ -97,7 +93,7 @@ class Category implements NodeInterface
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    private $children;
+    private Collection $children;
 
     /**
      * @var Collection<int, Article>
@@ -105,12 +101,9 @@ class Category implements NodeInterface
      * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
-    /**
-     * @var NodeInterface|null
-     */
-    private $sibling;
+    private ?NodeInterface $sibling = null;
 
     public function __construct()
     {

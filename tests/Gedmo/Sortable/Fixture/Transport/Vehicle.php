@@ -44,32 +44,26 @@ class Vehicle
     private $id;
 
     /**
-     * @var Engine|null
-     *
      * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Engine")
      */
     #[Gedmo\SortableGroup]
     #[ORM\ManyToOne(targetEntity: Engine::class)]
-    private $engine;
+    private ?Engine $engine = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
-    private $sortByEngine;
+    private ?int $sortByEngine = null;
 
     public function getId(): ?int
     {

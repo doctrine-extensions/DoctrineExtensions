@@ -37,44 +37,36 @@ class Article implements Translatable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="content", type="text", nullable=true)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'content', type: Types::TEXT, nullable: true)]
-    private $content;
+    private ?string $content = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\Translatable(fallback=false)
      * @ORM\Column(name="views", type="integer", nullable=true)
      */
     #[Gedmo\Translatable(fallback: false)]
     #[ORM\Column(name: 'views', type: Types::INTEGER, nullable: true)]
-    private $views;
+    private ?int $views = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="author", type="string", nullable=true)
      */
     #[Gedmo\Translatable(fallback: true)]
     #[ORM\Column(name: 'author', type: Types::STRING, nullable: true)]
-    private $author;
+    private ?string $author = null;
 
     /**
      * @var string|null
@@ -84,7 +76,7 @@ class Article implements Translatable
      * @Gedmo\Locale
      */
     #[Gedmo\Locale]
-    private $locale;
+    private ?string $locale = null;
 
     /**
      * @var Collection<int, Comment>

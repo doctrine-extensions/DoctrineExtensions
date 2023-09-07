@@ -35,32 +35,26 @@ class Article implements Sluggable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(separator="+", updatable=true, fields={"title"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '+', updatable: true, fields: ['title'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(separator="+", updatable=true, fields={"title"}, style="camel")
      * @ORM\Column(name="camel_slug", type="string", length=64, unique=true)
      */
     #[ORM\Column(name: 'camel_slug', type: Types::STRING, length: 64, unique: true)]
     #[Gedmo\Slug(separator: '+', updatable: true, fields: ['title'], style: 'camel')]
-    private $camelSlug;
+    private ?string $camelSlug = null;
 
     public function getId(): ?int
     {

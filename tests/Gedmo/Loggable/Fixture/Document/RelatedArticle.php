@@ -34,22 +34,20 @@ class RelatedArticle implements Loggable
     private $id;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
-    private $content;
+    private ?string $content = null;
 
     /**
      * @var Collection<int, Comment>

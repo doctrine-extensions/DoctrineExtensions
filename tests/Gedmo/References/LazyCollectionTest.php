@@ -19,9 +19,7 @@ final class LazyCollectionTest extends TestCase
 {
     public function testCallback(): void
     {
-        $collection = new LazyCollection(static function (): Collection {
-            return new ArrayCollection(['1', '2']);
-        });
+        $collection = new LazyCollection(static fn (): Collection => new ArrayCollection(['1', '2']));
 
         static::assertCount(2, $collection);
     }

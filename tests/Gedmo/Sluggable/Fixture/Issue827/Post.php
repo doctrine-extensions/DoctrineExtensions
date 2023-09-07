@@ -23,14 +23,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Post
 {
     /**
-     * @var string|null
-     *
      * @ORM\Id
      * @ORM\Column(name="title", unique=true, length=64)
      */
     #[ORM\Id]
     #[ORM\Column(name: 'title', unique: true, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -50,7 +48,7 @@ class Post
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post')]
-    private $comments;
+    private Collection $comments;
 
     public function __construct()
     {

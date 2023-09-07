@@ -33,10 +33,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     /** @var MaterializedPathRepository */
     protected $repo;
 
-    /**
-     * @var TreeListener
-     */
-    private $listener;
+    private TreeListener $listener;
 
     protected function setUp(): void
     {

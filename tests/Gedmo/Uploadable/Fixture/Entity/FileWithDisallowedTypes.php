@@ -36,42 +36,34 @@ class FileWithDisallowedTypes
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", nullable=true)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, nullable: true)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="path", type="string", nullable=true)
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     #[Gedmo\UploadableFilePath]
-    private $filePath;
+    private ?string $filePath = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="size", type="decimal", nullable=true)
      * @Gedmo\UploadableFileSize
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL, nullable: true)]
     #[Gedmo\UploadableFileSize]
-    private $fileSize;
+    private ?string $fileSize = null;
 
     /**
-     * @var Article|null
-     *
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
      */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'files')]
     #[ORM\JoinColumn(name: 'article_id', referencedColumnName: 'id')]
-    private $article;
+    private ?Article $article = null;
 
     public function getId(): ?int
     {

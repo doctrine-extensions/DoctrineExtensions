@@ -48,7 +48,7 @@ class ReferencesListener extends MappedEventSubscriber
     /**
      * @var array<string, ObjectManager>
      */
-    private $managers;
+    private array $managers;
 
     /**
      * @param array<string, ObjectManager> $managers

@@ -55,14 +55,12 @@ abstract class Role
     private $id;
 
     /**
-     * @var UserGroup
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="UserGroup", inversedBy="children")
      */
     #[ORM\ManyToOne(targetEntity: UserGroup::class, inversedBy: 'children')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?UserGroup $parent = null;
 
     /**
      * @var int|null
@@ -95,12 +93,10 @@ abstract class Role
     private $lvl;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="role", type="string", length=191, nullable=false)
      */
     #[ORM\Column(name: 'role', type: Types::STRING, length: 191, nullable: false)]
-    private $role;
+    private ?string $role = null;
 
     public function __construct()
     {

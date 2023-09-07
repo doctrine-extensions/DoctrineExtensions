@@ -29,15 +29,9 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  */
 final class SortableMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var SortableListener
-     */
-    private $sortable;
+    private SortableListener $sortable;
 
     protected function setUp(): void
     {

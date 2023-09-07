@@ -41,26 +41,20 @@ class MPCategoryWithRootAssociation
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\TreePath
      * @ORM\Column(name="path", type="string", length=3000, nullable=true)
      */
     #[ORM\Column(name: 'path', type: Types::STRING, length: 3000, nullable: true)]
     #[Gedmo\TreePath]
-    private $path;
+    private ?string $path = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="MPCategoryWithRootAssociation", inversedBy="children")
      * @ORM\JoinColumns({
@@ -70,7 +64,7 @@ class MPCategoryWithRootAssociation
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parentId;
+    private ?\Gedmo\Tests\Tree\Fixture\MPCategoryWithRootAssociation $parentId = null;
 
     /**
      * @var int|null
@@ -102,7 +96,7 @@ class MPCategoryWithRootAssociation
      * @ORM\OneToMany(targetEntity="MPCategory", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    private $children;
+    private Collection $children;
 
     /**
      * @var Collection<int, Article>
@@ -110,7 +104,7 @@ class MPCategoryWithRootAssociation
      * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
-    private $comments;
+    private Collection $comments;
 
     public function __construct()
     {

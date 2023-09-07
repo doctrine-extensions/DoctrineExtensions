@@ -36,10 +36,8 @@ class EntityWrapper extends AbstractWrapper
 
     /**
      * True if entity or proxy is loaded
-     *
-     * @var bool
      */
-    private $initialized = false;
+    private bool $initialized = false;
 
     /**
      * Wrap entity

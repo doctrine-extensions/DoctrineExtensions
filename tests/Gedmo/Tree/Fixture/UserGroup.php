@@ -26,12 +26,10 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 class UserGroup extends Role
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string", length=191)
      */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 191)]
-    private $name;
+    private string $name;
 
     public function __construct(string $name)
     {
@@ -43,7 +41,7 @@ class UserGroup extends Role
         return $this->name;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

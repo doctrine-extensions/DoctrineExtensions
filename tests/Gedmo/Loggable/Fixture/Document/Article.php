@@ -32,22 +32,20 @@ class Article implements Loggable
     private $id;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var Author|null
      * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
      * @Gedmo\Versioned
      */
     #[ODM\EmbedOne(targetDocument: Author::class)]
     #[Gedmo\Versioned]
-    private $author;
+    private ?Author $author = null;
 
     public function __toString()
     {

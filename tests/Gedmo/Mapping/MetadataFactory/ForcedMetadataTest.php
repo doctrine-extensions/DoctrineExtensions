@@ -34,15 +34,9 @@ use PHPUnit\Framework\TestCase;
  */
 final class ForcedMetadataTest extends TestCase
 {
-    /**
-     * @var TimestampableListener
-     */
-    private $timestampable;
+    private TimestampableListener $timestampable;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
     protected function setUp(): void
     {

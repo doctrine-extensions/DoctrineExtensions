@@ -67,14 +67,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @var array<int, ExtensionMetadataFactory>
      */
-    private $extensionMetadataFactory = [];
+    private array $extensionMetadataFactory = [];
 
     /**
      * List of event adapters used for this listener
      *
      * @var array<string, AdapterInterface>
      */
-    private $adapters = [];
+    private array $adapters = [];
 
     /**
      * Custom annotation reader
@@ -83,10 +83,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     private $annotationReader;
 
-    /**
-     * @var PsrCachedReader|null
-     */
-    private static $defaultAnnotationReader;
+    private static ?PsrCachedReader $defaultAnnotationReader = null;
 
     /**
      * @var CacheItemPoolInterface|null
@@ -328,9 +325,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
         if ($objectManager instanceof EntityManagerInterface || $objectManager instanceof DocumentManager) {
             $metadataFactory = $objectManager->getMetadataFactory();
-            $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
-                return $metadataFactory->getCache();
-            }, null, \get_class($metadataFactory));
+            $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
 
             $metadataCache = $getCache($metadataFactory);
 

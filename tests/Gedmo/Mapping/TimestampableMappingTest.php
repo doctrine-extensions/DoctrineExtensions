@@ -29,10 +29,7 @@ final class TimestampableMappingTest extends ORMMappingTestCase
 {
     private const TEST_YAML_ENTITY_CLASS = Category::class;
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
     protected function setUp(): void
     {

@@ -36,20 +36,16 @@ class User
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string")
      */
     #[ORM\Column(name: 'title', type: Types::STRING)]
-    private $username;
+    private ?string $username = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="deleted_time", type="datetime", nullable=true)
      */
     #[ORM\Column(name: 'deleted_time', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private $deletedAt;
+    private ?\DateTime $deletedAt = null;
 
     public function getId(): ?int
     {

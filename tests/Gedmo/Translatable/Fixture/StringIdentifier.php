@@ -22,24 +22,20 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class StringIdentifier
 {
     /**
-     * @var string|null
-     *
      * @ORM\Id
      * @ORM\Column(name="uid", type="string", length=32)
      */
     #[ORM\Id]
     #[ORM\Column(name: 'uid', type: Types::STRING, length: 32)]
-    private $uid;
+    private ?string $uid = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -49,7 +45,7 @@ class StringIdentifier
      * @Gedmo\Locale
      */
     #[Gedmo\Locale]
-    private $locale;
+    private ?string $locale = null;
 
     public function getUid(): ?string
     {

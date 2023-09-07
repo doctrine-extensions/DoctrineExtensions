@@ -18,20 +18,11 @@ class User
      */
     private $id;
 
-    /**
-     * @var string
-     */
-    private $password;
+    private ?string $password = null;
 
-    /**
-     * @var string
-     */
-    private $username;
+    private ?string $username = null;
 
-    /**
-     * @var string
-     */
-    private $company;
+    private ?string $company = null;
 
     /**
      * @var string

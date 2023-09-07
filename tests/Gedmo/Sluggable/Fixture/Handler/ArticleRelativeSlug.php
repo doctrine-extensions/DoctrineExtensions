@@ -35,12 +35,10 @@ class ArticleRelativeSlug
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=64)
      */
     #[ORM\Column(length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -60,12 +58,10 @@ class ArticleRelativeSlug
     private $slug;
 
     /**
-     * @var Article|null
-     *
      * @ORM\ManyToOne(targetEntity="Article")
      */
     #[ORM\ManyToOne(targetEntity: Article::class)]
-    private $article;
+    private ?Article $article = null;
 
     public function setArticle(?Article $article = null): void
     {

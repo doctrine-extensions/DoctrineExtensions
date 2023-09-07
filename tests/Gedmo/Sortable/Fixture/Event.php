@@ -35,32 +35,26 @@ class Event
     private $id;
 
     /**
-     * @var \DateTime
-     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $dateTime;
+    private ?\DateTime $dateTime = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var int
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
-    private $position;
+    private ?int $position = null;
 
     public function getId(): int
     {

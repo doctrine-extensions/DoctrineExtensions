@@ -42,22 +42,18 @@ class CustomerType
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string")
      */
     #[ORM\Column(name: 'name', type: Types::STRING)]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(name: 'position', type: Types::INTEGER)]
-    private $position;
+    private ?int $position = null;
 
     /**
      * @var Collection<int, Customer>
@@ -65,7 +61,7 @@ class CustomerType
      * @ORM\OneToMany(targetEntity="Customer", mappedBy="type")
      */
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Customer::class)]
-    private $customers;
+    private Collection $customers;
 
     public function __construct()
     {

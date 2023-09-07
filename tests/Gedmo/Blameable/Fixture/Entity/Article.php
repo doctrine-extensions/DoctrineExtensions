@@ -37,12 +37,10 @@ class Article implements Blameable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Collection<int, Comment>
@@ -53,42 +51,34 @@ class Article implements Blameable
     private $comments;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Blameable(on="create")
      * @ORM\Column(name="created", type="string")
      */
     #[ORM\Column(name: 'created', type: Types::STRING)]
     #[Gedmo\Blameable(on: 'create')]
-    private $created;
+    private ?string $created = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="updated", type="string")
      * @Gedmo\Blameable
      */
     #[Gedmo\Blameable]
     #[ORM\Column(name: 'updated', type: Types::STRING)]
-    private $updated;
+    private ?string $updated = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="published", type="string", nullable=true)
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
     #[ORM\Column(name: 'published', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'type.title', value: 'Published')]
-    private $published;
+    private ?string $published = null;
 
     /**
-     * @var Type|null
-     *
      * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
      */
     #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
-    private $type;
+    private ?Type $type = null;
 
     public function __construct()
     {

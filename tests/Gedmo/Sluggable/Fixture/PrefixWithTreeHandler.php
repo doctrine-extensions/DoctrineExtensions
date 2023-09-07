@@ -41,16 +41,12 @@ class PrefixWithTreeHandler implements Sluggable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(handlers={
      *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
      *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
@@ -62,11 +58,9 @@ class PrefixWithTreeHandler implements Sluggable
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'], prefix: 'test.')]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
-     * @var PrefixWithTreeHandler|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="PrefixWithTreeHandler")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -74,47 +68,39 @@ class PrefixWithTreeHandler implements Sluggable
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Sluggable\Fixture\PrefixWithTreeHandler $parent = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $lvl;
+    private ?int $lvl = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRoot
      * @ORM\Column(name="root", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     public function getId(): ?int
     {

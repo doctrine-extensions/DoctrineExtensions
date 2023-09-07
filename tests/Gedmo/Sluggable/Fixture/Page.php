@@ -36,12 +36,10 @@ class Page
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    private $content;
+    private ?string $content = null;
 
     /**
      * @var string|null

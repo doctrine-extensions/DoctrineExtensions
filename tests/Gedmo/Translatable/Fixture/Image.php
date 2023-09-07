@@ -21,14 +21,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Image extends File
 {
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(length: 128)]
-    private $mime;
+    private ?string $mime = null;
 
     public function setMime(?string $mime): void
     {

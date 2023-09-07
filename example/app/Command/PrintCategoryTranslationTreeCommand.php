@@ -95,9 +95,7 @@ final class PrintCategoryTranslationTreeCommand extends Command
             'rootClose' => '',
             'childOpen' => '',
             'childClose' => '',
-            'nodeDecorator' => static function ($node): string {
-                return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
-            },
+            'nodeDecorator' => static fn ($node): string => str_repeat('-', $node['level']).$node['title'].PHP_EOL,
         ];
 
         // Build the tree in English

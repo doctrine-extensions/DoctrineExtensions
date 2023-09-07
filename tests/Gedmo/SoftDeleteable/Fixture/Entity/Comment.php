@@ -36,20 +36,16 @@ class Comment
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="comment", type="string")
      */
     #[ORM\Column(name: 'comment', type: Types::STRING)]
-    private $comment;
+    private ?string $comment = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
     #[ORM\Column(name: 'deletedAt', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private $deletedAt;
+    private ?\DateTime $deletedAt = null;
 
     /**
      * @var Article|null

@@ -35,12 +35,10 @@ class User
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=64)
      */
     #[ORM\Column(length: 64)]
-    private $username;
+    private ?string $username = null;
 
     /**
      * @var string|null
@@ -60,12 +58,10 @@ class User
     private $slug;
 
     /**
-     * @var Company|null
-     *
      * @ORM\ManyToOne(targetEntity="Company")
      */
     #[ORM\ManyToOne(targetEntity: Company::class)]
-    private $company;
+    private ?Company $company = null;
 
     public function setCompany(?Company $company = null): void
     {

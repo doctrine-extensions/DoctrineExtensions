@@ -35,10 +35,8 @@ class TranslationRepository extends EntityRepository
     /**
      * Current TranslatableListener instance used
      * in EntityManager
-     *
-     * @var TranslatableListener|null
      */
-    private $listener;
+    private ?TranslatableListener $listener = null;
 
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {

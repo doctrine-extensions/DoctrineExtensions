@@ -35,30 +35,24 @@ class ConfigurationArticle implements Sluggable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="code", type="string", length=16)
      */
     #[ORM\Column(name: 'code', type: Types::STRING, length: 16)]
-    private $code;
+    private ?string $code = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(updatable=false, unique=false, unique_base=null, fields={"title", "code"})
      * @ORM\Column(name="slug", type="string", length=32)
      */
     #[Gedmo\Slug(updatable: false, unique: false, unique_base: null, fields: ['title', 'code'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 32)]
-    private $slug;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {

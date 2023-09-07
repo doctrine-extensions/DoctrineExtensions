@@ -28,12 +28,10 @@ class Car extends Vehicle
     protected $title;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
-    private $description;
+    private ?string $description = null;
 
     public function setDescription(?string $description): void
     {

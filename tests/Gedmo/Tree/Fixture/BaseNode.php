@@ -38,7 +38,7 @@ class BaseNode extends ANode
      * @ORM\OneToMany(targetEntity="BaseNode", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    private $children;
+    private Collection $children;
 
     /**
      * @var \DateTime|null
@@ -51,12 +51,10 @@ class BaseNode extends ANode
     private $created;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128, unique=true)
      */
     #[ORM\Column(length: 128, unique: true)]
-    private $identifier;
+    private ?string $identifier = null;
 
     /**
      * @var \DateTime|null

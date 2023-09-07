@@ -36,20 +36,16 @@ class PersonCustom
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string", length=128)
      */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="desc", type="string", length=128)
      */
     #[ORM\Column(name: 'desc', type: Types::STRING, length: 128)]
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var Collection<int, TranslationInterface>
@@ -57,7 +53,7 @@ class PersonCustom
      * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
      */
     #[ORM\OneToMany(targetEntity: PersonCustomTranslation::class, mappedBy: 'translatable', cascade: ['persist'])]
-    private $translations;
+    private Collection $translations;
 
     public function __construct()
     {

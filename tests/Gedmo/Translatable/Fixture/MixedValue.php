@@ -34,14 +34,12 @@ class MixedValue
     private $id;
 
     /**
-     * @var \DateTime|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $date;
+    private ?\DateTime $date = null;
 
     /**
      * @var mixed

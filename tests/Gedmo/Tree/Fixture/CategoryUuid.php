@@ -30,8 +30,6 @@ use Gedmo\Tree\Node as NodeInterface;
 class CategoryUuid implements NodeInterface
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="id", type="string", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
@@ -39,15 +37,13 @@ class CategoryUuid implements NodeInterface
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     #[ORM\Column(name: 'id', type: Types::STRING, nullable: false)]
-    private $id;
+    private ?string $id = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var int|null
@@ -70,8 +66,6 @@ class CategoryUuid implements NodeInterface
     private $rgt;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="CategoryUuid", inversedBy="children")
      * @ORM\JoinColumns({
@@ -81,7 +75,7 @@ class CategoryUuid implements NodeInterface
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parentId;
+    private ?\Gedmo\Tests\Tree\Fixture\CategoryUuid $parentId = null;
 
     /**
      * @var int|null
@@ -109,7 +103,7 @@ class CategoryUuid implements NodeInterface
      * @ORM\OneToMany(targetEntity="CategoryUuid", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    private $children;
+    private Collection $children;
 
     /**
      * @var Collection<int, Article>
@@ -117,12 +111,9 @@ class CategoryUuid implements NodeInterface
      * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
-    private $comments;
+    private Collection $comments;
 
-    /**
-     * @var NodeInterface|null
-     */
-    private $sibling;
+    private ?NodeInterface $sibling = null;
 
     public function __construct()
     {

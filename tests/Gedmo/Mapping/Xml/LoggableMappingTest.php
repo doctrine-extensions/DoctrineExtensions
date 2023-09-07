@@ -34,17 +34,12 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  */
 final class LoggableMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
     /**
-     * @var LoggableListener
-     *
      * @phpstan-var LoggableListener<Loggable>
      */
-    private $loggable;
+    private LoggableListener $loggable;
 
     protected function setUp(): void
     {

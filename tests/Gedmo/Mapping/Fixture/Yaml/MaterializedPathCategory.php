@@ -21,35 +21,20 @@ class MaterializedPathCategory
      */
     private $id;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    private $path;
+    private ?string $path = null;
 
-    /**
-     * @var int
-     */
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var Collection<int, Category>
      */
     private $children;
 
-    /**
-     * @var MaterializedPathCategory
-     */
-    private $parent;
+    private ?\Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory $parent = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lockTime;
+    private ?\DateTime $lockTime = null;
 
     public function __construct()
     {

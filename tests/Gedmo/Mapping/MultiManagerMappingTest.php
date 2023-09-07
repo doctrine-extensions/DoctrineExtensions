@@ -29,20 +29,11 @@ use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
  */
 final class MultiManagerMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em1;
+    private EntityManager $em1;
 
-    /**
-     * @var EntityManager
-     */
-    private $em2;
+    private EntityManager $em2;
 
-    /**
-     * @var DocumentManager
-     */
-    private $dm1;
+    private DocumentManager $dm1;
 
     protected function setUp(): void
     {
