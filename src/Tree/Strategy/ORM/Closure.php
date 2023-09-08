@@ -290,8 +290,8 @@ class Closure implements Strategy
             $identifier = $meta->getSingleIdentifierFieldName();
             $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
 
-            if (is_null($nodeId)) {
-                // Do not update if the node has not been persisted yet
+            if (null === $nodeId) {
+                // Do not update if the node has not been persisted yet.
                 continue;
             }
 
