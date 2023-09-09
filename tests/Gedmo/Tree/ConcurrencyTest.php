@@ -99,7 +99,8 @@ final class ConcurrencyTest extends BaseTestCaseORM
     public function testConcurrentTree(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::CATEGORY);
 
         $root = $repo->findOneBy(['title' => 'Root']);
 

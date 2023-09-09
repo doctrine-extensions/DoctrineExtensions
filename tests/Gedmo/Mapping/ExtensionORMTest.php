@@ -41,7 +41,6 @@ final class ExtensionORMTest extends BaseTestCaseORM
 
     public function testExtensionMetadata(): void
     {
-        $meta = $this->em->getClassMetadata(self::USER);
         $config = $this->encoderListener->getConfiguration($this->em, self::USER);
         static::assertArrayHasKey('encode', $config);
         static::assertCount(2, $config['encode']);

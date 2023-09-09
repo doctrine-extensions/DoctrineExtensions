@@ -558,10 +558,8 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->getEventManager()->addEventSubscriber($subscriber);
 
         $repo = $this->em->getRepository(self::ARTICLE_CLASS);
-        $commentRepo = $this->em->getRepository(self::COMMENT_CLASS);
 
         $comment = new Comment();
-        $commentField = 'comment';
         $commentValue = 'Comment 1';
         $comment->setComment($commentValue);
         $art0 = new Article();

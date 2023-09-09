@@ -761,7 +761,6 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     private function populateMore(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
-        $commentRepo = $this->em->getRepository(self::COMMENT);
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $alfabet = new Article();

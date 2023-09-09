@@ -41,8 +41,6 @@ final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 
     public function testInMemoryTreeInsertsWithInheritance(): void
     {
-        $nodes = [];
-
         $man1 = new Man('Root - Man1');
         $this->em->persist($man1);
 

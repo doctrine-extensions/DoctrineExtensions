@@ -73,7 +73,8 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
 
     public function testLoggableMapping(): void
     {
-        $meta = $this->em->getClassMetadata(self::YAML_CATEGORY);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::YAML_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CATEGORY, 'Gedmo\Loggable');
         $config = $this->cache->getItem($cacheId)->get();
 

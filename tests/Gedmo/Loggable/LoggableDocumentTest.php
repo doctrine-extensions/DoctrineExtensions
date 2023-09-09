@@ -105,7 +105,6 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         static::assertInstanceOf(LogEntryRepository::class, $commentLogRepo);
 
         $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
-        $commentId = $comment->getId();
         static::assertSame('m-v5', $comment->getMessage());
         static::assertSame('s-v3', $comment->getSubject());
         static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());

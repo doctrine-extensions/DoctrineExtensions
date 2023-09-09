@@ -72,7 +72,8 @@ final class SluggableMappingTest extends ORMMappingTestCase
 
     public function testShouldBeAbleToMapSluggableUsingYamlDriver(): void
     {
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Sluggable'
@@ -120,7 +121,8 @@ final class SluggableMappingTest extends ORMMappingTestCase
 
     public function testShouldBeAbleToMapSluggableUsingAnnotationDriver(): void
     {
-        $meta = $this->em->getClassMetadata(self::SLUGGABLE);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::SLUGGABLE);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::SLUGGABLE,
             'Gedmo\Sluggable'

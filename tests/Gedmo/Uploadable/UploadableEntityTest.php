@@ -280,8 +280,6 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $article->addFile($file2);
         $article->addFile($file3);
 
-        $filesArrayIndex = 'file';
-
         $fileInfo = $this->generateUploadedFile();
         $fileInfo2 = $this->generateUploadedFile();
         $fileInfo3 = $this->generateUploadedFile();

@@ -75,8 +75,6 @@ final class Issue138Test extends BaseTestCaseORM
 
     private function populate(): void
     {
-        $repo = $this->em->getRepository(self::ARTICLE);
-
         $food = new Article();
         $food->setTitle('Food');
         $food->setTitleTest('about food');

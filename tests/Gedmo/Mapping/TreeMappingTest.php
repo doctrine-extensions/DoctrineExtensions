@@ -123,7 +123,8 @@ final class TreeMappingTest extends ORMMappingTestCase
      */
     public function testYamlClosureMapping(): void
     {
-        $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
         $config = $this->cache->getItem($cacheId)->get();
 

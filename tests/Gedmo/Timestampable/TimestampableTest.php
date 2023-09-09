@@ -121,7 +121,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $sport->setAuthor($author);
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
-        static::assertNotNull($scm = $sportComment->getModified());
+        static::assertNotNull($sportComment->getModified());
         static::assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);

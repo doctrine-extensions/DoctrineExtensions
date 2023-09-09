@@ -69,7 +69,6 @@ final class ForcedMetadataTest extends TestCase
     {
         $this->prepare();
 
-        $meta = $this->em->getClassMetadata(Timestampable::class);
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(
             $this->em,
