@@ -319,7 +319,6 @@ final class RepositoryTest extends BaseTestCaseORM
     public function testVerificationAndRecover(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->populateMore();
         // test verification of tree
 

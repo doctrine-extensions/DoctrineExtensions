@@ -555,7 +555,6 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertNull($repo->find($id));
         $this->em->clear();
 
-        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         static::assertTrue($repo->verify());
     }
 

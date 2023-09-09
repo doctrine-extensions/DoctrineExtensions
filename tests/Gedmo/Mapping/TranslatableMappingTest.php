@@ -69,7 +69,8 @@ final class TranslatableMappingTest extends ORMMappingTestCase
 
     public function testYamlMapping(): void
     {
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Translatable'

@@ -107,7 +107,6 @@ final class ClosureTreeTest extends BaseTestCaseORM
     public function testClosureTree(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $closureRepo = $this->em->getRepository(self::CLOSURE);
 
         $food = $repo->findOneBy(['title' => 'Food']);
         $dql = 'SELECT c FROM '.self::CLOSURE.' c';

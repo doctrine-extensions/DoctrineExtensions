@@ -44,7 +44,6 @@ final class MultiInheritanceTest extends BaseTestCaseORM
 
         $food = $repo->findOneBy(['identifier' => 'food']);
         $left = $meta->getReflectionProperty('lft')->getValue($food);
-        $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
         static::assertSame(1, $left);
         static::assertNotNull($food->getCreated());

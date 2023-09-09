@@ -125,7 +125,7 @@ final class TranslatableTest extends BaseTestCaseORM
 
         $comments = $article->getComments();
         static::assertCount(2, $comments);
-        foreach ($comments as $num => $comment) {
+        foreach ($comments as $comment) {
             $translations = $repo->findTranslations($comment);
 
             static::assertCount(0, $translations);

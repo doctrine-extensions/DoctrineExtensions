@@ -185,13 +185,13 @@ class Yaml extends File implements Driver
             foreach ($mapping['manyToOne'] as $field => $relationMapping) {
                 if (isset($relationMapping['gedmo'])) {
                     if (in_array('treeParent', $relationMapping['gedmo'], true)) {
-                        if (!$rel = $this->getRelatedClassName($meta, $relationMapping['targetEntity'])) {
+                        if (!$this->getRelatedClassName($meta, $relationMapping['targetEntity'])) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->getName()}");
                         }
                         $config['parent'] = $field;
                     }
                     if (in_array('treeRoot', $relationMapping['gedmo'], true)) {
-                        if (!$rel = $this->getRelatedClassName($meta, $relationMapping['targetEntity'])) {
+                        if (!$this->getRelatedClassName($meta, $relationMapping['targetEntity'])) {
                             throw new InvalidMappingException("Unable to find root-descendant relation through root field - [{$field}] in class - {$meta->getName()}");
                         }
                         $config['root'] = $field;

@@ -65,21 +65,14 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
      */
     protected function getTranslatableListener()
     {
-        $translatableListener = null;
-        foreach ($this->_em->getEventManager()->getAllListeners() as $event => $listeners) {
-            foreach ($listeners as $hash => $listener) {
+        foreach ($this->_em->getEventManager()->getAllListeners() as $listeners) {
+            foreach ($listeners as $listener) {
                 if ($listener instanceof TranslatableListener) {
-                    $translatableListener = $listener;
-
-                    break 2;
+                    return $listener;
                 }
             }
         }
 
-        if (null === $translatableListener) {
-            throw new RuntimeException('The translation listener could not be found');
-        }
-
-        return $translatableListener;
+        throw new RuntimeException('The translation listener could not be found');
     }
 }

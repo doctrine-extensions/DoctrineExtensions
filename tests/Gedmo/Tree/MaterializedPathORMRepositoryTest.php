@@ -148,7 +148,6 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
     public function testGetChildrenForEntityWithTrimmedSeparators(): void
     {
-        $meta = $this->em->getClassMetadata(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
         $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
 
         $this->repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
