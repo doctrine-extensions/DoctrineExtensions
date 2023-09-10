@@ -13,6 +13,8 @@ namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
@@ -26,6 +28,9 @@ class EncoderListener extends MappedEventSubscriber
         ];
     }
 
+    /**
+     * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $args
+     */
     public function loadClassMetadata(LoadClassMetadataEventArgs $args): void
     {
         $ea = $this->getEventAdapter($args);

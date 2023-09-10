@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ODM\MongoDB\Iterator\CachingIterator;
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
@@ -50,12 +49,10 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
 
     public function testGetRootNodes(): void
     {
-        /** @var CachingIterator $result */
         $result = $this->repo->getRootNodes('title');
 
+        static::assertInstanceOf(Iterator::class, $result);
         static::assertSame(3, \iterator_count($result));
-        $result->rewind();
-
         $result->rewind();
 
         static::assertSame('Drinks', $result->current()->getTitle());
@@ -70,13 +67,12 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $root = $this->repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, including it
-        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
 
+        static::assertInstanceOf(Iterator::class, $result);
         static::assertSame(5, \iterator_count($result));
         $result->rewind();
 
-        $result->rewind();
         static::assertSame('Carrots', $result->current()->getTitle());
         $result->next();
         static::assertSame('Food', $result->current()->getTitle());
@@ -88,11 +84,10 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Vegitables', $result->current()->getTitle());
 
         // Get all children from the root, NOT including it
-        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, false, 'title', 'asc', false);
 
+        static::assertInstanceOf(Iterator::class, $result);
         static::assertSame(4, \iterator_count($result));
-        $result->rewind();
         $result->rewind();
         static::assertSame('Carrots', $result->current()->getTitle());
         $result->next();
@@ -103,11 +98,10 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Vegitables', $result->current()->getTitle());
 
         // Get direct children from the root, including it
-        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
 
+        static::assertInstanceOf(Iterator::class, $result);
         static::assertSame(3, \iterator_count($result));
-        $result->rewind();
         $result->rewind();
         static::assertSame('Food', $result->current()->getTitle());
         $result->next();
@@ -116,7 +110,6 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertSame('Vegitables', $result->current()->getTitle());
 
         // Get direct children from the root, NOT including it
-        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, true, 'title', 'asc', false);
         static::assertInstanceOf(Iterator::class, $result);
 

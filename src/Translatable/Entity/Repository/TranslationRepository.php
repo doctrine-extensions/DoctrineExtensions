@@ -27,6 +27,8 @@ use Gedmo\Translatable\TranslatableListener;
  * to interact with translations.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-extends EntityRepository<object>
  */
 class TranslationRepository extends EntityRepository
 {
