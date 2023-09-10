@@ -13,8 +13,6 @@ parameters:
     treatPhpDocTypesAsCertain: false
     checkMissingVarTagTypehint: true
     checkMissingTypehints: true
-    # @todo: Remove the "checkGenericClassInNonGenericObjectType" definition.
-    checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.$#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.$#'

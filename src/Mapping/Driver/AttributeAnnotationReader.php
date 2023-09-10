@@ -37,6 +37,8 @@ final class AttributeAnnotationReader implements Reader
     }
 
     /**
+     * @phpstan-param \ReflectionClass<object> $class
+     *
      * @return Annotation[]
      */
     public function getClassAnnotations(\ReflectionClass $class): array
@@ -51,7 +53,10 @@ final class AttributeAnnotationReader implements Reader
     }
 
     /**
-     * @param class-string<T> $annotationName the name of the annotation
+     * @param string $annotationName
+     *
+     * @phpstan-param \ReflectionClass<object> $class
+     * @phpstan-param class-string<T> $annotationName the name of the annotation
      *
      * @return T|null the Annotation or NULL, if the requested annotation does not exist
      *

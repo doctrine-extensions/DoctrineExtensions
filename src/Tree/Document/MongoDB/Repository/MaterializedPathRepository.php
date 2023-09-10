@@ -55,6 +55,8 @@ class MaterializedPathRepository extends AbstractTreeRepository
      * Get tree
      *
      * @param object|null $rootNode
+     *
+     * @phpstan-return Iterator<object>
      */
     public function getTree($rootNode = null): Iterator
     {

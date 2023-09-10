@@ -166,6 +166,9 @@ class ForeignRootCategory
         return $this->children;
     }
 
+    /**
+     * @param Collection<int, self> $children
+     */
     public function setChildren(Collection $children): void
     {
         $this->children = $children;

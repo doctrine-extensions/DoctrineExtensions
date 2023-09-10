@@ -21,6 +21,8 @@ use Gedmo\Sortable\SortableListener;
  * Sortable Repository
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
+ *
+ * @phpstan-extends EntityRepository<object>
  */
 class SortableRepository extends EntityRepository
 {

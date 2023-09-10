@@ -22,6 +22,8 @@ final class AttributeReader
     private $isRepeatableAttribute = [];
 
     /**
+     * @phpstan-param \ReflectionClass<object> $class
+     *
      * @return array<Annotation|Annotation[]>
      */
     public function getClassAnnotations(\ReflectionClass $class): array
@@ -30,6 +32,7 @@ final class AttributeReader
     }
 
     /**
+     * @phpstan-param \ReflectionClass<object> $class
      * @phpstan-param class-string $annotationName
      *
      * @return Annotation|Annotation[]|null
@@ -58,11 +61,12 @@ final class AttributeReader
     }
 
     /**
-     * @param array<\ReflectionAttribute> $attributes
+     * @param iterable<\ReflectionAttribute> $attributes
+     * @phpstan-param iterable<\ReflectionAttribute<object>> $attributes
      *
      * @return array<string, Annotation|Annotation[]>
      */
-    private function convertToAttributeInstances(array $attributes): array
+    private function convertToAttributeInstances(iterable $attributes): array
     {
         $instances = [];
 

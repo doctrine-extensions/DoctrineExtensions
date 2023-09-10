@@ -68,7 +68,7 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
     public function testTranslate(): void
     {
-        /** @var EntityRepository $repo */
+        /** @var EntityRepository<Company> $repo */
         $repo = $this->em->getRepository(self::FIXTURE);
 
         /** @var Company $entity */
