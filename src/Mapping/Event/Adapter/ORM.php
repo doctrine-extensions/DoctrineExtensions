@@ -99,6 +99,14 @@ class ORM implements AdapterInterface
             return $this->args->getObjectManager();
         }
 
+        @trigger_error(sprintf(
+            'Calling "%s()" on an event of type "%s" is deprecated since gedmo/doctrine-extensions 3.x'
+            .' and will throw a "%s" error in version 4.0.',
+            __METHOD__,
+            get_class($this->args),
+            \TypeError::class
+        ), E_USER_DEPRECATED);
+
         return $this->args->getEntityManager();
     }
 
@@ -111,6 +119,14 @@ class ORM implements AdapterInterface
         if (\method_exists($this->args, 'getObject')) {
             return $this->args->getObject();
         }
+
+        @trigger_error(sprintf(
+            'Calling "%s()" on an event of type "%s" is deprecated since gedmo/doctrine-extensions 3.x'
+            .' and will throw a "%s" error in version 4.0.',
+            __METHOD__,
+            get_class($this->args),
+            \TypeError::class
+        ), E_USER_DEPRECATED);
 
         return $this->args->getEntity();
     }
