@@ -104,7 +104,7 @@ class ORM implements AdapterInterface
             .' and will throw a "%s" error in version 4.0.',
             __METHOD__,
             get_class($this->args),
-            \TypeError::class
+            \Error::class
         ), E_USER_DEPRECATED);
 
         return $this->args->getEntityManager();
@@ -125,7 +125,7 @@ class ORM implements AdapterInterface
             .' and will throw a "%s" error in version 4.0.',
             __METHOD__,
             get_class($this->args),
-            \TypeError::class
+            \Error::class
         ), E_USER_DEPRECATED);
 
         return $this->args->getEntity();
