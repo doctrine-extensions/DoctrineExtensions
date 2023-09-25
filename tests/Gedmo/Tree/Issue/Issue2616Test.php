@@ -22,7 +22,7 @@ class Issue2616Test extends BaseTestCaseORM
      */
     private $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,7 +34,7 @@ class Issue2616Test extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testGetNextSiblingsWithoutIdentifierMethod()
+    public function testGetNextSiblingsWithoutIdentifierMethod(): void
     {
         $food = new Category();
         $food->setTitle('Food');
