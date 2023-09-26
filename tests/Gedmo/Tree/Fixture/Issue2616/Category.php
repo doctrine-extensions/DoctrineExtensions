@@ -18,11 +18,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="category")
  * @ORM\Entity
  */
-#[
-    ORM\Table(name: 'category'),
-    ORM\Entity,
-    Gedmo\Tree(type: 'materializedPath')
-]
+#[ORM\Table(name: 'category')]
+#[ORM\Entity]
+#[Gedmo\Tree(type: 'materializedPath')]
 class Category
 {
     /**
@@ -32,11 +30,9 @@ class Category
      *
      * @var Category|null
      */
-    #[
-        ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children'),
-        ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'category_id', onDelete: 'cascade'),
-        Gedmo\TreeParent
-    ]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'category_id', onDelete: 'cascade')]
+    #[Gedmo\TreeParent]
     protected $parent;
 
     /**
@@ -62,12 +58,10 @@ class Category
      * @ORM\GeneratedValue
      * @Gedmo\TreePathSource
      */
-    #[
-        ORM\Id,
-        ORM\GeneratedValue,
-        ORM\Column(name: 'category_id', type: Types::INTEGER),
-        Gedmo\TreePathSource
-    ]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: 'category_id', type: Types::INTEGER)]
+    #[Gedmo\TreePathSource]
     private $id;
 
     /**
@@ -84,10 +78,8 @@ class Category
      *
      * @var int|null
      */
-    #[
-        Gedmo\TreeLevel,
-        ORM\Column(name: 'level', type: Types::INTEGER, nullable: true)
-    ]
+    #[Gedmo\TreeLevel]
+    #[ORM\Column(name: 'level', type: Types::INTEGER, nullable: true)]
     private $level;
 
     /**
@@ -96,10 +88,8 @@ class Category
      *
      * @var string|null
      */
-    #[
-        ORM\Column(name: 'path', type: Types::STRING, nullable: true),
-        Gedmo\TreePath(separator: '/', endsWithSeparator: false)
-    ]
+    #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
+    #[Gedmo\TreePath(separator: '/', endsWithSeparator: false)]
     private $path;
 
     public function getId(): ?int
