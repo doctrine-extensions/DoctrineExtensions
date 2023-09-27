@@ -10,10 +10,7 @@
 namespace Gedmo\Translator\Entity;
 
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\MappedSuperclass;
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translator\Translation as BaseTranslation;
 
 /**
@@ -21,47 +18,45 @@ use Gedmo\Translator\Translation as BaseTranslation;
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  *
- * @MappedSuperclass
+ * @ORM\MappedSuperclass
  */
-#[MappedSuperclass]
+#[ORM\MappedSuperclass]
 abstract class Translation extends BaseTranslation
 {
     /**
      * @var int
      *
-     * @Column(type="integer")
-     *
-     * @Id
-     *
-     * @GeneratedValue
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
-    #[Column(type: Types::INTEGER)]
-    #[Id]
-    #[GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     protected $id;
 
     /**
      * @var string
      *
-     * @Column(type="string", length=8)
+     * @ORM\Column(type="string", length=8)
      */
-    #[Column(type: Types::STRING, length: 8)]
+    #[ORM\Column(type: Types::STRING, length: 8)]
     protected $locale;
 
     /**
      * @var string
      *
-     * @Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32)
      */
-    #[Column(type: Types::STRING, length: 32)]
+    #[ORM\Column(type: Types::STRING, length: 32)]
     protected $property;
 
     /**
      * @var string
      *
-     * @Column(type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
-    #[Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     protected $value;
 
     /**
