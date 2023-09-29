@@ -9,8 +9,6 @@
 
 namespace Gedmo\Mapping;
 
-use function class_exists;
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
@@ -263,7 +261,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
         if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], ['ODM', 'ORM'], true)) {
             if (!isset($this->adapters[$m[1]])) {
                 $adapterClass = $this->getNamespace().'\\Mapping\\Event\\Adapter\\'.$m[1];
-                if (!class_exists($adapterClass)) {
+                if (!\class_exists($adapterClass)) {
                     $adapterClass = 'Gedmo\\Mapping\\Event\\Adapter\\'.$m[1];
                 }
                 $this->adapters[$m[1]] = new $adapterClass();

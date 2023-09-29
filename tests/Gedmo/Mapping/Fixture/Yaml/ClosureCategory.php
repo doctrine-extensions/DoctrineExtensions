@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 class ClosureCategory
@@ -39,6 +40,11 @@ class ClosureCategory
      * @var int
      */
     private $level;
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
 
     public function getId(): int
     {

@@ -22,6 +22,7 @@ use Gedmo\Tests\Tree\Fixture\Closure\News;
 use Gedmo\Tests\Tree\Fixture\Closure\Person;
 use Gedmo\Tests\Tree\Fixture\Closure\PersonClosure;
 use Gedmo\Tests\Tree\Fixture\Closure\User;
+use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tree\TreeListener;
 
@@ -33,14 +34,14 @@ use Gedmo\Tree\TreeListener;
  */
 final class ClosureTreeTest extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const CLOSURE = CategoryClosure::class;
-    public const PERSON = Person::class;
-    public const USER = User::class;
-    public const PERSON_CLOSURE = PersonClosure::class;
-    public const NEWS = News::class;
-    public const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
-    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
+    private const CATEGORY = Category::class;
+    private const CLOSURE = CategoryClosure::class;
+    private const PERSON = Person::class;
+    private const USER = User::class;
+    private const PERSON_CLOSURE = PersonClosure::class;
+    private const NEWS = News::class;
+    private const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
+    private const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
 
     /**
      * @var TreeListener
@@ -106,7 +107,6 @@ final class ClosureTreeTest extends BaseTestCaseORM
     public function testClosureTree(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $closureRepo = $this->em->getRepository(self::CLOSURE);
 
         $food = $repo->findOneBy(['title' => 'Food']);
         $dql = 'SELECT c FROM '.self::CLOSURE.' c';
@@ -333,6 +333,9 @@ final class ClosureTreeTest extends BaseTestCaseORM
         static::assertCount(6, $closures);
     }
 
+    /**
+     * @return array<string, array<int, Category>>
+     */
     public static function provideNodeOrders(): array
     {
         $grandpa = new Category();
@@ -370,6 +373,9 @@ final class ClosureTreeTest extends BaseTestCaseORM
         ];
     }
 
+    /**
+     * @param iterable<int, AbstractClosure> $closures
+     */
     private function hasAncestor(iterable $closures, string $name): bool
     {
         foreach ($closures as $closure) {

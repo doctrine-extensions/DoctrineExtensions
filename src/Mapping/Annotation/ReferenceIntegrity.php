@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -22,7 +21,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class ReferenceIntegrity implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
@@ -31,7 +30,7 @@ final class ReferenceIntegrity implements GedmoAnnotation
     public $value;
 
     /**
-     * @param string|array|null $data
+     * @param string|array<string, mixed>|null $data
      */
     public function __construct($data = [], ?string $value = null)
     {

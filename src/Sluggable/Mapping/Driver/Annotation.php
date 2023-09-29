@@ -86,6 +86,8 @@ class Annotation extends AbstractAnnotationDriver
                 }
             }
         }
+
+        return $config;
     }
 
     /**
@@ -126,6 +128,8 @@ class Annotation extends AbstractAnnotationDriver
     }
 
     /**
+     * @param array<string, mixed> $config
+     *
      * @return array<string, array<string, mixed>>
      */
     private function retrieveSlug(ClassMetadata $meta, array &$config, \ReflectionProperty $property, ?string $fieldNamePrefix = null): array

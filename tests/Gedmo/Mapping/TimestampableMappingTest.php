@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -26,7 +27,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TimestampableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = Category::class;
+    private const TEST_YAML_ENTITY_CLASS = Category::class;
 
     /**
      * @var EntityManager
@@ -54,12 +55,14 @@ final class TimestampableMappingTest extends ORMMappingTestCase
         $listener = new TimestampableListener();
         $listener->setCacheItemPool($this->cache);
         $evm->addEventSubscriber($listener);
-        $this->em = EntityManager::create($conn, $config, $evm);
+        $connection = DriverManager::getConnection($conn, $config);
+        $this->em = new EntityManager($connection, $config, $evm);
     }
 
     public function testYamlMapping(): void
     {
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Timestampable'

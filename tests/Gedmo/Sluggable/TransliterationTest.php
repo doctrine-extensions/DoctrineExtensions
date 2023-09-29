@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class TransliterationTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
+    private const ARTICLE = Article::class;
 
     protected function setUp(): void
     {

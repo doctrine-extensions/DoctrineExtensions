@@ -70,7 +70,7 @@ class ANode
         return $this->id;
     }
 
-    public function setParent(BaseNode $parent = null): void
+    public function setParent(?BaseNode $parent = null): void
     {
         $this->parent = $parent;
     }

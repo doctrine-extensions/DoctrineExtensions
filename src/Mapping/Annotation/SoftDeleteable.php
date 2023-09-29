@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -22,7 +21,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @NamedArgumentConstructor
  * @Target("CLASS")
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class SoftDeleteable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
@@ -36,6 +35,9 @@ final class SoftDeleteable implements GedmoAnnotation
     /** @var bool */
     public $hardDelete = true;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [], string $fieldName = 'deletedAt', bool $timeAware = false, bool $hardDelete = true)
     {
         if ([] !== $data) {

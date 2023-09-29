@@ -59,6 +59,7 @@ class Product
     public function __construct()
     {
         $this->metadatas = new ArrayCollection();
+        $this->stockItems = new ArrayCollection();
     }
 
     public function getId(): ?string

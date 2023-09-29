@@ -24,7 +24,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue104Test extends BaseTestCaseORM
 {
-    public const CAR = Car::class;
+    private const CAR = Car::class;
 
     public function testShouldThrowAnExceptionWhenMappedSuperclassProtectedProperty(): void
     {

@@ -15,6 +15,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\UploadableCantWriteException;
 use Gedmo\Exception\UploadableCouldntGuessMimeTypeException;
+use Gedmo\Exception\UploadableException;
 use Gedmo\Exception\UploadableExtensionException;
 use Gedmo\Exception\UploadableFileAlreadyExistsException;
 use Gedmo\Exception\UploadableFormSizeException;
@@ -54,18 +55,18 @@ use Gedmo\Uploadable\Mapping\Validator;
  */
 final class UploadableEntityTest extends BaseTestCaseORM
 {
-    public const IMAGE_CLASS = Image::class;
-    public const ARTICLE_CLASS = Article::class;
-    public const FILE_CLASS = File::class;
-    public const FILE_APPEND_NUMBER_CLASS = FileAppendNumber::class;
-    public const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = FileAppendNumberRelative::class;
-    public const FILE_WITHOUT_PATH_CLASS = FileWithoutPath::class;
-    public const FILE_WITH_SHA1_NAME_CLASS = FileWithSha1Name::class;
-    public const FILE_WITH_ALPHANUMERIC_NAME_CLASS = FileWithAlphanumericName::class;
-    public const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = FileWithCustomFilenameGenerator::class;
-    public const FILE_WITH_MAX_SIZE_CLASS = FileWithMaxSize::class;
-    public const FILE_WITH_ALLOWED_TYPES_CLASS = FileWithAllowedTypes::class;
-    public const FILE_WITH_DISALLOWED_TYPES_CLASS = FileWithDisallowedTypes::class;
+    private const IMAGE_CLASS = Image::class;
+    private const ARTICLE_CLASS = Article::class;
+    private const FILE_CLASS = File::class;
+    private const FILE_APPEND_NUMBER_CLASS = FileAppendNumber::class;
+    private const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = FileAppendNumberRelative::class;
+    private const FILE_WITHOUT_PATH_CLASS = FileWithoutPath::class;
+    private const FILE_WITH_SHA1_NAME_CLASS = FileWithSha1Name::class;
+    private const FILE_WITH_ALPHANUMERIC_NAME_CLASS = FileWithAlphanumericName::class;
+    private const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = FileWithCustomFilenameGenerator::class;
+    private const FILE_WITH_MAX_SIZE_CLASS = FileWithMaxSize::class;
+    private const FILE_WITH_ALLOWED_TYPES_CLASS = FileWithAllowedTypes::class;
+    private const FILE_WITH_DISALLOWED_TYPES_CLASS = FileWithDisallowedTypes::class;
 
     /**
      * @var UploadableListenerStub
@@ -278,8 +279,6 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $article->addFile($file1);
         $article->addFile($file2);
         $article->addFile($file3);
-
-        $filesArrayIndex = 'file';
 
         $fileInfo = $this->generateUploadedFile();
         $fileInfo2 = $this->generateUploadedFile();
@@ -512,6 +511,9 @@ final class UploadableEntityTest extends BaseTestCaseORM
         static::assertFalse($this->listener->removeFile('non_existent_file'));
     }
 
+    /**
+     * @return array<string, array<string, string>>
+     */
     public static function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): array
     {
         return [
@@ -741,6 +743,10 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     // Data Providers
+
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function invalidFileInfoClassesProvider(): array
     {
         return [
@@ -753,6 +759,11 @@ final class UploadableEntityTest extends BaseTestCaseORM
         ];
     }
 
+    /**
+     * @return array<int, array<int, string>>
+     *
+     * @phpstan-return array<int, array<int, class-string<UploadableException>>>
+     */
     public static function uploadExceptionsProvider(): array
     {
         return [
@@ -792,6 +803,11 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     // Util
 
+    /**
+     * @param array<string, mixed> $info
+     *
+     * @return array<string, string|int|bool>
+     */
     private function generateUploadedFile(?string $filePath = null, ?string $filename = null, array $info = []): array
     {
         $defaultInfo = [

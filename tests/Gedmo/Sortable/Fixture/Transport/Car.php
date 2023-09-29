@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sortable\Fixture\Transport;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +38,11 @@ class Car extends Vehicle
      */
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private $children;
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
 
     public function setParent(?self $parent = null): void
     {

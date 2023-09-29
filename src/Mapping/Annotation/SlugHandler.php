@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 use Gedmo\Sluggable\Handler\SlugHandlerInterface;
@@ -22,7 +21,7 @@ use Gedmo\Sluggable\Handler\SlugHandlerInterface;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 final class SlugHandler implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
@@ -34,12 +33,15 @@ final class SlugHandler implements GedmoAnnotation
     public $class = '';
 
     /**
-     * @var array<SlugHandlerOption>|array<array{string, mixed}>
+     * @var array<SlugHandlerOption>|array<string, mixed>
      */
     public $options = [];
 
     /**
-     * @phpstan-param string|class-string<SlugHandlerInterface> $class
+     * @param array<string, mixed> $data
+     *
+     * @phpstan-param string|class-string<SlugHandlerInterface>     $class
+     * @phpstan-param array<SlugHandlerOption>|array<string, mixed> $options
      */
     public function __construct(
         array $data = [],

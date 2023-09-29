@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -22,7 +21,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class Tree implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
@@ -50,6 +49,8 @@ final class Tree implements GedmoAnnotation
     public $identifierMethod;
 
     /**
+     * @param array<string, mixed> $data
+     *
      * @phpstan-param 'closure'|'materializedPath'|'nested'|null $type
      */
     public function __construct(

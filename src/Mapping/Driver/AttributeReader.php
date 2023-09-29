@@ -9,9 +9,7 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Attribute;
 use Gedmo\Mapping\Annotation\Annotation;
-use ReflectionClass;
 
 /**
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -24,19 +22,22 @@ final class AttributeReader
     private $isRepeatableAttribute = [];
 
     /**
+     * @phpstan-param \ReflectionClass<object> $class
+     *
      * @return array<Annotation|Annotation[]>
      */
-    public function getClassAnnotations(ReflectionClass $class): array
+    public function getClassAnnotations(\ReflectionClass $class): array
     {
         return $this->convertToAttributeInstances($class->getAttributes());
     }
 
     /**
+     * @phpstan-param \ReflectionClass<object> $class
      * @phpstan-param class-string $annotationName
      *
      * @return Annotation|Annotation[]|null
      */
-    public function getClassAnnotation(ReflectionClass $class, string $annotationName)
+    public function getClassAnnotation(\ReflectionClass $class, string $annotationName)
     {
         return $this->getClassAnnotations($class)[$annotationName] ?? null;
     }
@@ -60,11 +61,12 @@ final class AttributeReader
     }
 
     /**
-     * @param array<\ReflectionAttribute> $attributes
+     * @param iterable<\ReflectionAttribute> $attributes
+     * @phpstan-param iterable<\ReflectionAttribute<object>> $attributes
      *
      * @return array<string, Annotation|Annotation[]>
      */
-    private function convertToAttributeInstances(array $attributes): array
+    private function convertToAttributeInstances(iterable $attributes): array
     {
         $instances = [];
 
@@ -99,9 +101,9 @@ final class AttributeReader
             return $this->isRepeatableAttribute[$attributeClassName];
         }
 
-        $reflectionClass = new ReflectionClass($attributeClassName);
+        $reflectionClass = new \ReflectionClass($attributeClassName);
         $attribute = $reflectionClass->getAttributes()[0]->newInstance();
 
-        return $this->isRepeatableAttribute[$attributeClassName] = ($attribute->flags & Attribute::IS_REPEATABLE) > 0;
+        return $this->isRepeatableAttribute[$attributeClassName] = ($attribute->flags & \Attribute::IS_REPEATABLE) > 0;
     }
 }

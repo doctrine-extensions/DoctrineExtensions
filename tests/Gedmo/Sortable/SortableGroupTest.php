@@ -30,20 +30,20 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SortableGroupTest extends BaseTestCaseORM
 {
-    public const CAR = Car::class;
-    public const BUS = Bus::class;
-    public const VEHICLE = Vehicle::class;
-    public const ENGINE = Engine::class;
-    public const RESERVATION = Reservation::class;
-    public const ITEM = Item::class;
-    public const CATEGORY = Category::class;
-    public const ITEM_WITH_DATE_COLUMN = ItemWithDateColumn::class;
+    private const CAR = Car::class;
+    private const BUS = Bus::class;
+    private const VEHICLE = Vehicle::class;
+    private const ENGINE = Engine::class;
+    private const RESERVATION = Reservation::class;
+    private const ITEM = Item::class;
+    private const CATEGORY = Category::class;
+    private const ITEM_WITH_DATE_COLUMN = ItemWithDateColumn::class;
 
-    public const SEATS = 3;
+    private const SEATS = 3;
 
-    public const TRAVEL_DATE_FORMAT = 'Y-m-d H:i';
-    public const TODAY = '2013-10-24 12:50';
-    public const TOMORROW = '2013-10-25 12:50';
+    private const TRAVEL_DATE_FORMAT = 'Y-m-d H:i';
+    private const TODAY = '2013-10-24 12:50';
+    private const TOMORROW = '2013-10-25 12:50';
 
     protected function setUp(): void
     {

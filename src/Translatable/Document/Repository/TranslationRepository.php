@@ -10,7 +10,6 @@
 namespace Gedmo\Translatable\Document\Repository;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\Types\Type;
@@ -28,6 +27,8 @@ use Gedmo\Translatable\TranslatableListener;
  * to interact with translations.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-extends DocumentRepository<object>
  */
 class TranslationRepository extends DocumentRepository
 {
@@ -82,7 +83,12 @@ class TranslationRepository extends DocumentRepository
             $foreignKey = $meta->getReflectionProperty($meta->getIdentifier()[0])->getValue($document);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->dm->getClassMetadata($class);
-            $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
+            $trans = $this->findOneBy([
+                'locale' => $locale,
+                'field' => $field,
+                'objectClass' => $objectClass,
+                'foreignKey' => $foreignKey,
+            ]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
                 $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
@@ -111,7 +117,7 @@ class TranslationRepository extends DocumentRepository
      *
      * @param object $document
      *
-     * @return array list of translations in locale groups
+     * @return array<string, array<string, string>> list of translations in locale groups
      */
     public function findTranslations($document)
     {
@@ -142,12 +148,9 @@ class TranslationRepository extends DocumentRepository
                 ->getQuery();
 
             $q->setHydrate(false);
-            $data = $q->execute();
 
-            if (is_iterable($data)) {
-                foreach ($data as $row) {
-                    $result[$row['locale']][$row['field']] = $row['content'];
-                }
+            foreach ($q->getIterator() as $row) {
+                $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
 
@@ -182,13 +185,9 @@ class TranslationRepository extends DocumentRepository
             ->getQuery();
 
         $q->setHydrate(false);
-        $result = $q->execute();
+        $result = $q->getSingleResult();
 
-        if ($result instanceof Iterator) {
-            $result = $result->toArray();
-        }
-
-        $id = $result[0]['foreign_key'] ?? null;
+        $id = $result['foreign_key'] ?? null;
 
         if (null === $id) {
             return null;
@@ -203,7 +202,7 @@ class TranslationRepository extends DocumentRepository
      *
      * @param mixed $id primary key value of document
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
     public function findTranslationsByObjectId($id)
     {
@@ -216,12 +215,9 @@ class TranslationRepository extends DocumentRepository
                 ->getQuery();
 
             $q->setHydrate(false);
-            $data = $q->execute();
 
-            if (is_iterable($data)) {
-                foreach ($data as $row) {
-                    $result[$row['locale']][$row['field']] = $row['content'];
-                }
+            foreach ($q->getIterator() as $row) {
+                $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
 
@@ -236,8 +232,8 @@ class TranslationRepository extends DocumentRepository
     private function getTranslatableListener(): TranslatableListener
     {
         if (null === $this->listener) {
-            foreach ($this->dm->getEventManager()->getAllListeners() as $event => $listeners) {
-                foreach ($listeners as $hash => $listener) {
+            foreach ($this->dm->getEventManager()->getAllListeners() as $listeners) {
+                foreach ($listeners as $listener) {
                     if ($listener instanceof TranslatableListener) {
                         return $this->listener = $listener;
                     }

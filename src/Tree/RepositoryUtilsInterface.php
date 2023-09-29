@@ -18,19 +18,19 @@ interface RepositoryUtilsInterface
      *
      * Uses options to handle decorations
      *
-     * @param object|null $node        The object to fetch children for; if null, all nodes will be retrieved
-     * @param bool        $direct      Flag indicating whether only direct children should be retrieved
-     * @param array       $options     Options configuring the output, supported keys include:
-     *                                 - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
-     *                                 - nodeDecorator: Closure (null) - uses $node as argument and returns the decorated item as a string
-     *                                 - rootOpen: string || Closure ('<ul>') - branch start, Closure will be given $children as a parameter
-     *                                 - rootClose: string ('</ul>') - branch close
-     *                                 - childOpen: string || Closure ('<li>') - start of node, Closure will be given $node as a parameter
-     *                                 - childClose: string ('</li>') - close of node
-     *                                 - childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
-     * @param bool        $includeNode Flag indicating whether the given node should be included in the results
+     * @param object|null          $node        The object to fetch children for; if null, all nodes will be retrieved
+     * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
+     * @param array<string, mixed> $options     Options configuring the output, supported keys include:
+     *                                          - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
+     *                                          - nodeDecorator: Closure (null) - uses $node as argument and returns the decorated item as a string
+     *                                          - rootOpen: string || Closure ('<ul>') - branch start, Closure will be given $children as a parameter
+     *                                          - rootClose: string ('</ul>') - branch close
+     *                                          - childOpen: string || Closure ('<li>') - start of node, Closure will be given $node as a parameter
+     *                                          - childClose: string ('</li>') - close of node
+     *                                          - childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
+     * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array|string
+     * @return array<int, array<string, mixed>>|string
      *
      * @throws InvalidArgumentException
      */
@@ -43,16 +43,16 @@ interface RepositoryUtilsInterface
      *
      * NOTE: nodes should be fetched and hydrated as array
      *
-     * @param object[] $nodes   The nodes to build the tree from
-     * @param array    $options Options configuring the output, supported keys include:
-     *                          - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
-     *                          - nodeDecorator: Closure (null) - uses $node as argument and returns the decorated item as a string
-     *                          - rootOpen: string || Closure ('<ul>') - branch start, Closure will be given $children as a parameter
-     *                          - rootClose: string ('</ul>') - branch close
-     *                          - childOpen: string || Closure ('<li>') - start of node, Closure will be given $node as a parameter
-     *                          - childClose: string ('</li>') - close of node
+     * @param array<int|string, object> $nodes   The nodes to build the tree from
+     * @param array<string, mixed>      $options Options configuring the output, supported keys include:
+     *                                           - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
+     *                                           - nodeDecorator: Closure (null) - uses $node as argument and returns the decorated item as a string
+     *                                           - rootOpen: string || Closure ('<ul>') - branch start, Closure will be given $children as a parameter
+     *                                           - rootClose: string ('</ul>') - branch close
+     *                                           - childOpen: string || Closure ('<li>') - start of node, Closure will be given $node as a parameter
+     *                                           - childClose: string ('</li>') - close of node
      *
-     * @return array|string
+     * @return array<int, array<string, mixed>>|string
      *
      * @throws InvalidArgumentException
      */
@@ -63,7 +63,7 @@ interface RepositoryUtilsInterface
      *
      * @param object[] $nodes The nodes to build the tree from
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function buildTreeArray(array $nodes);
 

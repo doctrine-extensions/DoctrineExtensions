@@ -27,8 +27,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = MPCategory::class;
-    public const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
+    private const CATEGORY = MPCategory::class;
+    private const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
 
     /** @var MaterializedPathRepository */
     protected $repo;
@@ -148,7 +148,6 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
     public function testGetChildrenForEntityWithTrimmedSeparators(): void
     {
-        $meta = $this->em->getClassMetadata(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
         $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
 
         $this->repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
@@ -365,18 +364,6 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    /**
-     * @phpstan-param class-string|null $class
-     */
-    public function createCategory(?string $class = null): object
-    {
-        if (!$class) {
-            $class = self::CATEGORY;
-        }
-
-        return new $class();
-    }
-
     protected function getUsedEntityFixtures(): array
     {
         return [
@@ -388,7 +375,19 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     /**
      * @phpstan-param class-string|null $class
      */
-    private function populate(string $class = null): void
+    private function createCategory(?string $class = null): object
+    {
+        if (!$class) {
+            $class = self::CATEGORY;
+        }
+
+        return new $class();
+    }
+
+    /**
+     * @phpstan-param class-string|null $class
+     */
+    private function populate(?string $class = null): void
     {
         $root = $this->createCategory($class);
         $root->setTitle('Food');

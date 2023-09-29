@@ -62,7 +62,7 @@ class TreeSlug
     #[ODM\ReferenceOne(targetDocument: self::class)]
     private $parent;
 
-    public function setParent(self $parent = null): void
+    public function setParent(?self $parent = null): void
     {
         $this->parent = $parent;
     }

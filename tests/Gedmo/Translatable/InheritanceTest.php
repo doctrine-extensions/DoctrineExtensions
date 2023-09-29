@@ -29,12 +29,12 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class InheritanceTest extends BaseTestCaseORM
 {
-    public const ARTICLE = TemplatedArticle::class;
-    public const TRANSLATION = Translation::class;
-    public const FILE = File::class;
-    public const IMAGE = Image::class;
+    private const ARTICLE = TemplatedArticle::class;
+    private const TRANSLATION = Translation::class;
+    private const FILE = File::class;
+    private const IMAGE = Image::class;
 
-    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
+    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener
@@ -120,16 +120,21 @@ final class InheritanceTest extends BaseTestCaseORM
         $this->em->persist($file);
         $this->em->persist($image);
         $this->em->flush();
+
+        $fileId = $file->getId();
+        $imageId = $image->getId();
+
         $this->em->clear();
 
-        $dql = 'SELECT f FROM '.self::FILE.' f';
+        $dql = 'SELECT f FROM '.self::FILE.' f INDEX BY f.id';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
         $files = $q->getArrayResult();
         static::assertCount(2, $files);
-        static::assertSame('image de', $files[0]['name']);
-        static::assertSame('file de', $files[1]['name']);
+
+        static::assertSame('image de', $files[$imageId]['name']);
+        static::assertSame('file de', $files[$fileId]['name']);
 
         // test loading in locale
         $images = $this->em->getRepository(self::IMAGE)->findAll();

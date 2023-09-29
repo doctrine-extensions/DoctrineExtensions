@@ -21,7 +21,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 final class ExtensionODMTest extends BaseTestCaseMongoODM
 {
-    public const USER = User::class;
+    private const USER = User::class;
 
     /**
      * @var EncoderListener
@@ -41,7 +41,6 @@ final class ExtensionODMTest extends BaseTestCaseMongoODM
 
     public function testExtensionMetadata(): void
     {
-        $meta = $this->dm->getClassMetadata(self::USER);
         $config = $this->encoderListener->getConfiguration($this->dm, self::USER);
         static::assertArrayHasKey('encode', $config);
         static::assertCount(2, $config['encode']);

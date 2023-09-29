@@ -100,7 +100,7 @@ class ExtensionMetadataFactory
      *
      * @param ClassMetadata&(DocumentClassMetadata|EntityClassMetadata) $meta
      *
-     * @return array the metatada configuration
+     * @return array<string, mixed> the metatada configuration
      */
     public function getExtensionMetadata($meta)
     {
@@ -114,14 +114,23 @@ class ExtensionMetadataFactory
         if (null !== $meta->reflClass) {
             foreach (array_reverse(class_parents($meta->getName())) as $parentClass) {
                 // read only inherited mapped classes
-                if ($cmf->hasMetadataFor($parentClass)) {
+                if ($cmf->hasMetadataFor($parentClass) || !$cmf->isTransient($parentClass)) {
                     assert(class_exists($parentClass));
 
                     $class = $this->objectManager->getClassMetadata($parentClass);
 
                     assert($class instanceof DocumentClassMetadata || $class instanceof EntityClassMetadata);
 
-                    $this->driver->readExtendedMetadata($class, $config);
+                    $extendedMetadata = $this->driver->readExtendedMetadata($class, $config);
+
+                    if (\is_array($extendedMetadata)) {
+                        $config = $extendedMetadata;
+                    }
+
+                    // @todo: In the next major release remove the assignment to `$extendedMetadata`, the previous conditional
+                    // block and uncomment the following line.
+                    // $config = $this->driver->readExtendedMetadata($class, $config);
+
                     $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()
                         && [] === $class->parentClasses
                         && [] !== $config
@@ -131,7 +140,16 @@ class ExtensionMetadataFactory
                     }
                 }
             }
-            $this->driver->readExtendedMetadata($meta, $config);
+
+            $extendedMetadata = $this->driver->readExtendedMetadata($meta, $config);
+
+            if (\is_array($extendedMetadata)) {
+                $config = $extendedMetadata;
+            }
+
+            // @todo: In the next major release remove the assignment to `$extendedMetadata`, the previous conditional
+            // block and uncomment the following line.
+            // $config = $this->driver->readExtendedMetadata($meta, $config);
         }
         if ([] !== $config) {
             $config['useObjectClass'] = $useObjectName;
@@ -225,6 +243,9 @@ class ExtensionMetadataFactory
         return $driver;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     private function storeConfiguration(string $className, array $config): void
     {
         if (null === $this->cacheItemPool) {

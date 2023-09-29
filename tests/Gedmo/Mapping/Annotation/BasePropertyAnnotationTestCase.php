@@ -40,6 +40,9 @@ abstract class BasePropertyAnnotationTestCase extends TestCase
         static::assertSame($annotation->$annotationProperty, $expectedReturn);
     }
 
+    /**
+     * @phpstan-return iterable<int, array{0: string, 1: string, 2: ?bool}>
+     */
     abstract public function getValidParameters(): iterable;
 
     abstract protected function getAnnotationClass(): string;

@@ -22,10 +22,10 @@ use Gedmo\Tree\TreeListener;
 
 final class SluggablePrefixSuffixTest extends BaseTestCaseORM
 {
-    public const PREFIX = Prefix::class;
-    public const SUFFIX = Suffix::class;
-    public const SUFFIX_TREE = SuffixWithTreeHandler::class;
-    public const PREFIX_TREE = PrefixWithTreeHandler::class;
+    private const PREFIX = Prefix::class;
+    private const SUFFIX = Suffix::class;
+    private const SUFFIX_TREE = SuffixWithTreeHandler::class;
+    private const PREFIX_TREE = PrefixWithTreeHandler::class;
 
     protected function setUp(): void
     {

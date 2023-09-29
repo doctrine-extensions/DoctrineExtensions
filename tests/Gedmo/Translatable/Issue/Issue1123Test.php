@@ -22,9 +22,9 @@ use Gedmo\Translatable\TranslatableListener;
 
 final class Issue1123Test extends BaseTestCaseORM
 {
-    public const TRANSLATION = Translation::class;
-    public const BASE_ENTITY = BaseEntity::class;
-    public const CHILD_ENTITY = ChildEntity::class;
+    private const TRANSLATION = Translation::class;
+    private const BASE_ENTITY = BaseEntity::class;
+    private const CHILD_ENTITY = ChildEntity::class;
 
     /**
      * @var TranslatableListener

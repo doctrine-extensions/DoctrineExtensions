@@ -29,10 +29,9 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class LoggableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = Article::class;
-    public const COMMENT = Comment::class;
-    public const RELATED_ARTICLE = RelatedArticle::class;
-    public const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Document\Log\Comment::class;
+    private const ARTICLE = Article::class;
+    private const COMMENT = Comment::class;
+    private const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Document\Log\Comment::class;
 
     protected function setUp(): void
     {
@@ -106,7 +105,6 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         static::assertInstanceOf(LogEntryRepository::class, $commentLogRepo);
 
         $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
-        $commentId = $comment->getId();
         static::assertSame('m-v5', $comment->getMessage());
         static::assertSame('s-v3', $comment->getSubject());
         static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());

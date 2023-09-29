@@ -55,10 +55,12 @@ class MaterializedPathRepository extends AbstractTreeRepository
      * Get tree
      *
      * @param object|null $rootNode
+     *
+     * @phpstan-return Iterator<object>
      */
     public function getTree($rootNode = null): Iterator
     {
-        return $this->getTreeQuery($rootNode)->execute();
+        return $this->getTreeQuery($rootNode)->getIterator();
     }
 
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
@@ -73,7 +75,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
     public function getRootNodes($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQuery($sortByField, $direction)->execute();
+        return $this->getRootNodesQuery($sortByField, $direction)->getIterator();
     }
 
     public function childCount($node = null, $direct = false)
@@ -137,7 +139,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->field($config['path'])->equals(new Regex($regex));
         }
 
-        $qb->sort($sortByField ?? $config['path'], 'asc' === $direction ? 'asc' : 'desc');
+        $qb->sort($sortByField ?? $config['path'], 'asc' === strtolower($direction) ? 'asc' : 'desc');
 
         return $qb;
     }
@@ -152,7 +154,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
-        return $this->getChildrenQuery($node, $direct, $sortByField, $direction, $includeNode)->execute();
+        return $this->getChildrenQuery($node, $direct, $sortByField, $direction, $includeNode)->getIterator();
     }
 
     public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false)

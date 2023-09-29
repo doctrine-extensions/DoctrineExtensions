@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
@@ -28,7 +29,7 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = User::class;
+    private const TEST_YAML_ENTITY_CLASS = User::class;
 
     /**
      * @var TranslatableListener
@@ -62,12 +63,14 @@ final class TranslatableMappingTest extends ORMMappingTestCase
         $this->translatableListener->setCacheItemPool($this->cache);
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
-        $this->em = EntityManager::create($conn, $config, $evm);
+        $connection = DriverManager::getConnection($conn, $config);
+        $this->em = new EntityManager($connection, $config, $evm);
     }
 
     public function testYamlMapping(): void
     {
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Translatable'

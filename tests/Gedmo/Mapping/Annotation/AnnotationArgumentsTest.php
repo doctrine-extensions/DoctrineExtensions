@@ -46,6 +46,9 @@ final class AnnotationArgumentsTest extends TestCase
         }
     }
 
+    /**
+     * @phpstan-return iterable<string, array{0: array<string, string|null>, 1: class-string<Blameable>, 2: array<int, array<string, string>|string>, 3?: string}>
+     */
     public static function getGedmoAnnotations(): iterable
     {
         yield 'args_without_data' => [['on' => 'delete', 'field' => 'some'], Blameable::class, [[], 'delete', 'some']];

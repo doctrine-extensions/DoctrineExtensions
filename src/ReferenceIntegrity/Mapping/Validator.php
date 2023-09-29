@@ -38,7 +38,9 @@ class Validator
     /**
      * Returns a list of available integrity actions
      *
-     * @return array
+     * @return string[]
+     *
+     * @phpstan-return array<int, self::NULLIFY|self::PULL|self::RESTRICT>
      */
     public function getIntegrityActions()
     {

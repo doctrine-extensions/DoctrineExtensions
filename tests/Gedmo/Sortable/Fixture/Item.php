@@ -87,7 +87,7 @@ class Item
         return $this->position;
     }
 
-    public function setCategory(Category $category = null): void
+    public function setCategory(?Category $category = null): void
     {
         $this->category = $category;
     }

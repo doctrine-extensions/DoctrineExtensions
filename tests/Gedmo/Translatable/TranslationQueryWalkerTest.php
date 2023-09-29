@@ -31,11 +31,11 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  */
 final class TranslationQueryWalkerTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const COMMENT = Comment::class;
-    public const TRANSLATION = Translation::class;
+    private const ARTICLE = Article::class;
+    private const COMMENT = Comment::class;
+    private const TRANSLATION = Translation::class;
 
-    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
+    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener
@@ -761,7 +761,6 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
     private function populateMore(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
-        $commentRepo = $this->em->getRepository(self::COMMENT);
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $alfabet = new Article();

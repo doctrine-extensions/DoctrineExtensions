@@ -28,10 +28,10 @@ use Gedmo\Tree\TreeListener;
  */
 final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
-    public const USER = User::class;
-    public const GROUP = UserGroup::class;
-    public const ROLE = Role::class;
-    public const USERLDAP = UserLDAP::class;
+    private const USER = User::class;
+    private const GROUP = UserGroup::class;
+    private const ROLE = Role::class;
+    private const USERLDAP = UserLDAP::class;
 
     /**
      * @var TreeListener

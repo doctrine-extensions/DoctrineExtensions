@@ -32,10 +32,10 @@ use Gedmo\Tree\TreeListener;
  */
 final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const CLOSURE = CategoryClosure::class;
-    public const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
-    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
+    private const CATEGORY = Category::class;
+    private const CLOSURE = CategoryClosure::class;
+    private const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
+    private const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
 
     /**
      * @var TreeListener

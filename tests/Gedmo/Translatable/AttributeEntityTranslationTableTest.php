@@ -28,9 +28,9 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
 {
-    public const PERSON = Person::class;
-    public const TRANSLATION = PersonTranslation::class;
-    public const FILE = File::class;
+    private const PERSON = Person::class;
+    private const TRANSLATION = PersonTranslation::class;
+    private const FILE = File::class;
 
     /**
      * @var TranslatableListener

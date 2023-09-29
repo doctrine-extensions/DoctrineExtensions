@@ -28,9 +28,9 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TimestampableTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const COMMENT = Comment::class;
-    public const TYPE = Type::class;
+    private const ARTICLE = Article::class;
+    private const COMMENT = Comment::class;
+    private const TYPE = Type::class;
 
     protected function setUp(): void
     {
@@ -121,7 +121,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $sport->setAuthor($author);
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
-        static::assertNotNull($scm = $sportComment->getModified());
+        static::assertNotNull($sportComment->getModified());
         static::assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);

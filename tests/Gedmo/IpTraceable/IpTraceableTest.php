@@ -29,11 +29,11 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class IpTraceableTest extends BaseTestCaseORM
 {
-    public const TEST_IP = '34.234.1.10';
+    private const TEST_IP = '34.234.1.10';
 
-    public const ARTICLE = Article::class;
-    public const COMMENT = Comment::class;
-    public const TYPE = Type::class;
+    private const ARTICLE = Article::class;
+    private const COMMENT = Comment::class;
+    private const TYPE = Type::class;
 
     protected function setUp(): void
     {

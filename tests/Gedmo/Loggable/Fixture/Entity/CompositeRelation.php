@@ -1,0 +1,79 @@
+<?php
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Loggable\Fixture\Entity;
+
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\Loggable
+ */
+#[ORM\Entity]
+#[Gedmo\Loggable]
+class CompositeRelation
+{
+    /**
+     * @var Article
+     *
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="Article")
+     */
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: Article::class)]
+    private $articleOne;
+
+    /**
+     * @var Article
+     *
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="Article")
+     */
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: Article::class)]
+    private $articleTwo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(length=8)
+     * @Gedmo\Versioned
+     */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
+    #[Gedmo\Versioned]
+    private $title;
+
+    public function __construct(Article $articleOne, Article $articleTwo)
+    {
+        $this->articleOne = $articleOne;
+        $this->articleTwo = $articleTwo;
+    }
+
+    public function getArticleOne(): Article
+    {
+        return $this->articleOne;
+    }
+
+    public function getArticleTwo(): Article
+    {
+        return $this->articleTwo;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+}

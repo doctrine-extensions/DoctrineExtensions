@@ -30,10 +30,10 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue173Test extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const ARTICLE = Article::class;
-    public const PRODUCT = Product::class;
-    public const TRANSLATION = Translation::class;
+    private const CATEGORY = Category::class;
+    private const ARTICLE = Article::class;
+    private const PRODUCT = Product::class;
+    private const TRANSLATION = Translation::class;
 
     /**
      * @var TranslatableListener
@@ -66,7 +66,20 @@ final class Issue173Test extends BaseTestCaseORM
         static::assertCount(1, $categories, '$category3 has no associations');
     }
 
-    public function getCategoriesThatHasNoAssociations(): array
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::CATEGORY,
+            self::ARTICLE,
+            self::PRODUCT,
+            self::TRANSLATION,
+        ];
+    }
+
+    /**
+     * @return array<int, Category>
+     */
+    private function getCategoriesThatHasNoAssociations(): array
     {
         $query = $this->em->createQueryBuilder();
         $query2 = $this->em->createQueryBuilder();
@@ -94,16 +107,6 @@ final class Issue173Test extends BaseTestCaseORM
             Query::HINT_CUSTOM_OUTPUT_WALKER,
             TranslationWalker::class
         )->getResult();
-    }
-
-    protected function getUsedEntityFixtures(): array
-    {
-        return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::PRODUCT,
-            self::TRANSLATION,
-        ];
     }
 
     private function populate(): void

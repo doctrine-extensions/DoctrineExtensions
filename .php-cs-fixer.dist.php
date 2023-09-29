@@ -42,6 +42,7 @@ return (new PhpCsFixer\Config())
         // @todo: Change the following rule to `true` in the next major release.
         'declare_strict_types' => false,
         'error_suppression' => true,
+        'global_namespace_import' => ['import_classes' => false, 'import_constants' => false, 'import_functions' => false],
         'header_comment' => ['header' => $header],
         'is_null' => false,
         'list_syntax' => ['syntax' => 'short'],
@@ -51,6 +52,7 @@ return (new PhpCsFixer\Config())
         'no_superfluous_elseif' => true,
         'no_unset_on_property' => true,
         'no_useless_else' => true,
+        'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => true],
         'ordered_class_elements' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_summary' => false,
@@ -67,6 +69,7 @@ return (new PhpCsFixer\Config())
         'php_unit_test_case_static_method_calls' => true,
         'psr_autoloading' => true,
         'random_api_migration' => true,
+        'return_assignment' => true,
         'self_accessor' => true,
         'static_lambda' => true,
         'strict_param' => true,

@@ -23,7 +23,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 #[ORM\Table(name: 'user')]
 class User extends Role
 {
-    public const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
+    private const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
 
     /**
      * @var string|null

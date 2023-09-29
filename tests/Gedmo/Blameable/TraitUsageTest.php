@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class TraitUsageTest extends BaseTestCaseORM
 {
-    public const TARGET = UsingTrait::class;
+    private const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {

@@ -25,9 +25,9 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableEntityCollectionTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const COMMENT = Comment::class;
-    public const TRANSLATION = Translation::class;
+    private const ARTICLE = Article::class;
+    private const COMMENT = Comment::class;
+    private const TRANSLATION = Translation::class;
 
     /**
      * @var TranslatableListener

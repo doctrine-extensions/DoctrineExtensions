@@ -44,10 +44,10 @@ class TranslationProxy
     /**
      * Initializes translations collection
      *
-     * @param object $translatable object to translate
-     * @param string $locale       translation name
-     * @param array  $properties   object properties to translate
-     * @param string $class        translation entity|document class
+     * @param object   $translatable object to translate
+     * @param string   $locale       translation name
+     * @param string[] $properties   object properties to translate
+     * @param string   $class        translation entity|document class
      *
      * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
      *
@@ -68,8 +68,8 @@ class TranslationProxy
     }
 
     /**
-     * @param string $method
-     * @param array  $arguments
+     * @param string  $method
+     * @param mixed[] $arguments
      *
      * @return mixed
      */

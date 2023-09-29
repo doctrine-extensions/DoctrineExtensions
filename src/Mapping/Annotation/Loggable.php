@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Loggable\LogEntryInterface;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
@@ -25,7 +24,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class Loggable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
@@ -38,6 +37,8 @@ final class Loggable implements GedmoAnnotation
     public $logEntryClass;
 
     /**
+     * @param array<string, mixed> $data
+     *
      * @phpstan-param class-string<T>|null $logEntryClass
      */
     public function __construct(array $data = [], ?string $logEntryClass = null)

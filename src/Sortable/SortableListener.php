@@ -87,6 +87,7 @@ class SortableListener extends MappedEventSubscriber
      * Maps additional metadata
      *
      * @param LoadClassMetadataEventArgs $args
+     * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $args
      *
      * @return void
      */
@@ -317,15 +318,14 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Computes node positions and updates the sort field in memory and in the db
      *
-     * @param ClassMetadata $meta
-     * @param object        $object
+     * @param array<string, mixed> $config
+     * @param ClassMetadata        $meta
+     * @param object               $object
      *
      * @return void
      */
     protected function processInsert(SortableAdapter $ea, array $config, $meta, $object)
     {
-        $em = $ea->getObjectManager();
-
         $old = $meta->getReflectionProperty($config['position'])->getValue($object);
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
 
@@ -384,8 +384,9 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Computes node positions and updates the sort field in memory and in the db
      *
-     * @param ClassMetadata $meta
-     * @param object        $object
+     * @param array<string, mixed> $config
+     * @param ClassMetadata        $meta
+     * @param object               $object
      *
      * @return void
      */
@@ -515,8 +516,9 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Computes node positions and updates the sort field in memory and in the db
      *
-     * @param ClassMetadata $meta
-     * @param object        $object
+     * @param array<string, mixed> $config
+     * @param ClassMetadata        $meta
+     * @param object               $object
      *
      * @return void
      */
@@ -565,7 +567,8 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param array $groups
+     * @param array<string, mixed> $groups
+     * @param array<string, mixed> $config
      *
      * @return string
      */
@@ -585,9 +588,10 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param ClassMetadata $meta
-     * @param array         $config
-     * @param object        $object
+     * @param ClassMetadata        $meta
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param array<string, mixed> $groups
      *
      * @return int
      */
@@ -630,13 +634,15 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Add a relocation rule
      *
-     * @param string $hash    The hash of the sorting group
-     * @param string $class   The object class
-     * @param array  $groups  The sorting groups
-     * @param int    $start   Inclusive index to start relocation from
-     * @param int    $stop    Exclusive index to stop relocation at
-     * @param int    $delta   The delta to add to relocated nodes
-     * @param array  $exclude Objects to be excluded from relocation
+     * @param string                $hash    The hash of the sorting group
+     * @param string                $class   The object class
+     * @param array<string, object> $groups  The sorting groups
+     * @param int                   $start   Inclusive index to start relocation from
+     * @param int                   $stop    Exclusive index to stop relocation at
+     * @param int                   $delta   The delta to add to relocated nodes
+     * @param array<int, object>    $exclude Objects to be excluded from relocation
+     *
+     * @phpstan-param class-string $class
      *
      * @return void
      */
@@ -668,11 +674,11 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param array         $config
-     * @param ClassMetadata $meta
-     * @param object        $object
+     * @param ClassMetadata                        $meta
+     * @param array<string, array<string, string>> $config
+     * @param object                               $object
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function getGroups($meta, $config, $object)
     {

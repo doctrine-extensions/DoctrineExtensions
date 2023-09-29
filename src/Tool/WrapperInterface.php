@@ -14,7 +14,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 /**
  * Interface for a wrapper of a managed object.
  *
- * @phpstan-template TClassMetadata of ClassMetadata
+ * @phpstan-template-covariant TClassMetadata of ClassMetadata
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
@@ -51,6 +51,8 @@ interface WrapperInterface
      *
      * Populates the wrapped object with the given property values.
      *
+     * @param array<string, mixed> $data
+     *
      * @return $this
      */
     public function populate(array $data);
@@ -76,9 +78,11 @@ interface WrapperInterface
      *
      * @param bool $single
      *
-     * @return array|mixed Array if a composite value, otherwise a single scalar
+     * @return array<string, mixed>|mixed Array if a composite value, otherwise a single scalar
+     *
+     * @todo Uncomment the second parameter for 4.0
      */
-    public function getIdentifier($single = true);
+    public function getIdentifier($single = true/* , bool $flatten = false */);
 
     /**
      * Get the root object class name.

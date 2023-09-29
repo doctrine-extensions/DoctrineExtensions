@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
@@ -31,8 +32,8 @@ use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
  */
 final class SluggableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = Category::class;
-    public const SLUGGABLE = Sluggable::class;
+    private const TEST_YAML_ENTITY_CLASS = Category::class;
+    private const SLUGGABLE = Sluggable::class;
 
     /**
      * @var EntityManager
@@ -65,12 +66,14 @@ final class SluggableMappingTest extends ORMMappingTestCase
         $listener = new SluggableListener();
         $listener->setCacheItemPool($this->cache);
         $evm->addEventSubscriber($listener);
-        $this->em = EntityManager::create($conn, $config, $evm);
+        $connection = DriverManager::getConnection($conn, $config);
+        $this->em = new EntityManager($connection, $config, $evm);
     }
 
     public function testShouldBeAbleToMapSluggableUsingYamlDriver(): void
     {
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Sluggable'
@@ -118,7 +121,8 @@ final class SluggableMappingTest extends ORMMappingTestCase
 
     public function testShouldBeAbleToMapSluggableUsingAnnotationDriver(): void
     {
-        $meta = $this->em->getClassMetadata(self::SLUGGABLE);
+        // Force metadata class loading.
+        $this->em->getClassMetadata(self::SLUGGABLE);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::SLUGGABLE,
             'Gedmo\Sluggable'

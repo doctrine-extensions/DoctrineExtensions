@@ -11,6 +11,8 @@ namespace Gedmo\ReferenceIntegrity;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -40,6 +42,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
      * Maps additional metadata for the Document
      *
      * @param LoadClassMetadataEventArgs $eventArgs
+     * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void
      */

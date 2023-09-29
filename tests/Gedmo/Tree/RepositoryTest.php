@@ -24,8 +24,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class RepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = Category::class;
-    public const CATEGORY_UUID = CategoryUuid::class;
+    private const CATEGORY = Category::class;
+    private const CATEGORY_UUID = CategoryUuid::class;
 
     protected function setUp(): void
     {
@@ -319,7 +319,6 @@ final class RepositoryTest extends BaseTestCaseORM
     public function testVerificationAndRecover(): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->populateMore();
         // test verification of tree
 

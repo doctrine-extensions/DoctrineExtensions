@@ -23,8 +23,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class NoInterfaceTest extends BaseTestCaseORM
 {
-    public const TEST_IP = '34.234.1.10';
-    public const FIXTURE = WithoutInterface::class;
+    private const TEST_IP = '34.234.1.10';
+    private const FIXTURE = WithoutInterface::class;
 
     protected function setUp(): void
     {

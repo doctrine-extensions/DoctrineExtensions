@@ -25,11 +25,11 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 {
-    public const POST = Post::class;
-    public const CATEGORY = Category::class;
-    public const KID = Kid::class;
-    public const KID_DATE1 = '1999-12-31';
-    public const KID_DATE2 = '2000-01-01';
+    private const POST = Post::class;
+    private const CATEGORY = Category::class;
+    private const KID = Kid::class;
+    private const KID_DATE1 = '1999-12-31';
+    private const KID_DATE2 = '2000-01-01';
 
     protected function setUp(): void
     {

@@ -25,8 +25,8 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    public const SUPERCLASS = SupperClassExtension::class;
-    public const TRANSLATION = Translation::class;
+    private const SUPERCLASS = SupperClassExtension::class;
+    private const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {

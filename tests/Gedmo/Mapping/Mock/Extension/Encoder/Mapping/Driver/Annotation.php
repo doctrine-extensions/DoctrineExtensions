@@ -64,6 +64,8 @@ class Annotation implements Driver
                 ];
             }
         }
+
+        return $config;
     }
 
     /**

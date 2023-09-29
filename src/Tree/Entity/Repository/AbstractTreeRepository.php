@@ -22,6 +22,9 @@ use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
 use Gedmo\Tree\TreeListener;
 
+/**
+ * @phpstan-extends EntityRepository<object>
+ */
 abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
 {
     /**
@@ -185,10 +188,10 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Obtain direct children?
-     * @param array  $options     Options
-     * @param bool   $includeNode Include node in results?
+     * @param object               $node        Root node
+     * @param bool                 $direct      Obtain direct children?
+     * @param array<string, mixed> $options     Options
+     * @param bool                 $includeNode Include node in results?
      *
      * @return QueryBuilder QueryBuilder object
      */
@@ -197,10 +200,10 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Obtain direct children?
-     * @param array  $options     Options
-     * @param bool   $includeNode Include node in results?
+     * @param object               $node        Root node
+     * @param bool                 $direct      Obtain direct children?
+     * @param array<string, mixed> $options     Options
+     * @param bool                 $includeNode Include node in results?
      *
      * @return Query Query object
      */
@@ -212,10 +215,12 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @param object|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
      * @return QueryBuilder QueryBuilder object
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     abstract public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
@@ -225,10 +230,12 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @param object|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
      * @return Query Query object
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 

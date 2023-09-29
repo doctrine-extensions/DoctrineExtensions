@@ -28,16 +28,16 @@ interface ReferencesAdapter extends AdapterInterface
      * @param object        $object
      * @param bool          $single
      *
-     * @return array|string|int|null array or single identifier
+     * @return array<int|string, mixed>|string|int|null array or single identifier
      */
     public function getIdentifier($om, $object, $single = true);
 
     /**
      * Gets a single reference from the provided object manager for a class and identifier.
      *
-     * @param ObjectManager    $om
-     * @param string           $class
-     * @param array|string|int $identifier
+     * @param ObjectManager                       $om
+     * @param string                              $class
+     * @param array<int|string, mixed>|string|int $identifier
      *
      * @phpstan-param class-string $class
      *
@@ -52,7 +52,7 @@ interface ReferencesAdapter extends AdapterInterface
      * @param object        $object
      * @param bool          $single
      *
-     * @return array|string|int|null array or single identifier
+     * @return array<int|string, mixed>|string|int|null array or single identifier
      */
     public function extractIdentifier($om, $object, $single = true);
 }

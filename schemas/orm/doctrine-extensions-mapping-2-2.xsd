@@ -29,6 +29,7 @@
   <xs:element name="loggable" type="gedmo:loggable"/>
   <xs:element name="soft-deleteable" type="gedmo:soft-deleteable"/>
   <xs:element name="uploadable" type="gedmo:uploadable"/>
+  <xs:element name="reference" type="gedmo:reference"/>
   <!-- field -->
   <xs:element name="slug" type="gedmo:slug"/>
   <xs:element name="translatable" type="gedmo:translatable"/>
@@ -65,6 +66,7 @@
   <xs:complexType name="reference">
     <xs:attribute name="type" type="gedmo:reference-type" use="required" />
     <xs:attribute name="field" type="xs:string" use="required" />
+    <xs:attribute name="reference" type="xs:string" use="required" />
     <xs:attribute name="identifier" type="xs:string" use="required" />
     <xs:attribute name="class" type="xs:string" use="required" />
     <xs:attribute name="mappedBy" type="xs:string" use="optional" />

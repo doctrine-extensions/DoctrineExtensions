@@ -9,6 +9,7 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
@@ -26,7 +27,7 @@ use Gedmo\Mapping\Driver\File;
  *
  * @internal
  */
-class Yaml extends File implements Driver
+class Yaml extends File
 {
     /**
      * File extension
@@ -117,20 +118,22 @@ class Yaml extends File implements Driver
                         }
                         // fields cannot be overrided and throws mapping exception
                         $mapping = $this->_getMapping($fieldMapping['class']);
-                        $this->inspectEmbeddedForVersioned($field, $mapping, $config);
+                        $config = $this->inspectEmbeddedForVersioned($field, $mapping, $config);
                     }
                 }
             }
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+            if ($meta instanceof ClassMetadata && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {
-                throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->getName()}");
+                throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 
     protected function _loadMappingFile($file)
@@ -138,12 +141,20 @@ class Yaml extends File implements Driver
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 
-    private function inspectEmbeddedForVersioned(string $field, array $mapping, array &$config): void
+    /**
+     * @param array<string, array<string, array<string, mixed>>> $mapping
+     * @param array<string, mixed>                               $config
+     *
+     * @return array<string, mixed>
+     */
+    private function inspectEmbeddedForVersioned(string $field, array $mapping, array $config): array
     {
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $property => $fieldMapping) {
                 $config['versioned'][] = $field.'.'.$property;
             }
         }
+
+        return $config;
     }
 }

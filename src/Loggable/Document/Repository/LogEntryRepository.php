@@ -9,7 +9,6 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
-use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Exception\RuntimeException;
@@ -59,14 +58,8 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($wrapped->getMetadata()->getName());
         $qb->sort('version', 'DESC');
-        $q = $qb->getQuery();
 
-        $result = $q->execute();
-        if ($result instanceof Iterator) {
-            $result = $result->toArray();
-        }
-
-        return $result;
+        return $qb->getQuery()->getIterator()->toArray();
     }
 
     /**
@@ -95,28 +88,26 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectClass')->equals($objectMeta->getName());
         $qb->field('version')->lte((int) $version);
         $qb->sort('version', 'ASC');
-        $q = $qb->getQuery();
 
-        $logs = $q->execute();
-        if ($logs instanceof Iterator) {
-            $logs = $logs->toArray();
-        }
+        $logs = $qb->getQuery()->getIterator()->toArray();
 
         if ([] === $logs) {
             throw new UnexpectedValueException('Count not find any log entries under version: '.$version);
         }
 
-        $data = [];
+        $data = [[]];
         while ($log = array_shift($logs)) {
-            $data = array_merge($data, $log->getData());
+            $data[] = $log->getData();
         }
+        $data = array_merge(...$data);
         $this->fillDocument($document, $data);
     }
 
     /**
      * Fills a documents versioned fields with data
      *
-     * @param object $document
+     * @param object               $document
+     * @param array<string, mixed> $data
      *
      * @return void
      *
@@ -172,8 +163,8 @@ class LogEntryRepository extends DocumentRepository
     private function getLoggableListener(): LoggableListener
     {
         if (null === $this->listener) {
-            foreach ($this->dm->getEventManager()->getAllListeners() as $event => $listeners) {
-                foreach ($listeners as $hash => $listener) {
+            foreach ($this->dm->getEventManager()->getAllListeners() as $listeners) {
+                foreach ($listeners as $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
 

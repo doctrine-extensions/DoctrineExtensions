@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -22,7 +21,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Timestampable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
@@ -35,8 +34,9 @@ final class Timestampable implements GedmoAnnotation
     public $value;
 
     /**
-     * @param string|string[] $field
-     * @param mixed           $value
+     * @param array<string, mixed> $data
+     * @param string|string[]      $field
+     * @param mixed                $value
      */
     public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
     {

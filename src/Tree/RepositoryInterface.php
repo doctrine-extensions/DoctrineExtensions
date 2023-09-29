@@ -25,19 +25,19 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param string $sortByField
      * @param string $direction
      *
-     * @return array
+     * @return iterable<int|string, object>
      */
     public function getRootNodes($sortByField = null, $direction = 'asc');
 
     /**
      * Returns an array of nodes optimized for building a tree.
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Flag indicating whether only direct children should be retrieved
-     * @param array  $options     Options, see {@see RepositoryUtilsInterface::buildTree()} for supported keys
-     * @param bool   $includeNode Flag indicating whether the given node should be included in the results
+     * @param object               $node        Root node
+     * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
+     * @param array<string, mixed> $options     Options, see {@see RepositoryUtilsInterface::buildTree()} for supported keys
+     * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array
+     * @return array<int|string, object>
      */
     public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false);
 
@@ -47,10 +47,12 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param object|null          $node        If null, all tree nodes will be taken
      * @param bool                 $direct      True to take only direct children
      * @param string|string[]|null $sortByField Field name or array of fields names to sort by
-     * @param string|string[]      $direction   Sort order ('ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return array|null List of children or null on failure
+     * @return iterable<int|string, object> List of children
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 

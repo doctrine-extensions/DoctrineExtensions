@@ -80,7 +80,10 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 $dql .= ' AND t.object = :object';
 
                 $q = $em->createQuery($dql);
-                $q->setParameters(compact('object', 'locale'));
+                $q->setParameters([
+                    'object' => $object,
+                    'locale' => $locale,
+                ]);
                 $result = $q->getArrayResult();
             }
         } else {
@@ -93,7 +96,11 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             $dql .= ' AND t.objectClass = :objectClass';
             // fetch results
             $q = $em->createQuery($dql);
-            $q->setParameters(compact('objectId', 'locale', 'objectClass'));
+            $q->setParameters([
+                'objectId' => $objectId,
+                'locale' => $locale,
+                'objectClass' => $objectClass,
+            ]);
             $result = $q->getArrayResult();
         }
 
@@ -136,7 +143,10 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 'trans.field = :field'
             )
         ;
-        $qb->setParameters(compact('locale', 'field'));
+        $qb->setParameters([
+            'locale' => $locale,
+            'field' => $field,
+        ]);
         if ($this->usesPersonalTranslation($translationClass)) {
             $qb->andWhere('trans.object = :object');
             if ($wrapped->getIdentifier()) {
@@ -152,13 +162,8 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         }
         $q = $qb->getQuery();
         $q->setMaxResults(1);
-        $result = $q->getResult();
 
-        if ($result) {
-            return array_shift($result);
-        }
-
-        return null;
+        return $q->getOneOrNullResult();
     }
 
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)

@@ -24,7 +24,7 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 {
-    public const CATEGORY = MPCategoryWithRootAssociation::class;
+    private const CATEGORY = MPCategoryWithRootAssociation::class;
 
     /**
      * @var array<string, mixed>
@@ -119,7 +119,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         $this->em->remove($category2);
         $this->em->flush();
 
-        $result = $this->em->createQueryBuilder()->select('c')->from(self::CATEGORY, 'c')->getQuery()->execute();
+        $result = $this->em->createQueryBuilder()->select('c')->from(self::CATEGORY, 'c')->getQuery()->getResult();
 
         $firstResult = $result[0];
 
@@ -129,14 +129,24 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         static::assertSame($category4, $firstResult->getTreeRootEntity());
     }
 
-    public function createCategory(): MPCategoryWithRootAssociation
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            self::CATEGORY,
+        ];
+    }
+
+    private function createCategory(): MPCategoryWithRootAssociation
     {
         $class = self::CATEGORY;
 
         return new $class();
     }
 
-    public function generatePath(array $sources): string
+    /**
+     * @param array<int|string, int|string|null> $sources
+     */
+    private function generatePath(array $sources): string
     {
         $path = '';
 
@@ -145,12 +155,5 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         }
 
         return $path;
-    }
-
-    protected function getUsedEntityFixtures(): array
-    {
-        return [
-            self::CATEGORY,
-        ];
     }
 }

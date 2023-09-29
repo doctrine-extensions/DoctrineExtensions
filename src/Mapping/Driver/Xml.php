@@ -10,7 +10,6 @@
 namespace Gedmo\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
-use SimpleXMLElement;
 
 /**
  * The mapping XmlDriver abstract class, defines the
@@ -41,7 +40,7 @@ abstract class Xml extends File
      *
      * @return string
      */
-    protected function _getAttribute(SimpleXmlElement $node, $attributeName)
+    protected function _getAttribute(\SimpleXMLElement $node, $attributeName)
     {
         $attributes = $node->attributes();
 
@@ -56,7 +55,7 @@ abstract class Xml extends File
      *
      * @return bool
      */
-    protected function _getBooleanAttribute(SimpleXmlElement $node, $attributeName)
+    protected function _getBooleanAttribute(\SimpleXMLElement $node, $attributeName)
     {
         $rawValue = strtolower($this->_getAttribute($node, $attributeName));
         if ('1' === $rawValue || 'true' === $rawValue) {
@@ -77,7 +76,7 @@ abstract class Xml extends File
      *
      * @return bool
      */
-    protected function _isAttributeSet(SimpleXmlElement $node, $attributeName)
+    protected function _isAttributeSet(\SimpleXMLElement $node, $attributeName)
     {
         $attributes = $node->attributes();
 

@@ -9,7 +9,6 @@
 
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
-use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Exception\RuntimeException;
@@ -90,12 +89,8 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             ;
         }
         $q->setHydrate(false);
-        $result = $q->execute();
-        if ($result instanceof Iterator) {
-            $result = $result->toArray();
-        }
 
-        return $result;
+        return $q->getIterator()->toArray();
     }
 
     public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)

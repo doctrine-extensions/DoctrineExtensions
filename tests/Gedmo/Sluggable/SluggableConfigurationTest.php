@@ -24,7 +24,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableConfigurationTest extends BaseTestCaseORM
 {
-    public const ARTICLE = ConfigurationArticle::class;
+    private const ARTICLE = ConfigurationArticle::class;
 
     /**
      * @var int|null

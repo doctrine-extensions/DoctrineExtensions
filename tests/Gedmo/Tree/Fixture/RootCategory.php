@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Tree\Fixture;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -112,6 +113,11 @@ class RootCategory implements Node
      */
     private $sibling;
 
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,7 +133,7 @@ class RootCategory implements Node
         return $this->title;
     }
 
-    public function setParent(self $parent = null): void
+    public function setParent(?self $parent = null): void
     {
         $this->parent = $parent;
     }

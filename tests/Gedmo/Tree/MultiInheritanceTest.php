@@ -24,10 +24,10 @@ use Gedmo\Translatable\Entity\Translation;
  */
 final class MultiInheritanceTest extends BaseTestCaseORM
 {
-    public const NODE = Node::class;
-    public const BASE_NODE = BaseNode::class;
-    public const ANODE = ANode::class;
-    public const TRANSLATION = Translation::class;
+    private const NODE = Node::class;
+    private const BASE_NODE = BaseNode::class;
+    private const ANODE = ANode::class;
+    private const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {
@@ -44,7 +44,6 @@ final class MultiInheritanceTest extends BaseTestCaseORM
 
         $food = $repo->findOneBy(['identifier' => 'food']);
         $left = $meta->getReflectionProperty('lft')->getValue($food);
-        $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
         static::assertSame(1, $left);
         static::assertNotNull($food->getCreated());

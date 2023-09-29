@@ -27,6 +27,8 @@ use Gedmo\Translatable\TranslatableListener;
  * to interact with translations.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-extends EntityRepository<object>
  */
 class TranslationRepository extends EntityRepository
 {
@@ -81,7 +83,12 @@ class TranslationRepository extends EntityRepository
             $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->_em->getClassMetadata($class);
-            $trans = $this->findOneBy(compact('locale', 'objectClass', 'field', 'foreignKey'));
+            $trans = $this->findOneBy([
+                'locale' => $locale,
+                'objectClass' => $objectClass,
+                'field' => $field,
+                'foreignKey' => $foreignKey,
+            ]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
                 $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
@@ -116,7 +123,7 @@ class TranslationRepository extends EntityRepository
      *
      * @param object $entity Must implement Translatable
      *
-     * @return array list of translations in locale groups
+     * @return array<string, array<string, string>> list of translations in locale groups
      */
     public function findTranslations($entity)
     {
@@ -141,14 +148,13 @@ class TranslationRepository extends EntityRepository
             $qb->select('trans.content, trans.field, trans.locale')
                 ->from($translationClass, 'trans')
                 ->where('trans.foreignKey = :entityId', 'trans.objectClass = :entityClass')
-                ->orderBy('trans.locale');
-            $q = $qb->getQuery();
-            $data = $q->execute(
-                compact('entityId', 'entityClass'),
-                Query::HYDRATE_ARRAY
-            );
+                ->orderBy('trans.locale')
+                ->setParameters([
+                    'entityId' => $entityId,
+                    'entityClass' => $entityClass,
+                ]);
 
-            foreach ($data as $row) {
+            foreach ($qb->getQuery()->toIterable([], Query::HYDRATE_ARRAY) as $row) {
                 $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
@@ -180,10 +186,13 @@ class TranslationRepository extends EntityRepository
             $dql .= ' AND trans.field = :field';
             $dql .= ' AND trans.content = :value';
             $q = $this->_em->createQuery($dql);
-            $q->setParameters(compact('class', 'field', 'value'));
+            $q->setParameters([
+                'class' => $class,
+                'field' => $field,
+                'value' => $value,
+            ]);
             $q->setMaxResults(1);
-            $result = $q->getArrayResult();
-            $id = $result[0]['foreignKey'] ?? null;
+            $id = $q->getSingleScalarResult();
 
             if (null !== $id) {
                 $entity = $this->_em->find($class, $id);
@@ -199,7 +208,7 @@ class TranslationRepository extends EntityRepository
      *
      * @param mixed $id primary key value of an entity
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
     public function findTranslationsByObjectId($id)
     {
@@ -210,14 +219,11 @@ class TranslationRepository extends EntityRepository
             $qb->select('trans.content, trans.field, trans.locale')
                 ->from($translationMeta->rootEntityName, 'trans')
                 ->where('trans.foreignKey = :entityId')
-                ->orderBy('trans.locale');
+                ->orderBy('trans.locale')
+                ->setParameter('entityId', $id);
             $q = $qb->getQuery();
-            $data = $q->execute(
-                ['entityId' => $id],
-                Query::HYDRATE_ARRAY
-            );
 
-            foreach ($data as $row) {
+            foreach ($q->toIterable([], Query::HYDRATE_ARRAY) as $row) {
                 $result[$row['locale']][$row['field']] = $row['content'];
             }
         }
@@ -233,8 +239,8 @@ class TranslationRepository extends EntityRepository
     private function getTranslatableListener(): TranslatableListener
     {
         if (null === $this->listener) {
-            foreach ($this->_em->getEventManager()->getAllListeners() as $event => $listeners) {
-                foreach ($listeners as $hash => $listener) {
+            foreach ($this->_em->getEventManager()->getAllListeners() as $listeners) {
+                foreach ($listeners as $listener) {
                     if ($listener instanceof TranslatableListener) {
                         return $this->listener = $listener;
                     }

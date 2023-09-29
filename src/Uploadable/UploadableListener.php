@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\UploadableCantWriteException;
 use Gedmo\Exception\UploadableCouldntGuessMimeTypeException;
@@ -90,7 +91,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     private $fileInfoObjects = [];
 
-    public function __construct(MimeTypeGuesserInterface $mimeTypeGuesser = null)
+    public function __construct(?MimeTypeGuesserInterface $mimeTypeGuesser = null)
     {
         parent::__construct();
 
@@ -381,7 +382,7 @@ class UploadableListener extends MappedEventSubscriber
      * @param bool        $appendNumber
      * @param object      $object
      *
-     * @return array
+     * @return array<string, int|string|null>
      *
      * @throws UploadableUploadException
      * @throws UploadableNoFileException
@@ -523,6 +524,8 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @param LoadClassMetadataEventArgs $eventArgs
      *
+     * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
+     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
@@ -642,7 +645,8 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param object $object Entity
+     * @param array<string, mixed> $config
+     * @param object               $object Entity
      *
      * @return string
      *
@@ -670,9 +674,8 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         Validator::validatePath($path);
-        $path = rtrim($path, '\/');
 
-        return $path;
+        return rtrim($path, '\/');
     }
 
     /**
@@ -727,7 +730,8 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the path of the entity's file
      *
-     * @param object $object
+     * @param array<string, mixed> $config
+     * @param object               $object
      *
      * @return string
      */
@@ -739,7 +743,8 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the name of the entity's file
      *
-     * @param object $object
+     * @param array<string, mixed> $config
+     * @param object               $object
      *
      * @return string
      */

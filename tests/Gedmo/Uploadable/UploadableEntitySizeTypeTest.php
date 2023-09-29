@@ -25,7 +25,7 @@ use Gedmo\Uploadable\Mapping\Validator;
  */
 final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
 {
-    public const IMAGE_WITH_TYPED_PROPERTIES_CLASS = ImageWithTypedProperties::class;
+    private const IMAGE_WITH_TYPED_PROPERTIES_CLASS = ImageWithTypedProperties::class;
 
     /**
      * @var UploadableListenerStub

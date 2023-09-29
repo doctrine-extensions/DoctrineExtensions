@@ -81,7 +81,7 @@ abstract class AbstractLogEntry implements LogEntryInterface
     protected $version;
 
     /**
-     * @var array|null
+     * @var array<string, mixed>|null
      *
      * @ORM\Column(type="array", nullable=true)
      */
@@ -108,8 +108,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Get action
-     *
-     * @return string|null
      */
     public function getAction()
     {
@@ -118,10 +116,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Set action
-     *
-     * @param string $action
-     *
-     * @return void
      */
     public function setAction($action)
     {
@@ -130,8 +124,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Get object class
-     *
-     * @return string|null
      */
     public function getObjectClass()
     {
@@ -140,10 +132,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Set object class
-     *
-     * @param string $objectClass
-     *
-     * @return void
      */
     public function setObjectClass($objectClass)
     {
@@ -152,8 +140,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Get object id
-     *
-     * @return string|null
      */
     public function getObjectId()
     {
@@ -164,8 +150,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * Set object id
      *
      * @param string $objectId
-     *
-     * @return void
      */
     public function setObjectId($objectId)
     {
@@ -174,8 +158,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Get username
-     *
-     * @return string|null
      */
     public function getUsername()
     {
@@ -186,8 +168,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * Set username
      *
      * @param string $username
-     *
-     * @return void
      */
     public function setUsername($username)
     {
@@ -196,8 +176,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Get loggedAt
-     *
-     * @return \DateTime|null
      */
     public function getLoggedAt()
     {
@@ -206,8 +184,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Set loggedAt to "now"
-     *
-     * @return void
      */
     public function setLoggedAt()
     {
@@ -216,8 +192,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Get data
-     *
-     * @return array|null
      */
     public function getData()
     {
@@ -226,10 +200,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Set data
-     *
-     * @param array $data
-     *
-     * @return void
      */
     public function setData($data)
     {
@@ -240,8 +210,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * Set current version
      *
      * @param int $version
-     *
-     * @return void
      */
     public function setVersion($version)
     {
@@ -250,8 +218,6 @@ abstract class AbstractLogEntry implements LogEntryInterface
 
     /**
      * Get current version
-     *
-     * @return int|null
      */
     public function getVersion()
     {

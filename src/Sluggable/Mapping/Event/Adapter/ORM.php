@@ -10,7 +10,6 @@
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Query;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -78,8 +77,9 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
                 $qb->setParameter($namedId, $value, $meta->getTypeOfField($namedId));
             }
         }
+
         $q = $qb->getQuery();
-        $q->setHydrationMode(Query::HYDRATE_ARRAY);
+
         // Force translation walker to look for slug translations to avoid duplicated slugs
         if ($object instanceof Translatable) {
             $q->setHint(
@@ -88,7 +88,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             );
         }
 
-        return $q->execute();
+        return $q->getArrayResult();
     }
 
     public function replaceRelative($object, array $config, $target, $replacement)

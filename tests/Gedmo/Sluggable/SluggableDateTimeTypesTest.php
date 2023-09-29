@@ -29,12 +29,12 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableDateTimeTypesTest extends BaseTestCaseORM
 {
-    public const ARTICLE_DATE = ArticleDate::class;
-    public const ARTICLE_DATE_IMMUTABLE = ArticleDateImmutable::class;
-    public const ARTICLE_DATETIME = ArticleDateTime::class;
-    public const ARTICLE_DATETIME_IMMUTABLE = ArticleDateTimeImmutable::class;
-    public const ARTICLE_DATETIME_TZ = ArticleDateTimeTz::class;
-    public const ARTICLE_DATETIME_TZ_IMMUTABLE = ArticleDateTimeTzImmutable::class;
+    private const ARTICLE_DATE = ArticleDate::class;
+    private const ARTICLE_DATE_IMMUTABLE = ArticleDateImmutable::class;
+    private const ARTICLE_DATETIME = ArticleDateTime::class;
+    private const ARTICLE_DATETIME_IMMUTABLE = ArticleDateTimeImmutable::class;
+    private const ARTICLE_DATETIME_TZ = ArticleDateTimeTz::class;
+    private const ARTICLE_DATETIME_TZ_IMMUTABLE = ArticleDateTimeTzImmutable::class;
 
     protected function setUp(): void
     {

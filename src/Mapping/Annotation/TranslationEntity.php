@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -22,14 +21,21 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class TranslationEntity implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string @Required */
+    /**
+     * @var string
+     *
+     * @Required
+     */
     public $class;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [], string $class = '')
     {
         if ([] !== $data) {

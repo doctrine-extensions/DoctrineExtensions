@@ -24,8 +24,8 @@ use Gedmo\Tests\Translator\Fixture\PersonCustom;
  */
 final class TranslatableTest extends BaseTestCaseORM
 {
-    public const PERSON = Person::class;
-    public const PERSON_CUSTOM_PROXY = PersonCustom::class;
+    private const PERSON = Person::class;
+    private const PERSON_CUSTOM_PROXY = PersonCustom::class;
 
     protected function setUp(): void
     {
@@ -66,7 +66,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());
@@ -84,7 +84,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());
@@ -102,7 +102,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $person->translate('ru')->setDescription('multilingual description');
 
         $parent = new Person();
-        $parent->setName('Jen');
+        $parent->setName('Jen parent');
         $parent->translate('ru')->setName('Женя starshai');
         $parent->translate('fr')->setName('zenia');
         $parent->setDescription('description');
@@ -208,7 +208,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());
@@ -226,7 +226,7 @@ final class TranslatableTest extends BaseTestCaseORM
             ->select('p, t')
             ->join('p.translations', 't')
             ->getQuery()
-            ->execute();
+            ->getResult();
         $person = $persons[0];
 
         static::assertSame('Jen', $person->getName());

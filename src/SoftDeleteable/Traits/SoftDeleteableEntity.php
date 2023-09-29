@@ -24,7 +24,7 @@ trait SoftDeleteableEntity
     /**
      * @ORM\Column(type="datetime", nullable=true)
      *
-     * @var DateTime|null
+     * @var \DateTime|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     protected $deletedAt;
@@ -34,7 +34,7 @@ trait SoftDeleteableEntity
      *
      * @return self
      */
-    public function setDeletedAt(DateTime $deletedAt = null)
+    public function setDeletedAt(?\DateTime $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
 
@@ -45,7 +45,7 @@ trait SoftDeleteableEntity
      * Get the deleted at timestamp value. Will return null if
      * the entity has not been soft deleted.
      *
-     * @return DateTime|null
+     * @return \DateTime|null
      */
     public function getDeletedAt()
     {

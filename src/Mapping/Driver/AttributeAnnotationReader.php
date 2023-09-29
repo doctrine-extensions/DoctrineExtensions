@@ -11,8 +11,6 @@ namespace Gedmo\Mapping\Driver;
 
 use Doctrine\Common\Annotations\Reader;
 use Gedmo\Mapping\Annotation\Annotation;
-use ReflectionClass;
-use ReflectionMethod;
 
 /**
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -39,9 +37,11 @@ final class AttributeAnnotationReader implements Reader
     }
 
     /**
+     * @phpstan-param \ReflectionClass<object> $class
+     *
      * @return Annotation[]
      */
-    public function getClassAnnotations(ReflectionClass $class): array
+    public function getClassAnnotations(\ReflectionClass $class): array
     {
         $annotations = $this->attributeReader->getClassAnnotations($class);
 
@@ -53,13 +53,16 @@ final class AttributeAnnotationReader implements Reader
     }
 
     /**
-     * @param class-string<T> $annotationName the name of the annotation
+     * @param string $annotationName
+     *
+     * @phpstan-param \ReflectionClass<object> $class
+     * @phpstan-param class-string<T> $annotationName the name of the annotation
      *
      * @return T|null the Annotation or NULL, if the requested annotation does not exist
      *
      * @template T
      */
-    public function getClassAnnotation(ReflectionClass $class, $annotationName)
+    public function getClassAnnotation(\ReflectionClass $class, $annotationName)
     {
         $annotation = $this->attributeReader->getClassAnnotation($class, $annotationName);
 
@@ -102,7 +105,7 @@ final class AttributeAnnotationReader implements Reader
         return $this->annotationReader->getPropertyAnnotation($property, $annotationName);
     }
 
-    public function getMethodAnnotations(ReflectionMethod $method): array
+    public function getMethodAnnotations(\ReflectionMethod $method): array
     {
         throw new \BadMethodCallException('Not implemented');
     }
@@ -110,7 +113,7 @@ final class AttributeAnnotationReader implements Reader
     /**
      * @return mixed
      */
-    public function getMethodAnnotation(ReflectionMethod $method, $annotationName)
+    public function getMethodAnnotation(\ReflectionMethod $method, $annotationName)
     {
         throw new \BadMethodCallException('Not implemented');
     }

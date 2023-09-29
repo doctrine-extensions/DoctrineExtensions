@@ -13,6 +13,7 @@ use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -154,4 +155,5 @@ $config->setQueryCache($cache);
 $config->setResultCache($cache);
 
 // Finally, we create the entity manager
-return EntityManager::create($connection, $config, $eventManager);
+$connection = DriverManager::getConnection($connection, $config);
+$em = new EntityManager($connection, $config, $eventManager);

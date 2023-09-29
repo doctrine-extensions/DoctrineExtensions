@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -22,7 +21,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class TreeRoot implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
@@ -30,6 +29,9 @@ final class TreeRoot implements GedmoAnnotation
     /** @var string|null */
     public $identifierMethod;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(array $data = [], ?string $identifierMethod = null)
     {
         if ([] !== $data) {

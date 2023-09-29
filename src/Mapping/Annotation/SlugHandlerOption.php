@@ -35,7 +35,8 @@ final class SlugHandlerOption implements GedmoAnnotation
     public $value;
 
     /**
-     * @param mixed $value
+     * @param array<string, mixed> $data
+     * @param mixed                $value
      */
     public function __construct(
         array $data = [],

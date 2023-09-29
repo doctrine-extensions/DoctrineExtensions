@@ -9,8 +9,6 @@
 
 namespace Gedmo\SoftDeleteable\Traits;
 
-use DateTime;
-
 /**
  * A generic trait to use on your self-deletable entities.
  * There is no mapping information defined in this trait.
@@ -20,7 +18,7 @@ use DateTime;
 trait SoftDeleteable
 {
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      */
     protected $deletedAt;
 
@@ -29,7 +27,7 @@ trait SoftDeleteable
      *
      * @return self
      */
-    public function setDeletedAt(DateTime $deletedAt = null)
+    public function setDeletedAt(?\DateTime $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
 
@@ -40,7 +38,7 @@ trait SoftDeleteable
      * Get the deleted at timestamp value. Will return null if
      * the entity has not been soft deleted.
      *
-     * @return DateTime|null
+     * @return \DateTime|null
      */
     public function getDeletedAt()
     {

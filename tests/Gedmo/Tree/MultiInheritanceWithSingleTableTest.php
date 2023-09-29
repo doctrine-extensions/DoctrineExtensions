@@ -26,10 +26,10 @@ use Gedmo\Tree\TreeListener;
  */
 final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 {
-    public const CAR = Car::class;
-    public const BUS = Bus::class;
-    public const VEHICLE = Vehicle::class;
-    public const ENGINE = Engine::class;
+    private const CAR = Car::class;
+    private const BUS = Bus::class;
+    private const VEHICLE = Vehicle::class;
+    private const ENGINE = Engine::class;
 
     protected function setUp(): void
     {

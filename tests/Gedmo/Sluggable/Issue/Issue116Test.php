@@ -26,7 +26,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue116Test extends BaseTestCaseORM
 {
-    public const TARGET = Country::class;
+    private const TARGET = Country::class;
 
     protected function setUp(): void
     {

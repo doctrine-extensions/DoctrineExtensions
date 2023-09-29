@@ -27,8 +27,8 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableManySlugTest extends BaseTestCaseORM
 {
-    public const ARTICLE = TransArticleManySlug::class;
-    public const TRANSLATION = Translation::class;
+    private const ARTICLE = TransArticleManySlug::class;
+    private const TRANSLATION = Translation::class;
 
     /**
      * @var int|null

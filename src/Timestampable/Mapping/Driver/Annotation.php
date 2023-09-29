@@ -88,5 +88,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config[$timestampable->on][] = $field;
             }
         }
+
+        return $config;
     }
 }

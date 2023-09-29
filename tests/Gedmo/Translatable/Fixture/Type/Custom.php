@@ -16,9 +16,11 @@ use Doctrine\DBAL\Types\Type;
 
 class Custom extends Type
 {
-    public const NAME = 'custom';
+    private const NAME = 'custom';
 
     /**
+     * @param mixed[] $fieldDeclaration
+     *
      * @return string
      */
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)

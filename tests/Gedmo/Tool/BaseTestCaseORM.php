@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
@@ -65,7 +66,7 @@ abstract class BaseTestCaseORM extends TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      */
-    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null): EntityManager
+    protected function getDefaultMockSqliteEntityManager(?EventManager $evm = null, ?Configuration $config = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
@@ -73,7 +74,8 @@ abstract class BaseTestCaseORM extends TestCase
         ];
 
         $config = $config ?? $this->getDefaultConfiguration();
-        $em = EntityManager::create($conn, $config, $evm ?? $this->getEventManager());
+        $connection = DriverManager::getConnection($conn, $config);
+        $em = new EntityManager($connection, $config, $evm ?? $this->getEventManager());
 
         $schema = array_map(static function (string $class) use ($em): ClassMetadata {
             return $em->getClassMetadata($class);
@@ -116,6 +118,8 @@ abstract class BaseTestCaseORM extends TestCase
 
     /**
      * Get a list of used fixture classes
+     *
+     * @return array<int, string>
      *
      * @phpstan-return list<class-string>
      */

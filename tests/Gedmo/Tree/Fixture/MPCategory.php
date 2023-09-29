@@ -129,7 +129,7 @@ class MPCategory
         return $this->title;
     }
 
-    public function setParent(self $parent = null): void
+    public function setParent(?self $parent = null): void
     {
         $this->parentId = $parent;
     }

@@ -253,5 +253,7 @@ class Xml extends BaseXml
                 throw new InvalidMappingException("Cannot find Tree type for class: {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 }

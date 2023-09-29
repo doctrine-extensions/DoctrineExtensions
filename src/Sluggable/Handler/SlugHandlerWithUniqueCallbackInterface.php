@@ -23,8 +23,9 @@ interface SlugHandlerWithUniqueCallbackInterface extends SlugHandlerInterface
     /**
      * Hook for slug handlers called before it is made unique.
      *
-     * @param object $object
-     * @param string $slug
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param string               $slug
      *
      * @return void
      */

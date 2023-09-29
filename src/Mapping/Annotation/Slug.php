@@ -9,7 +9,6 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -22,12 +21,16 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Slug implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string[] @Required */
+    /**
+     * @var string[]
+     *
+     * @Required
+     */
     public $fields = [];
     /** @var bool */
     public $updatable = true;
@@ -49,8 +52,9 @@ final class Slug implements GedmoAnnotation
     public $dateFormat = 'Y-m-d-H:i';
 
     /**
-     * @param string[]      $fields
-     * @param SlugHandler[] $handlers
+     * @param array<string, mixed> $data
+     * @param string[]             $fields
+     * @param SlugHandler[]        $handlers
      */
     public function __construct(
         array $data = [],

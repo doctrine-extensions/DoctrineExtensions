@@ -24,8 +24,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue1058Test extends BaseTestCaseORM
 {
-    public const ARTICLE = Page::class;
-    public const USER = User::class;
+    private const ARTICLE = Page::class;
+    private const USER = User::class;
 
     protected function setUp(): void
     {

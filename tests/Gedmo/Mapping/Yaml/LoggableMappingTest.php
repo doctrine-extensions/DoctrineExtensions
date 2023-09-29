@@ -20,6 +20,8 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Embedded;
+use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableComposite;
+use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableCompositeRelation;
 use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 
@@ -64,6 +66,36 @@ final class LoggableMappingTest extends BaseTestCaseOM
             LoggableWithEmbedded::class,
             Embedded::class,
         ], $chain);
+    }
+
+    public function testLoggableCompositeMetadata(): void
+    {
+        $meta = $this->em->getClassMetadata(LoggableComposite::class);
+        $config = $this->loggable->getConfiguration($this->em, $meta->name);
+
+        static::assertArrayHasKey('logEntryClass', $config);
+        static::assertSame(LogEntry::class, $config['logEntryClass']);
+        static::assertArrayHasKey('loggable', $config);
+        static::assertTrue($config['loggable']);
+
+        static::assertArrayHasKey('versioned', $config);
+        static::assertCount(1, $config['versioned']);
+        static::assertContains('title', $config['versioned']);
+    }
+
+    public function testLoggableCompositeRelationMetadata(): void
+    {
+        $meta = $this->em->getClassMetadata(LoggableCompositeRelation::class);
+        $config = $this->loggable->getConfiguration($this->em, $meta->name);
+
+        static::assertArrayHasKey('logEntryClass', $config);
+        static::assertSame(LogEntry::class, $config['logEntryClass']);
+        static::assertArrayHasKey('loggable', $config);
+        static::assertTrue($config['loggable']);
+
+        static::assertArrayHasKey('versioned', $config);
+        static::assertCount(1, $config['versioned']);
+        static::assertContains('title', $config['versioned']);
     }
 
     public function testLoggableMetadataWithEmbedded(): void

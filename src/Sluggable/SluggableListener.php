@@ -11,6 +11,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -225,6 +226,7 @@ class SluggableListener extends MappedEventSubscriber
      * Mapps additional metadata
      *
      * @param LoadClassMetadataEventArgs $eventArgs
+     * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void
      */
@@ -472,6 +474,8 @@ class SluggableListener extends MappedEventSubscriber
 
     /**
      * Generates the unique slug
+     *
+     * @param array<string, mixed> $config
      */
     private function makeUniqueSlug(SluggableAdapter $ea, object $object, string $preferredSlug, bool $recursing = false, array $config = []): string
     {

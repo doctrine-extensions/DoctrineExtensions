@@ -28,13 +28,13 @@ final class DoctrineExtensions
     /**
      * Current version of extensions
      */
-    public const VERSION = '3.11.0';
+    public const VERSION = '3.13.0';
 
     /**
      * Hooks all extension metadata mapping drivers into
      * the given driver chain of drivers for the ORM.
      */
-    public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null): void
+    public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, ?Reader $reader = null): void
     {
         if (!$reader) {
             $reader = self::createAnnotationReader();
@@ -51,7 +51,7 @@ final class DoctrineExtensions
      * Hooks only superclass extension metadata mapping drivers into
      * the given driver chain of drivers for the ORM.
      */
-    public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null): void
+    public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, ?Reader $reader = null): void
     {
         if (!$reader) {
             $reader = self::createAnnotationReader();
@@ -68,7 +68,7 @@ final class DoctrineExtensions
      * Hooks all extension metadata mapping drivers into
      * the given driver chain of drivers for the MongoDB ODM.
      */
-    public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null): void
+    public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, ?Reader $reader = null): void
     {
         if (!$reader) {
             $reader = self::createAnnotationReader();
@@ -84,7 +84,7 @@ final class DoctrineExtensions
      * Hooks only superclass extension metadata mapping drivers into
      * the given driver chain of drivers for the MongoDB ODM.
      */
-    public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null): void
+    public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, ?Reader $reader = null): void
     {
         if (!$reader) {
             $reader = self::createAnnotationReader();

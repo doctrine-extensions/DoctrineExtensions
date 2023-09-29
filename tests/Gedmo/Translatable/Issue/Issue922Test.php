@@ -22,10 +22,10 @@ use Gedmo\Translatable\TranslatableListener;
 
 final class Issue922Test extends BaseTestCaseORM
 {
-    public const POST = Post::class;
-    public const TRANSLATION = Translation::class;
+    private const POST = Post::class;
+    private const TRANSLATION = Translation::class;
 
-    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
+    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener

@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
@@ -25,7 +27,6 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as AttributeDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
@@ -71,7 +72,10 @@ abstract class BaseTestCaseOM extends TestCase
         }
     }
 
-    public function getMongoDBDriver(array $paths = []): MappingDriver
+    /**
+     * @param string[] $paths
+     */
+    protected function getMongoDBDriver(array $paths = []): MappingDriver
     {
         if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
             return new AttributeDriver($paths);
@@ -80,7 +84,10 @@ abstract class BaseTestCaseOM extends TestCase
         return new AnnotationDriverODM($_ENV['annotation_reader'], $paths);
     }
 
-    public function getORMDriver(array $paths = []): MappingDriver
+    /**
+     * @param string[] $paths
+     */
+    protected function getORMDriver(array $paths = []): MappingDriver
     {
         if (PHP_VERSION_ID >= 80000) {
             return new AttributeDriverORM($paths);
@@ -93,7 +100,7 @@ abstract class BaseTestCaseOM extends TestCase
      * DocumentManager mock object together with
      * annotation mapping driver and database
      */
-    protected function getMockDocumentManager(string $dbName, MappingDriver $mappingDriver = null): DocumentManager
+    protected function getMockDocumentManager(string $dbName, ?MappingDriver $mappingDriver = null): DocumentManager
     {
         if (!extension_loaded('mongodb')) {
             static::markTestSkipped('Missing Mongo extension.');
@@ -109,8 +116,12 @@ abstract class BaseTestCaseOM extends TestCase
      * EntityManager mock object together with
      * annotation mapping driver and pdo_sqlite
      * database in memory
+     *
+     * @param string[] $fixtures
+     *
+     * @phpstan-assert class-string[] $fixtures
      */
-    protected function getDefaultMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null): EntityManager
+    protected function getDefaultMockSqliteEntityManager(array $fixtures, ?MappingDriver $mappingDriver = null): EntityManager
     {
         $conn = [
             'driver' => 'pdo_sqlite',
@@ -118,7 +129,8 @@ abstract class BaseTestCaseOM extends TestCase
         ];
 
         $config = $this->getMockORMConfig($mappingDriver);
-        $em = EntityManager::create($conn, $config, $this->getEventManager());
+        $connection = DriverManager::getConnection($conn, $config);
+        $em = new EntityManager($connection, $config, $this->getEventManager());
 
         $schema = array_map(static function (string $class) use ($em): ClassMetadata {
             assert(class_exists($class));
@@ -153,7 +165,7 @@ abstract class BaseTestCaseOM extends TestCase
     /**
      * Get annotation mapping configuration
      */
-    private function getMockODMMongoDBConfig(string $dbName, MappingDriver $mappingDriver = null): Configuration
+    private function getMockODMMongoDBConfig(string $dbName, ?MappingDriver $mappingDriver = null): Configuration
     {
         if (null === $mappingDriver) {
             $mappingDriver = $this->getMongoDBDriver();
@@ -176,7 +188,7 @@ abstract class BaseTestCaseOM extends TestCase
     /**
      * Get annotation mapping configuration for ORM
      */
-    private function getMockORMConfig(MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
+    private function getMockORMConfig(?MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);

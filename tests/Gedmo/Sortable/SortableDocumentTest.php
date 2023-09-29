@@ -23,7 +23,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class SortableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = Article::class;
+    private const ARTICLE = Article::class;
 
     protected function setUp(): void
     {

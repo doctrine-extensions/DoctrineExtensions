@@ -30,7 +30,7 @@ interface SluggableAdapter extends AdapterInterface
      * @param string        $slug
      * @phpstan-param SluggableConfiguration $config
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getSimilarSlugs($object, $meta, array $config, $slug);
 

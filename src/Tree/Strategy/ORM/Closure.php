@@ -13,6 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -301,22 +302,25 @@ class Closure implements Strategy
                 $dql .= ' JOIN c.ancestor a';
                 $dql .= ' WHERE c.descendant = :parent';
                 $q = $em->createQuery($dql);
-                $q->setParameters(compact('parent'));
-                $ancestors = $q->getArrayResult();
+                $q->setParameter('parent', $parent);
 
-                if ([] === $ancestors) {
-                    // The parent has been persisted after the child, postpone the evaluation
-                    $this->pendingChildNodeInserts[$emHash][] = $node;
+                $mustPostpone = true;
 
-                    continue;
-                }
+                foreach ($q->toIterable([], Query::HYDRATE_ARRAY) as $ancestor) {
+                    $mustPostpone = false;
 
-                foreach ($ancestors as $ancestor) {
                     $entries[] = [
                         $ancestorColumnName => $ancestor['ancestor'][$identifier],
                         $descendantColumnName => $nodeId,
                         $depthColumnName => $ancestor['depth'] + 1,
                     ];
+                }
+
+                if ($mustPostpone) {
+                    // The parent has been persisted after the child, postpone the evaluation
+                    $this->pendingChildNodeInserts[$emHash][] = $node;
+
+                    continue;
                 }
 
                 if (isset($config['level'])) {
@@ -400,7 +404,10 @@ class Closure implements Strategy
             $dql .= ' WHERE c.ancestor = :node';
             $dql .= ' AND c.descendant = :parent';
             $q = $em->createQuery($dql);
-            $q->setParameters(compact('node', 'parent'));
+            $q->setParameters([
+                'node' => $node,
+                'parent' => $parent,
+            ]);
             if ($q->getSingleScalarResult()) {
                 throw new UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
             }
@@ -411,7 +418,7 @@ class Closure implements Strategy
             $subQuery .= " JOIN {$table} c2 ON c1.descendant = c2.descendant";
             $subQuery .= ' WHERE c1.ancestor = :nodeId AND c2.depth > c1.depth';
 
-            $ids = $conn->executeQuery($subQuery, compact('nodeId'))->fetchFirstColumn();
+            $ids = $conn->executeQuery($subQuery, ['nodeId' => $nodeId])->fetchFirstColumn();
             if ([] !== $ids) {
                 // using subquery directly, sqlite acts unfriendly
                 $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).')';
@@ -429,7 +436,7 @@ class Closure implements Strategy
             $query .= ' WHERE c1.descendant = :parentId';
             $query .= ' AND c2.ancestor = :nodeId';
 
-            $closures = $conn->executeQuery($query, compact('nodeId', 'parentId'))->fetchAllAssociative();
+            $closures = $conn->executeQuery($query, ['nodeId' => $nodeId, 'parentId' => $parentId])->fetchAllAssociative();
 
             foreach ($closures as $closure) {
                 if (!$conn->insert($table, $closure)) {
@@ -444,7 +451,7 @@ class Closure implements Strategy
     }
 
     /**
-     * @param array $association
+     * @param array<string, mixed> $association
      *
      * @return string|null
      */

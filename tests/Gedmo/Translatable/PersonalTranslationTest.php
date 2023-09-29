@@ -28,9 +28,9 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class PersonalTranslationTest extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const TRANSLATION = PersonalArticleTranslation::class;
-    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
+    private const ARTICLE = Article::class;
+    private const TRANSLATION = PersonalArticleTranslation::class;
+    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener

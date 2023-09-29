@@ -21,6 +21,8 @@ use Gedmo\Sortable\SortableListener;
  * Sortable Repository
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
+ *
+ * @phpstan-extends EntityRepository<object>
  */
 class SortableRepository extends EntityRepository
 {
@@ -45,8 +47,8 @@ class SortableRepository extends EntityRepository
     {
         parent::__construct($em, $class);
         $sortableListener = null;
-        foreach ($em->getEventManager()->getAllListeners() as $event => $listeners) {
-            foreach ($listeners as $hash => $listener) {
+        foreach ($em->getEventManager()->getAllListeners() as $listeners) {
+            foreach ($listeners as $listener) {
                 if ($listener instanceof SortableListener) {
                     $sortableListener = $listener;
 
@@ -65,6 +67,8 @@ class SortableRepository extends EntityRepository
     }
 
     /**
+     * @param array<string, mixed> $groupValues
+     *
      * @return Query
      */
     public function getBySortableGroupsQuery(array $groupValues = [])
@@ -73,6 +77,8 @@ class SortableRepository extends EntityRepository
     }
 
     /**
+     * @param array<string, mixed> $groupValues
+     *
      * @return QueryBuilder
      */
     public function getBySortableGroupsQueryBuilder(array $groupValues = [])
@@ -101,7 +107,9 @@ class SortableRepository extends EntityRepository
     }
 
     /**
-     * @return array
+     * @param array<string, mixed> $groupValues
+     *
+     * @return array<int, object>
      */
     public function getBySortableGroups(array $groupValues = [])
     {

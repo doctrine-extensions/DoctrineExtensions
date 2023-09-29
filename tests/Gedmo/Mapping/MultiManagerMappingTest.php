@@ -75,7 +75,8 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
 
     public function testTwoDifferentManagers(): void
     {
-        $meta = $this->dm1->getClassMetadata(Article::class);
+        // Force metadata class loading.
+        $this->dm1->getClassMetadata(Article::class);
         $dmArticle = new Article();
         $dmArticle->setCode('code');
         $dmArticle->setTitle('title');

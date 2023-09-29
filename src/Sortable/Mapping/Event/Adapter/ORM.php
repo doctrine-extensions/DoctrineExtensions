@@ -26,8 +26,9 @@ use Gedmo\Sortable\SortableListener;
 final class ORM extends BaseAdapterORM implements SortableAdapter
 {
     /**
-     * @param ClassMetadata $meta
-     * @param array         $groups
+     * @param array<string, mixed>    $config
+     * @param ClassMetadata           $meta
+     * @param iterable<string, mixed> $groups
      *
      * @return int|null
      */
@@ -42,15 +43,15 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $query = $qb->getQuery();
         $query->useQueryCache(false);
         $query->disableResultCache();
-        $res = $query->getResult();
+        $query->setMaxResults(1);
 
-        return $res[0][1];
+        return $query->getSingleScalarResult();
     }
 
     /**
-     * @param array $relocation
-     * @param array $delta
-     * @param array $config
+     * @param array<string, mixed> $relocation
+     * @param array<string, mixed> $delta
+     * @param array<string, mixed> $config
      * @phpstan-param SortableRelocation $relocation
      *
      * @return void
@@ -112,6 +113,9 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $q->getSingleScalarResult();
     }
 
+    /**
+     * @param iterable<string, mixed> $groups
+     */
     private function addGroupWhere(QueryBuilder $qb, ClassMetadata $metadata, iterable $groups): void
     {
         $i = 1;

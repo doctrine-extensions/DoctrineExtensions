@@ -32,12 +32,12 @@ class Category extends BaseCategory
     private $slug;
 
     /**
-     * @var Collection<int, Category>
+     * @var Collection<int, self>
      */
     private $children;
 
     /**
-     * @var Category
+     * @var self
      */
     private $parent;
 
@@ -82,16 +82,13 @@ class Category extends BaseCategory
         return $this->slug;
     }
 
-    /**
-     * @param Category $children
-     */
     public function addChildren(self $children): void
     {
         $this->children[] = $children;
     }
 
     /**
-     * @return Collection $children
+     * @return Collection<int, self> $children
      */
     public function getChildren()
     {
@@ -104,7 +101,7 @@ class Category extends BaseCategory
     }
 
     /**
-     * @return Category $parent
+     * @return self $parent
      */
     public function getParent(): self
     {

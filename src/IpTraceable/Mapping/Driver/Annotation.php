@@ -79,5 +79,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config[$ipTraceable->on][] = $field;
             }
         }
+
+        return $config;
     }
 }

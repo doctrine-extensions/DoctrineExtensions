@@ -25,6 +25,7 @@ final class FileInfoArrayTest extends TestCase
     public function testConstructorIfKeysAreNotValidOrSomeAreMissingThrowException(): void
     {
         $this->expectException('RuntimeException');
-        $fileInfo = new FileInfoArray([]);
+
+        new FileInfoArray([]);
     }
 }

@@ -165,6 +165,8 @@ class SoftDeleteableWalker extends SqlWalker
 
     /**
      * Search for components in the delete clause
+     *
+     * @param array<string, array<string, mixed>> $queryComponents
      */
     private function extractComponents(array $queryComponents): void
     {

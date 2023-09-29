@@ -57,6 +57,11 @@ class File
     #[ORM\Column(type: Types::INTEGER)]
     private $size;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function setName(?string $name): void
     {
         $this->name = $name;

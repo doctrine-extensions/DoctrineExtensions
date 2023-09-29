@@ -6,7 +6,10 @@ on:
       - main
     paths:
       - ".docker/php/Dockerfile"
+      - "compose.yaml"
   pull_request:
+  schedule:
+    - cron: "0 0 * * 0"
 
 jobs:
   lint-dockerfile:
@@ -20,3 +23,16 @@ jobs:
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ".docker/php/Dockerfile"
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build containers with Docker Compose
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build "php" container
+        uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "./compose.yaml"
+          services: |
+            php

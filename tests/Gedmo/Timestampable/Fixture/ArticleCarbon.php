@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Timestampable\Fixture;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -147,6 +148,11 @@ class ArticleCarbon implements Timestampable
     #[Gedmo\Timestampable(on: 'change', field: 'level', value: '10')]
     private $reachedRelevantLevel;
 
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
+
     public function setType(?Type $type): void
     {
         $this->type = $type;
@@ -183,6 +189,9 @@ class ArticleCarbon implements Timestampable
         $this->comments[] = $comment;
     }
 
+    /**
+     * @return Collection<int, Comment>
+     */
     public function getComments(): Collection
     {
         return $this->comments;

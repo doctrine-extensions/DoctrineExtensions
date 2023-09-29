@@ -21,6 +21,9 @@ use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
 use Gedmo\Tree\TreeListener;
 
+/**
+ * @phpstan-extends DocumentRepository<object>
+ */
 abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
 {
     /**
@@ -139,10 +142,10 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Obtain direct children?
-     * @param array  $options     Options
-     * @param bool   $includeNode Include node in results?
+     * @param object               $node        Root node
+     * @param bool                 $direct      Obtain direct children?
+     * @param array<string, mixed> $options     Options
+     * @param bool                 $includeNode Include node in results?
      *
      * @return Builder
      */
@@ -151,10 +154,10 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node        Root node
-     * @param bool   $direct      Obtain direct children?
-     * @param array  $options     Options
-     * @param bool   $includeNode Include node in results?
+     * @param object               $node        Root node
+     * @param bool                 $direct      Obtain direct children?
+     * @param array<string, mixed> $options     Options
+     * @param bool                 $includeNode Include node in results?
      *
      * @return Query
      */
