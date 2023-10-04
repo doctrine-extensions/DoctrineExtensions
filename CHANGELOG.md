@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- AttributeReader reads attributes from class traits
 
 ## [3.16.1]
 ### Fixed
