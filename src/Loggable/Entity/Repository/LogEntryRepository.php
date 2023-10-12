@@ -67,7 +67,7 @@ class LogEntryRepository extends EntityRepository
      */
     public function getLogEntriesQuery($entity)
     {
-        $wrapped = new EntityWrapper($entity, $this->_em);
+        $wrapped = new EntityWrapper($entity, $this->getEntityManager());
         $objectClass = $wrapped->getMetadata()->getName();
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->getName()} log";
@@ -76,7 +76,7 @@ class LogEntryRepository extends EntityRepository
         $dql .= ' ORDER BY log.version DESC';
 
         $objectId = (string) $wrapped->getIdentifier(false, true);
-        $q = $this->_em->createQuery($dql);
+        $q = $this->getEntityManager()->createQuery($dql);
         $q->setParameters([
             'objectId' => $objectId,
             'objectClass' => $objectClass,
@@ -102,7 +102,7 @@ class LogEntryRepository extends EntityRepository
      */
     public function revert($entity, $version = 1)
     {
-        $wrapped = new EntityWrapper($entity, $this->_em);
+        $wrapped = new EntityWrapper($entity, $this->getEntityManager());
         $objectMeta = $wrapped->getMetadata();
         $objectClass = $objectMeta->getName();
         $meta = $this->getClassMetadata();
@@ -113,14 +113,14 @@ class LogEntryRepository extends EntityRepository
         $dql .= ' ORDER BY log.version DESC';
 
         $objectId = (string) $wrapped->getIdentifier(false, true);
-        $q = $this->_em->createQuery($dql);
+        $q = $this->getEntityManager()->createQuery($dql);
         $q->setParameters([
             'objectId' => $objectId,
             'objectClass' => $objectClass,
             'version' => $version,
         ]);
 
-        $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->getName());
+        $config = $this->getLoggableListener()->getConfiguration($this->getEntityManager(), $objectMeta->getName());
         $fields = $config['versioned'];
         $filled = false;
         $logsFound = false;
@@ -167,7 +167,7 @@ class LogEntryRepository extends EntityRepository
         }
 
         $mapping = $objectMeta->getAssociationMapping($field);
-        $value = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
+        $value = $value ? $this->getEntityManager()->getReference($mapping['targetEntity'], $value) : null;
     }
 
     /**
@@ -180,7 +180,7 @@ class LogEntryRepository extends EntityRepository
     private function getLoggableListener(): LoggableListener
     {
         if (null === $this->listener) {
-            foreach ($this->_em->getEventManager()->getAllListeners() as $listeners) {
+            foreach ($this->getEntityManager()->getEventManager()->getAllListeners() as $listeners) {
                 foreach ($listeners as $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;

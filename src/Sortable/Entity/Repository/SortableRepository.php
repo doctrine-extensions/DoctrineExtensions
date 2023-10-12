@@ -63,7 +63,7 @@ class SortableRepository extends EntityRepository
 
         $this->listener = $sortableListener;
         $this->meta = $this->getClassMetadata();
-        $this->config = $this->listener->getConfiguration($this->_em, $this->meta->getName());
+        $this->config = $this->listener->getConfiguration($this->getEntityManager(), $this->meta->getName());
     }
 
     /**
