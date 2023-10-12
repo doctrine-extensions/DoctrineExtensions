@@ -39,12 +39,13 @@ final class TimestampableMappingTest extends ORMMappingTestCase
         parent::setUp();
 
         $config = $this->getBasicConfiguration();
-        $chainDriverImpl = new MappingDriverChain();
-        $chainDriverImpl->addDriver(
-            new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Gedmo\Tests\Mapping\Fixture\Yaml'
-        );
-        $config->setMetadataDriverImpl($chainDriverImpl);
+
+        $chain = new MappingDriverChain();
+
+        // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
+        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
+
+        $config->setMetadataDriverImpl($chain);
 
         $conn = [
             'driver' => 'pdo_sqlite',

@@ -16,6 +16,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
@@ -45,17 +46,19 @@ final class SluggableMappingTest extends ORMMappingTestCase
         parent::setUp();
 
         $config = $this->getBasicConfiguration();
-        $chainDriverImpl = new MappingDriverChain();
-        $chainDriverImpl->addDriver(
-            new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Gedmo\Tests\Mapping\Fixture\Yaml'
-        );
-        $reader = new AnnotationReader();
-        $chainDriverImpl->addDriver(
-            new AnnotationDriver($reader),
-            'Gedmo\Tests\Mapping\Fixture'
-        );
-        $config->setMetadataDriverImpl($chainDriverImpl);
+
+        $chain = new MappingDriverChain();
+
+        // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
+        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
+        } else {
+            $chain->addDriver(new AnnotationDriver(new AnnotationReader()), 'Gedmo\Tests\Mapping\Fixture');
+        }
+
+        $config->setMetadataDriverImpl($chain);
 
         $conn = [
             'driver' => 'pdo_sqlite',

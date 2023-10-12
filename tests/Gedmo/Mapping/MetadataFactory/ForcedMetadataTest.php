@@ -21,6 +21,7 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Id\IdentityGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 use Gedmo\Timestampable\TimestampableListener;
@@ -48,9 +49,12 @@ final class ForcedMetadataTest extends TestCase
         $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $config->setMetadataDriverImpl(
-            new AnnotationDriver($_ENV['annotation_reader'])
-        );
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $config->setMetadataDriverImpl(new AttributeDriver([]));
+        } else {
+            $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
+        }
 
         $conn = [
             'driver' => 'pdo_sqlite',

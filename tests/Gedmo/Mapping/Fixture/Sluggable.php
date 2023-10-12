@@ -11,12 +11,16 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\RelativeSlugHandler;
+use Gedmo\Sluggable\Handler\TreeSlugHandler;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Sluggable
 {
     /**
@@ -26,6 +30,9 @@ class Sluggable
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
@@ -33,6 +40,7 @@ class Sluggable
      *
      * @ORM\Column(name="title", type="string", length=64)
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private $title;
 
     /**
@@ -40,6 +48,7 @@ class Sluggable
      *
      * @ORM\Column(name="code", type="string", length=16)
      */
+    #[ORM\Column(name: 'code', type: Types::STRING, length: 64, nullable: true)]
     private $code;
 
     /**
@@ -58,6 +67,10 @@ class Sluggable
      * }, separator="-", updatable=false, fields={"title", "code"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
+    #[Gedmo\Slug(separator: '-', updatable: false, fields: ['title', 'code'])]
+    #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
+    #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'user', 'relationSlugField' => 'slug', 'separator' => '/'])]
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 
     /**
@@ -65,6 +78,7 @@ class Sluggable
      *
      * @ORM\ManyToOne(targetEntity="Sluggable")
      */
+    #[ORM\ManyToOne(targetEntity: self::class)]
     private $parent;
 
     /**
@@ -72,6 +86,7 @@ class Sluggable
      *
      * @ORM\ManyToOne(targetEntity="User")
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $user;
 
     public function getId(): ?int
