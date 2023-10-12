@@ -16,6 +16,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sluggable\SluggableListener;
@@ -38,15 +39,18 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
 
         $config = $this->getBasicConfiguration();
 
-        $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $config->setMetadataDriverImpl(new AttributeDriver([]));
+        } else {
+            $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+        }
 
         $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
         ];
 
-        $connection = DriverManager::getConnection($conn, $config);
-        $this->em = new EntityManager($connection, $config, new EventManager());
+        $this->em = new EntityManager(DriverManager::getConnection($conn, $config), $config, new EventManager());
     }
 
     public function testGetMetadataFactoryCacheFromDoctrineForSluggable(): void
@@ -97,12 +101,21 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
 
         // Create new configuration to use new array cache
         $config = $this->getBasicConfiguration();
-        $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $config->setMetadataDriverImpl(new AttributeDriver([]));
+        } else {
+            $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+        }
+
         $config->setMetadataCache(new ArrayAdapter());
-        $this->em = EntityManager::create([
+
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        ], $config, new EventManager());
+        ];
+
+        $this->em = new EntityManager(DriverManager::getConnection($conn, $config), $config, new EventManager());
 
         $config = $subscriber->getExtensionMetadataFactory($this->em)->getExtensionMetadata($classMetadata);
 

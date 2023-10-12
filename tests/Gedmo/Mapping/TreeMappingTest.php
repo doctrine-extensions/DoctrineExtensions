@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
@@ -49,20 +52,22 @@ final class TreeMappingTest extends ORMMappingTestCase
         parent::setUp();
 
         $config = $this->getBasicConfiguration();
-        $chainDriverImpl = new MappingDriverChain();
-        $chainDriverImpl->addDriver(
-            new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Gedmo\Tests\Mapping\Fixture\Yaml'
-        );
-        $chainDriverImpl->addDriver(
-            $config->newDefaultAnnotationDriver([], false),
-            'Gedmo\Tests\Tree\Fixture'
-        );
-        $chainDriverImpl->addDriver(
-            $config->newDefaultAnnotationDriver([], false),
-            'Gedmo\Tree'
-        );
-        $config->setMetadataDriverImpl($chainDriverImpl);
+
+        $chain = new MappingDriverChain();
+
+        // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
+        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $annotationOrAttributeDriver = new AttributeDriver([]);
+        } else {
+            $annotationOrAttributeDriver = new AnnotationDriver(new AnnotationReader());
+        }
+
+        $chain->addDriver($annotationOrAttributeDriver, 'Gedmo\Tests\Tree\Fixture');
+        $chain->addDriver($annotationOrAttributeDriver, 'Gedmo\Tree');
+
+        $config->setMetadataDriverImpl($chain);
 
         $conn = [
             'driver' => 'pdo_sqlite',

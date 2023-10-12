@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
@@ -50,7 +52,12 @@ final class MappingTest extends TestCase
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         // $this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
-        $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $config->setMetadataDriverImpl(new AttributeDriver([]));
+        } else {
+            $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
+        }
 
         $conn = [
             'driver' => 'pdo_sqlite',
@@ -63,7 +70,7 @@ final class MappingTest extends TestCase
         $evm->addEventSubscriber($this->timestampable);
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new TreeListener());
-        $this->em = EntityManager::create($conn, $config, $evm);
+        $this->em = new EntityManager(DriverManager::getConnection($conn, $config), $config, $evm);
 
         $schemaTool = new SchemaTool($this->em);
         $schemaTool->dropSchema([]);
