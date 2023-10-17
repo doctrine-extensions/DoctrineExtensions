@@ -215,7 +215,8 @@ class Nested implements Strategy
             $qb->select('node')
                 ->from($config['useObjectClass'], 'node')
                 ->where($qb->expr()->between('node.'.$config['left'], '?1', '?2'))
-                ->setParameters([1 => $leftValue, 2 => $rightValue]);
+                ->setParameter(1, $leftValue)
+                ->setParameter(2, $rightValue);
 
             if (isset($config['root'])) {
                 $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
