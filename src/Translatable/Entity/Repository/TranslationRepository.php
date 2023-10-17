@@ -149,10 +149,8 @@ class TranslationRepository extends EntityRepository
                 ->from($translationClass, 'trans')
                 ->where('trans.foreignKey = :entityId', 'trans.objectClass = :entityClass')
                 ->orderBy('trans.locale')
-                ->setParameters([
-                    'entityId' => $entityId,
-                    'entityClass' => $entityClass,
-                ]);
+                ->setParameter('entityId', $entityId)
+                ->setParameter('entityClass', $entityClass);
 
             foreach ($qb->getQuery()->toIterable([], Query::HYDRATE_ARRAY) as $row) {
                 $result[$row['locale']][$row['field']] = $row['content'];

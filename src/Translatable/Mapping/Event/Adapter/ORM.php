@@ -142,11 +142,10 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 'trans.locale = :locale',
                 'trans.field = :field'
             )
+            ->setParameter('locale', $locale)
+            ->setParameter('field', $field)
         ;
-        $qb->setParameters([
-            'locale' => $locale,
-            'field' => $field,
-        ]);
+
         if ($this->usesPersonalTranslation($translationClass)) {
             $qb->andWhere('trans.object = :object');
             if ($wrapped->getIdentifier()) {
