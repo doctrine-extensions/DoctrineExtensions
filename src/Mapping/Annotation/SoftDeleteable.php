@@ -35,14 +35,19 @@ final class SoftDeleteable implements GedmoAnnotation
 
     public bool $hardDelete = true;
 
-    /** @var string|null */
+    /** @var string */
     public $setterMethod;
 
     /**
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data = [], string $fieldName = 'deletedAt', bool $timeAware = false, bool $hardDelete = true, ?string $setterMethod = null)
-    {
+    public function __construct(
+        array $data = [],
+        string $fieldName = 'deletedAt',
+        bool $timeAware = false,
+        bool $hardDelete = true,
+        string $setterMethod = ''
+    ) {
         if ([] !== $data) {
             Deprecation::trigger(
                 'gedmo/doctrine-extensions',

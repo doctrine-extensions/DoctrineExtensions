@@ -139,9 +139,9 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Set the setter method for the given field.
      */
-    protected function setSetterMethod(string $field, ?string $method, array &$config): void
+    protected function setSetterMethod(string $field, string $method, array &$config): void
     {
-        if (empty($method)) {
+        if ('' === $method) {
             return;
         }
 
