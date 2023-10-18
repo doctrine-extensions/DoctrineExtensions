@@ -34,7 +34,7 @@ final class Blameable implements GedmoAnnotation
     public $field;
     /** @var mixed */
     public $value;
-    /** @var string|null */
+    /** @var string */
     public $setterMethod;
 
     /**
@@ -47,7 +47,7 @@ final class Blameable implements GedmoAnnotation
         string $on = 'update',
         $field = null,
         $value = null,
-        ?string $setterMethod = null
+        string $setterMethod = ''
     ) {
         if ([] !== $data) {
             Deprecation::trigger(

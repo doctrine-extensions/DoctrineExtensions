@@ -35,7 +35,7 @@ final class IpTraceable implements GedmoAnnotation
     public $field;
     /** @var mixed */
     public $value;
-    /** @var string|null */
+    /** @var string */
     public $setterMethod;
 
     /**
@@ -48,7 +48,7 @@ final class IpTraceable implements GedmoAnnotation
         string $on = 'update',
         $field = null,
         $value = null,
-        ?string $setterMethod = null
+        string $setterMethod = ''
     ) {
         if ([] !== $data) {
             Deprecation::trigger(
