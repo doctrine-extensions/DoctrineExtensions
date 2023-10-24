@@ -23,6 +23,7 @@ use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\ReferenceIntegrity\Mapping\Validator as ReferenceIntegrityValidator;
@@ -84,7 +85,10 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     private $annotationReader;
 
-    private static ?PsrCachedReader $defaultAnnotationReader = null;
+    /**
+     * @var Reader|AttributeReader|null
+     */
+    private static $defaultAnnotationReader;
 
     /**
      * @var CacheItemPoolInterface|null
@@ -304,11 +308,19 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
     /**
      * Create default annotation reader for extensions
+     *
+     * @return Reader|AttributeReader
      */
-    private function getDefaultAnnotationReader(): Reader
+    private function getDefaultAnnotationReader()
     {
         if (null === self::$defaultAnnotationReader) {
-            self::$defaultAnnotationReader = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
+            if (class_exists(PsrCachedReader::class)) {
+                self::$defaultAnnotationReader = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
+            } elseif (\PHP_VERSION_ID >= 80000) {
+                self::$defaultAnnotationReader = new AttributeReader();
+            } else {
+                throw new RuntimeException(sprintf('Cannot create a default annotation reader in "%1$s". Ensure you are running PHP 8 to use attributes, have installed the "doctrine/annotations" package, or call "%1$s::setAnnotationReader()" with a configured reader.', self::class));
+            }
         }
 
         return self::$defaultAnnotationReader;
