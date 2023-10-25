@@ -63,8 +63,8 @@ $evm->addEventSubscriber($loggableListener);
 
 ## Loggable Entity example:
 
-**Note:** that Loggable interface is not necessary, except in cases there
-you need to identify entity as being Loggable. The metadata is loaded only once when
+**Note:** that Loggable interface is not necessary, except in cases where
+you need to identify an entity as being Loggable. The metadata is loaded only once when
 cache is active
 
 **Note:** this example is using annotations and attributes for mapping, you should use
