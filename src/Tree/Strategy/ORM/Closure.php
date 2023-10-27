@@ -522,7 +522,8 @@ class Closure implements Strategy
 
             assert(null !== $first);
 
-            $meta = $em->getClassMetadata(get_class($first));
+            $className = get_class($first);
+            $meta = $em->getClassMetadata($className);
             unset($first);
             $identifier = $meta->getIdentifier();
             $mapping = $meta->getFieldMapping($identifier[0]);
