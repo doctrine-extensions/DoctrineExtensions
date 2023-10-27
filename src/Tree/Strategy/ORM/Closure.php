@@ -515,7 +515,8 @@ class Closure implements Strategy
      */
     protected function setLevelFieldOnPendingNodes(ObjectManager $em)
     {
-        if (!empty($this->pendingNodesLevelProcess)) {
+        while (!empty($this->pendingNodesLevelProcess)) {
+            // Nodes need to be processed one class at a time. Each iteration through the while loop will process one type, starting with the first item on the list. 
             $first = array_slice($this->pendingNodesLevelProcess, 0, 1);
             $first = array_shift($first);
 
@@ -531,6 +532,10 @@ class Closure implements Strategy
             $uow = $em->getUnitOfWork();
 
             foreach ($this->pendingNodesLevelProcess as $node) {
+                if (get_class($node) !== $className) {
+                    // Only process nodes of the same time as the first element
+                    continue;
+                }
                 $children = $em->getRepository($meta->getName())->children($node);
 
                 foreach ($children as $child) {
@@ -558,6 +563,14 @@ class Closure implements Strategy
 
             // Now we update levels
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
+                if (get_class($node) !== $className) {
+                    // Only process nodes of the same time as the first element
+                    continue;
+                }
+
+                // This node will now be processed. Therefore, remove it from the list of pending nodes.
+                unset($this->pendingNodesLevelProcess[$nodeId]);
+
                 // Update new level
                 $level = $levels[$nodeId];
                 $levelProp = $meta->getReflectionProperty($config['level']);
@@ -570,8 +583,6 @@ class Closure implements Strategy
                 $levelProp->setValue($node, $level);
                 $uow->setOriginalEntityProperty(spl_object_id($node), $config['level'], $level);
             }
-
-            $this->pendingNodesLevelProcess = [];
         }
     }
 
