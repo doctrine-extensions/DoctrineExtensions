@@ -22,6 +22,7 @@ class Timestampable
 
     /**
      * @var \DateTime
+     *
      * @Tmsp(on="create")
      */
     private $created;

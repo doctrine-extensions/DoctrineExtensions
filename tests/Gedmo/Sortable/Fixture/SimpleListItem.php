@@ -42,6 +42,7 @@ class SimpleListItem
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]

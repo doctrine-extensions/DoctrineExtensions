@@ -42,6 +42,7 @@ class Item
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
@@ -50,6 +51,7 @@ class Item
 
     /**
      * @Gedmo\SortableGroup
+     *
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
      */
     #[Gedmo\SortableGroup]

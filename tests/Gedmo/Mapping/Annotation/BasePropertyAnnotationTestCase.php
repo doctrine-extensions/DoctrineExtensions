@@ -19,6 +19,7 @@ abstract class BasePropertyAnnotationTestCase extends TestCase
 {
     /**
      * @requires PHP 8
+     *
      * @dataProvider getValidParameters
      *
      * @param mixed $expectedReturn

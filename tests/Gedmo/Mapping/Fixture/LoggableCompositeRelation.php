@@ -14,6 +14,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Loggable
  */
 class LoggableCompositeRelation
@@ -36,6 +37,7 @@ class LoggableCompositeRelation
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
+     *
      * @Gedmo\Versioned
      */
     private ?string $title = null;

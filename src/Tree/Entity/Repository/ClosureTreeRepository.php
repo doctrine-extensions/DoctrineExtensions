@@ -399,8 +399,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $defaultOptions = [];
         $options = array_merge($defaultOptions, $options);
 
-        if (isset($options['childSort']) && is_array($options['childSort']) &&
-            isset($options['childSort']['field'], $options['childSort']['dir'])) {
+        if (isset($options['childSort']) && is_array($options['childSort'])
+            && isset($options['childSort']['field'], $options['childSort']['dir'])) {
             $q->addOrderBy(
                 'node.'.$options['childSort']['field'],
                 'asc' === strtolower($options['childSort']['dir']) ? 'asc' : 'desc'

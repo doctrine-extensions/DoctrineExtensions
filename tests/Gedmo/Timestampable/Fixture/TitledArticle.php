@@ -52,6 +52,7 @@ class TitledArticle implements Timestampable
 
     /**
      * @ORM\Column(name="chtext", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field="text")
      */
     #[ORM\Column(name: 'chtext', type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -60,6 +61,7 @@ class TitledArticle implements Timestampable
 
     /**
      * @ORM\Column(name="chtitle", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field="title")
      */
     #[ORM\Column(name: 'chtitle', type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -68,6 +70,7 @@ class TitledArticle implements Timestampable
 
     /**
      * @ORM\Column(name="closed", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field="state", value={"Published", "Closed"})
      */
     #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]

@@ -169,14 +169,15 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the Tree path query builder by given $node
      *
      * @param object $node
+     *
      * @phpstan-param array{includeNode?: bool} $options
      *
      * options:
      * - includeNode: (bool) Whether to include the node itself. Defaults to true.
      *
-     * @return QueryBuilder
-     *
      * @throws InvalidArgumentException if input is not valid
+     *
+     * @return QueryBuilder
      */
     public function getPathQueryBuilder($node/* , array $options = [] */) // @phpstan-ignore-line
     {
@@ -226,6 +227,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the Tree path query by given $node
      *
      * @param object $node
+     *
      * @phpstan-param array{includeNode?: bool} $options
      *
      * options:
@@ -247,6 +249,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the Tree path of Nodes by given $node
      *
      * @param object $node
+     *
      * @phpstan-param array{includeNode?: bool} $options
      *
      * options:
@@ -524,9 +527,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool   $includeSelf include the node itself
      *
-     * @return QueryBuilder
-     *
      * @throws InvalidArgumentException if input is invalid
+     *
+     * @return QueryBuilder
      */
     public function getNextSiblingsQueryBuilder($node, $includeSelf = false)
     {
@@ -604,9 +607,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool   $includeSelf include the node itself
      *
-     * @return QueryBuilder
-     *
      * @throws InvalidArgumentException if input is invalid
+     *
+     * @return QueryBuilder
      */
     public function getPrevSiblingsQueryBuilder($node, $includeSelf = false)
     {
@@ -655,9 +658,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool   $includeSelf include the node itself
      *
-     * @return Query
-     *
      * @throws InvalidArgumentException if input is invalid
+     *
+     * @return Query
      */
     public function getPrevSiblingsQuery($node, $includeSelf = false)
     {

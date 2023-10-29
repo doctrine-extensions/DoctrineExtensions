@@ -32,6 +32,7 @@ class ItemWithDateColumn
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
@@ -40,6 +41,7 @@ class ItemWithDateColumn
 
     /**
      * @Gedmo\SortableGroup
+     *
      * @ORM\Column(type="date")
      */
     #[Gedmo\SortableGroup]

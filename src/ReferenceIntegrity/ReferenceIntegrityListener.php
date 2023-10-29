@@ -42,6 +42,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
      * Maps additional metadata for the Document
      *
      * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void

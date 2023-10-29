@@ -36,6 +36,7 @@ class ArticleWithoutFields implements Sluggable
 
     /**
      * @Gedmo\Slug(separator="-", updatable=true)
+     *
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true)]

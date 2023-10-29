@@ -58,6 +58,7 @@ class Comment implements Timestampable
      * @var \DateTime|null
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field="status", value=1)
      */
     #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -68,6 +69,7 @@ class Comment implements Timestampable
      * @var \DateTime|null
      *
      * @ORM\Column(name="modified", type="time")
+     *
      * @Gedmo\Timestampable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::TIME_MUTABLE)]

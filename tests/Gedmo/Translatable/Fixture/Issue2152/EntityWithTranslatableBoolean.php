@@ -37,6 +37,7 @@ class EntityWithTranslatableBoolean
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="string", nullable=true)
      */
     #[ORM\Column(type: Types::STRING, nullable: true)]
@@ -45,6 +46,7 @@ class EntityWithTranslatableBoolean
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="string", nullable=true)
      */
     #[ORM\Column(type: Types::STRING, nullable: true)]

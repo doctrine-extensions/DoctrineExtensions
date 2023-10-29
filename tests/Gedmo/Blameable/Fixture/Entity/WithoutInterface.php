@@ -43,6 +43,7 @@ class WithoutInterface
      * @var string|null
      *
      * @Gedmo\Blameable(on="create")
+     *
      * @ORM\Column(type="string")
      */
     #[ORM\Column(type: Types::STRING)]
@@ -53,6 +54,7 @@ class WithoutInterface
      * @var string|null
      *
      * @ORM\Column(type="string")
+     *
      * @Gedmo\Blameable(on="update")
      */
     #[ORM\Column(type: Types::STRING)]

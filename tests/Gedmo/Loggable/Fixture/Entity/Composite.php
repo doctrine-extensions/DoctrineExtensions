@@ -15,6 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Loggable
  */
 #[ORM\Entity]
@@ -39,6 +40,7 @@ class Composite
 
     /**
      * @ORM\Column(length=8)
+     *
      * @Gedmo\Versioned
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]

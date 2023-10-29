@@ -16,7 +16,9 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * Versioned annotation for Loggable behavioral extension
  *
  * @Annotation
+ *
  * @NamedArgumentConstructor
+ *
  * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

@@ -23,6 +23,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
  * @ORM\DiscriminatorMap({"base": "BaseNode", "node": "Node"})
+ *
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
@@ -44,6 +45,7 @@ class BaseNode extends ANode
      * @var \DateTime|null
      *
      * @Gedmo\Timestampable(on="create")
+     *
      * @ORM\Column(type="datetime")
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -60,6 +62,7 @@ class BaseNode extends ANode
      * @var \DateTime|null
      *
      * @ORM\Column(type="datetime")
+     *
      * @Gedmo\Timestampable
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

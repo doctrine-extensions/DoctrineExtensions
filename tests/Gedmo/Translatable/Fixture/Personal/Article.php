@@ -19,6 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation")
+ *
  * @ORM\Entity
  */
 #[ORM\Entity]
@@ -39,6 +40,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]

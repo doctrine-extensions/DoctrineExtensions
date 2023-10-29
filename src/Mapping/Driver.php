@@ -31,9 +31,9 @@ interface Driver
      * @param ClassMetadata        $meta
      * @param array<string, mixed> $config
      *
-     * @return void
-     *
      * @throws InvalidMappingException if the mapping configuration is invalid
+     *
+     * @return void
      *
      * @phpstan-param ClassMetadata&(OdmClassMetadata|OrmClassMetadata) $meta
      */

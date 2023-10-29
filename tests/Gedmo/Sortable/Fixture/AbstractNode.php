@@ -45,6 +45,7 @@ class AbstractNode
      * @var string|null
      *
      * @Gedmo\SortableGroup
+     *
      * @ORM\Column(type="string", length=191)
      */
     #[Gedmo\SortableGroup]
@@ -55,6 +56,7 @@ class AbstractNode
      * @var int|null
      *
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]

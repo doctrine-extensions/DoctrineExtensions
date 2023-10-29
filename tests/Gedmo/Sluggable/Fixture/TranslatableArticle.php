@@ -39,6 +39,7 @@ class TranslatableArticle implements Sluggable, Translatable
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="string", length=64)
      */
     #[ORM\Column(type: Types::STRING, length: 64)]
@@ -47,6 +48,7 @@ class TranslatableArticle implements Sluggable, Translatable
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="string", length=16)
      */
     #[ORM\Column(type: Types::STRING, length: 16)]
@@ -58,6 +60,7 @@ class TranslatableArticle implements Sluggable, Translatable
      *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title", "code"})
+     *
      * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]

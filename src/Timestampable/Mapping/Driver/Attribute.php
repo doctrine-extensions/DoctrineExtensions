@@ -18,6 +18,7 @@ use Gedmo\Mapping\Driver\AttributeDriverInterface;
  * extension.
  *
  * @author Kevin Mian Kraiker <kevin.mian@gmail.com>
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  *
  * @internal

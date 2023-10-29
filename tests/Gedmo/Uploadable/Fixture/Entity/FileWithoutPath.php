@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Uploadable
  */
 #[ORM\Entity]
@@ -37,6 +38,7 @@ class FileWithoutPath
 
     /**
      * @ORM\Column(name="path", type="string", nullable=true)
+     *
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]

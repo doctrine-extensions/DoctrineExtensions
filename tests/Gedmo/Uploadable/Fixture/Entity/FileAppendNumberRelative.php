@@ -18,6 +18,7 @@ use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Uploadable(appendNumber=true, path="./", filenameGenerator="ALPHANUMERIC")
  */
 #[ORM\Entity]
@@ -44,6 +45,7 @@ class FileAppendNumberRelative
 
     /**
      * @ORM\Column(name="path", type="string")
+     *
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING)]

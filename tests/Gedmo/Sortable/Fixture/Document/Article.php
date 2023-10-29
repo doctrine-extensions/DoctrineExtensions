@@ -25,6 +25,7 @@ class Article
      * @var int|null
      *
      * @Gedmo\SortablePosition
+     *
      * @ODM\Field(type="int")
      */
     #[Gedmo\SortablePosition]

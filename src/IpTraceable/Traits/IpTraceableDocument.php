@@ -22,7 +22,9 @@ trait IpTraceableDocument
 {
     /**
      * @var string
+     *
      * @Gedmo\IpTraceable(on="create")
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
@@ -31,7 +33,9 @@ trait IpTraceableDocument
 
     /**
      * @var string
+     *
      * @Gedmo\IpTraceable(on="update")
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]

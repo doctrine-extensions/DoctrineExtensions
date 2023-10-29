@@ -62,6 +62,7 @@ final class AttributeReader
 
     /**
      * @param iterable<\ReflectionAttribute> $attributes
+     *
      * @phpstan-param iterable<\ReflectionAttribute<object>> $attributes
      *
      * @return array<string, Annotation|Annotation[]>

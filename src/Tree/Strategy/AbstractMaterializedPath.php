@@ -440,8 +440,8 @@ abstract class AbstractMaterializedPath implements Strategy
                     throw new \InvalidArgumentException(sprintf('"%s" is not a valid action.', $action));
             }
 
-            if (empty($this->pendingObjectsToInsert) && empty($this->pendingObjectsToUpdate) &&
-                empty($this->pendingObjectsToRemove)) {
+            if (empty($this->pendingObjectsToInsert) && empty($this->pendingObjectsToUpdate)
+                && empty($this->pendingObjectsToRemove)) {
                 $this->releaseTreeLocks($om, $ea);
             }
         }

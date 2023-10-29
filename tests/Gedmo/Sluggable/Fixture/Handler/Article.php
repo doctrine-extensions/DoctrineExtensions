@@ -57,6 +57,7 @@ class Article implements Sluggable
      *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *     })
      * }, separator="-", updatable=true, fields={"title", "code"})
+     *
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]

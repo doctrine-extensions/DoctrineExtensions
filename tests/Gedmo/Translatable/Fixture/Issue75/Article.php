@@ -37,6 +37,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[Gedmo\Translatable]

@@ -21,6 +21,7 @@ use Gedmo\Tree\Node;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ *
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
@@ -56,6 +57,7 @@ class RootCategory implements Node
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
@@ -66,6 +68,7 @@ class RootCategory implements Node
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
@@ -74,6 +77,7 @@ class RootCategory implements Node
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="RootCategory", inversedBy="children")
      * @ORM\JoinColumns({
      *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -88,6 +92,7 @@ class RootCategory implements Node
      * @var int|null
      *
      * @Gedmo\TreeRoot
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -98,6 +103,7 @@ class RootCategory implements Node
      * @var int|null
      *
      * @Gedmo\TreeLevel(base=1)
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]

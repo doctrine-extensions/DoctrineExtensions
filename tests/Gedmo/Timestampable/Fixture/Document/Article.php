@@ -46,6 +46,7 @@ class Article
      * @var int|Timestamp|null
      *
      * @ODM\Field(type="timestamp")
+     *
      * @Gedmo\Timestampable(on="create")
      */
     #[Gedmo\Timestampable(on: 'create')]
@@ -54,6 +55,7 @@ class Article
 
     /**
      * @ODM\Field(type="date")
+     *
      * @Gedmo\Timestampable
      */
     #[Gedmo\Timestampable]
@@ -62,6 +64,7 @@ class Article
 
     /**
      * @ODM\Field(type="date")
+     *
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     #[Gedmo\Timestampable(on: 'change', field: 'type.title', value: 'Published')]
@@ -70,6 +73,7 @@ class Article
 
     /**
      * @ODM\Field(type="date")
+     *
      * @Gedmo\Timestampable(on="change", field="isReady", value=true)
      */
     #[Gedmo\Timestampable(on: 'change', field: 'isReady', value: true)]

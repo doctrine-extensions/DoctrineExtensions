@@ -35,6 +35,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(length=128)
      */
     #[Gedmo\Translatable]
@@ -43,6 +44,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(length=128)
      */
     #[Gedmo\Translatable]

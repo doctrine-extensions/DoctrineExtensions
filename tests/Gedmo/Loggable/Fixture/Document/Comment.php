@@ -19,6 +19,7 @@ use Gedmo\Tests\Loggable\Fixture\Document\Log\Comment as CommentLog;
 
 /**
  * @ODM\Document
+ *
  * @Gedmo\Loggable(logEntryClass="Gedmo\Tests\Loggable\Fixture\Document\Log\Comment")
  */
 #[ODM\Document]
@@ -27,6 +28,7 @@ class Comment implements Loggable
 {
     /**
      * @var string|null
+     *
      * @ODM\Id
      */
     #[ODM\Id]
@@ -34,6 +36,7 @@ class Comment implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
@@ -42,6 +45,7 @@ class Comment implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
@@ -50,6 +54,7 @@ class Comment implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\RelatedArticle", inversedBy="comments")
      */
     #[ODM\ReferenceOne(targetDocument: RelatedArticle::class, inversedBy: 'comments')]
@@ -58,6 +63,7 @@ class Comment implements Loggable
 
     /**
      * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
+     *
      * @Gedmo\Versioned
      */
     #[ODM\EmbedOne(targetDocument: Author::class)]

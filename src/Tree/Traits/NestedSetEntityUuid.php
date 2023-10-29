@@ -24,7 +24,9 @@ trait NestedSetEntityUuid
 
     /**
      * @var string
+     *
      * @Gedmo\TreeRoot
+     *
      * @ORM\Column(name="root", type="string", nullable=true)
      */
     #[ORM\Column(name: 'root', type: Types::STRING, nullable: true)]

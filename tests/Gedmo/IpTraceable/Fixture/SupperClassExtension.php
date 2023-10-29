@@ -22,6 +22,7 @@ class SupperClassExtension extends MappedSupperClass
 {
     /**
      * @ORM\Column(length=128)
+     *
      * @Gedmo\Translatable
      */
     #[ORM\Column(length: 128)]

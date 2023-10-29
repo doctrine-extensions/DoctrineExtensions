@@ -57,7 +57,7 @@
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/mongodb-odm": "^2.3",
         "doctrine/orm": "^2.14.0",
-        "friendsofphp/php-cs-fixer": "^3.4.0",
+        "friendsofphp/php-cs-fixer": "^3.14.0",
         "nesbot/carbon": "^2.55",
         "phpstan/phpstan": "^1.10.2",
         "phpstan/phpstan-doctrine": "^1.0",
@@ -98,7 +98,6 @@
         }
     },
     "scripts": {
-        "fix-cs": "php-cs-fixer fix",
-        "fix-cs-test": "php-cs-fixer fix --ansi --verbose --diff --dry-run"
+        "fix-cs": "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
     }
 }

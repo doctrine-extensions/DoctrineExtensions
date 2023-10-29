@@ -16,7 +16,9 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * TranslationEntity annotation for Translatable behavioral extension
  *
  * @Annotation
+ *
  * @NamedArgumentConstructor
+ *
  * @Target("CLASS")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

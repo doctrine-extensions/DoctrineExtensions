@@ -34,7 +34,9 @@ class Post
      * @var string|null
      *
      * @ORM\Id
+     *
      * @Gedmo\Slug(updatable=true, unique=true, fields={"title"})
+     *
      * @ORM\Column(length=64, nullable=true)
      */
     #[ORM\Id]

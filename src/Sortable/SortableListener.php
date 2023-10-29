@@ -33,7 +33,6 @@ use ProxyManager\Proxy\GhostObjectInterface;
  *   position?: string,
  *   useObjectClass?: class-string,
  * }
- *
  * @phpstan-type SortableRelocation = array{
  *   name?: class-string,
  *   groups?: mixed[],
@@ -55,6 +54,7 @@ class SortableListener extends MappedEventSubscriber
 {
     /**
      * @var array<string, array<string, mixed>>
+     *
      * @phpstan-var array<string, SortableRelocation>
      */
     private array $relocations = [];
@@ -86,6 +86,7 @@ class SortableListener extends MappedEventSubscriber
      * Maps additional metadata
      *
      * @param LoadClassMetadataEventArgs $args
+     *
      * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $args
      *
      * @return void

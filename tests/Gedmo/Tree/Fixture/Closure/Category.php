@@ -21,6 +21,7 @@ use Gedmo\Tree\Entity\Repository\ClosureTreeRepository;
 /**
  * @Gedmo\Tree(type="closure")
  * @Gedmo\TreeClosure(class="CategoryClosure")
+ *
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
  */
 #[ORM\Entity(repositoryClass: ClosureTreeRepository::class)]
@@ -48,6 +49,7 @@ class Category
 
     /**
      * @ORM\Column(name="level", type="integer", nullable=true)
+     *
      * @Gedmo\TreeLevel
      */
     #[ORM\Column(name: 'level', type: Types::INTEGER, nullable: true)]
@@ -56,6 +58,7 @@ class Category
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      */

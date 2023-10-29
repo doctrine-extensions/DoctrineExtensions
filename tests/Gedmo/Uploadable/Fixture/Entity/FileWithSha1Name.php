@@ -18,6 +18,7 @@ use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="SHA1")
  */
 #[ORM\Entity]
@@ -38,6 +39,7 @@ class FileWithSha1Name
 
     /**
      * @ORM\Column(name="path", type="string", nullable=true)
+     *
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]

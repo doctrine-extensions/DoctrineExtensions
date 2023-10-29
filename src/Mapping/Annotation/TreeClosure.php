@@ -17,7 +17,9 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
  * TreeClosure annotation for Tree behavioral extension
  *
  * @Annotation
+ *
  * @NamedArgumentConstructor
+ *
  * @Target("CLASS")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

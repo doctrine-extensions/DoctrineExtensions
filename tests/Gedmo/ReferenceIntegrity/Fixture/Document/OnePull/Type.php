@@ -25,6 +25,7 @@ class Type
      * @var Article|null
      *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article", mappedBy="types")
+     *
      * @Gedmo\ReferenceIntegrity("pull")
      */
     #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'types')]

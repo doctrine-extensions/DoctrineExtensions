@@ -49,6 +49,7 @@ class Page
 
     /**
      * @Gedmo\Slug(separator="-", fields={"title"}, unique=true, unique_base="user")
+     *
      * @ORM\Column(name="slug", type="string", length=64)
      */
     #[Gedmo\Slug(separator: '-', unique: true, unique_base: 'user', fields: ['title'])]

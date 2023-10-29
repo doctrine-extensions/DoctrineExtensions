@@ -20,6 +20,7 @@ use Gedmo\Tests\Tree\Fixture\Repository\BehavioralCategoryRepository;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tests\Tree\Fixture\Repository\BehavioralCategoryRepository")
+ *
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: BehavioralCategoryRepository::class)]
@@ -40,6 +41,7 @@ class BehavioralCategory
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
@@ -50,6 +52,7 @@ class BehavioralCategory
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(name="lft", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER, nullable: true)]
@@ -60,6 +63,7 @@ class BehavioralCategory
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(name="rgt", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER, nullable: true)]
@@ -68,6 +72,7 @@ class BehavioralCategory
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="BehavioralCategory", inversedBy="children")
      * @ORM\JoinColumns({
      *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -91,6 +96,7 @@ class BehavioralCategory
      *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title"})
+     *
      * @ORM\Column(name="slug", type="string", length=128, unique=true)
      */
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128, unique: true)]

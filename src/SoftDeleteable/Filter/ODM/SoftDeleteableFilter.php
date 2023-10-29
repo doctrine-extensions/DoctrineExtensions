@@ -77,6 +77,7 @@ class SoftDeleteableFilter extends BsonFilter
 
     /**
      * @param string $class
+     *
      * @phpstan-param class-string $class
      *
      * @return void
@@ -88,6 +89,7 @@ class SoftDeleteableFilter extends BsonFilter
 
     /**
      * @param string $class
+     *
      * @phpstan-param class-string $class
      *
      * @return void

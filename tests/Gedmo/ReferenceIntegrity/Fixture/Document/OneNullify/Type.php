@@ -25,6 +25,7 @@ class Type
      * @var Article
      *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article", mappedBy="type")
+     *
      * @Gedmo\ReferenceIntegrity("nullify")
      */
     #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'type')]

@@ -20,6 +20,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @Gedmo\Tree(type="nested")
+ *
  * @ORM\Table(name="categories")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
@@ -50,6 +51,7 @@ class Category
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
@@ -60,6 +62,7 @@ class Category
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
@@ -70,6 +73,7 @@ class Category
      * @var int|null
      *
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
@@ -80,6 +84,7 @@ class Category
      * @var self|null
      *
      * @Gedmo\TreeRoot
+     *
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -90,6 +95,7 @@ class Category
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */

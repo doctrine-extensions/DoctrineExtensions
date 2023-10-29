@@ -61,6 +61,7 @@ class Sluggable
      *         @Gedmo\SlugHandlerOption(name="separator", value="/")
      *     })
      * }, separator="-", updatable=false, fields={"title", "code"})
+     *
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: false, fields: ['title', 'code'])]

@@ -31,6 +31,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
+     *
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
@@ -39,6 +40,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
+     *
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
@@ -50,6 +52,7 @@ class Article
      *
      * @Gedmo\Slug(fields={"title", "code"})
      * @Gedmo\Translatable
+     *
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]

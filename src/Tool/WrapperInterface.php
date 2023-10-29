@@ -88,6 +88,7 @@ interface WrapperInterface
      * Get the root object class name.
      *
      * @return string
+     *
      * @phpstan-return class-string
      */
     public function getRootObjectName();

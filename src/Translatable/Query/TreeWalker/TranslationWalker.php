@@ -351,10 +351,10 @@ class TranslationWalker extends SqlWalker
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if ((($this->platform instanceof MySQLPlatform) &&
-                    in_array($fieldMapping['type'], ['decimal'], true)) ||
-                    (!($this->platform instanceof MySQLPlatform) &&
-                    !in_array($fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
+                if ((($this->platform instanceof MySQLPlatform)
+                    && in_array($fieldMapping['type'], ['decimal'], true))
+                    || (!($this->platform instanceof MySQLPlatform)
+                    && !in_array($fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
                     $type = Type::getType($fieldMapping['type']);
                     $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration($fieldMapping, $this->platform).')';
                 }
@@ -467,7 +467,7 @@ class TranslationWalker extends SqlWalker
                 case 'string':
                 case 'guid':
                     // need to cast to VARCHAR
-                    $component = $component.'::VARCHAR';
+                    $component .= '::VARCHAR';
 
                     break;
             }

@@ -46,6 +46,7 @@ class TitledArticle implements Blameable
 
     /**
      * @ORM\Column(name="chtext", type="string", nullable=true)
+     *
      * @Gedmo\Blameable(on="change", field="text")
      */
     #[ORM\Column(name: 'chtext', type: Types::STRING, nullable: true)]
@@ -54,6 +55,7 @@ class TitledArticle implements Blameable
 
     /**
      * @ORM\Column(name="chtitle", type="string", nullable=true)
+     *
      * @Gedmo\Blameable(on="change", field="title")
      */
     #[ORM\Column(name: 'chtitle', type: Types::STRING, nullable: true)]

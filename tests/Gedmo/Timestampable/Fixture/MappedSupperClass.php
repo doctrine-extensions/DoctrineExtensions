@@ -45,6 +45,7 @@ class MappedSupperClass
      * @var string|null
      *
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="name", type="string", length=191)
      */
     #[Gedmo\Translatable]
@@ -55,6 +56,7 @@ class MappedSupperClass
      * @var \DateTime|null
      *
      * @ORM\Column(name="created_at", type="datetime")
+     *
      * @Gedmo\Timestampable(on="create")
      */
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]

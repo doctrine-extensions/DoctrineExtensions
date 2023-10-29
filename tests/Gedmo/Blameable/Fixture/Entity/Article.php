@@ -52,6 +52,7 @@ class Article implements Blameable
 
     /**
      * @Gedmo\Blameable(on="create")
+     *
      * @ORM\Column(name="created", type="string")
      */
     #[ORM\Column(name: 'created', type: Types::STRING)]
@@ -60,6 +61,7 @@ class Article implements Blameable
 
     /**
      * @ORM\Column(name="updated", type="string")
+     *
      * @Gedmo\Blameable
      */
     #[Gedmo\Blameable]
@@ -68,6 +70,7 @@ class Article implements Blameable
 
     /**
      * @ORM\Column(name="published", type="string", nullable=true)
+     *
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
     #[ORM\Column(name: 'published', type: Types::STRING, nullable: true)]

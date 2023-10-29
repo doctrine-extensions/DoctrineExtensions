@@ -52,6 +52,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
      * @param array<string, mixed> $relocation
      * @param array<string, mixed> $delta
      * @param array<string, mixed> $config
+     *
      * @phpstan-param SortableRelocation $relocation
      *
      * @return void

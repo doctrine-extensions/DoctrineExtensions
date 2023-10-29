@@ -45,6 +45,7 @@ class TreeSlug
      *         @Gedmo\SlugHandlerOption(name="separator", value="/")
      *     })
      * }, separator="-", updatable=true, fields={"title"})
+     *
      * @ODM\Field(type="string")
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]

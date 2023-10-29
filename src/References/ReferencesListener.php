@@ -31,7 +31,6 @@ use Gedmo\Mapping\MappedEventSubscriber;
  *   mappedBy?: string,
  *   inversedBy?: string,
  * }
- *
  * @phpstan-type ReferencesConfiguration = array{
  *   referenceMany?: array<string, ReferenceConfiguration>,
  *   referenceManyEmbed?: array<string, ReferenceConfiguration>,
@@ -62,6 +61,7 @@ class ReferencesListener extends MappedEventSubscriber
 
     /**
      * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void

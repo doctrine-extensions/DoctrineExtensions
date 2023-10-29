@@ -35,6 +35,7 @@ class Vehicle
      * @var string|null
      *
      * @Gedmo\Slug(fields={"title"}, updatable=false)
+     *
      * @ORM\Column(length=128, unique=true)
      */
     #[Gedmo\Slug(updatable: false, fields: ['title'])]

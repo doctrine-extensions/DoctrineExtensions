@@ -30,7 +30,9 @@ abstract class Translation extends BaseTranslation
      * @var int
      *
      * @Column(type="integer")
+     *
      * @Id
+     *
      * @GeneratedValue
      */
     #[Column(type: Types::INTEGER)]

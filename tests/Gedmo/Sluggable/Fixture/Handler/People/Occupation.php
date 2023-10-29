@@ -22,6 +22,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @Gedmo\Tree(type="nested")
+ *
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
@@ -60,6 +61,7 @@ class Occupation
      *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *     })
      * }, fields={"title"})
+     *
      * @ORM\Column(length=64, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]
@@ -70,6 +72,7 @@ class Occupation
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="Occupation")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -87,6 +90,7 @@ class Occupation
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -97,6 +101,7 @@ class Occupation
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -107,6 +112,7 @@ class Occupation
      * @var int|null
      *
      * @Gedmo\TreeRoot
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -117,6 +123,7 @@ class Occupation
      * @var int|null
      *
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]

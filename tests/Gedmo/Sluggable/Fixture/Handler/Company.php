@@ -50,6 +50,7 @@ class Company
      *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *     })
      * }, fields={"title"})
+     *
      * @ORM\Column(length=64, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]

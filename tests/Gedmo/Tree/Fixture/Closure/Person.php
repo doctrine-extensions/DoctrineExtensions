@@ -19,6 +19,7 @@ use Gedmo\Tree\Entity\Repository\ClosureTreeRepository;
 /**
  * @Gedmo\Tree(type="closure")
  * @Gedmo\TreeClosure(class="Gedmo\Tests\Tree\Fixture\Closure\PersonClosure")
+ *
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
@@ -54,6 +55,7 @@ abstract class Person
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="children", cascade={"persist"})
      */
@@ -64,6 +66,7 @@ abstract class Person
 
     /**
      * @ORM\Column(name="level", type="integer")
+     *
      * @Gedmo\TreeLevel
      */
     #[ORM\Column(name: 'level', type: Types::INTEGER)]

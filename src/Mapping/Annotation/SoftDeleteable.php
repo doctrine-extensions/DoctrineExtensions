@@ -18,7 +18,9 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  *
  * @Annotation
+ *
  * @NamedArgumentConstructor
+ *
  * @Target("CLASS")
  */
 #[\Attribute(\Attribute::TARGET_CLASS)]

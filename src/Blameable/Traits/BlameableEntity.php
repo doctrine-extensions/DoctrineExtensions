@@ -21,7 +21,9 @@ trait BlameableEntity
 {
     /**
      * @var string
+     *
      * @Gedmo\Blameable(on="create")
+     *
      * @ORM\Column(nullable=true)
      */
     #[ORM\Column(nullable: true)]
@@ -30,7 +32,9 @@ trait BlameableEntity
 
     /**
      * @var string
+     *
      * @Gedmo\Blameable(on="update")
+     *
      * @ORM\Column(nullable=true)
      */
     #[ORM\Column(nullable: true)]

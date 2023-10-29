@@ -19,6 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation")
+ *
  * @MongoODM\Document(collection="articles")
  */
 #[Gedmo\TranslationEntity(class: ArticleTranslation::class)]
@@ -35,6 +36,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
+     *
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]

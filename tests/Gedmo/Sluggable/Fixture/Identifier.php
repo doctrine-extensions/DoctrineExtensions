@@ -24,7 +24,9 @@ class Identifier
      * @var string|null
      *
      * @ORM\Id
+     *
      * @Gedmo\Slug(separator="_", updatable=false, fields={"title"})
+     *
      * @ORM\Column(length=32, unique=true)
      */
     #[ORM\Id]

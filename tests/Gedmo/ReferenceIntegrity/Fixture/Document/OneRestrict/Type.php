@@ -25,6 +25,7 @@ class Type
      * @var Article|null
      *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Article", mappedBy="type")
+     *
      * @Gedmo\ReferenceIntegrity("restrict")
      */
     #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'type')]

@@ -43,6 +43,7 @@ class Article
 
     /**
      * @ODM\Field(type="string")
+     *
      * @Gedmo\Blameable(on="create")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
@@ -51,6 +52,7 @@ class Article
 
     /**
      * @ODM\Field(type="string")
+     *
      * @Gedmo\Blameable
      */
     #[ODM\Field(type: MongoDBType::STRING)]
@@ -59,6 +61,7 @@ class Article
 
     /**
      * @ODM\ReferenceOne(targetDocument="User")
+     *
      * @Gedmo\Blameable(on="create")
      */
     #[ODM\ReferenceOne(targetDocument: User::class)]
@@ -67,6 +70,7 @@ class Article
 
     /**
      * @ODM\Field(type="string")
+     *
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
     #[Gedmo\Blameable(on: 'change', field: 'type.title', value: 'Published')]

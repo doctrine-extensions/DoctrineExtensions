@@ -47,6 +47,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * Maps additional metadata for the object.
      *
      * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void

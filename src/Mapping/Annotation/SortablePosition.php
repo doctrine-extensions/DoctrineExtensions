@@ -18,6 +18,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  *
  * @Annotation
+ *
  * @Target("PROPERTY")
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
