@@ -12,8 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Proxy\Proxy;
-use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Timestampable\Fixture\Article;
 use Gedmo\Tests\Timestampable\Fixture\Author;
 use Gedmo\Tests\Timestampable\Fixture\Comment;
