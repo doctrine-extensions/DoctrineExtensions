@@ -35,22 +35,18 @@ class News
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private string $title;
 
     /**
-     * @var Category|null
-     *
      * @ORM\OneToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\Category", cascade={"persist"})
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     #[ORM\OneToOne(targetEntity: Category::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
-    private $category;
+    private Category $category;
 
     public function __construct(string $title, Category $category)
     {

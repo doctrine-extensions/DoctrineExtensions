@@ -47,12 +47,10 @@ class RootCategory implements Node
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var int|null
@@ -75,8 +73,6 @@ class RootCategory implements Node
     private $rgt;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="RootCategory", inversedBy="children")
      * @ORM\JoinColumns({
@@ -86,7 +82,7 @@ class RootCategory implements Node
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Tree\Fixture\RootCategory $parent = null;
 
     /**
      * @var int|null
@@ -108,10 +104,7 @@ class RootCategory implements Node
     #[Gedmo\TreeLevel(base: 1)]
     private $level;
 
-    /**
-     * @var Node|null
-     */
-    private $sibling;
+    private ?Node $sibling = null;
 
     public function __construct()
     {

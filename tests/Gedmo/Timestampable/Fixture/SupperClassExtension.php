@@ -21,14 +21,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class SupperClassExtension extends MappedSupperClass
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128)
      * @Gedmo\Translatable
      */
     #[ORM\Column(length: 128)]
     #[Gedmo\Translatable]
-    private $title;
+    private ?string $title = null;
 
     public function setTitle(?string $title): void
     {

@@ -26,28 +26,22 @@ class User extends Role
     private const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="email", type="string", unique=true)
      */
     #[ORM\Column(name: 'email', type: Types::STRING, unique: true)]
-    private $email;
+    private ?string $email = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="password_hash", type="string", length=32)
      */
     #[ORM\Column(name: 'password_hash', type: Types::STRING, length: 32)]
-    private $passwordHash;
+    private string $passwordHash;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="activation_code", type="string", length=12)
      */
     #[ORM\Column(name: 'activation_code', type: Types::STRING, length: 12)]
-    private $activationCode;
+    private ?string $activationCode = null;
 
     public function __construct(string $email, string $password)
     {
@@ -102,7 +96,7 @@ class User extends Role
         return $this;
     }
 
-    public function getPasswordHash(): ?string
+    public function getPasswordHash(): string
     {
         return $this->passwordHash;
     }

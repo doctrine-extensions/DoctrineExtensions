@@ -34,24 +34,20 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(length: 128)]
-    private $titleTest;
+    private ?string $titleTest = null;
 
     public function getId(): ?int
     {

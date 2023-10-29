@@ -33,20 +33,16 @@ class Comment
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="text")
      */
     #[ORM\Column(type: Types::TEXT)]
-    private $message;
+    private ?string $message = null;
 
     /**
-     * @var TranslatableArticle|null
-     *
      * @ORM\ManyToOne(targetEntity="TranslatableArticle", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: TranslatableArticle::class, inversedBy: 'comments')]
-    private $article;
+    private ?TranslatableArticle $article = null;
 
     public function setArticle(TranslatableArticle $article): void
     {

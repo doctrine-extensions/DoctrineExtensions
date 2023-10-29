@@ -38,10 +38,8 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Total execution time of all queries
-     *
-     * @var float
      */
-    private $totalExecutionTime = 0;
+    private int $totalExecutionTime = 0;
 
     /**
      * List of queries executed
@@ -82,7 +80,7 @@ class QueryAnalyzer implements SQLLogger
      */
     public function stopQuery()
     {
-        $ms = round(microtime(true) - $this->queryStartTime, 4) * 1000;
+        $ms = (int) (round(microtime(true) - $this->queryStartTime, 4) * 1000);
         $this->queryExecutionTimes[] = $ms;
         $this->totalExecutionTime += $ms;
     }

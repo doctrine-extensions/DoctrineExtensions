@@ -24,10 +24,7 @@ final class SlugHandlerOption implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 
     /**
      * @var mixed

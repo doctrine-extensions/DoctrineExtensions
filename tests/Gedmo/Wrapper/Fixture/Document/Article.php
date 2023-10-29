@@ -29,12 +29,10 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
-    private $title;
+    private ?string $title = null;
 
     public function getId(): ?string
     {

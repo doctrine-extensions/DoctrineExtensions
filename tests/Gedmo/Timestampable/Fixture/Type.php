@@ -35,12 +35,10 @@ class Type
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Collection<int, Article>
@@ -48,7 +46,7 @@ class Type
      * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'type')]
-    private $articles;
+    private Collection $articles;
 
     public function __construct()
     {

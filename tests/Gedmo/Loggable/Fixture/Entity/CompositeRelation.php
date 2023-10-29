@@ -22,34 +22,28 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class CompositeRelation
 {
     /**
-     * @var Article
-     *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Article")
      */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Article::class)]
-    private $articleOne;
+    private Article $articleOne;
 
     /**
-     * @var Article
-     *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Article")
      */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Article::class)]
-    private $articleTwo;
+    private Article $articleTwo;
 
     /**
-     * @var string
-     *
      * @ORM\Column(length=8)
      * @Gedmo\Versioned
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     public function __construct(Article $articleOne, Article $articleTwo)
     {

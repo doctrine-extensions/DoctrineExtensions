@@ -31,12 +31,10 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Collection<int, Type>

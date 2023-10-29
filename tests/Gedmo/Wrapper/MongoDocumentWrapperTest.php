@@ -25,10 +25,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 {
     private const ARTICLE = Article::class;
 
-    /**
-     * @var string|null
-     */
-    private $articleId;
+    private ?string $articleId = null;
 
     protected function setUp(): void
     {

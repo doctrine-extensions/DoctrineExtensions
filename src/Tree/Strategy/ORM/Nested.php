@@ -84,7 +84,7 @@ class Nested implements Strategy
      *
      * @phpstan-var array<int, value-of<self::ALLOWED_NODE_POSITIONS>>
      */
-    private $nodePositions = [];
+    private array $nodePositions = [];
 
     /**
      * Stores a list of delayed nodes for correct order of updates
@@ -93,7 +93,7 @@ class Nested implements Strategy
      *
      * @phpstan-var array<int, array<int, array{node: Node|object, position: value-of<self::ALLOWED_NODE_POSITIONS>}>>
      */
-    private $delayedNodes = [];
+    private array $delayedNodes = [];
 
     public function __construct(TreeListener $listener)
     {
@@ -673,7 +673,7 @@ class Nested implements Strategy
                 \TypeError::class
             ), E_USER_DEPRECATED);
         }
-        $levelDelta = $levelDelta ?? 0;
+        $levelDelta ??= 0;
 
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);

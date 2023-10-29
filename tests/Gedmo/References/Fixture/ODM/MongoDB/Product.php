@@ -25,20 +25,16 @@ use Gedmo\Tests\References\Fixture\ORM\StockItem;
 class Product
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, StockItem>

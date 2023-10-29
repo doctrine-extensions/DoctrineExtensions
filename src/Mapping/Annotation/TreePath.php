@@ -28,17 +28,14 @@ final class TreePath implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string */
-    public $separator = ',';
+    public string $separator = ',';
 
     /** @var bool|null */
     public $appendId;
 
-    /** @var bool */
-    public $startsWithSeparator = false;
+    public bool $startsWithSeparator = false;
 
-    /** @var bool */
-    public $endsWithSeparator = true;
+    public bool $endsWithSeparator = true;
 
     /**
      * @param array<string, mixed> $data

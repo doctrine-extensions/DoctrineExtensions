@@ -82,19 +82,15 @@ class TranslatableListener extends MappedEventSubscriber
      * which is used for updating is not default. This
      * will load the default translation in other locales
      * if record is not translated yet
-     *
-     * @var string
      */
-    private $defaultLocale = 'en_US';
+    private string $defaultLocale = 'en_US';
 
     /**
      * If this is set to false, when if entity does
      * not have a translation for requested locale
      * it will show a blank value
-     *
-     * @var bool
      */
-    private $translationFallback = false;
+    private bool $translationFallback = false;
 
     /**
      * List of translations which do not have the foreign
@@ -103,45 +99,39 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var array<int, array<int, object|Translatable>>
      */
-    private $pendingTranslationInserts = [];
+    private array $pendingTranslationInserts = [];
 
     /**
      * Currently in case if there is TranslationQueryWalker
      * in charge. We need to skip issuing additional queries
      * on load
-     *
-     * @var bool
      */
-    private $skipOnLoad = false;
+    private bool $skipOnLoad = false;
 
     /**
      * Tracks locale the objects currently translated in
      *
      * @var array<int, string>
      */
-    private $translatedInLocale = [];
+    private array $translatedInLocale = [];
 
     /**
      * Whether or not, to persist default locale
      * translation or keep it in original record
-     *
-     * @var bool
      */
-    private $persistDefaultLocaleTranslation = false;
+    private bool $persistDefaultLocaleTranslation = false;
 
     /**
      * Tracks translation object for default locale
      *
      * @var array<int, array<string, object|Translatable>>
      */
-    private $translationInDefaultLocale = [];
+    private array $translationInDefaultLocale = [];
 
     /**
      * Default translation value upon missing translation
-     *
-     * @var string|null
      */
-    private $defaultTranslationValue;
+    private ?string $defaultTranslationValue = null;
 
     /**
      * Specifies the list of events to listen

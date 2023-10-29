@@ -50,12 +50,10 @@ class Kid
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $lastname;
+    private ?string $lastname = null;
 
     public function getId(): ?string
     {

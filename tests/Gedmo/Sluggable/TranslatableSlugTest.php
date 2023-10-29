@@ -34,15 +34,9 @@ final class TranslatableSlugTest extends BaseTestCaseORM
     private const PAGE = Page::class;
     private const TRANSLATION = Translation::class;
 
-    /**
-     * @var int|null
-     */
-    private $articleId;
+    private ?int $articleId = null;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

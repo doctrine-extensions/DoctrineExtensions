@@ -34,32 +34,26 @@ class Comment
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="subject", type="string", length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'subject', type: Types::STRING, length: 128)]
-    private $subject;
+    private ?string $subject = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="message", type="text")
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'message', type: Types::TEXT)]
-    private $message;
+    private ?string $message = null;
 
     /**
-     * @var Article|null
-     *
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
-    private $article;
+    private ?Article $article = null;
 
     /**
      * @var string|null
@@ -69,7 +63,7 @@ class Comment
      * @Gedmo\Language
      */
     #[Gedmo\Language]
-    private $locale;
+    private ?string $locale = null;
 
     public function setArticle(Article $article): void
     {

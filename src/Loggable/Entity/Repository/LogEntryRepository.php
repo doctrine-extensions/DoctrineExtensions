@@ -34,11 +34,9 @@ class LogEntryRepository extends EntityRepository
     /**
      * Currently used loggable listener
      *
-     * @var LoggableListener
-     *
-     * @phpstan-var LoggableListener<T>
+     * @phpstan-var LoggableListener<T>|null
      */
-    private $listener;
+    private ?LoggableListener $listener = null;
 
     /**
      * Loads all log entries for the given entity

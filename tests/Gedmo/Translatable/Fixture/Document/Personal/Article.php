@@ -34,14 +34,12 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Collection<int, ArticleTranslation>
@@ -51,10 +49,7 @@ class Article
     #[MongoODM\ReferenceMany(targetDocument: ArticleTranslation::class, mappedBy: 'object')]
     private $translations;
 
-    /**
-     * @var string|null
-     */
-    private $code;
+    private ?string $code = null;
 
     /**
      * @var string

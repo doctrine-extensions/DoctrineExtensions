@@ -33,20 +33,16 @@ class Customer
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string")
      */
     #[ORM\Column(name: 'name', type: Types::STRING)]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var CustomerType|null
-     *
      * @ORM\ManyToOne(targetEntity="CustomerType", inversedBy="customers")
      */
     #[ORM\ManyToOne(targetEntity: CustomerType::class, inversedBy: 'customers')]
-    private $type;
+    private ?CustomerType $type = null;
 
     public function getId(): ?int
     {

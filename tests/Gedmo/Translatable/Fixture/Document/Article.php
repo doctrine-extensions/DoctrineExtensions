@@ -30,24 +30,20 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
-    private $code;
+    private ?string $code = null;
 
     /**
      * @var string|null

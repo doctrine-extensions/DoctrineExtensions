@@ -35,12 +35,10 @@ class Comment implements Timestampable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="message", type="text")
      */
     #[ORM\Column(name: 'message', type: Types::TEXT)]
-    private $message;
+    private ?string $message = null;
 
     /**
      * @var Article|null
@@ -51,12 +49,10 @@ class Comment implements Timestampable
     private $article;
 
     /**
-     * @var int|null
-     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
-    private $status;
+    private ?int $status = null;
 
     /**
      * @var \DateTime|null

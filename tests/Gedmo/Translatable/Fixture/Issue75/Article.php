@@ -36,14 +36,12 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Collection<int, Image>

@@ -36,14 +36,12 @@ class Person
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    private $name;
+    private ?string $name = null;
 
     public function getId(): ?int
     {

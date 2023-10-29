@@ -26,12 +26,8 @@ final class TranslationEntity implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /**
-     * @var string
-     *
-     * @Required
-     */
-    public $class;
+    /** @Required */
+    public string $class;
 
     /**
      * @param array<string, mixed> $data

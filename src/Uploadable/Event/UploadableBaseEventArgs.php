@@ -25,22 +25,15 @@ abstract class UploadableBaseEventArgs extends EventArgs
 {
     /**
      * The instance of the Uploadable listener that fired this event
-     *
-     * @var UploadableListener
      */
-    private $uploadableListener;
+    private UploadableListener $uploadableListener;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
     /**
      * @todo Check if this property must be removed, as it is not used.
-     *
-     * @var array
      */
-    private $config = [];
+    private array $config = [];
 
     /**
      * The Uploadable entity
@@ -58,10 +51,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
      */
     private $extensionConfiguration;
 
-    /**
-     * @var FileInfoInterface
-     */
-    private $fileInfo;
+    private FileInfoInterface $fileInfo;
 
     /**
      * Is the file being created, updated or removed?

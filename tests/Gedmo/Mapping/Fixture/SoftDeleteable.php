@@ -29,15 +29,9 @@ class SoftDeleteable
      */
     private $id;
 
-    /**
-     * @var string|null
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var string|null
-     */
-    private $code;
+    private ?string $code = null;
 
     /**
      * @var string|null

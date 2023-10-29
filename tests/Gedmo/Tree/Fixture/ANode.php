@@ -54,8 +54,6 @@ class ANode
     private $rgt;
 
     /**
-     * @var BaseNode|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="BaseNode", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -63,7 +61,7 @@ class ANode
     #[ORM\ManyToOne(targetEntity: BaseNode::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?BaseNode $parent = null;
 
     public function getId(): ?int
     {

@@ -36,28 +36,22 @@ class Module
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string")
      */
     #[ORM\Column(name: 'title', type: Types::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
     #[ORM\Column(name: 'deletedAt', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private $deletedAt;
+    private ?\DateTime $deletedAt = null;
 
     /**
-     * @var Page|null
-     *
      * @ORM\ManyToOne(targetEntity="Page", inversedBy="modules")
      */
     #[ORM\ManyToOne(targetEntity: Page::class, inversedBy: 'modules')]
-    private $page;
+    private ?Page $page = null;
 
     public function getId(): ?int
     {

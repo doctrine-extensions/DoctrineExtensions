@@ -37,31 +37,28 @@ class Comment implements Loggable
     private $id;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
     #[Gedmo\Versioned]
-    private $subject;
+    private ?string $subject = null;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ORM\Column(type="text")
      */
     #[ORM\Column(type: Types::TEXT)]
     #[Gedmo\Versioned]
-    private $message;
+    private ?string $message = null;
 
     /**
-     * @var RelatedArticle|null
      * @Gedmo\Versioned
      * @ORM\ManyToOne(targetEntity="RelatedArticle", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: RelatedArticle::class, inversedBy: 'comments')]
     #[Gedmo\Versioned]
-    private $article;
+    private ?RelatedArticle $article = null;
 
     public function setArticle(?RelatedArticle $article): void
     {

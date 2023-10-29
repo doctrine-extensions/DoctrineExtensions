@@ -33,40 +33,36 @@ class Comment implements Loggable
     private $id;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
-    private $subject;
+    private ?string $subject = null;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
-    private $message;
+    private ?string $message = null;
 
     /**
-     * @var RelatedArticle|null
      * @Gedmo\Versioned
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\RelatedArticle", inversedBy="comments")
      */
     #[ODM\ReferenceOne(targetDocument: RelatedArticle::class, inversedBy: 'comments')]
     #[Gedmo\Versioned]
-    private $article;
+    private ?RelatedArticle $article = null;
 
     /**
-     * @var Author|null
      * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
      * @Gedmo\Versioned
      */
     #[ODM\EmbedOne(targetDocument: Author::class)]
     #[Gedmo\Versioned]
-    private $author;
+    private ?Author $author = null;
 
     public function setArticle(?RelatedArticle $article): void
     {

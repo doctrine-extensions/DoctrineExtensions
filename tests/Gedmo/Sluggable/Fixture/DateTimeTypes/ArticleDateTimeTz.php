@@ -35,30 +35,24 @@ class ArticleDateTimeTz implements Sluggable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="created_at", type="datetimetz")
      */
     #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_MUTABLE)]
-    private $createdAt;
+    private ?\DateTime $createdAt = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "createdAt"}, dateFormat="Y-m-d")
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'createdAt'], dateFormat: 'Y-m-d')]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {

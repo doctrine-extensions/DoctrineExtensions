@@ -25,22 +25,20 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Author implements Loggable
 {
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
-    private $email;
+    private ?string $email = null;
 
     public function __toString()
     {

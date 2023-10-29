@@ -57,13 +57,12 @@ class SortableListener extends MappedEventSubscriber
      * @var array<string, array<string, mixed>>
      * @phpstan-var array<string, SortableRelocation>
      */
-    private $relocations = [];
+    private array $relocations = [];
 
-    /** @var bool */
-    private $persistenceNeeded = false;
+    private bool $persistenceNeeded = false;
 
     /** @var array<string, int> */
-    private $maxPositions = [];
+    private array $maxPositions = [];
 
     /**
      * Specifies the list of events to listen

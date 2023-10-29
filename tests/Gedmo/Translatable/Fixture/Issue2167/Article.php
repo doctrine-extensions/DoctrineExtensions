@@ -34,22 +34,18 @@ class Article
     private $id;
 
     /**
-     * @var string
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string
-     *
      * @Gedmo\Locale
      */
     #[Gedmo\Locale]
-    private $locale;
+    private ?string $locale = null;
 
     public function getId(): int
     {

@@ -37,12 +37,10 @@ class Category
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string", length=128)
      */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, Product>
@@ -50,7 +48,7 @@ class Category
      * @Gedmo\ReferenceManyEmbed(class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
      */
     #[Gedmo\ReferenceManyEmbed(class: Product::class, identifier: 'metadatas.categoryId')]
-    private $products;
+    private Collection $products;
 
     public function __construct()
     {

@@ -36,15 +36,9 @@ final class MappingTest extends TestCase
     private const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
     private const TEST_ENTITY_TRANSLATION = Translation::class;
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var TimestampableListener
-     */
-    private $timestampable;
+    private TimestampableListener $timestampable;
 
     protected function setUp(): void
     {

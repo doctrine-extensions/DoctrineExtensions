@@ -36,28 +36,22 @@ class CommentCarbon implements Timestampable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="message", type="text")
      */
     #[ORM\Column(name: 'message', type: Types::TEXT)]
-    private $message;
+    private ?string $message = null;
 
     /**
-     * @var ArticleCarbon|null
-     *
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Timestampable\Fixture\ArticleCarbon", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: ArticleCarbon::class, inversedBy: 'comments')]
-    private $article;
+    private ?ArticleCarbon $article = null;
 
     /**
-     * @var int|null
-     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
-    private $status;
+    private ?int $status = null;
 
     /**
      * @var CarbonImmutable|null

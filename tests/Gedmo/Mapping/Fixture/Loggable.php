@@ -28,12 +28,10 @@ class Loggable
     private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="title", type="string", length=64)
      * @Gedmo\Versioned
      */
-    private $title;
+    private ?string $title = null;
 
     public function getId(): int
     {

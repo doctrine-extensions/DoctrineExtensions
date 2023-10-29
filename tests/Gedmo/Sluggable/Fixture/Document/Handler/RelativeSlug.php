@@ -31,12 +31,10 @@ class RelativeSlug
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -56,12 +54,10 @@ class RelativeSlug
     private $alias;
 
     /**
-     * @var Article|null
-     *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sluggable\Fixture\Document\Handler\Article")
      */
     #[ODM\ReferenceOne(targetDocument: Article::class)]
-    private $article;
+    private ?Article $article = null;
 
     public function setArticle(?Article $article = null): void
     {

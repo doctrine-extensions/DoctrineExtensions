@@ -35,12 +35,10 @@ class LoggableCompositeRelation
     private $two;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="title", type="string", length=64)
      * @Gedmo\Versioned
      */
-    private $title;
+    private ?string $title = null;
 
     public function getOne(): Loggable
     {

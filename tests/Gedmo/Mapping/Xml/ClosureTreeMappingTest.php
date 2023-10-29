@@ -29,15 +29,9 @@ use Gedmo\Tree\TreeListener;
  */
 final class ClosureTreeMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var TreeListener
-     */
-    private $tree;
+    private TreeListener $tree;
 
     protected function setUp(): void
     {

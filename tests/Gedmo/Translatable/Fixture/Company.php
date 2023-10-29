@@ -35,21 +35,18 @@ class Company implements Translatable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=128)
      * @Gedmo\Translatable
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var CompanyEmbedLink
      * @ORM\Embedded(class="Gedmo\Tests\Translatable\Fixture\CompanyEmbedLink")
      */
     #[ORM\Embedded(class: CompanyEmbedLink::class)]
-    private $link;
+    private CompanyEmbedLink $link;
 
     /**
      * @var string|null
@@ -59,7 +56,7 @@ class Company implements Translatable
      * @Gedmo\Locale
      */
     #[Gedmo\Locale]
-    private $locale;
+    private ?string $locale = null;
 
     public function __construct()
     {

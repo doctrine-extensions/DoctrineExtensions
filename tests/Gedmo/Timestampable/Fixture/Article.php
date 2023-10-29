@@ -37,20 +37,16 @@ class Article implements Timestampable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="body", type="string")
      */
     #[ORM\Column(name: 'body', type: Types::STRING)]
-    private $body;
+    private ?string $body = null;
 
     /**
      * @var Collection<int, Comment>
@@ -61,52 +57,42 @@ class Article implements Timestampable
     private $comments;
 
     /**
-     * @var Author|null
-     *
      * @ORM\Embedded(class="Gedmo\Tests\Timestampable\Fixture\Author")
      */
     #[ORM\Embedded(class: Author::class)]
-    private $author;
+    private ?Author $author = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="date")
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(name: 'created', type: Types::DATE_MUTABLE)]
-    private $created;
+    private ?\DateTime $created = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="updated", type="datetime")
      * @Gedmo\Timestampable
      */
     #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable]
-    private $updated;
+    private ?\DateTime $updated = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="published", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     #[ORM\Column(name: 'published', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'type.title', value: 'Published')]
-    private $published;
+    private ?\DateTime $published = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
-    private $contentChanged;
+    private ?\DateTime $contentChanged = null;
     /**
      * @var \DateTime|null
      *
@@ -118,20 +104,16 @@ class Article implements Timestampable
     private $authorChanged;
 
     /**
-     * @var Type|null
-     *
      * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
      */
     #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
-    private $type;
+    private ?Type $type = null;
 
     /**
-     * @var int|null
-     *
      * @ORM\Column(name="level", type="integer")
      */
     #[ORM\Column(name: 'level', type: Types::INTEGER)]
-    private $level = 0;
+    private int $level = 0;
 
     /**
      * We use the value "10" as string here in order to check the behavior of `AbstractTrackingListener`

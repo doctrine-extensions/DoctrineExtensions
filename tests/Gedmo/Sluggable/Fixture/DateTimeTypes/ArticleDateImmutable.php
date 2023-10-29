@@ -35,30 +35,24 @@ class ArticleDateImmutable implements Sluggable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @ORM\Column(name="created_at", type="date_immutable")
      */
     #[ORM\Column(name: 'created_at', type: Types::DATE_IMMUTABLE)]
-    private $createdAt;
+    private ?\DateTimeImmutable $createdAt = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "createdAt"}, dateFormat="Y-m-d")
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'createdAt'], dateFormat: 'Y-m-d')]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {

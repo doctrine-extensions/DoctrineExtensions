@@ -39,12 +39,10 @@ class ForeignRootCategory
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var int|null
@@ -67,8 +65,6 @@ class ForeignRootCategory
     private $rgt;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="ForeignRootCategory", inversedBy="children")
      * @ORM\JoinColumns({
@@ -78,7 +74,7 @@ class ForeignRootCategory
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Tree\Fixture\ForeignRootCategory $parent = null;
 
     /**
      * @var int|null

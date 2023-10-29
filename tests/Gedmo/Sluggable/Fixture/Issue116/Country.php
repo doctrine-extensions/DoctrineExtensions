@@ -23,10 +23,7 @@ class Country
      */
     private $languageCode;
 
-    /**
-     * @var string|null
-     */
-    private $originalName;
+    private ?string $originalName = null;
 
     /**
      * @var string|null

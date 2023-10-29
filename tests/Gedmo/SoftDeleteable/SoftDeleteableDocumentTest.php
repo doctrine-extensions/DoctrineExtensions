@@ -32,10 +32,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     private const USER__TIME_AWARE_CLASS = UserTimeAware::class;
     private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
-    /**
-     * @var SoftDeleteableListener
-     */
-    private $softDeleteableListener;
+    private SoftDeleteableListener $softDeleteableListener;
 
     protected function setUp(): void
     {

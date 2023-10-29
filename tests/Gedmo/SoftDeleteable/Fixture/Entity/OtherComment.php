@@ -33,25 +33,18 @@ class OtherComment
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="comment", type="string")
      */
     #[ORM\Column(name: 'comment', type: Types::STRING)]
-    private $comment;
+    private ?string $comment = null;
 
     /**
-     * @var OtherArticle|null
-     *
      * @ORM\ManyToOne(targetEntity="OtherArticle", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: OtherArticle::class, inversedBy: 'comments')]
-    private $article;
+    private ?OtherArticle $article = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $deletedAt;
+    private ?\DateTimeInterface $deletedAt = null;
 
     public function getId(): ?int
     {

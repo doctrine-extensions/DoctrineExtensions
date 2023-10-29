@@ -26,8 +26,7 @@ final class Blameable implements GedmoAnnotation
 {
     use ForwardCompatibilityTrait;
 
-    /** @var string */
-    public $on = 'update';
+    public string $on = 'update';
     /** @var string|string[] */
     public $field;
     /** @var mixed */

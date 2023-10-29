@@ -33,20 +33,16 @@ class Engine
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=32)
      */
     #[ORM\Column(length: 32)]
-    private $type;
+    private ?string $type = null;
 
     /**
-     * @var int|null
-     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
-    private $valves;
+    private ?int $valves = null;
 
     public function getId(): ?int
     {

@@ -41,12 +41,10 @@ class Category
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var int|null
@@ -91,8 +89,6 @@ class Category
     private $root;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -100,7 +96,7 @@ class Category
     #[Gedmo\TreeParent]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $parent;
+    private ?\Gedmo\Tests\Tree\Fixture\Issue2517\Category $parent = null;
 
     /**
      * @var Collection<int, Category>
@@ -110,7 +106,7 @@ class Category
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     #[ORM\OrderBy(['lft' => 'ASC'])]
-    private $children;
+    private Collection $children;
 
     public function __construct()
     {

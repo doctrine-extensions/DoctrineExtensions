@@ -36,10 +36,7 @@ final class SluggableMappingTest extends ORMMappingTestCase
     private const TEST_YAML_ENTITY_CLASS = Category::class;
     private const SLUGGABLE = Sluggable::class;
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
     protected function setUp(): void
     {

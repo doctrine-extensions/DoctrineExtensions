@@ -13,35 +13,17 @@ namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class BaseCategory
 {
-    /**
-     * @var int
-     */
-    private $left;
+    private ?int $left = null;
 
-    /**
-     * @var int
-     */
-    private $right;
+    private ?int $right = null;
 
-    /**
-     * @var int
-     */
-    private $level;
+    private ?int $level = null;
 
-    /**
-     * @var int
-     */
-    private $rooted;
+    private ?int $rooted = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $created;
+    private ?\DateTime $created = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $updated;
+    private ?\DateTime $updated = null;
 
     public function setCreated(\DateTime $created): void
     {

@@ -33,10 +33,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     /** @var MaterializedPathRepository */
     protected $repo;
 
-    /**
-     * @var TreeListener
-     */
-    private $listener;
+    private TreeListener $listener;
 
     protected function setUp(): void
     {
@@ -345,12 +342,8 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->em->persist($newNode);
         $this->em->flush();
 
-        // @todo: Remove the condition and the `else` block when dropping support for "phpunit/phpunit" < 9.1.
-        if (method_exists($this, 'assertMatchesRegularExpression')) {
-            static::assertMatchesRegularExpression('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
-        } else {
-            static::assertRegExp('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
-        }
+        static::assertMatchesRegularExpression('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
+
         static::assertSame(2, $newNode->getLevel());
     }
 

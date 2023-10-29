@@ -51,10 +51,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
     private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
     private const USER_NO_HARD_DELETE_CLASS = UserNoHardDelete::class;
 
-    /**
-     * @var SoftDeleteableListener
-     */
-    private $softDeleteableListener;
+    private SoftDeleteableListener $softDeleteableListener;
 
     protected function setUp(): void
     {

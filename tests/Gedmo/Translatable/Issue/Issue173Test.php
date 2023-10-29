@@ -35,10 +35,7 @@ final class Issue173Test extends BaseTestCaseORM
     private const PRODUCT = Product::class;
     private const TRANSLATION = Translation::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

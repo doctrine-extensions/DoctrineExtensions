@@ -37,10 +37,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
     private const COMPOSITE = LoggableComposite::class;
     private const COMPOSITE_RELATION = LoggableCompositeRelation::class;
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
     protected function setUp(): void
     {

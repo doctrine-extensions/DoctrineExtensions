@@ -23,10 +23,7 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue165Test extends BaseTestCaseMongoODM
 {
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

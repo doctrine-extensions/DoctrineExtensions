@@ -21,25 +21,16 @@ class Category extends BaseCategory
      */
     private $id;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @var Collection<int, self>
      */
     private $children;
 
-    /**
-     * @var self
-     */
-    private $parent;
+    private ?\Gedmo\Tests\Mapping\Fixture\Yaml\Category $parent = null;
 
     /**
      * @var \DateTime

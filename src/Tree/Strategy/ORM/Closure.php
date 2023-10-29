@@ -51,7 +51,7 @@ class Closure implements Strategy
      *
      * @var array<int, array<int, object|Node>>
      */
-    private $pendingChildNodeInserts = [];
+    private array $pendingChildNodeInserts = [];
 
     /**
      * List of nodes which has their parents updated, but using
@@ -72,7 +72,7 @@ class Closure implements Strategy
      *
      * @phpstan-var array<array-key, object|Node>
      */
-    private $pendingNodesLevelProcess = [];
+    private array $pendingNodesLevelProcess = [];
 
     public function __construct(TreeListener $listener)
     {
@@ -206,9 +206,7 @@ class Closure implements Strategy
 
         if (!$hasTheUserExplicitlyDefinedMapping) {
             $metadataFactory = $em->getMetadataFactory();
-            $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
-                return $metadataFactory->getCache();
-            }, null, \get_class($metadataFactory));
+            $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
 
             $metadataCache = $getCache($metadataFactory);
 

@@ -35,12 +35,10 @@ class Paper
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string")
      */
     #[ORM\Column(name: 'name', type: Types::STRING)]
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, Author>
@@ -48,7 +46,7 @@ class Paper
      * @ORM\OneToMany(targetEntity="Author", mappedBy="paper", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Author::class, cascade: ['persist', 'remove'])]
-    private $authors;
+    private Collection $authors;
 
     public function __construct()
     {

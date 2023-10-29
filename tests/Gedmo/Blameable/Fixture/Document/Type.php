@@ -30,19 +30,15 @@ class Type
 
     /**
      * @ODM\Field(type="string")
-     *
-     * @var string|null
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @ODM\Field(type="string")
-     *
-     * @var string|null
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $identifier;
+    private ?string $identifier = null;
 
     public function getId(): ?string
     {

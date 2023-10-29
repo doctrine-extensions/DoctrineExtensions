@@ -31,12 +31,10 @@ class TreeSlug
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -55,12 +53,10 @@ class TreeSlug
     private $alias;
 
     /**
-     * @var TreeSlug|null
-     *
      * @ODM\ReferenceOne(targetDocument="TreeSlug")
      */
     #[ODM\ReferenceOne(targetDocument: self::class)]
-    private $parent;
+    private ?\Gedmo\Tests\Sluggable\Fixture\Document\Handler\TreeSlug $parent = null;
 
     public function setParent(?self $parent = null): void
     {

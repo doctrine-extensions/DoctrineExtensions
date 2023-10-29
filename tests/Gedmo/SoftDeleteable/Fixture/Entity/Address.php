@@ -36,28 +36,22 @@ class Address
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
-    private $street;
+    private ?string $street = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private $deletedAt;
+    private ?\DateTime $deletedAt = null;
 
     /**
-     * @var Person|null
-     *
      * @ORM\OneToOne(targetEntity="Person", mappedBy="address", cascade={"remove"})
      */
     #[ORM\OneToOne(targetEntity: Person::class, mappedBy: 'address', cascade: ['remove'])]
-    private $owner;
+    private ?Person $owner = null;
 
     public function getId(): ?int
     {

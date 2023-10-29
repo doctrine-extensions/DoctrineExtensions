@@ -22,10 +22,8 @@ final class QueryAnalyzer implements SQLLogger
 {
     /**
      * Used database platform
-     *
-     * @var AbstractPlatform
      */
-    private $platform;
+    private AbstractPlatform $platform;
 
     /**
      * List of queries executed

@@ -31,20 +31,16 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var Type|null
-     *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Timestampable\Fixture\Document\Type")
      */
     #[ODM\ReferenceOne(targetDocument: Type::class)]
-    private $type;
+    private ?\Gedmo\Tests\Timestampable\Fixture\Document\Type $type = null;
 
     /**
      * @var int|Timestamp|null
@@ -57,42 +53,34 @@ class Article
     private $created;
 
     /**
-     * @var \DateTime|null
-     *
      * @ODM\Field(type="date")
      * @Gedmo\Timestampable
      */
     #[Gedmo\Timestampable]
     #[ODM\Field(type: MongoDBType::DATE)]
-    private $updated;
+    private ?\DateTime $updated = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ODM\Field(type="date")
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     #[Gedmo\Timestampable(on: 'change', field: 'type.title', value: 'Published')]
     #[ODM\Field(type: MongoDBType::DATE)]
-    private $published;
+    private ?\DateTime $published = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ODM\Field(type="date")
      * @Gedmo\Timestampable(on="change", field="isReady", value=true)
      */
     #[Gedmo\Timestampable(on: 'change', field: 'isReady', value: true)]
     #[ODM\Field(type: MongoDBType::DATE)]
-    private $ready;
+    private ?\DateTime $ready = null;
 
     /**
-     * @var bool
-     *
      * @ODM\Field(type="bool")
      */
     #[ODM\Field(type: MongoDBType::BOOL)]
-    private $isReady = false;
+    private bool $isReady = false;
 
     public function getId(): ?string
     {
@@ -137,7 +125,8 @@ class Article
         return $this->type;
     }
 
-    public function setCreated(?int $created): void
+    /** @param int|Timestamp|null $created */
+    public function setCreated($created): void
     {
         $this->created = $created;
     }

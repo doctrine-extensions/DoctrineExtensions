@@ -41,12 +41,10 @@ class TreeSlug implements Node
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -65,8 +63,6 @@ class TreeSlug implements Node
     private $slug;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="TreeSlug")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -74,12 +70,12 @@ class TreeSlug implements Node
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlug $parent = null;
 
     /**
      * @var Collection<int, self>
      */
-    private $children;
+    private Collection $children;
 
     /**
      * @var int|null
@@ -121,10 +117,7 @@ class TreeSlug implements Node
     #[Gedmo\TreeLevel]
     private $level;
 
-    /**
-     * @var Node|null
-     */
-    private $sibling;
+    private ?Node $sibling = null;
 
     public function __construct()
     {

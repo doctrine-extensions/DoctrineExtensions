@@ -30,10 +30,7 @@ final class Issue138Test extends BaseTestCaseORM
     private const TRANSLATION = Translation::class;
     private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

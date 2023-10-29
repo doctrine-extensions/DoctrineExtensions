@@ -24,15 +24,9 @@ use Gedmo\Mapping\Event\AdapterInterface;
  */
 class ORM implements AdapterInterface
 {
-    /**
-     * @var EventArgs
-     */
-    private $args;
+    private ?EventArgs $args = null;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private ?EntityManagerInterface $em = null;
 
     public function __call($method, $args)
     {

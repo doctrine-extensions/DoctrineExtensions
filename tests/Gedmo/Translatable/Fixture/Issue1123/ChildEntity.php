@@ -25,24 +25,20 @@ use Gedmo\Translatable\Translatable;
 class ChildEntity extends BaseEntity implements Translatable
 {
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="childTitle", type="string", length=128, nullable=true)
      */
     #[ORM\Column(name: 'childTitle', type: Types::STRING, length: 128, nullable: true)]
     #[Gedmo\Translatable]
-    private $childTitle;
+    private ?string $childTitle = null;
 
     /**
-     * @var string
-     *
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
      */
     #[Gedmo\Locale]
-    private $locale = 'en';
+    private string $locale = 'en';
 
     public function getChildTitle(): ?string
     {

@@ -37,14 +37,12 @@ class FileWithCustomFilenameGenerator
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="path", type="string", nullable=true)
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     #[Gedmo\UploadableFilePath]
-    private $filePath;
+    private ?string $filePath = null;
 
     public function getId(): ?int
     {

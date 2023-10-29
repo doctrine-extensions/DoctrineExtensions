@@ -26,12 +26,10 @@ class Vehicle
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null

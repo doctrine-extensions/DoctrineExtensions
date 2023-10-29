@@ -35,8 +35,6 @@ class Car extends Vehicle
     protected $children;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Car", inversedBy="children")
      * @ORM\JoinColumns({
@@ -46,7 +44,7 @@ class Car extends Vehicle
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Tree\Fixture\Transport\Car $parent = null;
 
     /**
      * @var int|null

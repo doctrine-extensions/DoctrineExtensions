@@ -35,12 +35,10 @@ class Company
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=64)
      */
     #[ORM\Column(length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null

@@ -21,12 +21,10 @@ use Doctrine\ORM\Mapping as ORM;
 class User extends Person
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="username", type="string", length=64)
      */
     #[ORM\Column(name: 'username', type: Types::STRING, length: 64)]
-    private $username;
+    private ?string $username = null;
 
     public function setUsername(?string $username): void
     {

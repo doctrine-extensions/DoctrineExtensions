@@ -40,7 +40,7 @@ class Yaml extends File implements Driver
      *
      * @var string[]
      */
-    private $strategies = [
+    private array $strategies = [
         'nested',
         'closure',
         'materializedPath',

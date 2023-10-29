@@ -39,12 +39,10 @@ class User
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
-    private $username;
+    private ?string $username = null;
 
     public function setDeletedAt(\DateTime $deletedAt): self
     {

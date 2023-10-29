@@ -117,10 +117,7 @@ final class ChangeTest extends BaseTestCaseORM
 
 final class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
 {
-    /**
-     * @var \DateTime|null
-     */
-    private $dateTime;
+    private ?\DateTime $dateTime = null;
 
     public function setDateValue(\DateTime $dateTime): void
     {

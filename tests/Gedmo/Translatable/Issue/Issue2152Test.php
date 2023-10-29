@@ -22,10 +22,7 @@ final class Issue2152Test extends BaseTestCaseORM
     private const TRANSLATION = Translation::class;
     private const ENTITY = EntityWithTranslatableBoolean::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

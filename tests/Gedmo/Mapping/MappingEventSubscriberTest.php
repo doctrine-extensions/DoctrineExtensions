@@ -28,10 +28,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 final class MappingEventSubscriberTest extends ORMMappingTestCase
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
     protected function setUp(): void
     {
@@ -56,9 +53,7 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
     public function testGetMetadataFactoryCacheFromDoctrineForSluggable(): void
     {
         $metadataFactory = $this->em->getMetadataFactory();
-        $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
-            return $metadataFactory->getCache();
-        }, null, \get_class($metadataFactory));
+        $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
 
         $cache = $getCache($metadataFactory);
 
@@ -76,9 +71,7 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
     public function testGetMetadataFactoryCacheFromDoctrineForSuperClassExtension(): void
     {
         $metadataFactory = $this->em->getMetadataFactory();
-        $getCache = \Closure::bind(static function (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface {
-            return $metadataFactory->getCache();
-        }, null, \get_class($metadataFactory));
+        $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
 
         /** @var CacheItemPoolInterface $cache */
         $cache = $getCache($metadataFactory);

@@ -89,7 +89,7 @@ class Category
     /**
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
-    private $children;
+    private Collection $children;
 
     /**
      * @Gedmo\Timestampable(on="create")

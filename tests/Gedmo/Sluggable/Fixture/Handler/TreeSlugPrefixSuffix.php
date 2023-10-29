@@ -40,12 +40,10 @@ class TreeSlugPrefixSuffix
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string|null
@@ -66,8 +64,6 @@ class TreeSlugPrefixSuffix
     private $slug;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="TreeSlugPrefixSuffix")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -75,12 +71,12 @@ class TreeSlugPrefixSuffix
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlugPrefixSuffix $parent = null;
 
     /**
      * @var Collection<int, self>
      */
-    private $children;
+    private Collection $children;
 
     /**
      * @var int|null

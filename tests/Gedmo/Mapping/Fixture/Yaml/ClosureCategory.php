@@ -21,25 +21,16 @@ class ClosureCategory
      */
     private $id;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Collection<int, ClosureCategory>
      */
     private $children;
 
-    /**
-     * @var ClosureCategory
-     */
-    private $parent;
+    private ?\Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory $parent = null;
 
-    /**
-     * @var int
-     */
-    private $level;
+    private ?int $level = null;
 
     public function __construct()
     {

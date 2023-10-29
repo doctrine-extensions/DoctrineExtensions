@@ -39,28 +39,22 @@ class MPCategoryWithTrimmedSeparator
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\TreePath(appendId=false, startsWithSeparator=false, endsWithSeparator=false)
      * @ORM\Column(name="path", type="string", length=3000, nullable=true)
      */
     #[ORM\Column(name: 'path', type: Types::STRING, length: 3000, nullable: true)]
     #[Gedmo\TreePath(appendId: false, startsWithSeparator: false, endsWithSeparator: false)]
-    private $path;
+    private ?string $path = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\TreePathSource
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\TreePathSource]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="MPCategoryWithTrimmedSeparator", inversedBy="children")
      * @ORM\JoinColumns({
@@ -70,7 +64,7 @@ class MPCategoryWithTrimmedSeparator
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private $parentId;
+    private ?\Gedmo\Tests\Tree\Fixture\MPCategoryWithTrimmedSeparator $parentId = null;
 
     /**
      * @var int|null
@@ -88,7 +82,7 @@ class MPCategoryWithTrimmedSeparator
      * @ORM\OneToMany(targetEntity="MPCategoryWithTrimmedSeparator", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    private $children;
+    private Collection $children;
 
     public function __construct()
     {

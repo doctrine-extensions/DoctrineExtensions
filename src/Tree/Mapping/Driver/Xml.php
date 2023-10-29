@@ -32,7 +32,7 @@ class Xml extends BaseXml
      *
      * @var string[]
      */
-    private $strategies = [
+    private array $strategies = [
         'nested',
         'closure',
         'materializedPath',

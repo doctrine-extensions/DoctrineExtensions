@@ -29,15 +29,9 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  */
 final class SoftDeleteableMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var SoftDeleteableListener
-     */
-    private $softDeleteable;
+    private SoftDeleteableListener $softDeleteable;
 
     protected function setUp(): void
     {

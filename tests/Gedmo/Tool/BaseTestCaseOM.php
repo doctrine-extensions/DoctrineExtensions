@@ -57,7 +57,7 @@ abstract class BaseTestCaseOM extends TestCase
      *
      * @var DocumentManager[]
      */
-    private $dms = [];
+    private array $dms = [];
 
     protected function setUp(): void
     {

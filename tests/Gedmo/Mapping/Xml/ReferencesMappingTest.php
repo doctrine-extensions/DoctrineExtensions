@@ -26,15 +26,9 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  */
 final class ReferencesMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var ReferencesListener
-     */
-    private $referencesListener;
+    private ReferencesListener $referencesListener;
 
     protected function setUp(): void
     {

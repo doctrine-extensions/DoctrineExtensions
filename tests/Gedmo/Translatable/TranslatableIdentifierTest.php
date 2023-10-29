@@ -27,15 +27,9 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
     private const FIXTURE = StringIdentifier::class;
     private const TRANSLATION = Translation::class;
 
-    /**
-     * @var string|null
-     */
-    private $testObjectId;
+    private ?string $testObjectId = null;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

@@ -40,7 +40,7 @@
         "wiki": "https://github.com/Atlantic18/DoctrineExtensions/tree/main/doc"
     },
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "behat/transliterator": "^1.2",
         "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/collections": "^1.2 || ^2.0",
@@ -62,8 +62,8 @@
         "phpstan/phpstan": "^1.10.2",
         "phpstan/phpstan-doctrine": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
-        "phpunit/phpunit": "^8.5 || ^9.5",
-        "rector/rector": "^0.15.20",
+        "phpunit/phpunit": "^9.6",
+        "rector/rector": "^0.18",
         "symfony/console": "^4.4 || ^5.3 || ^6.0",
         "symfony/phpunit-bridge": "^6.0",
         "symfony/yaml": "^4.4 || ^5.3 || ^6.0"

@@ -34,22 +34,18 @@ class Article
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", length=64)
      */
     #[ORM\Column(name: 'title', length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var Category|null
-     *
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="articles")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
      */
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'articles')]
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: false)]
-    private $category;
+    private ?Category $category = null;
 
     /**
      * @var string|null

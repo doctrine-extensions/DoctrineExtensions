@@ -35,32 +35,26 @@ class Author
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string")
      */
     #[ORM\Column(name: 'name', type: Types::STRING)]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var Paper|null
-     *
      * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Paper", inversedBy="authors")
      */
     #[Gedmo\SortableGroup]
     #[ORM\ManyToOne(targetEntity: Paper::class, inversedBy: 'authors')]
-    private $paper;
+    private ?Paper $paper = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(name: 'position', type: Types::INTEGER)]
-    private $position;
+    private ?int $position = null;
 
     public function getId(): ?int
     {

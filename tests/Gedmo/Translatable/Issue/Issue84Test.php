@@ -28,10 +28,7 @@ final class Issue84Test extends BaseTestCaseORM
     private const ARTICLE = Article::class;
     private const TRANSLATION = Translation::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {

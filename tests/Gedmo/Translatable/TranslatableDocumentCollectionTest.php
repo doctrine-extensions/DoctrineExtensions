@@ -28,15 +28,9 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     private const ARTICLE = Article::class;
     private const TRANSLATION = Translation::class;
 
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
-    /**
-     * @var string|null
-     */
-    private $id;
+    private ?string $id = null;
 
     protected function setUp(): void
     {

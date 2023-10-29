@@ -37,13 +37,12 @@ class Article implements Loggable
     private $id;
 
     /**
-     * @var string|null
      * @Gedmo\Versioned
      * @ORM\Column(name="title", type="string", length=8)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     public function getId(): ?int
     {

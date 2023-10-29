@@ -19,32 +19,26 @@ use Doctrine\ORM\Mapping as ORM;
 class Composite
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
-    private $one;
+    private int $one;
 
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
-    private $two;
+    private int $two;
 
     /**
-     * @var string
-     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
-    private $title;
+    private ?string $title = null;
 
     public function __construct(int $one, int $two)
     {

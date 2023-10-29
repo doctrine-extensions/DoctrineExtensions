@@ -74,7 +74,7 @@ class TranslationWalker extends SqlWalker
      *
      * @phpstan-var array<string, array{metadata: ClassMetadata}>
      */
-    private $translatedComponents = [];
+    private array $translatedComponents = [];
 
     /**
      * DBAL database platform
@@ -96,19 +96,16 @@ class TranslationWalker extends SqlWalker
      *
      * @var array<string, string>
      */
-    private $replacements = [];
+    private array $replacements = [];
 
     /**
      * List of joins for translated components in query
      *
      * @var array<string, string>
      */
-    private $components = [];
+    private array $components = [];
 
-    /**
-     * @var TranslatableListener
-     */
-    private $listener;
+    private TranslatableListener $listener;
 
     public function __construct($query, $parserResult, array $queryComponents)
     {
@@ -440,9 +437,7 @@ class TranslationWalker extends SqlWalker
     private function replace(array $repl, string $str): string
     {
         foreach ($repl as $target => $result) {
-            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static function (array $m) use ($result): string {
-                return $m[1].$result.$m[3].$m[4];
-            }, $str);
+            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static fn (array $m): string => $m[1].$result.$m[3].$m[4], $str);
         }
 
         return $str;

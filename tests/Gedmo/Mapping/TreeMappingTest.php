@@ -37,15 +37,9 @@ final class TreeMappingTest extends ORMMappingTestCase
     private const YAML_CLOSURE_CATEGORY = ClosureCategory::class;
     private const YAML_MATERIALIZED_PATH_CATEGORY = MaterializedPathCategory::class;
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var TreeListener
-     */
-    private $listener;
+    private TreeListener $listener;
 
     protected function setUp(): void
     {

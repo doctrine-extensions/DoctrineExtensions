@@ -35,14 +35,12 @@ class ArticleWithoutFields implements Sluggable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(separator="-", updatable=true)
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true)]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {

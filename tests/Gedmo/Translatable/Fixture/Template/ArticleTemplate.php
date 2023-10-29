@@ -31,24 +31,20 @@ class ArticleTemplate
     #[Gedmo\Locale]
     protected $locale;
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="content", type="text")
      */
     #[ORM\Column(name: 'content', type: Types::TEXT)]
     #[Gedmo\Translatable]
-    private $content;
+    private ?string $content = null;
 
     public function setTitle(?string $title): void
     {

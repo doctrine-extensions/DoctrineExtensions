@@ -33,12 +33,10 @@ class Identifier
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(length=32)
      */
     #[ORM\Column(length: 32)]
-    private $title;
+    private ?string $title = null;
 
     public function getId(): ?string
     {

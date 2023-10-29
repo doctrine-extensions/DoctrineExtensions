@@ -68,8 +68,8 @@ abstract class BaseTestCaseMongoODM extends TestCase
     {
         $client = new Client($_ENV['MONGODB_SERVER'], [], ['typeMap' => DocumentManager::CLIENT_TYPEMAP]);
 
-        $config = $config ?? $this->getMockAnnotatedConfig();
-        $evm = $evm ?? $this->getEventManager();
+        $config ??= $this->getMockAnnotatedConfig();
+        $evm ??= $this->getEventManager();
 
         return $this->dm = DocumentManager::create($client, $config, $evm);
     }
@@ -87,7 +87,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
     {
         $conn = $this->createStub(Client::class);
 
-        $config = $config ?? $this->getMockAnnotatedConfig();
+        $config ??= $this->getMockAnnotatedConfig();
 
         $this->dm = DocumentManager::create($conn, $config, $evm ?? $this->getEventManager());
 

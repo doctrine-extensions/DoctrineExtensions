@@ -27,15 +27,9 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  */
 final class ReferenceIntegrityMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var DocumentManager
-     */
-    private $dm;
+    private DocumentManager $dm;
 
-    /**
-     * @var ReferenceIntegrityListener
-     */
-    private $referenceIntegrity;
+    private ReferenceIntegrityListener $referenceIntegrity;
 
     protected function setUp(): void
     {

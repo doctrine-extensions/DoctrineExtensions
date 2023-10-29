@@ -34,22 +34,18 @@ class Product
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var Category|null
-     *
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      */
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
-    private $category;
+    private ?Category $category = null;
 
     public function getId(): ?int
     {

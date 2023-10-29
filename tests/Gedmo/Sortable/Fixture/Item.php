@@ -35,32 +35,26 @@ class Item
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
-    private $position;
+    private ?int $position = null;
 
     /**
-     * @var Category|null
-     *
      * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
      */
     #[Gedmo\SortableGroup]
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
-    private $category;
+    private ?Category $category = null;
 
     public function getId(): ?int
     {

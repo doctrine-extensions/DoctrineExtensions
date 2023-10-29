@@ -29,12 +29,10 @@ class Category
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
-    private $name;
+    private ?string $name = null;
 
     public function getId(): ?string
     {

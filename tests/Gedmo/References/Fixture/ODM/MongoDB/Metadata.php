@@ -32,20 +32,16 @@ class Metadata
     private $name;
 
     /**
-     * @var Category|null
-     *
      * @Gedmo\ReferenceOne(type="entity", class="Gedmo\Tests\References\Fixture\ORM\Category", identifier="categoryId")
      */
     #[Gedmo\ReferenceOne(type: 'entity', class: Category::class, identifier: 'categoryId')]
-    private $category;
+    private Category $category;
 
     /**
-     * @var int|null
-     *
      * @ODM\Field(type="int")
      */
     #[ODM\Field(type: Type::INT)]
-    private $categoryId;
+    private ?int $categoryId = null;
 
     public function __construct(Category $category)
     {
@@ -68,7 +64,7 @@ class Metadata
         $this->categoryId = $category->getId();
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): Category
     {
         return $this->category;
     }

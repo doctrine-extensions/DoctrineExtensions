@@ -66,15 +66,13 @@ class Person
      * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
      */
     #[ORM\OneToMany(targetEntity: PersonTranslation::class, mappedBy: 'translatable', cascade: ['persist'])]
-    private $translations;
+    private Collection $translations;
 
     /**
-     * @var Person|null
-     *
      * @ORM\ManyToOne(targetEntity="Person")
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
-    private $parent;
+    private ?\Gedmo\Tests\Translator\Fixture\Person $parent = null;
 
     public function __construct()
     {

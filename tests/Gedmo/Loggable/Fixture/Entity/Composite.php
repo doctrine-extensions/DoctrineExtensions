@@ -22,34 +22,28 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Composite
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(name: 'one', type: Types::INTEGER)]
-    private $one;
+    private int $one;
 
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(name: 'two', type: Types::INTEGER)]
-    private $two;
+    private int $two;
 
     /**
-     * @var string
-     *
      * @ORM\Column(length=8)
      * @Gedmo\Versioned
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     public function __construct(int $one, int $two)
     {

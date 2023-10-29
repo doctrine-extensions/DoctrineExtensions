@@ -55,14 +55,12 @@ abstract class Person
     private $id;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="children")
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[Gedmo\TreeParent]
-    private $parent;
+    private ?\Gedmo\Tests\Tree\Fixture\Genealogy\Person $parent = null;
 
     /**
      * @var int|null
@@ -95,12 +93,10 @@ abstract class Person
     private $lvl;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string", length=191, nullable=false)
      */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 191, nullable: false)]
-    private $name;
+    private string $name;
 
     public function __construct(string $name)
     {
@@ -115,7 +111,7 @@ abstract class Person
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
