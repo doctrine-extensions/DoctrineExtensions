@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Translatable\Entity\Translation;

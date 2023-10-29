@@ -12,7 +12,7 @@ namespace Gedmo\References\Mapping\Event\Adapter;
 use Doctrine\ODM\MongoDB\DocumentManager as MongoDocumentManager;
 use Doctrine\ODM\PHPCR\DocumentManager as PhpcrDocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Proxy\Proxy as ORMProxy;
+use Doctrine\Persistence\Proxy as PersistenceProxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\References\Mapping\Event\ReferencesAdapter;
@@ -79,7 +79,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
 
     public function extractIdentifier($om, $object, $single = true)
     {
-        if ($object instanceof ORMProxy) {
+        if ($object instanceof PersistenceProxy) {
             $id = $om->getUnitOfWork()->getEntityIdentifier($object);
         } else {
             $meta = $om->getClassMetadata(get_class($object));
