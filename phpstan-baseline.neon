@@ -616,7 +616,7 @@ parameters:
 			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
 
 		-
-			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
+			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
 			count: 1
 			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
 
