@@ -19,7 +19,11 @@ a release.
 
 ## [Unreleased]
 
-## [3.13.0]
+### Deprecated
+- Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
+- Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead. 
+
+## [3.13.0] - 2023-09-06
 ### Fixed
 - References: fixed condition in `XML` Driver that did not allow to retrieve from the entity definition the `mappedBy` and `inversedBy` fields.
 - Fix bug collecting metadata for inherited mapped classes

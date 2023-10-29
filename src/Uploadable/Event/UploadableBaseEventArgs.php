@@ -11,6 +11,7 @@ namespace Gedmo\Uploadable\Event;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 use Gedmo\Uploadable\UploadableListener;
 
@@ -101,6 +102,21 @@ abstract class UploadableBaseEventArgs extends EventArgs
      */
     public function getEntityManager()
     {
+        @trigger_error(sprintf(
+            '"%s()" is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
+        return $this->em;
+    }
+
+    /**
+     * Retrieve associated EntityManager
+     *
+     * @return ObjectManager
+     */
+    public function getObjectManager()
+    {
         return $this->em;
     }
 
@@ -110,6 +126,21 @@ abstract class UploadableBaseEventArgs extends EventArgs
      * @return object
      */
     public function getEntity()
+    {
+        @trigger_error(sprintf(
+            '"%s()" is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
+        return $this->entity;
+    }
+
+    /**
+     * Retrieve associated Object
+     *
+     * @return object
+     */
+    public function getObject()
     {
         return $this->entity;
     }
