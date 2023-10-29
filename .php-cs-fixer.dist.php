@@ -10,11 +10,11 @@ declare(strict_types=1);
  */
 
 $header = <<<'HEADER'
-This file is part of the Doctrine Behavioral Extensions package.
-(c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
-For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-HEADER;
+    This file is part of the Doctrine Behavioral Extensions package.
+    (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+    HEADER;
 
 $finder = PhpCsFixer\Finder::create()
     ->in([
@@ -32,6 +32,8 @@ return (new PhpCsFixer\Config())
         '@DoctrineAnnotation' => true,
         '@PHP71Migration' => true,
         '@PHP71Migration:risky' => true,
+        '@PHP74Migration' => true,
+        '@PHP74Migration:risky' => true,
         '@PHPUnit84Migration:risky' => true,
         '@PSR2' => true,
         '@Symfony' => true,
