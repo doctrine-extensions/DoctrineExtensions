@@ -18,6 +18,7 @@ use Gedmo\Tests\Uploadable\FakeFilenameGenerator;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Gedmo\Tests\Uploadable\FakeFilenameGenerator")
  */
 #[ORM\Entity]
@@ -38,6 +39,7 @@ class FileWithCustomFilenameGenerator
 
     /**
      * @ORM\Column(name="path", type="string", nullable=true)
+     *
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]

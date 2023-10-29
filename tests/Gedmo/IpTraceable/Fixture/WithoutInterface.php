@@ -41,7 +41,9 @@ class WithoutInterface
 
     /**
      * @var string|null
+     *
      * @Gedmo\IpTraceable(on="create")
+     *
      * @ORM\Column(type="string", length=45)
      */
     #[ORM\Column(type: Types::STRING, length: 45)]
@@ -50,7 +52,9 @@ class WithoutInterface
 
     /**
      * @var string|null
+     *
      * @ORM\Column(type="string", length=45)
+     *
      * @Gedmo\IpTraceable(on="update")
      */
     #[ORM\Column(type: Types::STRING, length: 45)]

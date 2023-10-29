@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Uploadable(allowOverwrite=true, pathMethod="getPath", callback="callbackMethod", maxSize="2")
  */
 #[ORM\Entity]
@@ -48,6 +49,7 @@ class FileWithMaxSize
 
     /**
      * @ORM\Column(name="path", type="string")
+     *
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING)]
@@ -56,6 +58,7 @@ class FileWithMaxSize
 
     /**
      * @ORM\Column(name="size", type="decimal")
+     *
      * @Gedmo\UploadableFileSize
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL)]

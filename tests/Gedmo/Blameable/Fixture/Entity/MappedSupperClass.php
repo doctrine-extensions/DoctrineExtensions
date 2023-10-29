@@ -45,6 +45,7 @@ class MappedSupperClass
      * @var string|null
      *
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="name", type="string", length=191)
      */
     #[Gedmo\Translatable]
@@ -55,6 +56,7 @@ class MappedSupperClass
      * @var string|null
      *
      * @ORM\Column(name="created_by", type="string")
+     *
      * @Gedmo\Blameable(on="create")
      */
     #[ORM\Column(name: 'created_by', type: Types::STRING)]

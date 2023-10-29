@@ -35,6 +35,7 @@ class Comment
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="subject", type="string", length=128)
      */
     #[Gedmo\Translatable]
@@ -43,6 +44,7 @@ class Comment
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="message", type="text")
      */
     #[Gedmo\Translatable]

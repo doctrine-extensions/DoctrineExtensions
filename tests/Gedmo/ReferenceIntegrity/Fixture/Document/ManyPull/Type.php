@@ -27,6 +27,7 @@ class Type
      * @var Collection<int, Article>
      *
      * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
+     *
      * @Gedmo\ReferenceIntegrity("pull")
      */
     #[ODM\ReferenceMany(targetDocument: Article::class, mappedBy: 'types')]

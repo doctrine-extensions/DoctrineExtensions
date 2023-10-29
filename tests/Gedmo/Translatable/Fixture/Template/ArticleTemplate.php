@@ -32,6 +32,7 @@ class ArticleTemplate
     protected $locale;
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
@@ -40,6 +41,7 @@ class ArticleTemplate
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="content", type="text")
      */
     #[ORM\Column(name: 'content', type: Types::TEXT)]

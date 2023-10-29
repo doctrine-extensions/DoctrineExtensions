@@ -52,6 +52,7 @@ class Article implements IpTraceable
 
     /**
      * @Gedmo\IpTraceable(on="create")
+     *
      * @ORM\Column(name="created", type="string", length=45)
      */
     #[ORM\Column(name: 'created', type: Types::STRING, length: 45)]
@@ -60,6 +61,7 @@ class Article implements IpTraceable
 
     /**
      * @ORM\Column(name="updated", type="string", length=45)
+     *
      * @Gedmo\IpTraceable
      */
     #[ORM\Column(name: 'updated', type: Types::STRING, length: 45)]
@@ -68,6 +70,7 @@ class Article implements IpTraceable
 
     /**
      * @ORM\Column(name="published", type="string", length=45, nullable=true)
+     *
      * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
      */
     #[ORM\Column(name: 'published', type: Types::STRING, length: 45, nullable: true)]
@@ -76,6 +79,7 @@ class Article implements IpTraceable
 
     /**
      * @ORM\Column(name="content_changed", type="string", length=45, nullable=true)
+     *
      * @Gedmo\IpTraceable(on="change", field={"title", "body"})
      */
     #[ORM\Column(name: 'content_changed', type: Types::STRING, length: 45, nullable: true)]

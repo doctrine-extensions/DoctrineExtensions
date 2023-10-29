@@ -45,6 +45,7 @@ class MappedSupperClass
      * @var string|null
      *
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="name", type="string", length=191)
      */
     #[Gedmo\Translatable]
@@ -55,6 +56,7 @@ class MappedSupperClass
      * @var string|null
      *
      * @ORM\Column(name="created_at", type="string", length=45)
+     *
      * @Gedmo\IpTraceable(on="create")
      */
     #[ORM\Column(name: 'created_at', type: Types::STRING, length: 45)]

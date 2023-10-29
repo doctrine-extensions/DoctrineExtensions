@@ -22,7 +22,9 @@ trait TimestampableEntity
 {
     /**
      * @var \DateTime|null
+     *
      * @Gedmo\Timestampable(on="create")
+     *
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\Timestampable(on: 'create')]
@@ -31,7 +33,9 @@ trait TimestampableEntity
 
     /**
      * @var \DateTime|null
+     *
      * @Gedmo\Timestampable(on="update")
+     *
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\Timestampable(on: 'update')]

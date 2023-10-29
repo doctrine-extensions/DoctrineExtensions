@@ -62,9 +62,9 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param object|null $node   The object to count children for; if null, all nodes will be counted
      * @param bool        $direct Flag indicating whether only direct children should be counted
      *
-     * @return int
-     *
      * @throws InvalidArgumentException if the input is invalid
+     *
+     * @return int
      */
     public function childCount($node = null, $direct = false);
 }

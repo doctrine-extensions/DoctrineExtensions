@@ -28,12 +28,14 @@ class User
 
     /**
      * @Ext\Encode(type="sha1", secret="xxx")
+     *
      * @ODM\Field(type="string")
      */
     private ?string $name = null;
 
     /**
      * @Ext\Encode(type="md5")
+     *
      * @ODM\Field(type="string")
      */
     private ?string $password = null;

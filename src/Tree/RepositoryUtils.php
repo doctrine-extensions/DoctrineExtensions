@@ -44,8 +44,8 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
     /**
      * @param ObjectManager&(DocumentManager|EntityManagerInterface) $om
-     * @param TreeListener        $listener
-     * @param RepositoryInterface $repo
+     * @param TreeListener                                           $listener
+     * @param RepositoryInterface                                    $repo
      */
     public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
     {

@@ -31,6 +31,7 @@ class SimpleArticle
 
     /**
      * @Gedmo\Translatable
+     *
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
@@ -39,6 +40,7 @@ class SimpleArticle
 
     /**
      * @Gedmo\Translatable
+     *
      * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]

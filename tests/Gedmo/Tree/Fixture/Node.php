@@ -24,6 +24,7 @@ class Node extends BaseNode
 {
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
@@ -35,6 +36,7 @@ class Node extends BaseNode
      *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title"})
+     *
      * @ORM\Column(name="slug", type="string", length=128)
      */
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128)]

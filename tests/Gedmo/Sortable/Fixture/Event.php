@@ -36,6 +36,7 @@ class Event
 
     /**
      * @Gedmo\SortableGroup
+     *
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\SortableGroup]
@@ -50,6 +51,7 @@ class Event
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]

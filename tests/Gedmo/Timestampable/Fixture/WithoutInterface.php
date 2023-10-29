@@ -43,6 +43,7 @@ class WithoutInterface
      * @var \DateTime|null
      *
      * @Gedmo\Timestampable(on="create")
+     *
      * @ORM\Column(type="date")
      */
     #[Gedmo\Timestampable(on: 'create')]
@@ -53,6 +54,7 @@ class WithoutInterface
      * @var \DateTime|null
      *
      * @ORM\Column(type="datetime")
+     *
      * @Gedmo\Timestampable(on="update")
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

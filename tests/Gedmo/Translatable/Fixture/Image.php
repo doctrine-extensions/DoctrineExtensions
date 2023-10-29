@@ -22,6 +22,7 @@ class Image extends File
 {
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(length=128)
      */
     #[Gedmo\Translatable]

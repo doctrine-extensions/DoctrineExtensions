@@ -37,6 +37,7 @@ class User
 
     /**
      * @Ext\Encode(type="sha1", secret="xxx")
+     *
      * @ORM\Column(length=64)
      */
     #[ORM\Column(length: 64)]
@@ -44,6 +45,7 @@ class User
 
     /**
      * @Ext\Encode(type="md5")
+     *
      * @ORM\Column(length=32)
      */
     #[ORM\Column(length: 32)]

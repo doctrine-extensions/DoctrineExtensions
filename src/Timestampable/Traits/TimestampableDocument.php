@@ -22,7 +22,9 @@ trait TimestampableDocument
 {
     /**
      * @var \DateTime|null
+     *
      * @Gedmo\Timestampable(on="create")
+     *
      * @ODM\Field(type="date")
      */
     #[Gedmo\Timestampable(on: 'create')]
@@ -31,7 +33,9 @@ trait TimestampableDocument
 
     /**
      * @var \DateTime|null
+     *
      * @Gedmo\Timestampable(on="update")
+     *
      * @ODM\Field(type="date")
      */
     #[Gedmo\Timestampable(on: 'update')]

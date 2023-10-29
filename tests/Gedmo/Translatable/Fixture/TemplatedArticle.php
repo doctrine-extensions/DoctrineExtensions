@@ -36,6 +36,7 @@ class TemplatedArticle extends ArticleTemplate
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="string", length=128)
      */
     #[Gedmo\Translatable]

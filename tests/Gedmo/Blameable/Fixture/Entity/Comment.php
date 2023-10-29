@@ -56,6 +56,7 @@ class Comment implements Blameable
      * @var string|null
      *
      * @ORM\Column(name="closed", type="string", nullable=true)
+     *
      * @Gedmo\Blameable(on="change", field="status", value=1)
      */
     #[ORM\Column(name: 'closed', type: Types::STRING, nullable: true)]
@@ -66,6 +67,7 @@ class Comment implements Blameable
      * @var string|null
      *
      * @ORM\Column(name="modified", type="string")
+     *
      * @Gedmo\Blameable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::STRING)]

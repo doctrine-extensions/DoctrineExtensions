@@ -25,6 +25,7 @@ class CompanyEmbedLink
      * @var string
      *
      * @ORM\Column(name="website", type="string", length=191, nullable=true)
+     *
      * @Gedmo\Translatable
      */
     #[Gedmo\Translatable]
@@ -35,6 +36,7 @@ class CompanyEmbedLink
      * @var string
      *
      * @ORM\Column(name="facebook", type="string", length=191, nullable=true)
+     *
      * @Gedmo\Translatable
      */
     #[Gedmo\Translatable]

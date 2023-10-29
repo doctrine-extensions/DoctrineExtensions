@@ -14,7 +14,9 @@ namespace Gedmo\Mapping\Annotation;
  * to be user like "@ReferenceMany(type="entity", class="MyEntity", identifier="entity_id")"
  *
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
+ *
  * @NamedArgumentConstructor
+ *
  * @Annotation
  *
  * @final since gedmo/doctrine-extensions 3.11

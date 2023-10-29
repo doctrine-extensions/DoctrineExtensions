@@ -68,6 +68,7 @@ class ArticleCarbon implements Timestampable
      * @var \DateTime|Carbon|null
      *
      * @Gedmo\Timestampable(on="create")
+     *
      * @ORM\Column(name="created", type="date")
      */
     #[Gedmo\Timestampable(on: 'create')]
@@ -78,6 +79,7 @@ class ArticleCarbon implements Timestampable
      * @var \DateTime|CarbonImmutable|null
      *
      * @ORM\Column(name="updated", type="datetime")
+     *
      * @Gedmo\Timestampable
      */
     #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
@@ -88,6 +90,7 @@ class ArticleCarbon implements Timestampable
      * @var \DateTime|CarbonImmutable|null
      *
      * @ORM\Column(name="published", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     #[ORM\Column(name: 'published', type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -98,6 +101,7 @@ class ArticleCarbon implements Timestampable
      * @var \DateTime|CarbonImmutable|null
      *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -108,6 +112,7 @@ class ArticleCarbon implements Timestampable
      * @var CarbonImmutable|null
      *
      * @ORM\Column(name="author_changed", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
      */
     #[ORM\Column(name: 'author_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -132,6 +137,7 @@ class ArticleCarbon implements Timestampable
      * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="reached_relevant_level", type="datetime", nullable=true)
+     *
      * @Gedmo\Timestampable(on="change", field="level", value="10")
      */
     #[ORM\Column(name: 'reached_relevant_level', type: Types::DATE_MUTABLE, nullable: true)]

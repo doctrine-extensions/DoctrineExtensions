@@ -50,6 +50,7 @@ class User
      *         @Gedmo\SlugHandlerOption(name="separator", value="/")
      *     })
      * }, separator="-", updatable=true, fields={"username"})
+     *
      * @ORM\Column(length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['username'])]

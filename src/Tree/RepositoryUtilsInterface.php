@@ -30,9 +30,9 @@ interface RepositoryUtilsInterface
      *                                          - childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array<int, array<string, mixed>>|string
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array<int, array<string, mixed>>|string
      */
     public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false);
 
@@ -52,9 +52,9 @@ interface RepositoryUtilsInterface
      *                                           - childOpen: string || Closure ('<li>') - start of node, Closure will be given $node as a parameter
      *                                           - childClose: string ('</li>') - close of node
      *
-     * @return array<int, array<string, mixed>>|string
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array<int, array<string, mixed>>|string
      */
     public function buildTree(array $nodes, array $options = []);
 

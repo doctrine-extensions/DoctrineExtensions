@@ -38,6 +38,7 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[Gedmo\Translatable]
@@ -46,6 +47,7 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="content", type="text", nullable=true)
      */
     #[Gedmo\Translatable]
@@ -54,6 +56,7 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable(fallback=false)
+     *
      * @ORM\Column(name="views", type="integer", nullable=true)
      */
     #[Gedmo\Translatable(fallback: false)]
@@ -62,6 +65,7 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable(fallback=true)
+     *
      * @ORM\Column(name="author", type="string", nullable=true)
      */
     #[Gedmo\Translatable(fallback: true)]

@@ -17,6 +17,7 @@ use Gedmo\Sluggable\Handler\SlugHandlerInterface;
  * SlugHandler annotation for Sluggable behavioral extension
  *
  * @Annotation
+ *
  * @NamedArgumentConstructor
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

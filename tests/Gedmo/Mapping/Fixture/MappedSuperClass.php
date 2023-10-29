@@ -35,6 +35,7 @@ class MappedSuperClass
 
     /**
      * @ORM\Column(length=32)
+     *
      * @Ext\Encode(type="md5")
      */
     #[ORM\Column(length: 32)]

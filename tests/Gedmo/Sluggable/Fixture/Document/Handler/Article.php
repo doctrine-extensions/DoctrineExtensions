@@ -52,6 +52,7 @@ class Article
      *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="alias")
      *     })
      * }, separator="-", updatable=true, fields={"title", "code"})
+     *
      * @ODM\Field(type="string")
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]

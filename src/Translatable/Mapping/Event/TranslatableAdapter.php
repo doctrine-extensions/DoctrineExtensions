@@ -35,6 +35,7 @@ interface TranslatableAdapter extends AdapterInterface
      * Get the default translation class used to store translations.
      *
      * @return string
+     *
      * @phpstan-return class-string
      */
     public function getDefaultTranslationClass();

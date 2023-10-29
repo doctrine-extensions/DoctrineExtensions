@@ -48,6 +48,7 @@ class ConfigurationArticle implements Sluggable
 
     /**
      * @Gedmo\Slug(updatable=false, unique=false, unique_base=null, fields={"title", "code"})
+     *
      * @ORM\Column(name="slug", type="string", length=32)
      */
     #[Gedmo\Slug(updatable: false, unique: false, unique_base: null, fields: ['title', 'code'])]

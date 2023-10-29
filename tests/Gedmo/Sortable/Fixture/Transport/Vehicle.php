@@ -45,6 +45,7 @@ class Vehicle
 
     /**
      * @Gedmo\SortableGroup
+     *
      * @ORM\ManyToOne(targetEntity="Engine")
      */
     #[Gedmo\SortableGroup]
@@ -59,6 +60,7 @@ class Vehicle
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]

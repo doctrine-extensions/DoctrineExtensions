@@ -25,6 +25,7 @@ class Post
      * @var int|null
      *
      * @Gedmo\SortablePosition
+     *
      * @ODM\Field(type="int")
      */
     #[Gedmo\SortablePosition]
@@ -35,6 +36,7 @@ class Post
      * @var Category|null
      *
      * @Gedmo\SortableGroup
+     *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sortable\Fixture\Document\Category")
      */
     #[Gedmo\SortableGroup]

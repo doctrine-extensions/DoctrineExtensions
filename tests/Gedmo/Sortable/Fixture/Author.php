@@ -42,6 +42,7 @@ class Author
 
     /**
      * @Gedmo\SortableGroup
+     *
      * @ORM\ManyToOne(targetEntity="Paper", inversedBy="authors")
      */
     #[Gedmo\SortableGroup]
@@ -50,6 +51,7 @@ class Author
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(name="position", type="integer")
      */
     #[Gedmo\SortablePosition]

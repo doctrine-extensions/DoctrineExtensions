@@ -16,6 +16,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * UploadableFileName Annotation for Uploadable behavioral extension
  *
  * @Annotation
+ *
  * @Target("PROPERTY")
  *
  * @author tiger-seo <tiger.seo@gmail.com>

@@ -21,6 +21,7 @@ use Gedmo\Tree\Node as NodeInterface;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ *
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
@@ -49,6 +50,7 @@ class Category implements NodeInterface
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
@@ -59,6 +61,7 @@ class Category implements NodeInterface
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
@@ -67,6 +70,7 @@ class Category implements NodeInterface
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumns({
      *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -81,6 +85,7 @@ class Category implements NodeInterface
      * @var int|null
      *
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]

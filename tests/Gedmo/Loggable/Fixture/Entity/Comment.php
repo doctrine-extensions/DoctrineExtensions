@@ -19,6 +19,7 @@ use Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment as CommentLog;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Loggable(logEntryClass="Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment")
  */
 #[ORM\Entity]
@@ -27,6 +28,7 @@ class Comment implements Loggable
 {
     /**
      * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -38,6 +40,7 @@ class Comment implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
@@ -46,6 +49,7 @@ class Comment implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ORM\Column(type="text")
      */
     #[ORM\Column(type: Types::TEXT)]
@@ -54,6 +58,7 @@ class Comment implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ORM\ManyToOne(targetEntity="RelatedArticle", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: RelatedArticle::class, inversedBy: 'comments')]

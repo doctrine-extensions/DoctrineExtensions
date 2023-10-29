@@ -35,6 +35,7 @@ class Post
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -43,6 +44,7 @@ class Post
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="time")
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
@@ -51,6 +53,7 @@ class Post
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="date")
      */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -59,6 +62,7 @@ class Post
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="boolean")
      */
     #[ORM\Column(type: Types::BOOLEAN)]

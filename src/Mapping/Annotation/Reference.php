@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * to be user like "@ReferenceMany(type="entity", class="MyEntity", identifier="entity_id")"
  *
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
+ *
  * @Annotation
  */
 abstract class Reference implements GedmoAnnotation
@@ -25,12 +26,14 @@ abstract class Reference implements GedmoAnnotation
 
     /**
      * @var string|null
+     *
      * @phpstan-var 'entity'|'document'|null
      */
     public $type;
 
     /**
      * @var string|null
+     *
      * @phpstan-var class-string|null
      */
     public $class;

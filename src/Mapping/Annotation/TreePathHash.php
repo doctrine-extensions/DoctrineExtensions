@@ -16,6 +16,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * TreePath annotation for Tree behavioral extension
  *
  * @Annotation
+ *
  * @Target("PROPERTY")
  *
  * @author <rocco@roccosportal.com>

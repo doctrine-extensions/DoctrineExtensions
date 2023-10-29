@@ -26,6 +26,7 @@ class ChildEntity extends BaseEntity implements Translatable
 {
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="childTitle", type="string", length=128, nullable=true)
      */
     #[ORM\Column(name: 'childTitle', type: Types::STRING, length: 128, nullable: true)]

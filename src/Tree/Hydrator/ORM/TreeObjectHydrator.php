@@ -203,6 +203,7 @@ class TreeObjectHydrator extends ObjectHydrator
 
     /**
      * @param string $entityClass
+     *
      * @phpstan-param class-string $entityClass
      *
      * @return string
@@ -228,6 +229,7 @@ class TreeObjectHydrator extends ObjectHydrator
 
     /**
      * @param string $entityClass
+     *
      * @phpstan-param class-string $entityClass
      *
      * @return string

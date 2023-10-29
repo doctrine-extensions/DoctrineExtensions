@@ -18,6 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="articles")
+ *
  * @Gedmo\Loggable
  */
 #[ODM\Document(collection: 'articles')]
@@ -26,6 +27,7 @@ class Article implements Loggable
 {
     /**
      * @var string|null
+     *
      * @ODM\Id
      */
     #[ODM\Id]
@@ -33,6 +35,7 @@ class Article implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
@@ -41,6 +44,7 @@ class Article implements Loggable
 
     /**
      * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
+     *
      * @Gedmo\Versioned
      */
     #[ODM\EmbedOne(targetDocument: Author::class)]

@@ -378,8 +378,6 @@ class UploadableListener extends MappedEventSubscriber
      * @param bool        $appendNumber
      * @param object      $object
      *
-     * @return array<string, int|string|null>
-     *
      * @throws UploadableUploadException
      * @throws UploadableNoFileException
      * @throws UploadableExtensionException
@@ -389,6 +387,8 @@ class UploadableListener extends MappedEventSubscriber
      * @throws UploadablePartialException
      * @throws UploadableNoTmpDirException
      * @throws UploadableCantWriteException
+     *
+     * @return array<string, int|string|null>
      *
      * @phpstan-param class-string|false $filenameGeneratorClass
      */
@@ -560,8 +560,8 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function setDefaultFileInfoClass($defaultFileInfoClass)
     {
-        if (!is_string($defaultFileInfoClass) || !class_exists($defaultFileInfoClass) ||
-            !is_subclass_of($defaultFileInfoClass, FileInfoInterface::class)
+        if (!is_string($defaultFileInfoClass) || !class_exists($defaultFileInfoClass)
+            || !is_subclass_of($defaultFileInfoClass, FileInfoInterface::class)
         ) {
             throw new InvalidArgumentException(sprintf('Default FileInfo class must be a valid class, and it must implement "%s".', FileInfoInterface::class));
         }
@@ -644,9 +644,9 @@ class UploadableListener extends MappedEventSubscriber
      * @param array<string, mixed> $config
      * @param object               $object Entity
      *
-     * @return string
-     *
      * @throws UploadableNoPathDefinedException
+     *
+     * @return string
      */
     protected function getPath(ClassMetadata $meta, array $config, $object)
     {

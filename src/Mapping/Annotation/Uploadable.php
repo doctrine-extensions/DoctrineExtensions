@@ -18,7 +18,9 @@ use Gedmo\Uploadable\Mapping\Validator;
  * Uploadable annotation for Uploadable behavioral extension
  *
  * @Annotation
+ *
  * @NamedArgumentConstructor
+ *
  * @Target("CLASS")
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>

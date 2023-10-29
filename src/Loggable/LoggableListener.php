@@ -126,6 +126,7 @@ class LoggableListener extends MappedEventSubscriber
      * Maps additional metadata
      *
      * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void
@@ -209,9 +210,11 @@ class LoggableListener extends MappedEventSubscriber
      * Get the LogEntry class
      *
      * @param string $class
+     *
      * @phpstan-param class-string $class
      *
      * @return string
+     *
      * @phpstan-return class-string<LogEntryInterface<T>>
      */
     protected function getLogEntryClass(LoggableAdapter $ea, $class)

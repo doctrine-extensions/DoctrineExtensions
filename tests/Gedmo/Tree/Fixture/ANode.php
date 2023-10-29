@@ -37,6 +37,7 @@ class ANode
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -47,6 +48,7 @@ class ANode
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -55,6 +57,7 @@ class ANode
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="BaseNode", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */

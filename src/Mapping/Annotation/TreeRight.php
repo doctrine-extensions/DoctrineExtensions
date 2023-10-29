@@ -16,6 +16,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * TreeRight annotation for Tree behavioral extension
  *
  * @Annotation
+ *
  * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

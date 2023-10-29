@@ -31,6 +31,7 @@ class Tag
 
     /**
      * @ODM\Field(type="date")
+     *
      * @Gedmo\Timestampable(on="create")
      *
      * @var \DateTime
@@ -41,6 +42,7 @@ class Tag
 
     /**
      * @ODM\Field(type="date")
+     *
      * @Gedmo\Timestampable
      *
      * @var \DateTime

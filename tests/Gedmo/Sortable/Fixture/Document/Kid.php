@@ -25,6 +25,7 @@ class Kid
      * @var int|null
      *
      * @Gedmo\SortablePosition
+     *
      * @ODM\Field(type="int")
      */
     #[Gedmo\SortablePosition]
@@ -35,6 +36,7 @@ class Kid
      * @var \DateTime|null
      *
      * @Gedmo\SortableGroup
+     *
      * @ODM\Field(type="date")
      */
     #[Gedmo\SortableGroup]

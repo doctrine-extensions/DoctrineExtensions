@@ -27,7 +27,9 @@ class GeoLocation
 {
     /**
      * @var string
+     *
      * @ORM\Column(type="string")
+     *
      * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::STRING)]

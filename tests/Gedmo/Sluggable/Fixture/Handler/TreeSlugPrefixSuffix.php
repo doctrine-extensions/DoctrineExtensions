@@ -21,6 +21,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @Gedmo\Tree(type="nested")
+ *
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
@@ -56,6 +57,7 @@ class TreeSlugPrefixSuffix
      *         @Gedmo\SlugHandlerOption(name="suffix", value=".suffix")
      *     })
      * }, separator="-", updatable=true)
+     *
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'], separator: '-', updatable: true)]
@@ -65,6 +67,7 @@ class TreeSlugPrefixSuffix
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="TreeSlugPrefixSuffix")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -82,6 +85,7 @@ class TreeSlugPrefixSuffix
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -92,6 +96,7 @@ class TreeSlugPrefixSuffix
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -102,6 +107,7 @@ class TreeSlugPrefixSuffix
      * @var int|null
      *
      * @Gedmo\TreeRoot
+     *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
@@ -112,6 +118,7 @@ class TreeSlugPrefixSuffix
      * @var int|null
      *
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]

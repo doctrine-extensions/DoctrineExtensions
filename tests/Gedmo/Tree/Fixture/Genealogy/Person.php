@@ -24,6 +24,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({"man": "Man", "woman": "Woman"})
+ *
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
@@ -56,6 +57,7 @@ abstract class Person
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="children")
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
@@ -66,6 +68,7 @@ abstract class Person
      * @var int|null
      *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
@@ -76,6 +79,7 @@ abstract class Person
      * @var int|null
      *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
@@ -86,6 +90,7 @@ abstract class Person
      * @var int|null
      *
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]

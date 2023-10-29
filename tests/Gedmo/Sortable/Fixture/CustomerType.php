@@ -49,6 +49,7 @@ class CustomerType
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(name="position", type="integer")
      */
     #[Gedmo\SortablePosition]

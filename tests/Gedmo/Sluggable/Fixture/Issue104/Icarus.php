@@ -30,6 +30,7 @@ class Icarus extends Bus
      * @var string|null
      *
      * @Gedmo\Slug(fields={"title"})
+     *
      * @ORM\Column(length=128, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]

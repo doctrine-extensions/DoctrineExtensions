@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document
+ *
  * @Gedmo\Loggable
  */
 #[ODM\Document]
@@ -28,6 +29,7 @@ class RelatedArticle implements Loggable
 {
     /**
      * @var string|null
+     *
      * @ODM\Id
      */
     #[ODM\Id]
@@ -35,6 +37,7 @@ class RelatedArticle implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
@@ -43,6 +46,7 @@ class RelatedArticle implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
@@ -51,6 +55,7 @@ class RelatedArticle implements Loggable
 
     /**
      * @var Collection<int, Comment>
+     *
      * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Comment", mappedBy="article")
      */
     #[ODM\ReferenceMany(targetDocument: Comment::class, mappedBy: 'article')]

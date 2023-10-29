@@ -17,8 +17,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\Tree(type="nested")
+ *
  * @ORM\Table(name="ext_categories")
  * @ORM\Entity(repositoryClass="App\Entity\Repository\CategoryRepository")
+ *
  * @Gedmo\TranslationEntity(class="App\Entity\CategoryTranslation")
  */
 class Category
@@ -34,6 +36,7 @@ class Category
      * @var string|null
      *
      * @Gedmo\Translatable
+     *
      * @ORM\Column(length=64)
      */
     private $title;
@@ -42,6 +45,7 @@ class Category
      * @var string|null
      *
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
@@ -51,24 +55,28 @@ class Category
      *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"created", "title"})
+     *
      * @ORM\Column(length=64, unique=true)
      */
     private $slug;
 
     /**
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(type="integer")
      */
     private $lft;
 
     /**
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(type="integer")
      */
     private $rgt;
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -76,12 +84,14 @@ class Category
 
     /**
      * @Gedmo\TreeRoot
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $root;
 
     /**
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     private $level;
@@ -93,24 +103,28 @@ class Category
 
     /**
      * @Gedmo\Timestampable(on="create")
+     *
      * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
      * @Gedmo\Timestampable(on="update")
+     *
      * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
      * @Gedmo\Blameable(on="create")
+     *
      * @ORM\Column(type="string")
      */
     private $createdBy;
 
     /**
      * @Gedmo\Blameable(on="update")
+     *
      * @ORM\Column(type="string")
      */
     private $updatedBy;

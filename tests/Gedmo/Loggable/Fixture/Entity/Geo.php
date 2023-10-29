@@ -27,8 +27,11 @@ class Geo
 {
     /**
      * @var string|null
+     *
      * @phpstan-var numeric-string|null
+     *
      * @ORM\Column(type="decimal", precision=9, scale=6)
+     *
      * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
@@ -37,8 +40,11 @@ class Geo
 
     /**
      * @var string|null
+     *
      * @phpstan-var numeric-string|null
+     *
      * @ORM\Column(type="decimal", precision=9, scale=6)
+     *
      * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
@@ -47,7 +53,9 @@ class Geo
 
     /**
      * @var GeoLocation
+     *
      * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation")
+     *
      * @Gedmo\Versioned
      */
     #[ORM\Embedded(class: GeoLocation::class)]

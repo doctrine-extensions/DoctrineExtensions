@@ -18,6 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Loggable
  */
 #[ORM\Entity]
@@ -38,6 +39,7 @@ class Article implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ORM\Column(name="title", type="string", length=8)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]

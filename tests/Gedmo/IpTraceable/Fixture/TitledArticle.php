@@ -46,6 +46,7 @@ class TitledArticle implements IpTraceable
 
     /**
      * @ORM\Column(name="chtext", type="string", length=45, nullable=true)
+     *
      * @Gedmo\IpTraceable(on="change", field="text")
      */
     #[ORM\Column(name: 'chtext', type: Types::STRING, length: 45, nullable: true)]
@@ -54,6 +55,7 @@ class TitledArticle implements IpTraceable
 
     /**
      * @ORM\Column(name="chtitle", type="string", length=45, nullable=true)
+     *
      * @Gedmo\IpTraceable(on="change", field="title")
      */
     #[ORM\Column(name: 'chtitle', type: Types::STRING, length: 45, nullable: true)]

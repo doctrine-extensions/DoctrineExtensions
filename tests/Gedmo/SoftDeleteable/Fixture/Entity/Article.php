@@ -19,6 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 #[ORM\Entity]

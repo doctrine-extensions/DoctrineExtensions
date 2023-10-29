@@ -226,6 +226,7 @@ class SluggableListener extends MappedEventSubscriber
      * Mapps additional metadata
      *
      * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void

@@ -35,6 +35,7 @@ class Product
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="title", type="string", length=128)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]

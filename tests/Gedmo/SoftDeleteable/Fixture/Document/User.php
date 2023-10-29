@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="users")
+ *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 #[ODM\Document(collection: 'users')]

@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\Loggable
  */
 #[ORM\Entity]
@@ -28,6 +29,7 @@ class RelatedArticle implements Loggable
 {
     /**
      * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -39,6 +41,7 @@ class RelatedArticle implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
@@ -47,6 +50,7 @@ class RelatedArticle implements Loggable
 
     /**
      * @Gedmo\Versioned
+     *
      * @ORM\Column(type="text")
      */
     #[ORM\Column(Types::TEXT)]
@@ -55,6 +59,7 @@ class RelatedArticle implements Loggable
 
     /**
      * @var Collection<int, Comment>
+     *
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]

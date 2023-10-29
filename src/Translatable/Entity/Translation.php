@@ -23,6 +23,7 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
  *     name="ext_translations",
  *     options={"row_format": "DYNAMIC"},
  *     indexes={
+ *
  *         @Index(name="translations_lookup_idx", columns={
  *             "locale", "object_class", "foreign_key"
  *         }),
@@ -34,6 +35,7 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
  *         "locale", "object_class", "field", "foreign_key"
  *     })}
  * )
+ *
  * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
 #[Entity(repositoryClass: TranslationRepository::class)]

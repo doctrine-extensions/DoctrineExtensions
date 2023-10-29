@@ -43,6 +43,7 @@ class Reservation
      * Bus destination
      *
      * @Gedmo\SortableGroup
+     *
      * @ORM\Column(length=191)
      */
     #[Gedmo\SortableGroup]
@@ -51,6 +52,7 @@ class Reservation
 
     /**
      * @Gedmo\SortableGroup
+     *
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\SortableGroup]
@@ -59,6 +61,7 @@ class Reservation
 
     /**
      * @Gedmo\SortablePosition
+     *
      * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]

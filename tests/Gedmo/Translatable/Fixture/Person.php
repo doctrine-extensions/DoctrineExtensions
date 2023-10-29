@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\TranslationEntity(class="PersonTranslation")
  */
 #[ORM\Entity]
@@ -37,6 +38,7 @@ class Person
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(name="name", type="string", length=128)
      */
     #[Gedmo\Translatable]

@@ -23,6 +23,7 @@ class Article
 {
     /**
      * @var string|null
+     *
      * @ODM\Id
      */
     #[ODM\Id]
@@ -42,6 +43,7 @@ class Article
 
     /**
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable(on="create")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
@@ -50,6 +52,7 @@ class Article
 
     /**
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable
      */
     #[ODM\Field(type: MongoDBType::STRING)]
@@ -58,6 +61,7 @@ class Article
 
     /**
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
      */
     #[ODM\Field(type: MongoDBType::STRING)]
@@ -66,6 +70,7 @@ class Article
 
     /**
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable(on="change", field="isReady", value=true)
      */
     #[ODM\Field(type: MongoDBType::STRING)]

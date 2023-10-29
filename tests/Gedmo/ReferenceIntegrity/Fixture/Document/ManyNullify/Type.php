@@ -27,6 +27,7 @@ class Type
      * @var Collection<int, Article>
      *
      * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
+     *
      * @Gedmo\ReferenceIntegrity("nullify")
      */
     #[ODM\ReferenceMany(targetDocument: Article::class, mappedBy: 'type')]

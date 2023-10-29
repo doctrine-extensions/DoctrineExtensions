@@ -35,6 +35,7 @@ class MixedValue
 
     /**
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="datetime")
      */
     #[Gedmo\Translatable]
@@ -45,6 +46,7 @@ class MixedValue
      * @var mixed
      *
      * @Gedmo\Translatable
+     *
      * @ORM\Column(type="custom")
      */
     #[Gedmo\Translatable]

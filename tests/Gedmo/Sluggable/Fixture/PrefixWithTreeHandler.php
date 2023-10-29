@@ -20,6 +20,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ *
  * @Gedmo\Tree(type="nested")
  *
  * @author Dirk Luijk <dirk@luijkwebcreations.nl>
@@ -53,6 +54,7 @@ class PrefixWithTreeHandler implements Sluggable
      *         @Gedmo\SlugHandlerOption(name="separator", value="/")
      *     })
      * }, separator="-", updatable=true, fields={"title"}, prefix="test.")
+     *
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'], prefix: 'test.')]
@@ -62,6 +64,7 @@ class PrefixWithTreeHandler implements Sluggable
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="PrefixWithTreeHandler")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -72,6 +75,7 @@ class PrefixWithTreeHandler implements Sluggable
 
     /**
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
@@ -80,6 +84,7 @@ class PrefixWithTreeHandler implements Sluggable
 
     /**
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
@@ -88,6 +93,7 @@ class PrefixWithTreeHandler implements Sluggable
 
     /**
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
@@ -96,6 +102,7 @@ class PrefixWithTreeHandler implements Sluggable
 
     /**
      * @Gedmo\TreeRoot
+     *
      * @ORM\Column(name="root", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]

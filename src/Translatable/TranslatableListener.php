@@ -207,6 +207,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Maps additional metadata
      *
      * @param LoadClassMetadataEventArgs $eventArgs
+     *
      * @phpstan-param LoadClassMetadataEventArgs<ClassMetadata<object>, ObjectManager> $eventArgs
      *
      * @return void
@@ -221,9 +222,11 @@ class TranslatableListener extends MappedEventSubscriber
      * for the object $class
      *
      * @param string $class
+     *
      * @phpstan-param class-string $class
      *
      * @return string
+     *
      * @phpstan-return class-string
      */
     public function getTranslationClass(TranslatableAdapter $ea, $class)
@@ -353,7 +356,7 @@ class TranslatableListener extends MappedEventSubscriber
                 $locale = $value;
             }
         } elseif ($om instanceof DocumentManager) {
-            [ , $parentObject] = $om->getUnitOfWork()->getParentAssociation($object);
+            [, $parentObject] = $om->getUnitOfWork()->getParentAssociation($object);
             if (null !== $parentObject) {
                 $parentMeta = $om->getClassMetadata(get_class($parentObject));
                 $locale = $this->getTranslatableLocale($parentObject, $parentMeta, $om);

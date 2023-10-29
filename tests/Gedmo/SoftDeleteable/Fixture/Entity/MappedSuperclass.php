@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
+ *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 #[ORM\MappedSuperclass]
