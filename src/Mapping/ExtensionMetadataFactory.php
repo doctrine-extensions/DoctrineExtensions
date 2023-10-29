@@ -12,7 +12,8 @@ namespace Gedmo\Mapping;
 use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver as DoctrineBundleMappingDriver;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo as EntityClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata as EntityClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo as LegacyEntityClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -95,7 +96,7 @@ class ExtensionMetadataFactory
     /**
      * Reads extension metadata
      *
-     * @param ClassMetadata&(DocumentClassMetadata|EntityClassMetadata) $meta
+     * @param ClassMetadata&(DocumentClassMetadata|EntityClassMetadata|LegacyEntityClassMetadata) $meta
      *
      * @return array<string, mixed> the metatada configuration
      */
@@ -116,7 +117,7 @@ class ExtensionMetadataFactory
 
                     $class = $this->objectManager->getClassMetadata($parentClass);
 
-                    assert($class instanceof DocumentClassMetadata || $class instanceof EntityClassMetadata);
+                    assert($class instanceof DocumentClassMetadata || $class instanceof EntityClassMetadata || $class instanceof LegacyEntityClassMetadata);
 
                     $extendedMetadata = $this->driver->readExtendedMetadata($class, $config);
 
