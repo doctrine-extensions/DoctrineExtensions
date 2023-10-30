@@ -517,12 +517,12 @@ parameters:
 
 		-
 			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
 			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:getExtensionConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
@@ -532,7 +532,7 @@ parameters:
 
 		-
 			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
@@ -542,7 +542,7 @@ parameters:
 
 		-
 			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration type has no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
