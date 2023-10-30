@@ -534,7 +534,7 @@ class Closure implements Strategy
 
             foreach ($this->pendingNodesLevelProcess as $node) {
                 if (get_class($node) !== $className) {
-                    // Only process nodes of the same time as the first element
+                    // Only process nodes of the same type as the first element
                     continue;
                 }
                 $children = $em->getRepository($meta->getName())->children($node);
