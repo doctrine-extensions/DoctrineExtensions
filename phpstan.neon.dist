@@ -11,8 +11,6 @@ parameters:
     bootstrapFiles:
         - tests/bootstrap.php
     treatPhpDocTypesAsCertain: false
-    checkMissingVarTagTypehint: true
-    checkMissingTypehints: true
     ignoreErrors:
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.$#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.$#'
@@ -21,11 +19,3 @@ parameters:
         - '#^Method Gedmo\\Uploadable\\Mapping\\Validator::validateConfiguration\(\) with return type void returns array<string, mixed> but should not return anything\.$#'
         - '#^Result of static method Gedmo\\Uploadable\\Mapping\\Validator::validateConfiguration\(\) \(void\) is used\.$#'
         - '#^Result of method Gedmo\\Mapping\\Driver::readExtendedMetadata\(\) \(void\) is used\.$#'
-
-rules:
-    - PHPStan\Rules\Constants\MissingClassConstantTypehintRule
-    - PHPStan\Rules\Functions\MissingFunctionParameterTypehintRule
-    - PHPStan\Rules\Functions\MissingFunctionReturnTypehintRule
-    - PHPStan\Rules\Methods\MissingMethodParameterTypehintRule
-    - PHPStan\Rules\Methods\MissingMethodReturnTypehintRule
-    - PHPStan\Rules\Properties\MissingPropertyTypehintRule
