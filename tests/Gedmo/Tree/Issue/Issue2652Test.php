@@ -47,11 +47,22 @@ final class Issue2652Test extends BaseTestCaseORM
         $evm->addEventSubscriber($this->listener);
 
         $this->getDefaultMockSqliteEntityManager($evm);
-        $this->populate();
     }
 
     public function testAddMultipleEntityTypes(): void
     {
+        $food = new Category();
+        $food->setTitle('Food');
+        $this->em->persist($food);
+
+        $monkey = new Category2();
+        $monkey->setTitle('Monkey');
+        $this->em->persist($monkey);
+
+        // Before issue #2652 was fixed, null values would be inserted into the closure table at this next line and an exception would be thrown
+        $this->em->flush();
+
+        // Ensure that the closures were correctly inserted
         $repo = $this->em->getRepository(self::CATEGORY);
 
         $food = $repo->findOneBy(['title' => 'Food']);
@@ -82,18 +93,5 @@ final class Issue2652Test extends BaseTestCaseORM
             self::CATEGORY2,
             self::CLOSURE2,
         ];
-    }
-
-    private function populate(): void
-    {
-        $food = new Category();
-        $food->setTitle('Food');
-        $this->em->persist($food);
-
-        $monkey = new Category2();
-        $monkey->setTitle('Monkey');
-        $this->em->persist($monkey);
-
-        $this->em->flush();
     }
 }
