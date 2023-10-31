@@ -148,13 +148,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
         if (class_exists(Middleware::class)) {
-            $this->queryLogger
-                ->expects(static::exactly(2))
-                ->method('debug')
-                ->withConsecutive(
-                    ['Executing query: {sql}'],
-                    ['Executing query: {sql}']
-                );
+            $this->queryLogger->reset();
         } else {
             $this->startQueryLog();
         }
@@ -162,8 +156,11 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // simple object hydration
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+            $this->queryLogger->reset();
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
             $this->queryAnalyzer->cleanUp();
         }
@@ -175,9 +172,12 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+            $this->queryAnalyzer->cleanUp();
         }
 
         // Default translation is en_us, so we expect the results in that locale
@@ -197,13 +197,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
         if (class_exists(Middleware::class)) {
-            $this->queryLogger
-                ->expects(static::exactly(2))
-                ->method('debug')
-                ->withConsecutive(
-                    ['Executing query: {sql}'],
-                    ['Executing query: {sql}']
-                );
+            $this->queryLogger->reset();
         } else {
             $this->startQueryLog();
         }
@@ -211,8 +205,11 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $result = $q->getArrayResult();
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+            $this->queryLogger->reset();
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
             $this->queryAnalyzer->cleanUp();
         }
@@ -224,8 +221,10 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $result = $q->getArrayResult();
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         }
 
@@ -250,13 +249,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
         if (class_exists(Middleware::class)) {
-            $this->queryLogger
-                ->expects(static::exactly(2))
-                ->method('debug')
-                ->withConsecutive(
-                    ['Executing query: {sql}'],
-                    ['Executing query: {sql}']
-                );
+            $this->queryLogger->reset();
         } else {
             $this->startQueryLog();
         }
@@ -264,8 +257,11 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // simple object hydration
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+            $this->queryLogger->reset();
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
             $this->queryAnalyzer->cleanUp();
         }
@@ -277,8 +273,10 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         }
 
@@ -363,15 +361,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
         if (class_exists(Middleware::class)) {
-            $this->queryLogger
-                ->expects(static::exactly(4))
-                ->method('debug')
-                ->withConsecutive(
-                    ['Executing query: {sql}'],
-                    ['Executing query: {sql}'],
-                    ['Executing query: {sql}'],
-                    ['Executing query: {sql}']
-                );
+            $this->queryLogger->reset();
         } else {
             $this->startQueryLog();
         }
@@ -379,8 +369,11 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // object hydration
         $result = $q->getResult();
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+            $this->queryLogger->reset();
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
             $this->queryAnalyzer->cleanUp();
         }
@@ -391,8 +384,10 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $result = $q->getResult();
 
-        // TODO: Remove the "if" block when dropping support of doctrine/dbal 2.
-        if (!class_exists(Middleware::class)) {
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+        } else {
             static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         }
 

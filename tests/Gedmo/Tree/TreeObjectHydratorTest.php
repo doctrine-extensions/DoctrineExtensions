@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Category;
@@ -48,8 +49,13 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         $this->populate();
         $this->em->clear();
 
-        $stack = new DebugStack();
-        $this->em->getConfiguration()->setSQLLogger($stack);
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            $this->queryLogger->reset();
+        } else {
+            $stack = new DebugStack();
+            $this->em->getConfiguration()->setSQLLogger($stack);
+        }
 
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
@@ -90,7 +96,12 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(0, $citrons->getChildren());
 
         // Make sure only one query was executed
-        static::assertCount(1, $stack->queries);
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(1, $this->queryLogger->queries);
+        } else {
+            static::assertCount(1, $stack->queries);
+        }
     }
 
     public function testPartialTreeHydration(): void
@@ -98,8 +109,13 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         $this->populate();
         $this->em->clear();
 
-        $stack = new DebugStack();
-        $this->em->getConfiguration()->setSQLLogger($stack);
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            $this->queryLogger->reset();
+        } else {
+            $stack = new DebugStack();
+            $this->em->getConfiguration()->setSQLLogger($stack);
+        }
 
         /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -124,7 +140,12 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertSame('Citrons', $citrons->getTitle());
         static::assertCount(0, $citrons->getChildren());
 
-        static::assertCount(2, $stack->queries);
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(2, $this->queryLogger->queries);
+        } else {
+            static::assertCount(2, $stack->queries);
+        }
     }
 
     public function testMultipleRootNodesTreeHydration(): void
@@ -132,8 +153,13 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         $this->populate();
         $this->em->clear();
 
-        $stack = new DebugStack();
-        $this->em->getConfiguration()->setSQLLogger($stack);
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            $this->queryLogger->reset();
+        } else {
+            $stack = new DebugStack();
+            $this->em->getConfiguration()->setSQLLogger($stack);
+        }
 
         /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -170,7 +196,12 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertSame('Citrons', $citrons->getTitle());
         static::assertCount(0, $citrons->getChildren());
 
-        static::assertCount(2, $stack->queries);
+        // TODO: Remove the "if" check and "else" body when dropping support of doctrine/dbal 2.
+        if (class_exists(Middleware::class)) {
+            static::assertCount(2, $this->queryLogger->queries);
+        } else {
+            static::assertCount(2, $stack->queries);
+        }
     }
 
     protected function getUsedEntityFixtures(): array
