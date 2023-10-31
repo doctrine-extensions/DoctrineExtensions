@@ -28,9 +28,7 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * Base test case contains common mock objects
@@ -41,24 +39,15 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseTestCaseORM extends TestCase
 {
-    /**
-     * @var EntityManager|null
-     */
-    protected $em;
+    protected ?EntityManager $em = null;
 
-    /**
-     * @var QueryAnalyzer
-     */
-    protected $queryAnalyzer;
+    protected QueryAnalyzer $queryAnalyzer;
 
-    /**
-     * @var MockObject&LoggerInterface
-     */
-    protected $queryLogger;
+    protected QueryLogger $queryLogger;
 
     protected function setUp(): void
     {
-        $this->queryLogger = $this->createMock(LoggerInterface::class);
+        $this->queryLogger = new QueryLogger();
     }
 
     /**
