@@ -11,8 +11,17 @@ declare(strict_types=1);
 
 namespace Gedmo\SoftDeleteable\Event\ORM;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs as PersistenceLifecycleEventArgs;
 
-final class PreSoftDeleteEventArgs extends LifecycleEventArgs
-{
+if (!class_exists(LifecycleEventArgs::class)) {
+    /** @template-extends PersistenceLifecycleEventArgs<EntityManagerInterface> */
+    final class PreSoftDeleteEventArgs extends PersistenceLifecycleEventArgs
+    {
+    }
+} else {
+    final class PreSoftDeleteEventArgs extends LifecycleEventArgs
+    {
+    }
 }

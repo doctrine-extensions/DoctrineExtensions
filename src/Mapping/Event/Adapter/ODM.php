@@ -13,11 +13,8 @@ use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
-use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
-use Gedmo\SoftDeleteable\Event\ODM\PostSoftDeleteEventArgs;
-use Gedmo\SoftDeleteable\Event\ODM\PreSoftDeleteEventArgs;
 
 /**
  * Doctrine event adapter for ODM specific
@@ -155,36 +152,13 @@ class ODM implements AdapterInterface
     /**
      * Creates a ODM specific LifecycleEventArgs.
      *
-     * @param DocumentManager $manager
+     * @param object          $document
+     * @param DocumentManager $documentManager
      *
-     * @deprecated Use createPreSoftDeleteEventArgs() or createPostSoftDeleteEventArgs() instead
+     * @return LifecycleEventArgs
      */
-    public function createLifecycleEventArgsInstance(object $object, ObjectManager $manager): LifecycleEventArgs
+    public function createLifecycleEventArgsInstance($document, $documentManager)
     {
-        return new LifecycleEventArgs($object, $manager);
-    }
-
-    /**
-     * Creates a ODM specific PreSoftDeleteEventArgs.
-     *
-     * @param DocumentManager $manager
-     *
-     * @return PreSoftDeleteEventArgs
-     */
-    public function createPreSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
-    {
-        return new PreSoftDeleteEventArgs($object, $manager);
-    }
-
-    /**
-     * Creates a ODM specific PostSoftDeleteEventArgs.
-     *
-     * @param DocumentManager $manager
-     *
-     * @return PostSoftDeleteEventArgs
-     */
-    public function createPostSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
-    {
-        return new PostSoftDeleteEventArgs($object, $manager);
+        return new LifecycleEventArgs($document, $documentManager);
     }
 }

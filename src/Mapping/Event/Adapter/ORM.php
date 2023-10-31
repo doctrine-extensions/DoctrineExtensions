@@ -11,13 +11,10 @@ namespace Gedmo\Mapping\Event\Adapter;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
-use Gedmo\SoftDeleteable\Event\ORM\PostSoftDeleteEventArgs;
-use Gedmo\SoftDeleteable\Event\ORM\PreSoftDeleteEventArgs;
 
 /**
  * Doctrine event adapter for ORM specific
@@ -183,38 +180,15 @@ class ORM implements AdapterInterface
     }
 
     /**
-     * Creates a ORM specific LifecycleEventArgs.
+     * Creates an ORM specific LifecycleEventArgs.
      *
-     * @param EntityManagerInterface $manager
+     * @param object                 $object
+     * @param EntityManagerInterface $entityManager
      *
-     * @deprecated Use createPreSoftDeleteEventArgs() or createPostSoftDeleteEventArgs() instead
+     * @return LifecycleEventArgs
      */
-    public function createLifecycleEventArgsInstance(object $object, ObjectManager $manager): LifecycleEventArgs
+    public function createLifecycleEventArgsInstance($object, $entityManager)
     {
-        return new LifecycleEventArgs($object, $manager);
-    }
-
-    /**
-     * Creates a ORM specific PreSoftDeleteEventArgs.
-     *
-     * @param EntityManagerInterface $manager
-     *
-     * @return PreSoftDeleteEventArgs
-     */
-    public function createPreSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
-    {
-        return new PreSoftDeleteEventArgs($object, $manager);
-    }
-
-    /**
-     * Creates a ORM specific PostSoftDeleteEventArgs.
-     *
-     * @param EntityManagerInterface $manager
-     *
-     * @return PostSoftDeleteEventArgs
-     */
-    public function createPostSoftDeleteEventArgs(object $object, ObjectManager $manager): LifecycleEventArgs
-    {
-        return new PostSoftDeleteEventArgs($object, $manager);
+        return new LifecycleEventArgs($object, $entityManager);
     }
 }

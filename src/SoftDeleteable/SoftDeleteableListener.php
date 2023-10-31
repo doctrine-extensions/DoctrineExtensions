@@ -81,9 +81,14 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     continue; // want to hard delete
                 }
 
+                // @todo: in the next major remove check and call createPreSoftDeleteEventArgs
+                $preSoftDeleteEventArgs = method_exists($ea, 'createPreSoftDeleteEventArgs')
+                    ? $ea->createPreSoftDeleteEventArgs($object, $om)
+                    : $ea->createLifecycleEventArgsInstance($object, $om);
+
                 $evm->dispatchEvent(
                     self::PRE_SOFT_DELETE,
-                    $ea->createPreSoftDeleteEventArgs($object, $om)
+                    $preSoftDeleteEventArgs
                 );
 
                 $reflProp->setValue($object, $date);
@@ -98,9 +103,14 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     ]);
                 }
 
+                // @todo: in the next major remove check and call createPostSoftDeleteEventArgs
+                $postSoftDeleteEventArgs = method_exists($ea, 'createPostSoftDeleteEventArgs')
+                    ? $ea->createPostSoftDeleteEventArgs($object, $om)
+                    : $ea->createLifecycleEventArgsInstance($object, $om);
+
                 $evm->dispatchEvent(
                     self::POST_SOFT_DELETE,
-                    $ea->createPostSoftDeleteEventArgs($object, $om)
+                    $postSoftDeleteEventArgs
                 );
             }
         }
