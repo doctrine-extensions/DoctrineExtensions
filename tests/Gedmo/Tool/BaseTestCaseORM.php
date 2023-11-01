@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\Configuration;
@@ -40,8 +39,6 @@ use PHPUnit\Framework\TestCase;
 abstract class BaseTestCaseORM extends TestCase
 {
     protected ?EntityManager $em = null;
-
-    protected QueryAnalyzer $queryAnalyzer;
 
     protected QueryLogger $queryLogger;
 
@@ -76,22 +73,6 @@ abstract class BaseTestCaseORM extends TestCase
     }
 
     /**
-     * TODO: Remove this method when dropping support of doctrine/dbal 2.
-     *
-     * Starts query statistic log
-     *
-     * @throws \RuntimeException
-     */
-    protected function startQueryLog(): void
-    {
-        if (null === $this->em) {
-            throw new \RuntimeException('EntityManager must be initialized.');
-        }
-        $this->queryAnalyzer = new QueryAnalyzer($this->em->getConnection()->getDatabasePlatform());
-        $this->em->getConfiguration()->setSQLLogger($this->queryAnalyzer);
-    }
-
-    /**
      * Creates default mapping driver
      */
     protected function getMetadataDriverImplementation(): MappingDriver
@@ -118,13 +99,9 @@ abstract class BaseTestCaseORM extends TestCase
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Proxy');
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
-
-        // TODO: Remove the "if" check when dropping support of doctrine/dbal 2.
-        if (class_exists(Middleware::class)) {
-            $config->setMiddlewares([
-                new Middleware($this->queryLogger),
-            ]);
-        }
+        $config->setMiddlewares([
+            new Middleware($this->queryLogger),
+        ]);
 
         return $config;
     }
