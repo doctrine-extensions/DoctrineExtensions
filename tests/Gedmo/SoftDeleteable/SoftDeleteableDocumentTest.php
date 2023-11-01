@@ -13,6 +13,8 @@ namespace Gedmo\Tests\SoftDeleteable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\Common\EventSubscriber;
+use Gedmo\SoftDeleteable\Event\ODM\PostSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\ODM\PreSoftDeleteEventArgs;
 use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Document\User;
@@ -164,11 +166,11 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $subscriber->expects(static::once())
             ->method('preSoftDelete')
-            ->with(static::anything());
+            ->with(static::isInstanceOf(PreSoftDeleteEventArgs::class));
 
         $subscriber->expects(static::once())
             ->method('postSoftDelete')
-            ->with(static::anything());
+            ->with(static::isInstanceOf(PostSoftDeleteEventArgs::class));
 
         $this->dm->getEventManager()->addEventSubscriber($subscriber);
 

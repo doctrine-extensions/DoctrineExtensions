@@ -14,6 +14,8 @@ namespace Gedmo\Tests\SoftDeleteable;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Query;
+use Gedmo\SoftDeleteable\Event\ORM\PostSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\ORM\PreSoftDeleteEventArgs;
 use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -546,11 +548,11 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $subscriber->expects(static::exactly(2))
                    ->method('preSoftDelete')
-                   ->with(static::anything());
+                   ->with(static::isInstanceOf(PreSoftDeleteEventArgs::class));
 
         $subscriber->expects(static::exactly(2))
                    ->method('postSoftDelete')
-                   ->with(static::anything());
+                   ->with(static::isInstanceOf(PostSoftDeleteEventArgs::class));
 
         $this->em->getEventManager()->addEventSubscriber($subscriber);
 
