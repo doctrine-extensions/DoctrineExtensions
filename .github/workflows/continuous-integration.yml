@@ -11,7 +11,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.dbal-version && format(' - DBAL {0}', matrix.dbal-version) || '' }}"
+    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})"
     runs-on: "ubuntu-20.04"
 
     services:
@@ -29,17 +29,9 @@ jobs:
           - "8.2"
         deps:
           - "highest"
-        dbal-version:
-          - ""
         include:
           - deps: "lowest"
             php-version: "7.4"
-          - deps: "highest"
-            php-version: "8.2"
-            dbal-version: "^2.13.1"
-          - deps: "highest"
-            php-version: "8.2"
-            dbal-version: "^3.2"
           - deps: "highest"
             php-version: "8.1"
 
@@ -55,10 +47,6 @@ jobs:
           php-version: "${{ matrix.php-version }}"
           extensions: mongodb
           coverage: "pcov"
-
-      - name: "Restrict DBAL version"
-        if: "${{ matrix.dbal-version }}"
-        run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
 
       # Remove PHP-CS-Fixer to avoid conflicting dependency ranges (i.e. doctrine/annotations)
       - name: "Remove PHP-CS-Fixer"
