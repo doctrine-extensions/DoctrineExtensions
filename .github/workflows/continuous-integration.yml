@@ -70,7 +70,7 @@ jobs:
           dependency-versions: "${{ matrix.deps }}"
 
       - name: "Run PHPUnit"
-        run: "bin/phpunit -c tests --coverage-clover coverage.xml"
+        run: "vendor/bin/phpunit -c tests --coverage-clover coverage.xml"
 
       - name: "Upload coverage file"
         uses: "actions/upload-artifact@v3"

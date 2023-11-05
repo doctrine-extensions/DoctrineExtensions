@@ -31,4 +31,4 @@ jobs:
           composer-options: --prefer-dist --prefer-stable --no-interaction --no-progress
 
       - name: PHPStan
-        run: bin/phpstan --memory-limit=1G analyse --error-format=github
+        run: vendor/bin/phpstan --memory-limit=1G analyse --error-format=github
