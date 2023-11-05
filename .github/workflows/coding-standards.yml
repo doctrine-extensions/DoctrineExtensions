@@ -27,7 +27,7 @@ jobs:
           dependency-versions: "highest"
 
       - name: "Run PHP-CS-Fixer"
-        run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
+        run: "vendor/bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
 
   rector:
     name: "Rector"
@@ -51,7 +51,7 @@ jobs:
           composer-options: "--prefer-dist --prefer-stable"
 
       - name: Rector
-        run: "bin/rector --no-progress-bar --dry-run"
+        run: "vendor/bin/rector --no-progress-bar --dry-run"
 
   composer:
     name: Composer
