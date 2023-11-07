@@ -516,7 +516,7 @@ class Closure implements Strategy
     protected function setLevelFieldOnPendingNodes(ObjectManager $em)
     {
         while (!empty($this->pendingNodesLevelProcess)) {
-            // Nodes need to be processed one class at a time. Each iteration through the while loop will process one type, starting with the first item on the list. 
+            // Nodes need to be processed one class at a time. Each iteration through the while loop will process one type, starting with the first item on the list.
             $first = array_slice($this->pendingNodesLevelProcess, 0, 1);
             $first = array_shift($first);
 

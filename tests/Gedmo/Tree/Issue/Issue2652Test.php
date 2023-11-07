@@ -32,10 +32,7 @@ final class Issue2652Test extends BaseTestCaseORM
     private const CATEGORY2 = Category2::class;
     private const CLOSURE2 = Category2Closure::class;
 
-    /**
-     * @var TreeListener
-     */
-    private $listener;
+    private TreeListener $listener;
 
     protected function setUp(): void
     {
