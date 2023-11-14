@@ -156,9 +156,16 @@ class ODM implements AdapterInterface
      * @param DocumentManager $documentManager
      *
      * @return LifecycleEventArgs
+     *
+     * @deprecated to be removed in 4.0, use custom lifecycle event classes instead
      */
     public function createLifecycleEventArgsInstance($document, $documentManager)
     {
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.14 and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
         return new LifecycleEventArgs($document, $documentManager);
     }
 }

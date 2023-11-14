@@ -186,9 +186,20 @@ class ORM implements AdapterInterface
      * @param EntityManagerInterface $entityManager
      *
      * @return LifecycleEventArgs
+     *
+     * @deprecated Use custom lifecycle event classes instead
      */
     public function createLifecycleEventArgsInstance($document, $entityManager)
     {
+        @trigger_error(sprintf(
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.14 and will be removed in version 4.0.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
+        if (!class_exists(LifecycleEventArgs::class)) {
+            throw new \RuntimeException(sprintf('Cannot call %s() when using doctrine/orm >=3.0, use a custom lifecycle event class instead.', __METHOD__));
+        }
+
         return new LifecycleEventArgs($document, $entityManager);
     }
 }

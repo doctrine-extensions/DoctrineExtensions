@@ -25,10 +25,14 @@ a release.
 - Dropped support for PHP < 7.4
 - Dropped support for Symfony < 5.4
 - Dropped support for doctrine/dbal < 3.2
+- ⚠️ [B/C Break] The `Gedmo\SoftDeleteable\SoftDeletableListener` dispatches events using the new `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs`
+  and `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes, which directly extend from `Doctrine\Persistence\Event\LifecycleEventArgs`; previously,
+  each object manager's own lifecycle event args class was used.
 
 ### Deprecated
 - Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
-- Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead. 
+- Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead.
+- The `createLifecycleEventArgsInstance()` method on `Gedmo\Mapping\Event\AdapterInterface` implementations is deprecated, use your own subclass of `Doctrine\Persistence\Event\LifecycleEventArgs` as needed.
 
 ## [3.13.0] - 2023-09-06
 ### Fixed

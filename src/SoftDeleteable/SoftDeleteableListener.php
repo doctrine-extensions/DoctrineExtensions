@@ -17,6 +17,8 @@ use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs;
 
 /**
  * SoftDeleteable listener
@@ -83,7 +85,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::PRE_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
+                    new PreSoftDeleteEventArgs($object, $om)
                 );
 
                 $reflProp->setValue($object, $date);
@@ -100,7 +102,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $evm->dispatchEvent(
                     self::POST_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
+                    new PostSoftDeleteEventArgs($object, $om)
                 );
             }
         }
