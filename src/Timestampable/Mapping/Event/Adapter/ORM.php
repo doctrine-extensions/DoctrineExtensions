@@ -12,6 +12,7 @@ namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Mapping\Event\ClockAwareAdapterInterface;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
@@ -50,14 +51,14 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
     /**
      * Generates current timestamp for the specified mapping
      *
-     * @param array<string, mixed> $mapping
+     * @param array<string, mixed>|FieldMapping $mapping
      *
      * @return \DateTimeInterface|int
      */
-    private function getRawDateValue(array $mapping)
+    private function getRawDateValue($mapping)
     {
         $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
-        $type = $mapping['type'] ?? null;
+        $type = $mapping instanceof FieldMapping ? $mapping->type : ($mapping['type'] ?? '');
 
         if ('integer' === $type) {
             return (int) $datetime->format('U');

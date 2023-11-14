@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Uploadable\Mapping;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\UploadableInvalidPathException;
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorSha1;
@@ -51,7 +52,13 @@ final class ValidatorTest extends TestCase
         $this->expectException(InvalidMappingException::class);
         $this->meta->expects(static::once())
             ->method('getFieldMapping')
-            ->willReturn(['type' => 'someType']);
+            ->willReturnCallback(static function (string $fieldName) {
+                if (class_exists(FieldMapping::class)) {
+                    return FieldMapping::fromMappingArray(['type' => 'someType', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
+                }
+
+                return ['type' => 'someType'];
+            });
 
         Validator::validateField(
             $this->meta,
@@ -122,7 +129,13 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturn(['type' => 'someType']);
+            ->willReturnCallback(static function (string $fieldName) {
+                if (class_exists(FieldMapping::class)) {
+                    return FieldMapping::fromMappingArray(['type' => 'someType', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
+                }
+
+                return ['type' => 'someType'];
+            });
 
         $config = [
             'fileMimeTypeField' => '',
@@ -151,7 +164,13 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturn(['type' => 'someType']);
+            ->willReturnCallback(static function (string $fieldName) {
+                if (class_exists(FieldMapping::class)) {
+                    return FieldMapping::fromMappingArray(['type' => 'someType', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
+                }
+
+                return ['type' => 'someType'];
+            });
 
         $config = [
             'fileMimeTypeField' => '',
@@ -179,7 +198,13 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturn(['type' => 'string']);
+            ->willReturnCallback(static function (string $fieldName) {
+                if (class_exists(FieldMapping::class)) {
+                    return FieldMapping::fromMappingArray(['type' => 'string', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
+                }
+
+                return ['type' => 'string'];
+            });
 
         $config = [
             'fileMimeTypeField' => '',
@@ -207,7 +232,13 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturn(['type' => 'string']);
+            ->willReturnCallback(static function (string $fieldName) {
+                if (class_exists(FieldMapping::class)) {
+                    return FieldMapping::fromMappingArray(['type' => 'string', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
+                }
+
+                return ['type' => 'string'];
+            });
 
         $config = [
             'fileMimeTypeField' => '',
