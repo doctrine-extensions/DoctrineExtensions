@@ -27,6 +27,7 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
         deps:
           - "highest"
         dbal-version:
@@ -35,10 +36,10 @@ jobs:
           - deps: "lowest"
             php-version: "7.4"
           - deps: "highest"
-            php-version: "8.2"
+            php-version: "8.3"
             dbal-version: "^2.13.1"
           - deps: "highest"
-            php-version: "8.2"
+            php-version: "8.3"
             dbal-version: "^3.2"
           - deps: "highest"
             php-version: "8.1"
