@@ -36,10 +36,10 @@ class Article
     private ?string $title = null;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Type")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Blameable\Fixture\Document\Type")
      */
     #[Odm\ReferenceOne(targetDocument: Type::class)]
-    private ?\Gedmo\Tests\Blameable\Fixture\Document\Type $type = null;
+    private ?Type $type = null;
 
     /**
      * @ODM\Field(type="string")
@@ -60,7 +60,7 @@ class Article
     private ?string $updated = null;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="User")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Blameable\Fixture\Document\User")
      *
      * @Gedmo\Blameable(on="create")
      */

@@ -54,10 +54,10 @@ class TreeSlug
     private $alias;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="TreeSlug")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sluggable\Fixture\Document\Handler\TreeSlug")
      */
     #[ODM\ReferenceOne(targetDocument: self::class)]
-    private ?\Gedmo\Tests\Sluggable\Fixture\Document\Handler\TreeSlug $parent = null;
+    private ?TreeSlug $parent = null;
 
     public function setParent(?self $parent = null): void
     {
