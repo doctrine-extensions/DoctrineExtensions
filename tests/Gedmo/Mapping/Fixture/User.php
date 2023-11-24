@@ -40,6 +40,7 @@ class User
      *
      * @ORM\Column(length=64)
      */
+    #[Ext\Encode(type: 'sha1', secret: 'xxx')]
     #[ORM\Column(length: 64)]
     private ?string $name = null;
 
@@ -48,6 +49,7 @@ class User
      *
      * @ORM\Column(length=32)
      */
+    #[Ext\Encode(type: 'md5')]
     #[ORM\Column(length: 32)]
     private ?string $password = null;
 
