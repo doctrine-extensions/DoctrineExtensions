@@ -38,6 +38,7 @@ class MappedSuperClass
      *
      * @Ext\Encode(type="md5")
      */
+    #[Ext\Encode(type: 'md5')]
     #[ORM\Column(length: 32)]
     private ?string $content = null;
 

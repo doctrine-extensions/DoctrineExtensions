@@ -34,6 +34,7 @@ class User
      *
      * @ODM\Field(type="string")
      */
+    #[Ext\Encode(type: 'sha1', secret: 'xxx')]
     #[ODM\Field(type: Type::STRING)]
     private ?string $name = null;
 
@@ -42,6 +43,7 @@ class User
      *
      * @ODM\Field(type="string")
      */
+    #[Ext\Encode(type: 'md5')]
     #[ODM\Field(type: Type::STRING)]
     private ?string $password = null;
 
