@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 
 /**
  * @ODM\Document(collection="test_users")
  */
+#[ODM\Document(collection: 'test_users')]
 class User
 {
     /**
@@ -24,6 +26,7 @@ class User
      *
      * @ODM\Id
      */
+    #[ODM\Id]
     private $id;
 
     /**
@@ -31,6 +34,7 @@ class User
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private ?string $name = null;
 
     /**
@@ -38,6 +42,7 @@ class User
      *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     private ?string $password = null;
 
     public function setName(?string $name): void
