@@ -98,7 +98,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
 
         $this->queryLogger->reset();
 
-        /** @var NestedTreeRepository $repo */
+        /** @var NestedTreeRepository<RootCategory> $repo */
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
@@ -131,7 +131,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
 
         $this->queryLogger->reset();
 
-        /** @var NestedTreeRepository $repo */
+        /** @var NestedTreeRepository<RootCategory> $repo */
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
         $food = $repo->findOneBy(['title' => 'Food']);

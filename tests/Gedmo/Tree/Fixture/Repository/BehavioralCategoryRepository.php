@@ -11,8 +11,12 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Tree\Fixture\Repository;
 
+use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
+/**
+ * @template-extends NestedTreeRepository<BehavioralCategory>
+ */
 final class BehavioralCategoryRepository extends NestedTreeRepository
 {
 }

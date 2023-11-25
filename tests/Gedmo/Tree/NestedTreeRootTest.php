@@ -16,7 +16,6 @@ use Doctrine\ORM\OptimisticLockException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\ForeignRootCategory;
 use Gedmo\Tests\Tree\Fixture\RootCategory;
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -332,7 +331,6 @@ final class NestedTreeRootTest extends BaseTestCaseORM
     public function testTreeWithRootPointingAtAnotherTable(): void
     {
         // depopulate, i don't want the other stuff in db
-        /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(ForeignRootCategory::class);
         $all = $repo->findAll();
         foreach ($all as $one) {

@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Tree: Added `@template` and `@template-extends` annotations to the Tree repositories
+
 ### Changed
 - Dropped support for PHP < 7.4
 - Dropped support for Symfony < 5.4
