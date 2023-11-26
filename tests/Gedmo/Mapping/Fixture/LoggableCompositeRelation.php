@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tests\Mapping\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -17,6 +18,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @Gedmo\Loggable
  */
+#[ORM\Entity]
+#[Gedmo\Loggable]
 class LoggableCompositeRelation
 {
     /**
@@ -25,6 +28,8 @@ class LoggableCompositeRelation
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Loggable")
      */
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: Loggable::class)]
     private $one;
 
     /**
@@ -33,6 +38,8 @@ class LoggableCompositeRelation
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
     private $two;
 
     /**
@@ -40,6 +47,8 @@ class LoggableCompositeRelation
      *
      * @Gedmo\Versioned
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    #[Gedmo\Versioned]
     private ?string $title = null;
 
     public function getOne(): Loggable

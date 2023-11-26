@@ -11,14 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 use Gedmo\Sluggable\Handler\TreeSlugHandler;
@@ -43,35 +37,21 @@ final class SluggableMappingTest extends ORMMappingTestCase
         parent::setUp();
 
         $config = $this->getBasicConfiguration();
+        $config->setMetadataDriverImpl($this->createChainedMappingDriver());
 
-        $chain = new MappingDriverChain();
-
-        // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
-        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
-
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
-            $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
-        } else {
-            $chain->addDriver(new AnnotationDriver(new AnnotationReader()), 'Gedmo\Tests\Mapping\Fixture');
-        }
-
-        $config->setMetadataDriverImpl($chain);
-
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
-
-        $evm = new EventManager();
         $listener = new SluggableListener();
         $listener->setCacheItemPool($this->cache);
-        $evm->addEventSubscriber($listener);
-        $connection = DriverManager::getConnection($conn, $config);
-        $this->em = new EntityManager($connection, $config, $evm);
+
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
     public function testShouldBeAbleToMapSluggableUsingYamlDriver(): void
     {
+        if (!class_exists(YamlDriver::class)) {
+            static::markTestSkipped('Test requires deprecated ORM YAML mapping.');
+        }
+
         // Force metadata class loading.
         $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
