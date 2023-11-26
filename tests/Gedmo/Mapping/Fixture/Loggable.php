@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tests\Mapping\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -17,6 +18,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @Gedmo\Loggable
  */
+#[ORM\Entity]
+#[Gedmo\Loggable]
 class Loggable
 {
     /**
@@ -26,6 +29,9 @@ class Loggable
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
@@ -33,6 +39,8 @@ class Loggable
      *
      * @Gedmo\Versioned
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    #[Gedmo\Versioned]
     private ?string $title = null;
 
     public function getId(): int
