@@ -56,6 +56,9 @@ jobs:
           extensions: mongodb
           coverage: "pcov"
 
+      - name: "Temp: test Symfony 7 RC"
+        run: "composer config minimum-stability RC"
+
       - name: "Restrict DBAL version"
         if: "${{ matrix.dbal-version }}"
         run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
