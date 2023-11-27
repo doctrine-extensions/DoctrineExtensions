@@ -61,7 +61,7 @@ jobs:
           dependency-versions: "${{ matrix.deps }}"
 
       - name: "Temp: test"
-        run: "composer why-not nesbot/carbon 3"
+        run: "composer why-not nesbot/carbon v3"
 
       - name: "Run PHPUnit"
         run: "vendor/bin/phpunit -c tests --coverage-clover coverage.xml"
