@@ -48,9 +48,6 @@ jobs:
           extensions: mongodb
           coverage: "pcov"
 
-      - name: "Temp: test Symfony 7 RC"
-        run: "composer config minimum-stability RC"
-
       # Remove PHP-CS-Fixer to avoid conflicting dependency ranges (i.e. doctrine/annotations)
       - name: "Remove PHP-CS-Fixer"
         run: "composer remove --dev --no-update friendsofphp/php-cs-fixer"
