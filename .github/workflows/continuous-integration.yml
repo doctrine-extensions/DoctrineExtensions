@@ -55,13 +55,13 @@ jobs:
       - name: "Remove PHP-CS-Fixer"
         run: "composer remove --dev --no-update friendsofphp/php-cs-fixer"
 
-      - name: "Temp: test"
-        run: "composer why-not symfony/translation v7.0.0-RC2"
-
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
         with:
           dependency-versions: "${{ matrix.deps }}"
+
+      - name: "Temp: test"
+        run: "composer why-not symfony/translation v7.0.0-RC2"
 
       - name: "Run PHPUnit"
         run: "vendor/bin/phpunit -c tests --coverage-clover coverage.xml"
