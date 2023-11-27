@@ -58,7 +58,7 @@
         "doctrine/mongodb-odm": "^2.3",
         "doctrine/orm": "^2.14.0",
         "friendsofphp/php-cs-fixer": "^3.14.0",
-        "nesbot/carbon": "^2.55",
+        "nesbot/carbon": "^2.71 || ^3.0",
         "phpstan/phpstan": "^1.10.2",
         "phpstan/phpstan-doctrine": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
