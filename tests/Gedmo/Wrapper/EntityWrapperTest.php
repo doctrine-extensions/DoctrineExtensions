@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Wrapper;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Wrapper\Fixture\Entity\Article;
 use Gedmo\Tests\Wrapper\Fixture\Entity\Composite;

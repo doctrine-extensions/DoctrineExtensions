@@ -12,7 +12,6 @@ namespace Gedmo\Tool\Wrapper;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Persistence\Proxy as PersistenceProxy;
 
 /**

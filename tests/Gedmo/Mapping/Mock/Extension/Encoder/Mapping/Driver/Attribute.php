@@ -9,14 +9,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace App\Entity\Repository;
+namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
-use App\Entity\Category;
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Gedmo\Mapping\Driver\AttributeDriverInterface;
 
-/**
- * @template-extends NestedTreeRepository<Category>
- */
-final class CategoryRepository extends NestedTreeRepository
+class Attribute extends Annotation implements AttributeDriverInterface
 {
 }
