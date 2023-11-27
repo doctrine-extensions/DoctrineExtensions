@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
@@ -31,4 +31,4 @@ jobs:
           composer-options: --prefer-dist --prefer-stable --no-interaction --no-progress
 
       - name: PHPStan
-        run: bin/phpstan --memory-limit=1G analyse --error-format=github
+        run: vendor/bin/phpstan --memory-limit=1G analyse --error-format=github

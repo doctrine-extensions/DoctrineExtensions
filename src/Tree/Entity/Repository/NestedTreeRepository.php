@@ -10,9 +10,9 @@
 namespace Gedmo\Tree\Entity\Repository;
 
 use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
@@ -27,6 +27,10 @@ use Gedmo\Tree\Strategy\ORM\Nested;
  * the strategy used by listener
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @template T of object
+ *
+ * @template-extends AbstractTreeRepository<T>
  *
  * @method persistAsFirstChild($node)
  * @method persistAsFirstChildOf($node, $parent)

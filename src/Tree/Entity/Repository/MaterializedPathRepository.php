@@ -21,6 +21,10 @@ use Gedmo\Tree\Strategy;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @template T of object
+ *
+ * @template-extends AbstractTreeRepository<T>
  */
 class MaterializedPathRepository extends AbstractTreeRepository
 {

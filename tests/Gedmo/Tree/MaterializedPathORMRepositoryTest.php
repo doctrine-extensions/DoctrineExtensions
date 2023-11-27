@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\MPCategory;
@@ -30,8 +31,8 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     private const CATEGORY = MPCategory::class;
     private const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
 
-    /** @var MaterializedPathRepository */
-    protected $repo;
+    /** @var MaterializedPathRepository<MPCategory> */
+    private MaterializedPathRepository $repo;
 
     private TreeListener $listener;
 
@@ -147,11 +148,11 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     {
         $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
 
-        $this->repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
-        $root = $this->repo->findOneBy(['title' => 'Food']);
+        $repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
+        $root = $repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, NOT including it
-        $result = $this->repo->getChildren($root, false, 'title');
+        $result = $repo->getChildren($root, false, 'title');
 
         static::assertCount(4, $result);
         static::assertSame('Carrots', $result[0]->getTitle());
@@ -160,7 +161,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Vegitables', $result[3]->getTitle());
 
         // Get all children from the root, including it
-        $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
+        $result = $repo->getChildren($root, false, 'title', 'asc', true);
 
         static::assertCount(5, $result);
         static::assertSame('Carrots', $result[0]->getTitle());
@@ -170,13 +171,13 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Vegitables', $result[4]->getTitle());
 
         // Get direct children from the root, NOT including it
-        $result = $this->repo->getChildren($root, true, 'title', 'asc');
+        $result = $repo->getChildren($root, true, 'title', 'asc');
         static::assertCount(2, $result);
         static::assertSame('Fruits', $result[0]->getTitle());
         static::assertSame('Vegitables', $result[1]->getTitle());
 
         // Get direct children from the root, including it
-        $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
+        $result = $repo->getChildren($root, true, 'title', 'asc', true);
 
         static::assertCount(3, $result);
         static::assertSame('Food', $result[0]->getTitle());
@@ -184,7 +185,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Vegitables', $result[2]->getTitle());
 
         // Get ALL nodes
-        $result = $this->repo->getChildren(null, false, 'title');
+        $result = $repo->getChildren(null, false, 'title');
 
         static::assertCount(9, $result);
         static::assertSame('Best Whisky', $result[0]->getTitle());
@@ -198,7 +199,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertSame('Whisky', $result[8]->getTitle());
 
         // Get ALL root nodes
-        $result = $this->repo->getChildren(null, true, 'title');
+        $result = $repo->getChildren(null, true, 'title');
 
         static::assertCount(3, $result);
         static::assertSame('Drinks', $result[0]->getTitle());
@@ -334,6 +335,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $newNode = $this->createCategory();
         $parent = $node->getParent();
 
+        static::assertInstanceOf(Proxy::class, $parent);
         static::assertFalse($parent->__isInitialized());
 
         $newNode->setTitle('New Node');

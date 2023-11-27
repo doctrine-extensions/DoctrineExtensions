@@ -255,7 +255,6 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
      */
     public function testGetPathAsStringWithInvalidStringMethod($stringMethod): void
     {
-        /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
 
@@ -278,7 +277,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     public function testShouldHandleBasicRepositoryMethods(): void
     {
-        /** @var NestedTreeRepository $repo */
+        /** @var NestedTreeRepository<RootCategory> $repo */
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
 
@@ -330,7 +329,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     public function testShouldHandleAdvancedRepositoryFunctions(): void
     {
         $this->populateMore();
-        /** @var NestedTreeRepository $repo */
+        /** @var NestedTreeRepository<RootCategory> $repo */
         $repo = $this->em->getRepository(self::CATEGORY);
 
         // verification

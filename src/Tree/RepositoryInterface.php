@@ -16,6 +16,8 @@ use Gedmo\Exception\InvalidArgumentException;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @template T of object
  */
 interface RepositoryInterface extends RepositoryUtilsInterface
 {
@@ -26,6 +28,8 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param string $direction
      *
      * @return iterable<int|string, object>
+     *
+     * @phpstan-return iterable<int|string, T>
      */
     public function getRootNodes($sortByField = null, $direction = 'asc');
 
@@ -38,6 +42,10 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
      * @return array<int|string, object>
+     *
+     * @phpstan-param T $node
+     *
+     * @phpstan-return iterable<int|string, T>
      */
     public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false);
 
@@ -53,6 +61,9 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @return iterable<int|string, object> List of children
      *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     * @phpstan-param T|null $node
+     *
+     * @phpstan-return iterable<int|string, T>
      */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 

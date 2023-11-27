@@ -17,7 +17,8 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo as EntityClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata as EntityClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo as LegacyEntityClassMetadata;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -229,7 +230,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function loadMetadataForObjectClass(ObjectManager $objectManager, $metadata)
     {
-        assert($metadata instanceof DocumentClassMetadata || $metadata instanceof EntityClassMetadata);
+        assert($metadata instanceof DocumentClassMetadata || $metadata instanceof EntityClassMetadata || $metadata instanceof LegacyEntityClassMetadata);
 
         $factory = $this->getExtensionMetadataFactory($objectManager);
 

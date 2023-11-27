@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\Configuration;
@@ -28,9 +27,7 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * Base test case contains common mock objects
@@ -41,24 +38,13 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseTestCaseORM extends TestCase
 {
-    /**
-     * @var EntityManager|null
-     */
-    protected $em;
+    protected ?EntityManager $em = null;
 
-    /**
-     * @var QueryAnalyzer
-     */
-    protected $queryAnalyzer;
-
-    /**
-     * @var MockObject&LoggerInterface
-     */
-    protected $queryLogger;
+    protected QueryLogger $queryLogger;
 
     protected function setUp(): void
     {
-        $this->queryLogger = $this->createMock(LoggerInterface::class);
+        $this->queryLogger = new QueryLogger();
     }
 
     /**
@@ -84,22 +70,6 @@ abstract class BaseTestCaseORM extends TestCase
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;
-    }
-
-    /**
-     * TODO: Remove this method when dropping support of doctrine/dbal 2.
-     *
-     * Starts query statistic log
-     *
-     * @throws \RuntimeException
-     */
-    protected function startQueryLog(): void
-    {
-        if (null === $this->em) {
-            throw new \RuntimeException('EntityManager must be initialized.');
-        }
-        $this->queryAnalyzer = new QueryAnalyzer($this->em->getConnection()->getDatabasePlatform());
-        $this->em->getConfiguration()->setSQLLogger($this->queryAnalyzer);
     }
 
     /**
@@ -129,13 +99,9 @@ abstract class BaseTestCaseORM extends TestCase
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Proxy');
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
-
-        // TODO: Remove the "if" check when dropping support of doctrine/dbal 2.
-        if (class_exists(Middleware::class)) {
-            $config->setMiddlewares([
-                new Middleware($this->queryLogger),
-            ]);
-        }
+        $config->setMiddlewares([
+            new Middleware($this->queryLogger),
+        ]);
 
         return $config;
     }

@@ -17,9 +17,11 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Blameable\BlameableListener;
 use Gedmo\DoctrineExtensions;
+use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
@@ -65,12 +67,23 @@ $loader->addPsr4('App\\', __DIR__.'/app');
 // For larger applications, you may use multiple cache pools to store cacheable data in different locations.
 $cache = new ArrayAdapter();
 
-// Build the annotation reader for the application,
-// by default we will use a decorated reader supporting a backend cache.
-$annotationReader = new PsrCachedReader(
-    new AnnotationReader(),
-    $cache
-);
+$annotationReader = null;
+$extensionReader = null;
+
+// For PHP 8, we will provide the extensions an attribute reader, while PHP 7 will require the annotation reader
+// (which will only be created when `doctrine/annotations` is installed)
+if (PHP_VERSION_ID >= 80000) {
+    $extensionReader = new AttributeReader();
+}
+
+// Build the annotation reader for the application when the `doctrine/annotations` package is installed.
+// By default, we will use a decorated reader supporting a backend cache.
+if (class_exists(AnnotationReader::class)) {
+    $extensionReader = $annotationReader = new PsrCachedReader(
+        new AnnotationReader(),
+        $cache
+    );
+}
 
 // Create the mapping driver chain that will be used to read metadata from our various sources.
 $mappingDriver = new MappingDriverChain();
@@ -83,46 +96,55 @@ DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
 );
 
 // Register the application entities to our driver chain.
-// Our application uses Annotations for mapping, but you can also use XML.
-$mappingDriver->addDriver(
-    new AnnotationDriver(
-        $annotationReader,
-        [__DIR__.'/app/Entity']
-    ),
-    'App\Entity'
-);
+// Our application uses Annotations or Attributes for mapping, but you can also use XML.
+if (PHP_VERSION_ID >= 80000) {
+    $mappingDriver->addDriver(
+        new AttributeDriver(
+            [__DIR__.'/app/Entity']
+        ),
+        'App\Entity'
+    );
+} else {
+    $mappingDriver->addDriver(
+        new AnnotationDriver(
+            $annotationReader,
+            [__DIR__.'/app/Entity']
+        ),
+        'App\Entity'
+    );
+}
 
 // Next, we will create the event manager and register the listeners for the extensions we will be using.
 $eventManager = new EventManager();
 
 // Sluggable extension
 $sluggableListener = new SluggableListener();
-$sluggableListener->setAnnotationReader($annotationReader);
+$sluggableListener->setAnnotationReader($extensionReader);
 $sluggableListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($sluggableListener);
 
 // Tree extension
 $treeListener = new TreeListener();
-$treeListener->setAnnotationReader($annotationReader);
+$treeListener->setAnnotationReader($extensionReader);
 $treeListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($treeListener);
 
 // Loggable extension, not used in example
 // $loggableListener = new Gedmo\Loggable\LoggableListener;
-// $loggableListener->setAnnotationReader($annotationReader);
+// $loggableListener->setAnnotationReader($extensionReader);
 // $loggableListener->setCacheItemPool($cache);
 // $loggableListener->setUsername('admin');
 // $eventManager->addEventSubscriber($loggableListener);
 
 // Timestampable extension
 $timestampableListener = new TimestampableListener();
-$timestampableListener->setAnnotationReader($annotationReader);
+$timestampableListener->setAnnotationReader($extensionReader);
 $timestampableListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($timestampableListener);
 
 // Blameable extension
 $blameableListener = new BlameableListener();
-$blameableListener->setAnnotationReader($annotationReader);
+$blameableListener->setAnnotationReader($extensionReader);
 $blameableListener->setCacheItemPool($cache);
 $blameableListener->setUserValue('MyUsername'); // determine from your environment
 $eventManager->addEventSubscriber($blameableListener);
@@ -134,13 +156,13 @@ $translatableListener = new TranslatableListener();
 // but most importantly, it must be set before the entity manager is flushed.
 $translatableListener->setTranslatableLocale('en');
 $translatableListener->setDefaultLocale('en');
-$translatableListener->setAnnotationReader($annotationReader);
+$translatableListener->setAnnotationReader($extensionReader);
 $translatableListener->setCacheItemPool($cache);
 $eventManager->addEventSubscriber($translatableListener);
 
 // Sortable extension, not used in example
 // $sortableListener = new Gedmo\Sortable\SortableListener;
-// $sortableListener->setAnnotationReader($annotationReader);
+// $sortableListener->setAnnotationReader($extensionReader);
 // $sortableListener->setCacheItemPool($cache);
 // $eventManager->addEventSubscriber($sortableListener);
 

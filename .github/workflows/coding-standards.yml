@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
 
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
@@ -27,7 +27,7 @@ jobs:
           dependency-versions: "highest"
 
       - name: "Run PHP-CS-Fixer"
-        run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
+        run: "vendor/bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
 
   rector:
     name: "Rector"
@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
 
       - name: "Install PHP"
         uses: shivammathur/setup-php@v2
@@ -51,7 +51,7 @@ jobs:
           composer-options: "--prefer-dist --prefer-stable"
 
       - name: Rector
-        run: "bin/rector --no-progress-bar --dry-run"
+        run: "vendor/bin/rector --no-progress-bar --dry-run"
 
   composer:
     name: Composer
@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
@@ -81,7 +81,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install required dependencies
         run: sudo apt-get update && sudo apt-get install libxml2-utils
@@ -96,7 +96,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Ruby 3.0
         uses: ruby/setup-ruby@v1

@@ -56,11 +56,11 @@ class Article
     /**
      * @Gedmo\TreeParent
      *
-     * @Mongo\ReferenceOne(targetDocument="Article")
+     * @Mongo\ReferenceOne(targetDocument="Gedmo\Tests\Tree\Fixture\Document\Article")
      */
     #[Mongo\ReferenceOne(targetDocument: self::class)]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\Document\Article $parent = null;
+    private ?Article $parent = null;
 
     /**
      * @var int|null

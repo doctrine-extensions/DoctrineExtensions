@@ -30,9 +30,9 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     private const CATEGORY = Category::class;
 
     /**
-     * @var MaterializedPathRepository
+     * @var MaterializedPathRepository<Category>
      */
-    protected $repo;
+    private MaterializedPathRepository $repo;
 
     protected function setUp(): void
     {

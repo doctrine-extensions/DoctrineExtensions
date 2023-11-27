@@ -517,12 +517,12 @@ parameters:
 
 		-
 			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
 			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:getExtensionConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
@@ -532,7 +532,7 @@ parameters:
 
 		-
 			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
@@ -542,7 +542,7 @@ parameters:
 
 		-
 			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration type has no value type specified in iterable type array\\.$#"
-			count: 2
+			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
@@ -616,7 +616,7 @@ parameters:
 			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
 
 		-
-			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
+			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
 			count: 1
 			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
 
