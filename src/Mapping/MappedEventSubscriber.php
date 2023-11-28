@@ -23,7 +23,6 @@ use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
-use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\ReferenceIntegrity\Mapping\Validator as ReferenceIntegrityValidator;
@@ -81,14 +80,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
     /**
      * Custom annotation reader
      *
-     * @var Reader|AttributeReader|object|null
+     * @var Reader|AttributeReader|object|false|null
      */
-    private $annotationReader;
+    private $annotationReader = false;
 
     /**
-     * @var Reader|AttributeReader|null
+     * @var Reader|AttributeReader|false|null
      */
-    private static $defaultAnnotationReader;
+    private static $defaultAnnotationReader = false;
 
     /**
      * @var CacheItemPoolInterface|null
@@ -171,8 +170,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
     {
         $oid = spl_object_id($objectManager);
         if (!isset($this->extensionMetadataFactory[$oid])) {
-            if (null === $this->annotationReader) {
-                // create default annotation reader for extensions
+            if (false === $this->annotationReader) {
+                // create default annotation/attribute reader for extensions
                 $this->annotationReader = $this->getDefaultAnnotationReader();
             }
             $this->extensionMetadataFactory[$oid] = new ExtensionMetadataFactory(
@@ -307,19 +306,22 @@ abstract class MappedEventSubscriber implements EventSubscriber
     }
 
     /**
-     * Create default annotation reader for extensions
+     * Get the default annotation or attribute reader for extensions, creating it if necessary.
      *
-     * @return Reader|AttributeReader
+     * If a reader cannot be created due to missing requirements, no default will be set as the reader is only required for annotation or attribute metadata,
+     * and the {@see ExtensionMetadataFactory} can handle raising an error if it tries to create a mapping driver that requires this reader.
+     *
+     * @return Reader|AttributeReader|null
      */
     private function getDefaultAnnotationReader()
     {
-        if (null === self::$defaultAnnotationReader) {
+        if (false === self::$defaultAnnotationReader) {
             if (class_exists(PsrCachedReader::class)) {
                 self::$defaultAnnotationReader = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
             } elseif (\PHP_VERSION_ID >= 80000) {
                 self::$defaultAnnotationReader = new AttributeReader();
             } else {
-                throw new RuntimeException(sprintf('Cannot create a default annotation reader in "%1$s". Ensure you are running PHP 8 to use attributes, have installed the "doctrine/annotations" package, or call "%1$s::setAnnotationReader()" with a configured reader.', self::class));
+                self::$defaultAnnotationReader = null;
             }
         }
 
