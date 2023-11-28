@@ -61,20 +61,20 @@ class ExtensionMetadataFactory
     protected $extensionNamespace;
 
     /**
-     * Custom annotation reader
+     * Metadata annotation reader
      *
-     * @var Reader|AttributeReader|object
+     * @var Reader|AttributeReader|object|null
      */
     protected $annotationReader;
 
     private ?CacheItemPoolInterface $cacheItemPool = null;
 
     /**
-     * @param Reader|AttributeReader|object $annotationReader
+     * @param Reader|AttributeReader|object|null $annotationReader
      */
-    public function __construct(ObjectManager $objectManager, string $extensionNamespace, object $annotationReader, ?CacheItemPoolInterface $cacheItemPool = null)
+    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null)
     {
-        if (!$annotationReader instanceof Reader && !$annotationReader instanceof AttributeReader) {
+        if (null !== $annotationReader && !$annotationReader instanceof Reader && !$annotationReader instanceof AttributeReader) {
             trigger_deprecation(
                 'gedmo/doctrine-extensions',
                 '3.11',
@@ -98,7 +98,7 @@ class ExtensionMetadataFactory
      *
      * @param ClassMetadata&(DocumentClassMetadata|EntityClassMetadata|LegacyEntityClassMetadata) $meta
      *
-     * @return array<string, mixed> the metatada configuration
+     * @return array<string, mixed> the metadata configuration
      */
     public function getExtensionMetadata($meta)
     {
@@ -209,8 +209,20 @@ class ExtensionMetadataFactory
             // create driver instance
             $driverClassName = $this->extensionNamespace.'\Mapping\Driver\\'.$driverName;
             if (!class_exists($driverClassName)) {
-                $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Annotation';
+                $originalDriverClassName = $driverClassName;
+
+                // try to fall back to either an annotation or attribute driver depending on the available dependencies
+                if (interface_exists(Reader::class)) {
+                    $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Annotation';
+                } elseif (\PHP_VERSION_ID >= 80000) {
+                    $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Attribute';
+                }
+
                 if (!class_exists($driverClassName)) {
+                    if ($originalDriverClassName !== $driverClassName) {
+                        throw new RuntimeException("Failed to create mapping driver: ({$originalDriverClassName}), the extension driver nor a fallback annotation or attribute driver could be found.");
+                    }
+
                     throw new RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
                 }
             }
@@ -227,14 +239,20 @@ class ExtensionMetadataFactory
                 }
             }
 
-            if ($driver instanceof AttributeDriverInterface) {
-                if ($this->annotationReader instanceof AttributeReader) {
-                    $driver->setAnnotationReader($this->annotationReader);
-                } else {
-                    $driver->setAnnotationReader(new AttributeAnnotationReader(new AttributeReader(), $this->annotationReader));
+            if ($driver instanceof AnnotationDriverInterface) {
+                if (null === $this->annotationReader) {
+                    throw new RuntimeException("Cannot use metadata driver ({$driverClassName}), an annotation or attribute reader was not provided.");
                 }
-            } elseif ($driver instanceof AnnotationDriverInterface) {
-                $driver->setAnnotationReader($this->annotationReader);
+
+                if ($driver instanceof AttributeDriverInterface) {
+                    if ($this->annotationReader instanceof AttributeReader) {
+                        $driver->setAnnotationReader($this->annotationReader);
+                    } else {
+                        $driver->setAnnotationReader(new AttributeAnnotationReader(new AttributeReader(), $this->annotationReader));
+                    }
+                } else {
+                    $driver->setAnnotationReader($this->annotationReader);
+                }
             }
         }
 

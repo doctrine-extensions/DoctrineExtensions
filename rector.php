@@ -26,6 +26,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         TypedPropertyFromAssignsRector::class => [
+            __DIR__.'/src/Mapping/MappedEventSubscriber.php', // Rector is trying to set a type on the $annotationReader property which requires a union type, not supported on PHP 7.4
             __DIR__.'/tests/Gedmo/Wrapper/Fixture/Entity/CompositeRelation.php', // @todo: remove this when https://github.com/doctrine/orm/issues/8255 is solved
         ],
     ]);
