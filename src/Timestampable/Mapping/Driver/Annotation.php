@@ -55,9 +55,9 @@ class Annotation extends AbstractAnnotationDriver
         // property annotations
         foreach ($class->getProperties() as $property) {
             if (
-                isset($meta->associationMappings[$property->name]['inherited']) ||
-                ($meta->isMappedSuperclass && !$property->isPrivate()) ||
-                $meta->isInheritedField($property->name)
+                isset($meta->associationMappings[$property->name]['inherited'])
+                || ($meta->isMappedSuperclass && !$property->isPrivate())
+                || $meta->isInheritedField($property->name)
             ) {
                 continue;
             }
@@ -87,7 +87,7 @@ class Annotation extends AbstractAnnotationDriver
                     ];
                 }
                 // add the setter method for the field
-                $this->setSetterMethod($field, $timestampable->setterMethod, $config);
+                $this->setSetterMethod($property->getName(), $timestampable->setterMethod, $config);
                 // properties are unique and mapper checks that, no risk here
                 $config[$timestampable->on][] = $field;
             }

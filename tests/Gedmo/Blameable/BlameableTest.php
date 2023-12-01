@@ -68,6 +68,7 @@ final class BlameableTest extends BaseTestCaseORM
         static::assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        static::assertSame('testuser', $sportComment->getCreated());
         static::assertSame('testuser', $sportComment->getModified());
         static::assertNull($sportComment->getClosed());
 
