@@ -434,6 +434,17 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         static::assertInstanceOf('DateTimeInterface', $foundArt->getDeletedAt());
         static::assertIsObject($foundComment);
         static::assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
+
+        $commentField = 'comment';
+        $commentValue = 'Comment 1';
+        $commentRepo = $this->em->getRepository(self::COMMENT_CLASS);
+        $comment = $commentRepo->findOneBy([$commentField => $commentValue]);
+
+        $this->em->remove($comment);
+        $this->em->flush();
+
+        static::assertIsObject($comment->getDeletedAt());
+        static::assertInstanceOf('DateTimeInterface', $comment->getDeletedAt());
     }
 
     /**
