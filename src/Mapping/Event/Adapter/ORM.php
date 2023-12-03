@@ -97,7 +97,7 @@ class ORM implements AdapterInterface
         }
 
         @trigger_error(sprintf(
-            'Calling "%s()" on event args of class "%s" that does not implement "getObjectManager()" is deprecated since gedmo/doctrine-extensions 3.x'
+            'Calling "%s()" on event args of class "%s" that does not implement "getObjectManager()" is deprecated since gedmo/doctrine-extensions 3.14'
             .' and will throw a "%s" error in version 4.0.',
             __METHOD__,
             get_class($this->args),
@@ -121,7 +121,7 @@ class ORM implements AdapterInterface
         }
 
         @trigger_error(sprintf(
-            'Calling "%s()" on event args of class "%s" that does not imeplement "getObject()" is deprecated since gedmo/doctrine-extensions 3.x'
+            'Calling "%s()" on event args of class "%s" that does not imeplement "getObject()" is deprecated since gedmo/doctrine-extensions 3.14'
             .' and will throw a "%s" error in version 4.0.',
             __METHOD__,
             get_class($this->args),

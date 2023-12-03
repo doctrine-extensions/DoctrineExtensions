@@ -18,7 +18,10 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.14.0]
 ### Added
+- Support for Symfony 7
 - Tree: Added `@template` and `@template-extends` annotations to the Tree repositories
 
 ### Changed

@@ -93,7 +93,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     public function getEntityManager()
     {
         @trigger_error(sprintf(
-            '"%s()" is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            '"%s()" is deprecated since gedmo/doctrine-extensions 3.14 and will be removed in version 4.0.',
             __METHOD__
         ), E_USER_DEPRECATED);
 
@@ -118,7 +118,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     public function getEntity()
     {
         @trigger_error(sprintf(
-            '"%s()" is deprecated since gedmo/doctrine-extensions 3.x and will be removed in version 4.0.',
+            '"%s()" is deprecated since gedmo/doctrine-extensions 3.14 and will be removed in version 4.0.',
             __METHOD__
         ), E_USER_DEPRECATED);
 
