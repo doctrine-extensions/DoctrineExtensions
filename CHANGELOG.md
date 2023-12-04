@@ -18,12 +18,20 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- SoftDeleteable: `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
+  `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes.
+
+### Deprecated
+- Do not add type-hinted parameters `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
+  `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes to `preSoftDelete` and `postSoftDelete` events.
+- The `createLifecycleEventArgsInstance()` method on `Gedmo\Mapping\Event\AdapterInterface`
+  implementations is deprecated, use your own subclass of `Doctrine\Persistence\Event\LifecycleEventArgs` as needed.
 
 ## [3.14.0]
 ### Added
 - Support for Symfony 7
 - Tree: Added `@template` and `@template-extends` annotations to the Tree repositories
-- SoftDeleteable: `Gedmo\SoftDeleteable\Mapping\Event::createPreSoftDeleteEventArgs()` and `Gedmo\SoftDeleteable\Mapping\Event::createPostSoftDeleteEventArgs()` methods.
 
 ### Changed
 - Dropped support for PHP < 7.4
@@ -33,7 +41,6 @@ a release.
 ### Deprecated
 - Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
 - Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead.
-- `Gedmo\Mapping\Event\AdapterInterface::createLifecycleEventArgsInstance()` method.
 
 ## [3.13.0] - 2023-09-06
 ### Fixed

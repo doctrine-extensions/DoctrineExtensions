@@ -9,10 +9,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\SoftDeleteable\Event\ODM;
+namespace Gedmo\SoftDeleteable\Event;
 
-use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\ObjectManager;
 
-final class PreSoftDeleteEventArgs extends LifecycleEventArgs
+/**
+ * @template TObjectManager of ObjectManager
+ *
+ * @template-extends LifecycleEventArgs<TObjectManager>
+ */
+final class PostSoftDeleteEventArgs extends LifecycleEventArgs
 {
 }

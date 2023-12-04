@@ -9,18 +9,13 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Event;
 
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
-use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * Doctrine event adapter for the SoftDeleteable extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @method LifecycleEventArgs createPreSoftDeleteEventArgs(object $object, ObjectManager $manager)
- * @method LifecycleEventArgs createPostSoftDeleteEventArgs(object $object, ObjectManager $manager)
  */
 interface SoftDeleteableAdapter extends AdapterInterface
 {

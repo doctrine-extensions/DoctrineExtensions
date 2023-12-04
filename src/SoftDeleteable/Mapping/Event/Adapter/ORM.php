@@ -11,12 +11,8 @@ namespace Gedmo\SoftDeleteable\Mapping\Event\Adapter;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Gedmo\SoftDeleteable\Event\ORM\PostSoftDeleteEventArgs;
-use Gedmo\SoftDeleteable\Event\ORM\PreSoftDeleteEventArgs;
 use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
 
 /**
@@ -37,22 +33,6 @@ final class ORM extends BaseAdapterORM implements SoftDeleteableAdapter
         $platform = $this->getObjectManager()->getConnection()->getDriver()->getDatabasePlatform();
 
         return $converter->convertToPHPValue($this->getRawDateValue($mapping), $platform);
-    }
-
-    /**
-     * @param EntityManagerInterface $manager
-     */
-    public function createPreSoftDeleteEventArgs(object $object, ObjectManager $manager): PreSoftDeleteEventArgs
-    {
-        return new PreSoftDeleteEventArgs($object, $manager);
-    }
-
-    /**
-     * @param EntityManagerInterface $manager
-     */
-    public function createPostSoftDeleteEventArgs(object $object, ObjectManager $manager): PostSoftDeleteEventArgs
-    {
-        return new PostSoftDeleteEventArgs($object, $manager);
     }
 
     /**

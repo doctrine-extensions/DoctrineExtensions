@@ -9,12 +9,8 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Event\Adapter;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
-use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
-use Gedmo\SoftDeleteable\Event\ODM\PostSoftDeleteEventArgs;
-use Gedmo\SoftDeleteable\Event\ODM\PreSoftDeleteEventArgs;
 use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
 
 /**
@@ -43,21 +39,5 @@ final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter
         }
 
         return $datetime;
-    }
-
-    /**
-     * @param DocumentManager $manager
-     */
-    public function createPreSoftDeleteEventArgs(object $object, ObjectManager $manager): PreSoftDeleteEventArgs
-    {
-        return new PreSoftDeleteEventArgs($object, $manager);
-    }
-
-    /**
-     * @param DocumentManager $manager
-     */
-    public function createPostSoftDeleteEventArgs(object $object, ObjectManager $manager): PostSoftDeleteEventArgs
-    {
-        return new PostSoftDeleteEventArgs($object, $manager);
     }
 }
