@@ -10,6 +10,7 @@
 namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,8 @@ use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs;
 
 /**
  * SoftDeleteable listener
@@ -81,10 +84,17 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     continue; // want to hard delete
                 }
 
-                $evm->dispatchEvent(
-                    self::PRE_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                );
+                if ($evm->hasListeners(self::PRE_SOFT_DELETE)) {
+                    // @todo: in the next major remove check and only instantiate the event
+                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class)
+                        ? new PreSoftDeleteEventArgs($object, $om)
+                        : $ea->createLifecycleEventArgsInstance($object, $om);
+
+                    $evm->dispatchEvent(
+                        self::PRE_SOFT_DELETE,
+                        $preSoftDeleteEventArgs
+                    );
+                }
 
                 $reflProp->setValue($object, $date);
 
@@ -98,10 +108,17 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     ]);
                 }
 
-                $evm->dispatchEvent(
-                    self::POST_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                );
+                if ($evm->hasListeners(self::POST_SOFT_DELETE)) {
+                    // @todo: in the next major remove check and only instantiate the event
+                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class)
+                        ? new PostSoftDeleteEventArgs($object, $om)
+                        : $ea->createLifecycleEventArgsInstance($object, $om);
+
+                    $evm->dispatchEvent(
+                        self::POST_SOFT_DELETE,
+                        $postSoftDeleteEventArgs
+                    );
+                }
             }
         }
     }
@@ -123,5 +140,33 @@ class SoftDeleteableListener extends MappedEventSubscriber
     protected function getNamespace()
     {
         return __NAMESPACE__;
+    }
+
+    /** @param class-string $eventClass */
+    private function hasToDispatchNewEvent(EventManager $eventManager, string $eventName, string $eventClass): bool
+    {
+        foreach ($eventManager->getListeners($eventName) as $listener) {
+            $reflMethod = new \ReflectionMethod($listener, $eventName);
+
+            $parameters = $reflMethod->getParameters();
+
+            if (
+                1 !== count($parameters)
+                || !$parameters[0]->hasType()
+                || !$parameters[0]->getType() instanceof \ReflectionNamedType
+                || $eventClass !== $parameters[0]->getType()->getName()
+            ) {
+                @trigger_error(sprintf(
+                    'Type-hinting to something different than "%s" in "%s::%s()" is deprecated.',
+                    $eventClass,
+                    get_class($listener),
+                    $reflMethod->getName()
+                ), E_USER_DEPRECATED);
+
+                return false;
+            }
+        }
+
+        return true;
     }
 }

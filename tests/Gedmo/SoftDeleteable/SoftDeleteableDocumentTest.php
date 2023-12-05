@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace Gedmo\Tests\SoftDeleteable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\Common\EventSubscriber;
 use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Document\User;
 use Gedmo\Tests\SoftDeleteable\Fixture\Document\UserTimeAware;
+use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithLifecycleEventArgsFromODMTypeListener;
+use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithoutTypeListener;
+use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithPreAndPostSoftDeleteEventArgsTypeListener;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
@@ -150,28 +152,22 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
     public function testPostSoftDeleteEventIsDispatched(): void
     {
-        $subscriber = $this->getMockBuilder(EventSubscriber::class)
-            ->setMethods([
-                'getSubscribedEvents',
-                'preSoftDelete',
-                'postSoftDelete',
-            ])
-            ->getMock();
+        $this->dm->getEventManager()->addEventSubscriber(new WithPreAndPostSoftDeleteEventArgsTypeListener());
 
-        $subscriber->expects(static::once())
-            ->method('getSubscribedEvents')
-            ->willReturn([SoftDeleteableListener::PRE_SOFT_DELETE, SoftDeleteableListener::POST_SOFT_DELETE]);
+        $this->doTestPostSoftDeleteEventIsDispatched();
+    }
 
-        $subscriber->expects(static::once())
-            ->method('preSoftDelete')
-            ->with(static::anything());
+    /** @group legacy */
+    public function testPostSoftDeleteEventIsDispatchedWithDeprecatedListeners(): void
+    {
+        $this->dm->getEventManager()->addEventSubscriber(new WithoutTypeListener());
+        $this->dm->getEventManager()->addEventSubscriber(new WithLifecycleEventArgsFromODMTypeListener());
 
-        $subscriber->expects(static::once())
-            ->method('postSoftDelete')
-            ->with(static::anything());
+        $this->doTestPostSoftDeleteEventIsDispatched();
+    }
 
-        $this->dm->getEventManager()->addEventSubscriber($subscriber);
-
+    private function doTestPostSoftDeleteEventIsDispatched(): void
+    {
         $repo = $this->dm->getRepository(self::USER_CLASS);
 
         $newUser = new User();

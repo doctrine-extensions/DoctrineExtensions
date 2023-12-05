@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\SoftDeleteable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Query;
 use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker;
@@ -27,6 +27,9 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherComment;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Page;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\User;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete;
+use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithLifecycleEventArgsFromORMTypeListener;
+use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithoutTypeListener;
+use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithPreAndPostSoftDeleteEventArgsTypeListener;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -529,52 +532,21 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
 
     public function testPostSoftDeleteEventIsDispatched(): void
     {
-        $subscriber = $this->getMockBuilder(EventSubscriber::class)
-            ->setMethods([
-                'getSubscribedEvents',
-                'preSoftDelete',
-                'postSoftDelete',
-            ])
-            ->getMock();
+        $this->em->getEventManager()->addEventSubscriber(new WithPreAndPostSoftDeleteEventArgsTypeListener());
 
-        $subscriber->expects(static::once())
-                   ->method('getSubscribedEvents')
-                   ->willReturn([
-                       SoftDeleteableListener::PRE_SOFT_DELETE,
-                       SoftDeleteableListener::POST_SOFT_DELETE,
-                   ]);
+        $this->doTestPostSoftDeleteEventIsDispatched();
+    }
 
-        $subscriber->expects(static::exactly(2))
-                   ->method('preSoftDelete')
-                   ->with(static::anything());
+    /** @group legacy */
+    public function testPostSoftDeleteEventIsDispatchedWithDeprecatedListeners(): void
+    {
+        $this->em->getEventManager()->addEventSubscriber(new WithoutTypeListener());
 
-        $subscriber->expects(static::exactly(2))
-                   ->method('postSoftDelete')
-                   ->with(static::anything());
+        if (class_exists(LifecycleEventArgs::class)) {
+            $this->em->getEventManager()->addEventSubscriber(new WithLifecycleEventArgsFromORMTypeListener());
+        }
 
-        $this->em->getEventManager()->addEventSubscriber($subscriber);
-
-        $repo = $this->em->getRepository(self::ARTICLE_CLASS);
-
-        $comment = new Comment();
-        $commentValue = 'Comment 1';
-        $comment->setComment($commentValue);
-        $art0 = new Article();
-        $field = 'title';
-        $value = 'Title 1';
-        $art0->setTitle($value);
-        $art0->addComment($comment);
-
-        $this->em->persist($art0);
-        $this->em->flush();
-
-        $art = $repo->findOneBy([$field => $value]);
-
-        static::assertNull($art->getDeletedAt());
-        static::assertNull($comment->getDeletedAt());
-
-        $this->em->remove($art);
-        $this->em->flush();
+        $this->doTestPostSoftDeleteEventIsDispatched();
     }
 
     public function testShouldNotDeleteIfColumnNameDifferFromPropertyName(): void
@@ -624,5 +596,30 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::MAPPED_SUPERCLASS_CHILD_CLASS,
             self::USER_NO_HARD_DELETE_CLASS,
         ];
+    }
+
+    private function doTestPostSoftDeleteEventIsDispatched(): void
+    {
+        $repo = $this->em->getRepository(self::ARTICLE_CLASS);
+
+        $comment = new Comment();
+        $commentValue = 'Comment 1';
+        $comment->setComment($commentValue);
+        $art0 = new Article();
+        $field = 'title';
+        $value = 'Title 1';
+        $art0->setTitle($value);
+        $art0->addComment($comment);
+
+        $this->em->persist($art0);
+        $this->em->flush();
+
+        $art = $repo->findOneBy([$field => $value]);
+
+        static::assertNull($art->getDeletedAt());
+        static::assertNull($comment->getDeletedAt());
+
+        $this->em->remove($art);
+        $this->em->flush();
     }
 }

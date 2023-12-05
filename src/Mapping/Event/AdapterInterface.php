@@ -21,7 +21,7 @@ use Doctrine\Persistence\ObjectManager;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @method LifecycleEventArgs createLifecycleEventArgsInstance(object $object, ObjectManager $manager)
+ * @method LifecycleEventArgs createLifecycleEventArgsInstance(object $object, ObjectManager $manager) @deprecated
  * @method object             getObject()
  */
 interface AdapterInterface

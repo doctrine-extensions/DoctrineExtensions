@@ -18,6 +18,15 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- SoftDeleteable: `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
+  `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes.
+
+### Deprecated
+- Do not add type-hinted parameters `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
+  `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes to `preSoftDelete` and `postSoftDelete` events.
+- The `createLifecycleEventArgsInstance()` method on `Gedmo\Mapping\Event\AdapterInterface`
+  implementations is deprecated, use your own subclass of `Doctrine\Persistence\Event\LifecycleEventArgs` as needed.
 
 ## [3.14.0]
 ### Added
@@ -31,7 +40,7 @@ a release.
 
 ### Deprecated
 - Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
-- Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead. 
+- Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead.
 
 ## [3.13.0] - 2023-09-06
 ### Fixed
