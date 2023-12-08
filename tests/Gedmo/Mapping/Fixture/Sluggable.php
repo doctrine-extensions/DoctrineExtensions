@@ -44,8 +44,14 @@ class Sluggable
     /**
      * @ORM\Column(name="code", type="string", length=16)
      */
-    #[ORM\Column(name: 'code', type: Types::STRING, length: 64, nullable: true)]
+    #[ORM\Column(name: 'code', type: Types::STRING, length: 16, nullable: true)]
     private ?string $code = null;
+
+    /**
+     * @ORM\Column(name="ean", type="string", length=13)
+     */
+    #[ORM\Column(name: 'ean', type: Types::STRING, length: 13, nullable: true)]
+    private ?string $ean = null;
 
     /**
      * @var string|null
@@ -56,17 +62,17 @@ class Sluggable
      *         @Gedmo\SlugHandlerOption(name="separator", value="/")
      *     }),
      *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationField", value="user"),
-     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
+     *         @Gedmo\SlugHandlerOption(name="relationField", value="parent"),
+     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="test"),
+     *         @Gedmo\SlugHandlerOption(name="separator", value="-")
      *     })
-     * }, separator="-", updatable=false, fields={"title", "code"})
+     * }, separator="_", updatable=false, fields={"title", "ean", "code"}, style="camel")
      *
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
-    #[Gedmo\Slug(separator: '-', updatable: false, fields: ['title', 'code'])]
+    #[Gedmo\Slug(separator: '_', updatable: false, fields: ['title', 'ean', 'code'], style: 'camel')]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
-    #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'user', 'relationSlugField' => 'slug', 'separator' => '/'])]
+    #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'parent', 'relationSlugField' => 'test', 'separator' => '-'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private $slug;
 

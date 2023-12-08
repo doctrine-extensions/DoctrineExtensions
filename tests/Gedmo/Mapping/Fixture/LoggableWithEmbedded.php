@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Doctrine Behavioral Extensions package.
  * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
@@ -21,54 +23,39 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 #[ORM\Entity]
 #[Gedmo\Loggable(logEntryClass: LogEntry::class)]
-class LoggableCompositeRelation
+class LoggableWithEmbedded
 {
-    /**
-     * @var Loggable
-     *
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Loggable")
-     */
-    #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: Loggable::class)]
-    private $one;
-
     /**
      * @var int
      *
      * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $two;
+    private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=64)
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string")
      *
      * @Gedmo\Versioned
      */
-    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    #[ORM\Column(name: 'title', type: Types::STRING)]
     #[Gedmo\Versioned]
-    private ?string $title = null;
+    private $title;
 
-    public function getOne(): Loggable
-    {
-        return $this->one;
-    }
-
-    public function getTwo(): int
-    {
-        return $this->two;
-    }
-
-    public function setTitle(string $title): void
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
+    /**
+     * @var Embedded
+     *
+     * @ORM\Embedded(class="Gedmo\Tests\Mapping\Fixture\Embedded")
+     *
+     * @Gedmo\Versioned
+     */
+    #[ORM\Embedded(class: Embedded::class)]
+    #[Gedmo\Versioned]
+    private $embedded;
 }

@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\EventManager;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
+use Gedmo\Tests\Mapping\Fixture\Category as AnnotatedCategory;
+use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Category as YamlCategory;
 use Gedmo\Timestampable\TimestampableListener;
 
 /**
@@ -27,45 +28,51 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TimestampableMappingTest extends ORMMappingTestCase
 {
-    private const TEST_YAML_ENTITY_CLASS = Category::class;
-
     private EntityManager $em;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $config = $this->getBasicConfiguration();
-
-        $chain = new MappingDriverChain();
-
-        // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
-        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
-
-        $config->setMetadataDriverImpl($chain);
-
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
-
-        $evm = new EventManager();
         $listener = new TimestampableListener();
         $listener->setCacheItemPool($this->cache);
-        $evm->addEventSubscriber($listener);
-        $connection = DriverManager::getConnection($conn, $config);
-        $this->em = new EntityManager($connection, $config, $evm);
+
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping(): void
+    /**
+     * @return \Generator<string, array{class-string}>
+     *
+     * @note the XML fixture has a different mapping from the other configs, so it is tested separately
+     */
+    public static function dataTimestampableObject(): \Generator
+    {
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            yield 'Model with attributes' => [AnnotatedCategory::class];
+        }
+
+        if (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedCategory::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlCategory::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataTimestampableObject
+     */
+    public function testTimestampableMapping(string $className): void
     {
         // Force metadata class loading.
-        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
-        $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::TEST_YAML_ENTITY_CLASS,
-            'Gedmo\Timestampable'
-        );
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Timestampable');
         $config = $this->cache->getItem($cacheId)->get();
+
         static::assertArrayHasKey('create', $config);
         static::assertSame('created', $config['create'][0]);
         static::assertArrayHasKey('update', $config);
@@ -76,5 +83,26 @@ final class TimestampableMappingTest extends ORMMappingTestCase
         static::assertSame('changed', $onChange['field']);
         static::assertSame('title', $onChange['trackedField']);
         static::assertSame('Test', $onChange['value']);
+    }
+
+    public function testTimestampableXmlMapping(): void
+    {
+        $className = Timestampable::class;
+
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Timestampable');
+        $config = $this->cache->getItem($cacheId)->get();
+
+        static::assertArrayHasKey('create', $config);
+        static::assertSame('created', $config['create'][0]);
+        static::assertArrayHasKey('update', $config);
+        static::assertSame('updated', $config['update'][0]);
+        static::assertArrayHasKey('change', $config);
+        $onChange = $config['change'][0];
+
+        static::assertSame('published', $onChange['field']);
+        static::assertSame('status.title', $onChange['trackedField']);
+        static::assertSame('Published', $onChange['value']);
     }
 }

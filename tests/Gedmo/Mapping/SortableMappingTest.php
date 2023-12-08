@@ -11,55 +11,69 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sortable\SortableListener;
-use Gedmo\Tests\Mapping\Fixture\SortableGroup;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Sortable;
-use Gedmo\Tests\Tool\BaseTestCaseOM;
+use Gedmo\Tests\Mapping\Fixture\Sortable as AnnotatedSortable;
+use Gedmo\Tests\Mapping\Fixture\Xml\Sortable as XmlSortable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Sortable as YamlSortable;
 
 /**
  * These are mapping tests for sortable extension
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  */
-final class SortableMappingTest extends BaseTestCaseOM
+final class SortableMappingTest extends ORMMappingTestCase
 {
     private EntityManager $em;
-
-    private SortableListener $sortable;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $reader = new AnnotationReader();
-        $annotationDriver = new AnnotationDriver($reader);
+        $listener = new SortableListener();
+        $listener->setCacheItemPool($this->cache);
 
-        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
-
-        $chain = new MappingDriverChain();
-        $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
-
-        $this->sortable = new SortableListener();
-        $this->evm = new EventManager();
-        $this->evm->addEventSubscriber($this->sortable);
-
-        $this->em = $this->getDefaultMockSqliteEntityManager([
-            Sortable::class,
-            SortableGroup::class,
-        ], $chain);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping(): void
+    /**
+     * @return \Generator<string, array{class-string}>
+     *
+     * @note the XML fixture has a different mapping from the other configs, so it is tested separately
+     */
+    public static function dataSortableObject(): \Generator
     {
-        $meta = $this->em->getClassMetadata(Sortable::class);
-        $config = $this->sortable->getConfiguration($this->em, $meta->getName());
+        yield 'Model with XML mapping' => [XmlSortable::class];
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            yield 'Model with attributes' => [AnnotatedSortable::class];
+        }
+
+        if (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedSortable::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlSortable::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataSortableObject
+     */
+    public function testSortableMapping(string $className): void
+    {
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Sortable');
+        $config = $this->cache->getItem($cacheId)->get();
 
         static::assertArrayHasKey('position', $config);
         static::assertSame('position', $config['position']);
