@@ -22,6 +22,9 @@ a release.
 - SoftDeleteable: `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes.
 
+### Changed
+- Make doctrine/annotations an optional dependency.
+
 ### Deprecated
 - Do not add type-hinted parameters `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes to `preSoftDelete` and `postSoftDelete` events.
