@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable;
-use Gedmo\Tests\Tool\BaseTestCaseOM;
+use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\Uploadable as AnnotatedUploadable;
+use Gedmo\Tests\Mapping\Fixture\Xml\Uploadable as XmlUploadable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable as YamlUploadable;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\UploadableListener;
 
@@ -28,40 +28,55 @@ use Gedmo\Uploadable\UploadableListener;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class UploadableMappingTest extends BaseTestCaseOM
+final class UploadableMappingTest extends ORMMappingTestCase
 {
     private EntityManager $em;
-
-    private UploadableListener $listener;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        // TODO - This should be reset to default (true) after each test case
         Validator::$enableMimeTypesConfigException = false;
 
-        $reader = new AnnotationReader();
-        $annotationDriver = new AnnotationDriver($reader);
+        $listener = new UploadableListener();
+        $listener->setCacheItemPool($this->cache);
 
-        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
-
-        $chain = new MappingDriverChain();
-        $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
-
-        $this->listener = new UploadableListener();
-        $this->evm = new EventManager();
-        $this->evm->addEventSubscriber($this->listener);
-
-        $this->em = $this->getDefaultMockSqliteEntityManager([
-            Uploadable::class,
-        ], $chain);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping(): void
+    /**
+     * @return \Generator<string, array{class-string}>
+     */
+    public static function dataUploadableObject(): \Generator
     {
-        $meta = $this->em->getClassMetadata(Uploadable::class);
-        $config = $this->listener->getConfiguration($this->em, $meta->getName());
+        yield 'Model with XML mapping' => [XmlUploadable::class];
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            yield 'Model with attributes' => [AnnotatedUploadable::class];
+        }
+
+        if (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedUploadable::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlUploadable::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataUploadableObject
+     */
+    public function testUploadableMapping(string $className): void
+    {
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Uploadable');
+        $config = $this->cache->getItem($cacheId)->get();
 
         static::assertTrue($config['uploadable']);
         static::assertTrue($config['allowOverwrite']);
@@ -72,7 +87,7 @@ final class UploadableMappingTest extends BaseTestCaseOM
         static::assertSame('path', $config['filePathField']);
         static::assertSame('size', $config['fileSizeField']);
         static::assertSame('callbackMethod', $config['callback']);
-        static::assertSame('SHA1', $config['filenameGenerator']);
+        static::assertSame(Validator::FILENAME_GENERATOR_SHA1, $config['filenameGenerator']);
         static::assertSame(1500.0, $config['maxSize']);
         static::assertContains('text/plain', $config['allowedTypes']);
         static::assertContains('text/css', $config['allowedTypes']);

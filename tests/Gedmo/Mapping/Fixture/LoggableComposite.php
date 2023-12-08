@@ -11,15 +11,16 @@ namespace Gedmo\Tests\Mapping\Fixture;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  *
- * @Gedmo\Loggable
+ * @Gedmo\Loggable(logEntryClass="Gedmo\Loggable\Entity\LogEntry")
  */
 #[ORM\Entity]
-#[Gedmo\Loggable]
+#[Gedmo\Loggable(logEntryClass: LogEntry::class)]
 class LoggableComposite
 {
     /**
