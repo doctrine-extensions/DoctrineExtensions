@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
@@ -24,7 +22,6 @@ use Gedmo\Tests\Mapping\Fixture\Sluggable;
 use Gedmo\Tests\Mapping\Fixture\SuperClassExtension;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Psr\Cache\CacheItemPoolInterface;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 final class MappingEventSubscriberTest extends ORMMappingTestCase
 {
@@ -36,18 +33,13 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
 
         $config = $this->getBasicConfiguration();
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));
         } else {
             $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
         }
 
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
-
-        $this->em = new EntityManager(DriverManager::getConnection($conn, $config), $config, new EventManager());
+        $this->em = $this->getBasicEntityManager($config);
     }
 
     public function testGetMetadataFactoryCacheFromDoctrineForSluggable(): void
@@ -95,20 +87,13 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
         // Create new configuration to use new array cache
         $config = $this->getBasicConfiguration();
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));
         } else {
             $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
         }
 
-        $config->setMetadataCache(new ArrayAdapter());
-
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
-
-        $this->em = new EntityManager(DriverManager::getConnection($conn, $config), $config, new EventManager());
+        $this->em = $this->getBasicEntityManager($config);
 
         $config = $subscriber->getExtensionMetadataFactory($this->em)->getExtensionMetadata($classMetadata);
 

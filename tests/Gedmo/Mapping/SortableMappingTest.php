@@ -13,7 +13,6 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sortable\SortableListener;
@@ -43,14 +42,12 @@ final class SortableMappingTest extends ORMMappingTestCase
 
     /**
      * @return \Generator<string, array{class-string}>
-     *
-     * @note the XML fixture has a different mapping from the other configs, so it is tested separately
      */
     public static function dataSortableObject(): \Generator
     {
         yield 'Model with XML mapping' => [XmlSortable::class];
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedSortable::class];
         }
 

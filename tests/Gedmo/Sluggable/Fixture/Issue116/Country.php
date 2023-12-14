@@ -11,23 +11,53 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sluggable\Fixture\Issue116;
 
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="sta_country")
+ */
+#[ORM\Entity]
+#[ORM\Table(name: 'sta_country')]
 class Country
 {
     /**
      * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
+    #[ORM\Column(type: Types::STRING, length: 10, nullable: true)]
     private $languageCode;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    #[ORM\Column(type: Types::STRING, length: 50)]
     private ?string $originalName = null;
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(type="string", length=50)
+     *
+     * @Gedmo\Slug(separator="-", fields={"originalName"})
      */
+    #[ORM\Column(type: Types::STRING, length: 50)]
+    #[Gedmo\Slug(separator: '-', fields: ['originalName'])]
     private $alias;
 
     public function getId(): ?int

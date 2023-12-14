@@ -45,9 +45,8 @@ final class MappingTest extends TestCase
         $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        // $this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));
         } else {
             $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));

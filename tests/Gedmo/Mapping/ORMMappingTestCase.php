@@ -74,7 +74,7 @@ abstract class ORMMappingTestCase extends TestCase
             $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
         }
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (PHP_VERSION_ID >= 80000) {
             $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
         }
 

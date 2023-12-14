@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -52,10 +53,15 @@ final class Issue116Test extends BaseTestCaseORM
     protected function getMetadataDriverImplementation(): MappingDriver
     {
         $chain = new MappingDriverChain();
-        $chain->addDriver(
-            new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
-            'Gedmo\Tests\Sluggable\Fixture\Issue116'
-        );
+
+        if (PHP_VERSION_ID >= 80000) {
+            $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Sluggable\Fixture\Issue116');
+        } else {
+            $chain->addDriver(
+                new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
+                'Gedmo\Tests\Sluggable\Fixture\Issue116'
+            );
+        }
 
         return $chain;
     }
