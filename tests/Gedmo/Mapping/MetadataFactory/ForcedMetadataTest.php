@@ -15,7 +15,6 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Id\IdentityGenerator;
@@ -23,6 +22,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
+use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 use Gedmo\Timestampable\TimestampableListener;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +36,7 @@ final class ForcedMetadataTest extends TestCase
 {
     private TimestampableListener $timestampable;
 
-    private EntityManagerInterface $em;
+    private EntityManager $em;
 
     protected function setUp(): void
     {
@@ -44,22 +44,28 @@ final class ForcedMetadataTest extends TestCase
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));
         } else {
             $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
         }
 
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
+        $this->timestampable = new TimestampableListener();
+
+        if (PHP_VERSION_ID >= 80000) {
+            $this->timestampable->setAnnotationReader(new AttributeReader());
+        } else {
+            $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
+        }
 
         $evm = new EventManager();
-        $this->timestampable = new TimestampableListener();
-        $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
         $evm->addEventSubscriber($this->timestampable);
-        $connection = DriverManager::getConnection($conn, $config);
+
+        $connection = DriverManager::getConnection([
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
+        ], $config);
+
         $this->em = new EntityManager($connection, $config, $evm);
     }
 
@@ -72,6 +78,8 @@ final class ForcedMetadataTest extends TestCase
             $this->em,
             Timestampable::class
         );
+
+        // @todo: This assertion fails when run in isolation
         static::assertTrue(isset($conf['create']));
 
         $test = new Timestampable();

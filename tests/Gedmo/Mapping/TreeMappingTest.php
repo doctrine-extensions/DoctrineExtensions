@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
@@ -52,7 +50,7 @@ final class TreeMappingTest extends ORMMappingTestCase
         // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
         $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (PHP_VERSION_ID >= 80000) {
             $annotationOrAttributeDriver = new AttributeDriver([]);
         } else {
             $annotationOrAttributeDriver = new AnnotationDriver(new AnnotationReader());
@@ -63,17 +61,11 @@ final class TreeMappingTest extends ORMMappingTestCase
 
         $config->setMetadataDriverImpl($chain);
 
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
-
         $this->listener = new TreeListener();
         $this->listener->setCacheItemPool($this->cache);
-        $evm = new EventManager();
-        $evm->addEventSubscriber($this->listener);
-        $connection = DriverManager::getConnection($conn, $config);
-        $this->em = new EntityManager($connection, $config, $evm);
+
+        $this->em = $this->getBasicEntityManager($config);
+        $this->em->getEventManager()->addEventSubscriber($this->listener);
     }
 
     /**

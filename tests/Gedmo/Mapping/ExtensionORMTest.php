@@ -58,6 +58,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
         $user = new User();
         $user->setName('encode me');
         $user->setPassword('secret');
+        $user->setUsername('some_username');
         $this->em->persist($user);
         $this->em->flush();
 
