@@ -13,8 +13,6 @@ use Gedmo\Mapping\Annotation\Annotation;
 
 /**
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @internal
  */
 final class AttributeReader
 {
