@@ -30,9 +30,9 @@ class Category
      *
      * @var Category|null
      */
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
-    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'category_id', onDelete: 'cascade')]
     #[Gedmo\TreeParent]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'category_id', onDelete: 'cascade')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     protected $parent;
 
     /**
@@ -58,10 +58,10 @@ class Category
      * @ORM\GeneratedValue
      * @Gedmo\TreePathSource
      */
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(name: 'category_id', type: Types::INTEGER)]
     #[Gedmo\TreePathSource]
+    #[ORM\Column(name: 'category_id', type: Types::INTEGER)]
+    #[ORM\GeneratedValue]
+    #[ORM\Id]
     private $id;
 
     /**

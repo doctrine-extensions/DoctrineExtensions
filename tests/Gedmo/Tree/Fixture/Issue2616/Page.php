@@ -22,11 +22,11 @@ class Page
     /**
      * @var Category|null
      *
-     * @ORM\OneToOne(targetEntity="Page", inversedBy="page")
+     * @ORM\OneToOne(targetEntity="Category", inversedBy="page")
      * @ORM\JoinColumn(name="entity_id", referencedColumnName="category_id", nullable=false)
      */
-    #[ORM\OneToOne(targetEntity: Category::class, inversedBy: 'page')]
     #[ORM\JoinColumn(name: 'entity_id', referencedColumnName: 'category_id', nullable: false)]
+    #[ORM\OneToOne(targetEntity: Category::class, inversedBy: 'page')]
     protected $category;
     /**
      * @var int|null
@@ -35,9 +35,9 @@ class Page
      * @ORM\Id
      * @ORM\GeneratedValue
      */
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(name: 'page_id', type: Types::INTEGER)]
+    #[ORM\GeneratedValue]
+    #[ORM\Id]
     private $id;
 
     /**
