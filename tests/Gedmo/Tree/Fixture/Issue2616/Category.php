@@ -15,6 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\Tree(type="materializedPath")
+ *
  * @ORM\Table(name="category")
  * @ORM\Entity
  */
@@ -26,6 +27,7 @@ class Category
     /**
      * @ORM\ManyToOne(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2616\Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="category_id", onDelete="cascade")
+     *
      * @Gedmo\TreeParent
      *
      * @var Category|null
@@ -56,6 +58,7 @@ class Category
      * @ORM\Column(name="category_id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
+     *
      * @Gedmo\TreePathSource
      */
     #[Gedmo\TreePathSource]
@@ -74,6 +77,7 @@ class Category
 
     /**
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="level", type="integer", nullable=true)
      *
      * @var int|null
@@ -84,6 +88,7 @@ class Category
 
     /**
      * @Gedmo\TreePath(separator="/", endsWithSeparator=false)
+     *
      * @ORM\Column(name="path", type="string", nullable=true)
      *
      * @var string|null
