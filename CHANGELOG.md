@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Fixed bug in `MaterializedPath::removeNode()` when removing entity that has cascade remove on its children, it was using `scheduleForDelete()` instead of `remove()` which is marked as internal and does not trigger cascade remove.
+
 ### Added
 - Blameable: Added UUID in allowed types list for Blameable fields in Annotation
 - Blameable: Allow ascii_string to validTypes (issue #2726)
