@@ -24,6 +24,7 @@ a release.
 - Sluggable: Allow ascii_string to validTypes
 - IpTraceable: Allow ascii_string to validTypes
 - Sluggable: Use `TranslationWalker` hint when looking for similar slugs (`getSimilarSlugs` method) for entities which implement `Translatable` interface and have `uniqueOverTranslations: true` Slug option (#100, #2530)
+- Blameable/IpTraceable/SoftDeletable/Timestampable: Added functionality to use setter method instead of setting property values directly (#2644)
 
 ## [3.15.0]
 ### Added
@@ -66,9 +67,6 @@ a release.
 - Fix bug collecting metadata for inherited mapped classes
 
 ## [3.12.0] - 2023-07-08
-### Added
-- Blameable/IpTraceable/SoftDeletable/Timestampable: Added functionality to use setter method instead of setting property values directly (#2644)
-
 ### Added
 - Tree: `setSibling()` and `getSibling()` methods in the `Node` interface through the BC `@method` annotation
 - Tree: Support array of fields and directions in the `$sortByField` and `$direction` parameters at `AbstractTreeRepository::recover()`

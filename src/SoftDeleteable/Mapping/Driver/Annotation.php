@@ -37,8 +37,6 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if (null !== $class && $annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
-            assert($annot instanceof SoftDeleteable);
-
             $config['softDeleteable'] = true;
 
             Validator::validateField($meta, $annot->fieldName);
