@@ -18,6 +18,7 @@ a release.
 ---
 
 ## [Unreleased]
+- Blameable: Added UUID in allowed types list for Blameable fields in Annotation
 
 ## [3.15.0]
 ### Added
@@ -49,7 +50,6 @@ a release.
 - Dropped support for PHP < 7.4
 - Dropped support for Symfony < 5.4
 - Dropped support for doctrine/dbal < 3.2
-- Blameable: Added UUID in allowed types list for Blameable fields in Annotation
 
 ### Deprecated
 - Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
