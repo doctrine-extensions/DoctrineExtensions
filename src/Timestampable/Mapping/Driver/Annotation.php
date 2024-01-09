@@ -54,15 +54,13 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // property annotations
         foreach ($class->getProperties() as $property) {
-            if (
-                isset($meta->associationMappings[$property->name]['inherited'])
-                || ($meta->isMappedSuperclass && !$property->isPrivate())
+            if ($meta->isMappedSuperclass && !$property->isPrivate()
                 || $meta->isInheritedField($property->name)
+                || isset($meta->associationMappings[$property->name]['inherited'])
             ) {
                 continue;
             }
             if ($timestampable = $this->reader->getPropertyAnnotation($property, self::TIMESTAMPABLE)) {
-                assert($timestampable instanceof Timestampable);
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find timestampable [{$field}] as mapped property in entity - {$meta->getName()}");
