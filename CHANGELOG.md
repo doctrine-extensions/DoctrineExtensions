@@ -22,6 +22,9 @@ a release.
 - SoftDeleteable: `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes.
 
+## Changed
+- Allow string[] as `$sortByField` and `$direction` parameter in  `\Gedmo\Tree\Entity\Repository\NestedTreeRepository::reorder` and `\Gedmo\Tree\Entity\Repository\NestedTreeRepository::reorderAll`
+
 ### Deprecated
 - Do not add type-hinted parameters `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes to `preSoftDelete` and `postSoftDelete` events.
