@@ -32,7 +32,7 @@ class MaterializedPathCategory
      */
     private $children;
 
-    private ?\Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory $parent = null;
+    private ?MaterializedPathCategory $parent = null;
 
     private ?\DateTime $lockTime = null;
 

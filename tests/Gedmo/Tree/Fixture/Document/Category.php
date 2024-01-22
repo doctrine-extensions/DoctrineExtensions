@@ -60,7 +60,7 @@ class Category
      */
     #[Mongo\ReferenceOne(targetDocument: self::class)]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\Document\Category $parent = null;
+    private ?Category $parent = null;
 
     /**
      * @var int|null

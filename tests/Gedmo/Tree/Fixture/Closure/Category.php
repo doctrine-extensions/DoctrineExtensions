@@ -65,7 +65,7 @@ class Category
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\Closure\Category $parent = null;
+    private ?Category $parent = null;
 
     /**
      * @var Collection<int, CategoryClosure>

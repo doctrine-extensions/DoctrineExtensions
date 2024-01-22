@@ -28,7 +28,7 @@ class ClosureCategory
      */
     private $children;
 
-    private ?\Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory $parent = null;
+    private ?ClosureCategory $parent = null;
 
     private ?int $level = null;
 

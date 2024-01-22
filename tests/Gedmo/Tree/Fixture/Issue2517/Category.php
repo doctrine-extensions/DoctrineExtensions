@@ -102,7 +102,7 @@ class Category
     #[Gedmo\TreeParent]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private ?\Gedmo\Tests\Tree\Fixture\Issue2517\Category $parent = null;
+    private ?Category $parent = null;
 
     /**
      * @var Collection<int, Category>

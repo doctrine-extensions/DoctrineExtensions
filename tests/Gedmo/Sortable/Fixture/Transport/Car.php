@@ -27,7 +27,7 @@ class Car extends Vehicle
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private ?\Gedmo\Tests\Sortable\Fixture\Transport\Car $parent = null;
+    private ?Car $parent = null;
 
     /**
      * @var Collection<int, self>

@@ -62,7 +62,7 @@ abstract class Person
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\Closure\Person $parent = null;
+    private ?Person $parent = null;
 
     /**
      * @ORM\Column(name="level", type="integer")

@@ -30,7 +30,7 @@ class Category extends BaseCategory
      */
     private $children;
 
-    private ?\Gedmo\Tests\Mapping\Fixture\Yaml\Category $parent = null;
+    private ?Category $parent = null;
 
     /**
      * @var \DateTime

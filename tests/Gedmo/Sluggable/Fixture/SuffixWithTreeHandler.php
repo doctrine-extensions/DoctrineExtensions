@@ -71,7 +71,7 @@ class SuffixWithTreeHandler implements Sluggable
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Sluggable\Fixture\SuffixWithTreeHandler $parent = null;
+    private ?SuffixWithTreeHandler $parent = null;
 
     /**
      * @Gedmo\TreeLeft

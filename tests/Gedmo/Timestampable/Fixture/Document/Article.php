@@ -40,7 +40,7 @@ class Article
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Timestampable\Fixture\Document\Type")
      */
     #[ODM\ReferenceOne(targetDocument: Type::class)]
-    private ?\Gedmo\Tests\Timestampable\Fixture\Document\Type $type = null;
+    private ?Type $type = null;
 
     /**
      * @var int|Timestamp|null
