@@ -38,7 +38,7 @@ class Article
     /**
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Blameable\Fixture\Document\Type")
      */
-    #[Odm\ReferenceOne(targetDocument: Type::class)]
+    #[ODM\ReferenceOne(targetDocument: Type::class)]
     private ?Type $type = null;
 
     /**

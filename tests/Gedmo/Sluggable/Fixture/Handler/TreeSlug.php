@@ -73,7 +73,7 @@ class TreeSlug implements Node
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlug $parent = null;
+    private ?TreeSlug $parent = null;
 
     /**
      * @var Collection<int, self>

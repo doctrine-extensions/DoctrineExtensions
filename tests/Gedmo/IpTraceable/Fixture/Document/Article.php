@@ -39,7 +39,7 @@ class Article
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\IpTraceable\Fixture\Document\Type")
      */
     #[ODM\ReferenceOne(targetDocument: Type::class)]
-    private ?\Gedmo\Tests\IpTraceable\Fixture\Document\Type $type = null;
+    private ?Type $type = null;
 
     /**
      * @ODM\Field(type="string")

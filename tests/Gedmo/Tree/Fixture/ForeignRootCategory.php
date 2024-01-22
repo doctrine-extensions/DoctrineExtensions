@@ -78,7 +78,7 @@ class ForeignRootCategory
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\ForeignRootCategory $parent = null;
+    private ?ForeignRootCategory $parent = null;
 
     /**
      * @var int|null

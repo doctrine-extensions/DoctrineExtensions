@@ -79,7 +79,7 @@ class MPFeaturesCategory
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\MPFeaturesCategory $parentId = null;
+    private ?MPFeaturesCategory $parentId = null;
 
     /**
      * @var int|null

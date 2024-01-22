@@ -38,7 +38,7 @@ class Article
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type", inversedBy="articles")
      */
     #[ODM\ReferenceOne(targetDocument: Type::class, inversedBy: 'articles')]
-    private ?\Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type $type = null;
+    private ?Type $type = null;
 
     public function getId(): ?string
     {
