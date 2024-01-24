@@ -62,7 +62,7 @@ abstract class Person
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\Genealogy\Person $parent = null;
+    private ?Person $parent = null;
 
     /**
      * @var int|null

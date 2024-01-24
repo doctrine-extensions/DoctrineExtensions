@@ -80,7 +80,7 @@ class CategoryUuid implements NodeInterface
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Tree\Fixture\CategoryUuid $parentId = null;
+    private ?CategoryUuid $parentId = null;
 
     /**
      * @var int|null

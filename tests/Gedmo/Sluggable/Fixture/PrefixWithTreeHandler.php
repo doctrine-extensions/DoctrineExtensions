@@ -71,7 +71,7 @@ class PrefixWithTreeHandler implements Sluggable
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Sluggable\Fixture\PrefixWithTreeHandler $parent = null;
+    private ?PrefixWithTreeHandler $parent = null;
 
     /**
      * @Gedmo\TreeLeft

@@ -79,7 +79,7 @@ class Occupation
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Sluggable\Fixture\Handler\People\Occupation $parent = null;
+    private ?Occupation $parent = null;
 
     /**
      * @var Collection<int, self>

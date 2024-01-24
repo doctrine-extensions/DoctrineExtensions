@@ -74,7 +74,7 @@ class TreeSlugPrefixSuffix
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    private ?\Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlugPrefixSuffix $parent = null;
+    private ?TreeSlugPrefixSuffix $parent = null;
 
     /**
      * @var Collection<int, self>

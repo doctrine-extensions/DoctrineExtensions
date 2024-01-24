@@ -35,7 +35,7 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     private const COMPOSITE = Composite::class;
     private const COMPOSITE_RELATION = CompositeRelation::class;
     private const RELATED_ARTICLE = RelatedArticle::class;
-    private const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment::class;
+    private const COMMENT_LOG = Fixture\Entity\Log\Comment::class;
 
     public function testShouldHandleClonedEntity(): void
     {

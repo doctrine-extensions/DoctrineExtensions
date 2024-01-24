@@ -31,7 +31,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
 {
     private const ARTICLE = Article::class;
     private const COMMENT = Comment::class;
-    private const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Document\Log\Comment::class;
+    private const COMMENT_LOG = Fixture\Document\Log\Comment::class;
 
     protected function setUp(): void
     {

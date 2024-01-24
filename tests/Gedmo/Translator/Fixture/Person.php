@@ -72,7 +72,7 @@ class Person
      * @ORM\ManyToOne(targetEntity="Person")
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
-    private ?\Gedmo\Tests\Translator\Fixture\Person $parent = null;
+    private ?Person $parent = null;
 
     public function __construct()
     {
