@@ -43,6 +43,9 @@ use Gedmo\Tree\Strategy\ORM\Nested;
  */
 class NestedTreeRepository extends AbstractTreeRepository
 {
+    public const TRAVERSAL_PRE_ORDER = 'pre_order';
+    public const TRAVERSAL_LEVEL_ORDER = 'level_order';
+
     /**
      * Allows the following 'virtual' methods:
      * - persistAsFirstChild($node)
@@ -1167,6 +1170,96 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         return $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode)->getArrayResult();
+    }
+
+    /**
+     * @param object      $root              Root node of the parsed tree
+     * @param object|null $node              Current node. If null, first node will be returned
+     * @param int|null    $limit             Maximum nodes to return. If null, all nodes will be returned
+     * @param string      $traversalStrategy Strategy to use to traverse tree
+     *
+     * @phpstan-assert self::TRAVERSAL_* $traversalStrategy
+     *
+     * @throws InvalidArgumentException if input is invalid
+     */
+    public function getNextNodesQueryBuilder($root, $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): QueryBuilder
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
+
+        if (self::TRAVERSAL_PRE_ORDER === $traversalStrategy) {
+            $qb = $this->childrenQueryBuilder($root, false, $config['left'], 'ASC', true);
+            if (null !== $node) {
+                $wrapped = new EntityWrapper($node, $this->_em);
+                $qb
+                    ->andWhere($qb->expr()->gt('node.'.$config['left'], ':lft'))
+                    ->setParameter('lft', $wrapped->getPropertyValue($config['left']))
+                ;
+            }
+        } elseif (self::TRAVERSAL_LEVEL_ORDER === $traversalStrategy) {
+            if (!isset($config['level'])) {
+                throw new \InvalidArgumentException('TreeLevel must be set to use level order traversal.');
+            }
+            $qb = $this->childrenQueryBuilder($root, false, [$config['level'], $config['left']], ['DESC', 'ASC'], true);
+            if (null !== $node) {
+                $wrapped = new EntityWrapper($node, $this->_em);
+                $qb
+                    ->andWhere(
+                        $qb->expr()->orX(
+                            $qb->expr()->andX(
+                                $qb->expr()->gt('node.'.$config['left'], ':lft'),
+                                $qb->expr()->eq('node.'.$config['level'], ':lvl')
+                            ),
+                            $qb->expr()->lt('node.'.$config['level'], ':lvl')
+                        )
+                    )
+                    ->setParameter('lvl', $wrapped->getPropertyValue($config['level']))
+                    ->setParameter('lft', $wrapped->getPropertyValue($config['left']))
+                ;
+            }
+        } else {
+            throw new InvalidArgumentException(\sprintf('Invalid traversal strategy "%s".', $traversalStrategy));
+        }
+
+        if (null !== $limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param object            $root              Root node of the parsed tree
+     * @param object|null       $node              Current node. If null, first node will be returned
+     * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
+     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
+     */
+    public function getNextNodesQuery($root, $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): Query
+    {
+        return $this->getNextNodesQueryBuilder($root, $node, $limit, $traversalStrategy)->getQuery();
+    }
+
+    /**
+     * @param object            $root              Root node of the parsed tree
+     * @param object|null       $node              Current node. If null, first node will be returned
+     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
+     */
+    public function getNextNode($root, $node = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): ?object
+    {
+        return $this->getNextNodesQuery($root, $node, 1, $traversalStrategy)->getOneOrNullResult();
+    }
+
+    /**
+     * @param object            $root              Root node of the parsed tree
+     * @param object|null       $node              Current node. If null, first node will be returned
+     * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
+     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
+     *
+     * @return array<object>
+     */
+    public function getNextNodes($root, $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): array
+    {
+        return $this->getNextNodesQuery($root, $node, $limit, $traversalStrategy)->getArrayResult();
     }
 
     protected function validate()

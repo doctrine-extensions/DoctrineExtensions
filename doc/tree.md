@@ -1249,6 +1249,11 @@ There are repository methods that are available for you in all the strategies:
       * childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
   - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
 * **setChildrenIndex** / **getChildrenIndex**: These methods allow you to change the default index used to hold the children when you use the **childrenHierarchy** method. Index defaults to "__children".
+* **getNextNode** / **getNextNodes**: These methods allow you to get the next nodes when parsing a nested tree. Arguments:
+  - *root*: Root node use to select (sub-)tree to use.
+  - *node*: Current node. Use "null" to get the first one. Default to "null".
+  - *limit* (only for getNextNodes): Maximum nodes to return. Default to "null".
+  - *traversalStrategy*: Which strategy to use between "pre_order" and "level_order". Default to "NestedTreeRepository::TRAVERSAL_PRE_ORDER".
 
 This list is not complete yet. We're working on including more methods in the common API offered by repositories of all the strategies.
 Soon we'll be adding more helpful methods here.
