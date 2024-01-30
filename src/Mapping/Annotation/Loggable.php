@@ -10,6 +10,7 @@
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use Doctrine\Deprecations\Deprecation;
 use Gedmo\Loggable\LogEntryInterface;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
@@ -46,10 +47,12 @@ final class Loggable implements GedmoAnnotation
     public function __construct(array $data = [], ?string $logEntryClass = null)
     {
         if ([] !== $data) {
-            @trigger_error(sprintf(
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2357',
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
-            ), E_USER_DEPRECATED);
+            );
 
             $args = func_get_args();
 

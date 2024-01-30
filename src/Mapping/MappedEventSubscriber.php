@@ -14,6 +14,7 @@ use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
@@ -205,9 +206,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
     public function setAnnotationReader($reader)
     {
         if (!$reader instanceof Reader && !$reader instanceof AttributeReader) {
-            trigger_deprecation(
+            Deprecation::trigger(
                 'gedmo/doctrine-extensions',
-                '3.11',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2558',
                 'Providing an annotation reader which does not implement %s or is not an instance of %s to %s() is deprecated.',
                 Reader::class,
                 AttributeReader::class,

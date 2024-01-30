@@ -10,6 +10,7 @@
 namespace Gedmo\Mapping\Driver;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
@@ -47,9 +48,9 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     public function setAnnotationReader($reader)
     {
         if (!$reader instanceof Reader && !$reader instanceof AttributeReader) {
-            trigger_deprecation(
+            Deprecation::trigger(
                 'gedmo/doctrine-extensions',
-                '3.11',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2258',
                 'Passing an object not implementing "%s" or "%s" as argument 1 to "%s()" is deprecated and'
                 .' will throw an "%s" error in version 4.0. Instance of "%s" given.',
                 Reader::class,

@@ -11,6 +11,7 @@ namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
@@ -156,12 +157,14 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 || !$parameters[0]->getType() instanceof \ReflectionNamedType
                 || $eventClass !== $parameters[0]->getType()->getName()
             ) {
-                @trigger_error(sprintf(
+                Deprecation::trigger(
+                    'gedmo/doctrine-extensions',
+                    'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2649',
                     'Type-hinting to something different than "%s" in "%s::%s()" is deprecated.',
                     $eventClass,
                     get_class($listener),
                     $reflMethod->getName()
-                ), E_USER_DEPRECATED);
+                );
 
                 return false;
             }

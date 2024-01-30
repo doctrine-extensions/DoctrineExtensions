@@ -12,6 +12,7 @@ namespace Gedmo\Sortable;
 use Doctrine\Common\Comparable;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -271,12 +272,14 @@ class SortableListener extends MappedEventSubscriber
                                     if (is_int($matches)) {
                                         $matches = 0 === $matches;
                                     } else {
-                                        @trigger_error(sprintf(
+                                        Deprecation::trigger(
+                                            'gedmo/doctrine-extensions',
+                                            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2542',
                                             'Support for "%s" as return type from "%s::compareTo()" is deprecated since'
                                             .' gedmo/doctrine-extensions 3.11 and will be removed in version 4.0. Return "integer" instead.',
                                             gettype($matches),
                                             Comparable::class
-                                        ), E_USER_DEPRECATED);
+                                        );
                                     }
                                 } else {
                                     $matches = $gr == $value;
