@@ -14,7 +14,9 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Types\Type as TypeODM;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\NotifyPropertyChanged;
 use Doctrine\Persistence\ObjectManager;
@@ -59,6 +61,10 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
 
     /**
      * Processes object updates when the manager is flushed.
+     *
+     * @param ManagerEventArgs $args
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $args
      *
      * @return void
      */
@@ -161,6 +167,10 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
 
     /**
      * Processes updates when an object is persisted in the manager.
+     *
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
      *
      * @return void
      */

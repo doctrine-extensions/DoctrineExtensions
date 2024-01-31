@@ -10,7 +10,9 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
@@ -239,6 +241,10 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Allows identifier fields to be slugged as usual
      *
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function prePersist(EventArgs $args)
@@ -260,6 +266,10 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Generate slug on objects being updated during flush
      * if they require changing
+     *
+     * @param ManagerEventArgs $args
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $args
      *
      * @return void
      */

@@ -11,7 +11,9 @@ namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
@@ -140,6 +142,10 @@ class LoggableListener extends MappedEventSubscriber
      * Checks for inserted object to update its logEntry
      * foreign key
      *
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function postPersist(EventArgs $args)
@@ -186,6 +192,10 @@ class LoggableListener extends MappedEventSubscriber
     /**
      * Looks for loggable objects being inserted or updated
      * for further processing
+     *
+     * @param ManagerEventArgs $eventArgs
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $eventArgs
      *
      * @return void
      */
