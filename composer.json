@@ -70,10 +70,9 @@
     },
     "conflict": {
         "doctrine/annotations": "<1.13 || >=3.0",
-        "doctrine/dbal": "<3.2",
-        "doctrine/mongodb-odm": "<2.3",
-        "doctrine/orm": "<2.14.0 || 2.16.0 || 2.16.1",
-        "sebastian/comparator": "<2.0"
+        "doctrine/dbal": "<3.2 || >=4.0",
+        "doctrine/mongodb-odm": "<2.3 || >=3.0",
+        "doctrine/orm": "<2.14.0 || 2.16.0 || 2.16.1 || >=3.0"
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
