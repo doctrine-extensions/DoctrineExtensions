@@ -11,7 +11,9 @@ namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
+use Gedmo\Mapping\Event\ClockAwareAdapterInterface;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
+use Psr\Clock\ClockInterface;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -19,14 +21,24 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class ODM extends BaseAdapterODM implements TimestampableAdapter
+final class ODM extends BaseAdapterODM implements TimestampableAdapter, ClockAwareAdapterInterface
 {
+    /**
+     * @var ClockInterface|null
+     */
+    private ?ClockInterface $clock = null;
+
+    public function setClock(ClockInterface $clock): void
+    {
+        $this->clock = $clock;
+    }
+
     /**
      * @param ClassMetadata $meta
      */
     public function getDateValue($meta, $field)
     {
-        $datetime = new \DateTime();
+        $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
         $mapping = $meta->getFieldMapping($field);
         $type = $mapping['type'] ?? null;
 
@@ -35,9 +47,9 @@ final class ODM extends BaseAdapterODM implements TimestampableAdapter
         }
 
         if (in_array($type, ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
-            return \DateTimeImmutable::createFromMutable($datetime);
+            return $datetime;
         }
 
-        return $datetime;
+        return \DateTime::createFromImmutable($datetime);
     }
 }

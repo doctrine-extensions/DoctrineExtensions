@@ -21,6 +21,8 @@ a release.
 ### Added
 - SoftDeleteable: `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes.
+- Add support for injecting a `psr/clock` implementation into event adapters
+  that create new `DateTimeInterface` objects (SoftDeleteable and Timestampable)
 
 ### Changed
 - Make doctrine/annotations an optional dependency.

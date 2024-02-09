@@ -13,7 +13,9 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+use Gedmo\Mapping\Event\ClockAwareAdapterInterface;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
+use Psr\Clock\ClockInterface;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -21,8 +23,18 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class ORM extends BaseAdapterORM implements TimestampableAdapter
+final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwareAdapterInterface
 {
+    /**
+     * @var ClockInterface|null
+     */
+    private ?ClockInterface $clock = null;
+
+    public function setClock(ClockInterface $clock): void
+    {
+        $this->clock = $clock;
+    }
+
     /**
      * @param ClassMetadata $meta
      */
@@ -44,7 +56,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
      */
     private function getRawDateValue(array $mapping)
     {
-        $datetime = new \DateTime();
+        $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
         $type = $mapping['type'] ?? null;
 
         if ('integer' === $type) {
@@ -52,9 +64,9 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
         }
 
         if (in_array($type, ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
-            return \DateTimeImmutable::createFromMutable($datetime);
+            return $datetime;
         }
 
-        return $datetime;
+        return \DateTime::createFromImmutable($datetime);
     }
 }
