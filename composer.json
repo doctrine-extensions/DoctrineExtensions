@@ -48,6 +48,7 @@
         "doctrine/event-manager": "^1.2 || ^2.0",
         "doctrine/persistence": "^2.2 || ^3.0",
         "psr/cache": "^1 || ^2 || ^3",
+        "psr/clock": "^1",
         "symfony/cache": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {

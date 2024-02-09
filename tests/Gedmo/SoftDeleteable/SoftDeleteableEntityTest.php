@@ -17,6 +17,7 @@ use Doctrine\ORM\Query;
 use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\Tests\Clock;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Article;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Child;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Comment;
@@ -62,6 +63,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $evm = new EventManager();
         $this->softDeleteableListener = new SoftDeleteableListener();
+        $this->softDeleteableListener->setClock(new Clock());
         $evm->addEventSubscriber($this->softDeleteableListener);
         $config = $this->getDefaultConfiguration();
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);

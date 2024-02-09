@@ -11,7 +11,9 @@ namespace Gedmo\SoftDeleteable\Mapping\Event\Adapter;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
+use Gedmo\Mapping\Event\ClockAwareAdapterInterface;
 use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
+use Psr\Clock\ClockInterface;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -19,14 +21,24 @@ use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
  *
  * @author David Buchmann <mail@davidbu.ch>
  */
-final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter
+final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter, ClockAwareAdapterInterface
 {
+    /**
+     * @var ClockInterface|null
+     */
+    private ?ClockInterface $clock = null;
+
+    public function setClock(ClockInterface $clock): void
+    {
+        $this->clock = $clock;
+    }
+
     /**
      * @param ClassMetadata $meta
      */
     public function getDateValue($meta, $field)
     {
-        $datetime = new \DateTime();
+        $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
         $mapping = $meta->getFieldMapping($field);
         $type = $mapping['type'] ?? null;
 
@@ -35,9 +47,9 @@ final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter
         }
 
         if (in_array($type, ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
-            return \DateTimeImmutable::createFromMutable($datetime);
+            return $datetime;
         }
 
-        return $datetime;
+        return \DateTime::createFromImmutable($datetime);
     }
 }

@@ -26,10 +26,12 @@ use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Mapping\Event\ClockAwareAdapterInterface;
 use Gedmo\ReferenceIntegrity\Mapping\Validator as ReferenceIntegrityValidator;
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
 use Gedmo\Uploadable\Mapping\Validator as MappingValidator;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Clock\ClockInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
@@ -94,6 +96,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @var CacheItemPoolInterface|null
      */
     private $cacheItemPool;
+
+    private ?ClockInterface $clock = null;
 
     public function __construct()
     {
@@ -224,6 +228,11 @@ abstract class MappedEventSubscriber implements EventSubscriber
         $this->cacheItemPool = $cacheItemPool;
     }
 
+    final public function setClock(ClockInterface $clock): void
+    {
+        $this->clock = $clock;
+    }
+
     /**
      * Scans the objects for extended annotations
      * event subscribers must subscribe to loadClassMetadata event
@@ -267,6 +276,10 @@ abstract class MappedEventSubscriber implements EventSubscriber
                     $adapterClass = 'Gedmo\\Mapping\\Event\\Adapter\\'.$m[1];
                 }
                 $this->adapters[$m[1]] = new $adapterClass();
+
+                if ($this->adapters[$m[1]] instanceof ClockAwareAdapterInterface && $this->clock instanceof ClockInterface) {
+                    $this->adapters[$m[1]]->setClock($this->clock);
+                }
             }
             $this->adapters[$m[1]]->setEventArgs($args);
 
