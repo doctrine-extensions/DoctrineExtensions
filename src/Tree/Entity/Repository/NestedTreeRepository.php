@@ -17,6 +17,7 @@ use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
+use Gedmo\Tool\ORM\Repository\EntityRepositoryCompat;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\Node;
 use Gedmo\Tree\Strategy;
@@ -44,96 +45,7 @@ use Gedmo\Tree\Strategy\ORM\Nested;
  */
 class NestedTreeRepository extends AbstractTreeRepository
 {
-    /**
-     * Allows the following 'virtual' methods:
-     * - persistAsFirstChild($node)
-     * - persistAsFirstChildOf($node, $parent)
-     * - persistAsLastChild($node)
-     * - persistAsLastChildOf($node, $parent)
-     * - persistAsNextSibling($node)
-     * - persistAsNextSiblingOf($node, $sibling)
-     * - persistAsPrevSibling($node)
-     * - persistAsPrevSiblingOf($node, $sibling)
-     * Inherited virtual methods:
-     * - find*
-     *
-     * @see \Doctrine\ORM\EntityRepository
-     *
-     * @throws InvalidArgumentException If arguments are invalid
-     * @throws \BadMethodCallException  If the method called is an invalid find* or persistAs* method
-     *                                  or no find* either persistAs* method at all and therefore an invalid method call
-     *
-     * @return mixed TreeNestedRepository if persistAs* is called
-     */
-    public function __call($method, $args)
-    {
-        if ('persistAs' === substr($method, 0, 9)) {
-            if (!isset($args[0])) {
-                throw new InvalidArgumentException('Node to persist must be available as first argument.');
-            }
-            $node = $args[0];
-            $wrapped = new EntityWrapper($node, $this->getEntityManager());
-            $meta = $this->getClassMetadata();
-            $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->getName());
-            $position = substr($method, 9);
-            if ('Of' === substr($method, -2)) {
-                if (!isset($args[1])) {
-                    throw new InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument.');
-                }
-                $parentOrSibling = $args[1];
-                if (strstr($method, 'Sibling')) {
-                    $wrappedParentOrSibling = new EntityWrapper($parentOrSibling, $this->getEntityManager());
-                    $newParent = $wrappedParentOrSibling->getPropertyValue($config['parent']);
-                    if (null === $newParent && isset($config['root'])) {
-                        throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
-                    }
-
-                    if (!$node instanceof Node) {
-                        Deprecation::trigger(
-                            'gedmo/doctrine-extensions',
-                            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2547',
-                            'Not implementing the "%s" interface from node "%s" is deprecated since gedmo/doctrine-extensions'
-                            .' 3.13 and will throw a "%s" error in version 4.0.',
-                            Node::class,
-                            \get_class($node),
-                            \TypeError::class
-                        );
-                    }
-
-                    // @todo: In the next major release, remove the previous condition and uncomment the following one.
-
-                    // if (!$node instanceof Node) {
-                    //     throw new \TypeError(\sprintf(
-                    //         'Node MUST implement "%s" interface.',
-                    //         Node::class
-                    //     ));
-                    // }
-
-                    // @todo: In the next major release, remove the `method_exists()` condition and left the `else` branch.
-                    if (!method_exists($node, 'setSibling')) {
-                        $node->sibling = $parentOrSibling;
-                    } else {
-                        $node->setSibling($parentOrSibling);
-                    }
-                    $parentOrSibling = $newParent;
-                }
-                $wrapped->setPropertyValue($config['parent'], $parentOrSibling);
-                $position = substr($position, 0, -2);
-            }
-            $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
-            $oid = spl_object_id($node);
-            $this->listener
-                ->getStrategy($this->getEntityManager(), $meta->getName())
-                ->setNodePosition($oid, $position)
-            ;
-
-            $this->getEntityManager()->persist($node);
-
-            return $this;
-        }
-
-        return parent::__call($method, $args);
-    }
+    use EntityRepositoryCompat;
 
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
@@ -1170,6 +1082,102 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         return $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode)->getArrayResult();
+    }
+
+    /**
+     * Allows the following 'virtual' methods:
+     * - persistAsFirstChild($node)
+     * - persistAsFirstChildOf($node, $parent)
+     * - persistAsLastChild($node)
+     * - persistAsLastChildOf($node, $parent)
+     * - persistAsNextSibling($node)
+     * - persistAsNextSiblingOf($node, $sibling)
+     * - persistAsPrevSibling($node)
+     * - persistAsPrevSiblingOf($node, $sibling)
+     * Inherited virtual methods:
+     * - find*
+     *
+     * @param string $method
+     * @param array  $args
+     *
+     * @phpstan-param list<mixed> $args
+     *
+     * @throws \BadMethodCallException  If the method called is an invalid find* or persistAs* method
+     *                                  or no find* either persistAs* method at all and therefore an invalid method call
+     * @throws InvalidArgumentException If arguments are invalid
+     *
+     * @return mixed TreeNestedRepository if persistAs* is called
+     *
+     * @see \Doctrine\ORM\EntityRepository
+     */
+    protected function doCallWithCompat($method, $args)
+    {
+        if ('persistAs' === substr($method, 0, 9)) {
+            if (!isset($args[0])) {
+                throw new InvalidArgumentException('Node to persist must be available as first argument.');
+            }
+            $node = $args[0];
+            $wrapped = new EntityWrapper($node, $this->getEntityManager());
+            $meta = $this->getClassMetadata();
+            $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->getName());
+            $position = substr($method, 9);
+            if ('Of' === substr($method, -2)) {
+                if (!isset($args[1])) {
+                    throw new InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument.');
+                }
+                $parentOrSibling = $args[1];
+                if (strstr($method, 'Sibling')) {
+                    $wrappedParentOrSibling = new EntityWrapper($parentOrSibling, $this->getEntityManager());
+                    $newParent = $wrappedParentOrSibling->getPropertyValue($config['parent']);
+                    if (null === $newParent && isset($config['root'])) {
+                        throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
+                    }
+
+                    if (!$node instanceof Node) {
+                        Deprecation::trigger(
+                            'gedmo/doctrine-extensions',
+                            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2547',
+                            'Not implementing the "%s" interface from node "%s" is deprecated since gedmo/doctrine-extensions'
+                            .' 3.13 and will throw a "%s" error in version 4.0.',
+                            Node::class,
+                            \get_class($node),
+                            \TypeError::class
+                        );
+                    }
+
+                    // @todo: In the next major release, remove the previous condition and uncomment the following one.
+
+                    // if (!$node instanceof Node) {
+                    //     throw new \TypeError(\sprintf(
+                    //         'Node MUST implement "%s" interface.',
+                    //         Node::class
+                    //     ));
+                    // }
+
+                    // @todo: In the next major release, remove the `method_exists()` condition and left the `else` branch.
+                    if (!method_exists($node, 'setSibling')) {
+                        $node->sibling = $parentOrSibling;
+                    } else {
+                        $node->setSibling($parentOrSibling);
+                    }
+                    $parentOrSibling = $newParent;
+                }
+                $wrapped->setPropertyValue($config['parent'], $parentOrSibling);
+                $position = substr($position, 0, -2);
+            }
+            $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
+            $oid = spl_object_id($node);
+            $this->listener
+                ->getStrategy($this->getEntityManager(), $meta->getName())
+                ->setNodePosition($oid, $position)
+            ;
+
+            $this->getEntityManager()->persist($node);
+
+            return $this;
+        }
+
+        return parent::__call($method, $args);
     }
 
     protected function validate()

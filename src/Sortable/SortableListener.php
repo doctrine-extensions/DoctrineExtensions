@@ -13,7 +13,9 @@ use Doctrine\Common\Comparable;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Deprecations\Deprecation;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -108,6 +110,10 @@ class SortableListener extends MappedEventSubscriber
      * The synchronization of the objects in memory is done in postFlush. This
      * ensures that the positions have been successfully persisted to database.
      *
+     * @param ManagerEventArgs $args
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function onFlush(EventArgs $args)
@@ -152,6 +158,12 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Update maxPositions as needed
      *
+     * @param 
+     
+     $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function prePersist(EventArgs $args)
@@ -176,6 +188,10 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function postPersist(EventArgs $args)
@@ -186,6 +202,10 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function preUpdate(EventArgs $args)
@@ -196,6 +216,10 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function postRemove(EventArgs $args)
@@ -207,6 +231,10 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Sync objects in memory
+     *
+     * @param ManagerEventArgs $args
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $args
      *
      * @return void
      */

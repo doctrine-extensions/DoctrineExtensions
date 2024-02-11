@@ -11,6 +11,7 @@ namespace Gedmo\References;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -74,6 +75,10 @@ class ReferencesListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LifecycleEventArgs $eventArgs
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $eventArgs
+     *
      * @return void
      */
     public function postLoad(EventArgs $eventArgs)
@@ -140,6 +145,10 @@ class ReferencesListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LifecycleEventArgs $eventArgs
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $eventArgs
+     *
      * @return void
      */
     public function prePersist(EventArgs $eventArgs)
@@ -148,6 +157,10 @@ class ReferencesListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LifecycleEventArgs $eventArgs
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $eventArgs
+     *
      * @return void
      */
     public function preUpdate(EventArgs $eventArgs)
@@ -190,6 +203,10 @@ class ReferencesListener extends MappedEventSubscriber
     }
 
     /**
+     * @param LifecycleEventArgs $eventArgs
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $eventArgs
+     *
      * @return void
      */
     public function updateManyEmbedReferences(EventArgs $eventArgs)
@@ -237,6 +254,11 @@ class ReferencesListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
+    /**
+     * @param LifecycleEventArgs $eventArgs
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $eventArgs
+     */
     private function updateReferences(EventArgs $eventArgs): void
     {
         $ea = $this->getEventAdapter($eventArgs);

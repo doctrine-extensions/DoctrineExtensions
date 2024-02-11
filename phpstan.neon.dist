@@ -19,3 +19,6 @@ parameters:
         - '#^Method Gedmo\\Uploadable\\Mapping\\Validator::validateConfiguration\(\) with return type void returns array<string, mixed> but should not return anything\.$#'
         - '#^Result of static method Gedmo\\Uploadable\\Mapping\\Validator::validateConfiguration\(\) \(void\) is used\.$#'
         - '#^Result of method Gedmo\\Mapping\\Driver::readExtendedMetadata\(\) \(void\) is used\.$#'
+    excludePaths:
+        # Generates non-ignorable errors like " Parameter #1 $method (string) of method Gedmo\Tree\Entity\Repository\NestedTreeRepository::__call() is not contravariant with parameter #1 $method (mixed) of method Doctrine\ORM\EntityRepository::__call()."
+        - src/Tool/ORM/Repository/EntityRepositoryCompat.php
