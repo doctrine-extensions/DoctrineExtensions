@@ -158,9 +158,7 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Update maxPositions as needed
      *
-     * @param 
-     
-     $args
+     * @param LifecycleEventArgs $args
      *
      * @phpstan-param LifecycleEventArgs<ObjectManager> $args
      *
