@@ -10,6 +10,7 @@
 namespace Gedmo\ReferenceIntegrity;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -55,6 +56,10 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
     /**
      * Looks for referenced objects being removed
      * to nullify the relation or throw an exception
+     *
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
      *
      * @return void
      */

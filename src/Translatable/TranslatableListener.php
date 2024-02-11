@@ -12,7 +12,9 @@ namespace Gedmo\Translatable;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
@@ -372,6 +374,10 @@ class TranslatableListener extends MappedEventSubscriber
      * This has to be done in the preFlush because, when an entity has been loaded
      * in a different locale, no changes will be detected.
      *
+     * @param ManagerEventArgs $args
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function preFlush(EventArgs $args)
@@ -408,6 +414,10 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Looks for translatable objects being inserted or updated
      * for further processing
+     *
+     * @param ManagerEventArgs $args
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $args
      *
      * @return void
      */
@@ -449,6 +459,10 @@ class TranslatableListener extends MappedEventSubscriber
      * Checks for inserted object to update their translation
      * foreign keys
      *
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     *
      * @return void
      */
     public function postPersist(EventArgs $args)
@@ -481,6 +495,10 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * After object is loaded, listener updates the translations
      * by currently used locale
+     *
+     * @param ManagerEventArgs $args
+     *
+     * @phpstan-param ManagerEventArgs<ObjectManager> $args
      *
      * @return void
      */
