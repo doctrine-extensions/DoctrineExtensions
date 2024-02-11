@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\Proxy;
@@ -666,12 +667,14 @@ class Nested implements Strategy
         // @todo: Remove the following condition and assignment in the next major release and use 0 as default value for
         // the `$levelDelta` parameter.
         if (null === $levelDelta && func_num_args() >= 8) {
-            @trigger_error(sprintf(
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2495',
                 'Passing a type different than "int" as argument 8 to "%s()" is deprecated since gedmo/doctrine-extensions'.
                 ' 3.9 and will throw a "%s" error in version 4.0.',
                 __METHOD__,
                 \TypeError::class
-            ), E_USER_DEPRECATED);
+            );
         }
         $levelDelta ??= 0;
 

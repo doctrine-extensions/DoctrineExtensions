@@ -10,6 +10,7 @@
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use Doctrine\Deprecations\Deprecation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 
@@ -42,10 +43,12 @@ final class TreeClosure implements GedmoAnnotation
     public function __construct(array $data = [], string $class = '')
     {
         if ([] !== $data) {
-            @trigger_error(sprintf(
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2388',
                 'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
-            ), E_USER_DEPRECATED);
+            );
 
             $args = func_get_args();
 

@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -98,11 +99,13 @@ class Closure implements Strategy
         $hasTheUserExplicitlyDefinedMapping = true;
 
         if (!$closureMetadata->hasAssociation('ancestor')) {
-            @trigger_error(sprintf(
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2390',
                 'Not adding mapping explicitly to "ancestor" property in "%s" is deprecated and will not work in'
                 .' version 4.0. You MUST explicitly set the mapping as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
                 $closureMetadata->getName()
-            ), E_USER_DEPRECATED);
+            );
 
             $hasTheUserExplicitlyDefinedMapping = false;
 
@@ -134,11 +137,13 @@ class Closure implements Strategy
         }
 
         if (!$closureMetadata->hasAssociation('descendant')) {
-            @trigger_error(sprintf(
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2390',
                 'Not adding mapping explicitly to "descendant" property in "%s" is deprecated and will not work in'
                 .' version 4.0. You MUST explicitly set the mapping as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
                 $closureMetadata->getName()
-            ), E_USER_DEPRECATED);
+            );
 
             $hasTheUserExplicitlyDefinedMapping = false;
 
@@ -170,11 +175,13 @@ class Closure implements Strategy
         }
 
         if (!$this->hasClosureTableUniqueConstraint($closureMetadata)) {
-            @trigger_error(sprintf(
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2390',
                 'Not adding a unique constraint explicitly to "%s" is deprecated and will not be automatically'
                 .' added in version 4.0. You SHOULD explicitly add the unique constraint as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
                 $closureMetadata->getName()
-            ), E_USER_DEPRECATED);
+            );
 
             $hasTheUserExplicitlyDefinedMapping = false;
 
@@ -189,11 +196,13 @@ class Closure implements Strategy
         }
 
         if (!$this->hasClosureTableDepthIndex($closureMetadata)) {
-            @trigger_error(sprintf(
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2390',
                 'Not adding an index with "depth" column explicitly to "%s" is deprecated and will not be automatically'
                 .' added in version 4.0. You SHOULD explicitly add the index as in our docs: https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/tree.md#closure-table',
                 $closureMetadata->getName()
-            ), E_USER_DEPRECATED);
+            );
 
             $hasTheUserExplicitlyDefinedMapping = false;
 

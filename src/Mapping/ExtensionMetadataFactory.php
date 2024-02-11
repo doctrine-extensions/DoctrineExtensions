@@ -11,6 +11,7 @@ namespace Gedmo\Mapping;
 
 use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver as DoctrineBundleMappingDriver;
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as EntityClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo as LegacyEntityClassMetadata;
@@ -75,9 +76,9 @@ class ExtensionMetadataFactory
     public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null)
     {
         if (null !== $annotationReader && !$annotationReader instanceof Reader && !$annotationReader instanceof AttributeReader) {
-            trigger_deprecation(
+            Deprecation::trigger(
                 'gedmo/doctrine-extensions',
-                '3.11',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2258',
                 'Providing an annotation reader which does not implement %s or is not an instance of %s to %s is deprecated.',
                 Reader::class,
                 AttributeReader::class,

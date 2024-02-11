@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tool\Wrapper;
 
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as OdmClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
@@ -79,10 +80,12 @@ abstract class AbstractWrapper implements WrapperInterface
      */
     public static function clear()
     {
-        @trigger_error(sprintf(
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2410',
             'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
             __METHOD__
-        ), E_USER_DEPRECATED);
+        );
     }
 
     public function getObject()
@@ -97,10 +100,12 @@ abstract class AbstractWrapper implements WrapperInterface
 
     public function populate(array $data)
     {
-        @trigger_error(sprintf(
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2410',
             'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
             __METHOD__
-        ), E_USER_DEPRECATED);
+        );
 
         foreach ($data as $field => $value) {
             $this->setPropertyValue($field, $value);

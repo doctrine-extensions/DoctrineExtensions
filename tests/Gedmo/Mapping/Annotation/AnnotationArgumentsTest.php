@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Annotation;
 
+use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 use Gedmo\Mapping\Annotation\Annotation;
 use Gedmo\Mapping\Annotation\Blameable;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 /**
  * Remove this class when support for array based attributes in annotation classes is removed.
@@ -23,7 +23,7 @@ use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
  */
 final class AnnotationArgumentsTest extends TestCase
 {
-    use ExpectDeprecationTrait;
+    use VerifyDeprecations;
 
     /**
      * @param array<string, mixed> $expected
@@ -33,10 +33,10 @@ final class AnnotationArgumentsTest extends TestCase
      *
      * @param class-string<Annotation> $class
      */
-    public function testArguments(array $expected, string $class, array $args, ?string $expectedDeprecation = null): void
+    public function testArguments(array $expected, string $class, array $args, ?string $expectedDeprecationIdentifier = null): void
     {
-        if (null !== $expectedDeprecation) {
-            $this->expectDeprecation($expectedDeprecation);
+        if (null !== $expectedDeprecationIdentifier) {
+            $this->expectDeprecationWithIdentifier($expectedDeprecationIdentifier);
         }
 
         $annotation = new $class(...$args);
@@ -58,17 +58,17 @@ final class AnnotationArgumentsTest extends TestCase
         yield 'args_with_data' => [
             ['on' => 'delete', 'field' => 'some'],
             Blameable::class, [['on' => 'change', 'field' => 'id'], 'delete', 'some'],
-            'Passing an array as first argument to "Gedmo\Mapping\Annotation\%s::__construct()" is deprecated. Use named arguments instead.',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2375',
         ];
         yield 'data_without_args' => [
             ['on' => 'change', 'field' => 'id'],
             Blameable::class, [['on' => 'change', 'field' => 'id']],
-            'Passing an array as first argument to "Gedmo\Mapping\Annotation\%s::__construct()" is deprecated. Use named arguments instead.',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2375',
         ];
         yield 'default_values_with_args_and_data' => [
             ['on' => 'update', 'field' => null, 'value' => null],
             Blameable::class, [['on' => 'change'], 'update'],
-            'Passing an array as first argument to "Gedmo\Mapping\Annotation\%s::__construct()" is deprecated. Use named arguments instead.',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2375',
         ];
     }
 }

@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-@trigger_error(sprintf(
+use Doctrine\Deprecations\Deprecation;
+
+Deprecation::trigger(
+    'gedmo/doctrine-extensions',
+    'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2558',
     'Requiring the file at "%s" is deprecated since gedmo/doctrine-extensions 3.11, this file will be removed in version 4.0.',
     __FILE__
-), E_USER_DEPRECATED);
+);
 
 // Contains all annotations for extensions
 // NOTE: should be included with require_once

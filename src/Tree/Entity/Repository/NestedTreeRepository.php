@@ -9,6 +9,7 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -1133,13 +1134,15 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
 
                     if (!$node instanceof Node) {
-                        @trigger_error(\sprintf(
+                        Deprecation::trigger(
+                            'gedmo/doctrine-extensions',
+                            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2547',
                             'Not implementing the "%s" interface from node "%s" is deprecated since gedmo/doctrine-extensions'
                             .' 3.13 and will throw a "%s" error in version 4.0.',
                             Node::class,
                             \get_class($node),
                             \TypeError::class
-                        ), \E_USER_DEPRECATED);
+                        );
                     }
 
                     // @todo: In the next major release, remove the previous condition and uncomment the following one.
