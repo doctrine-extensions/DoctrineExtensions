@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.15.0]
 ### Added
 - SoftDeleteable: `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes.
@@ -26,12 +28,17 @@ a release.
 
 ### Changed
 - Make doctrine/annotations an optional dependency.
+- Remove `@internal` annotation from `Gedmo\Mapping\Driver\AttributeReader`.
 
 ### Deprecated
 - Do not add type-hinted parameters `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes to `preSoftDelete` and `postSoftDelete` events.
 - The `createLifecycleEventArgsInstance()` method on `Gedmo\Mapping\Event\AdapterInterface`
   implementations is deprecated, use your own subclass of `Doctrine\Persistence\Event\LifecycleEventArgs` as needed.
+
+### Fixed
+- Add conflict against "doctrine/orm" >= 3.
+- Add conflict against "doctrine/dbal" => 4.
 
 ## [3.14.0]
 ### Added
