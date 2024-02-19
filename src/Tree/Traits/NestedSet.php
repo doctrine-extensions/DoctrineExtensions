@@ -10,7 +10,9 @@
 namespace Gedmo\Tree\Traits;
 
 /**
- * NestedSet Trait, usable with PHP >= 5.4
+ * Trait for objects in a nested tree.
+ *
+ * This implementation does not provide any mapping configurations.
  *
  * @author Renaat De Muynck <renaat.demuynck@gmail.com>
  */

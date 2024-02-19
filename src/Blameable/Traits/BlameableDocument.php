@@ -14,7 +14,9 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Blameable Trait, usable with PHP >= 5.4
+ * Trait for blamable objects.
+ *
+ * This implementation provides a mapping configuration for the Doctrine MongoDB ODM.
  *
  * @author David Buchmann <mail@davidbu.ch>
  */

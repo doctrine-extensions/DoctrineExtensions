@@ -10,7 +10,9 @@
 namespace Gedmo\Timestampable\Traits;
 
 /**
- * Timestampable Trait, usable with PHP >= 5.4
+ * Trait for timestampable objects.
+ *
+ * This implementation does not provide any mapping configurations.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */

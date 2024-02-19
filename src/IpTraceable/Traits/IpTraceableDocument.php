@@ -14,7 +14,9 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * IpTraceable Trait, usable with PHP >= 5.4
+ * Trait for IP traceable objects.
+ *
+ * This implementation provides a mapping configuration for the Doctrine MongoDB ODM.
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  */

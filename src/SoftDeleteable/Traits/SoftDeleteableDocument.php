@@ -13,8 +13,9 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
- * A soft deletable trait you can apply to your MongoDB entities.
- * Includes default annotation mapping.
+ * Trait for soft-deletable objects.
+ *
+ * This implementation provides a mapping configuration for the Doctrine MongoDB ODM.
  *
  * @author Wesley van Opdorp <wesley.van.opdorp@freshheads.com>
  */
