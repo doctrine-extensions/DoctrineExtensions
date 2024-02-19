@@ -72,18 +72,30 @@ class ExtensionMetadataFactory
 
     /**
      * @param Reader|AttributeReader|object|null $annotationReader
+     *
+     * @note Providing any object as the third argument is deprecated, as of 4.0 an {@see AttributeReader} will be required
      */
     public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null)
     {
-        if (null !== $annotationReader && !$annotationReader instanceof Reader && !$annotationReader instanceof AttributeReader) {
-            Deprecation::trigger(
-                'gedmo/doctrine-extensions',
-                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2258',
-                'Providing an annotation reader which does not implement %s or is not an instance of %s to %s is deprecated.',
-                Reader::class,
-                AttributeReader::class,
-                static::class
-            );
+        if (null !== $annotationReader) {
+            if ($annotationReader instanceof Reader) {
+                Deprecation::trigger(
+                    'gedmo/doctrine-extensions',
+                    'TODO',
+                    'Annotations support is deprecated, migrate your application to use attributes and pass an instance of %s to the %s constructor instead.',
+                    AttributeReader::class,
+                    static::class
+                );
+            } elseif (!$annotationReader instanceof AttributeReader) {
+                Deprecation::trigger(
+                    'gedmo/doctrine-extensions',
+                    'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2258',
+                    'Providing an annotation reader which does not implement %s or is not an instance of %s to %s is deprecated.',
+                    Reader::class,
+                    AttributeReader::class,
+                    static::class
+                );
+            }
         }
 
         $this->objectManager = $objectManager;

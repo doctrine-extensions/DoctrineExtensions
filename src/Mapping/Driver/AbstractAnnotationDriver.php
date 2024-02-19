@@ -47,17 +47,22 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
 
     public function setAnnotationReader($reader)
     {
-        if (!$reader instanceof Reader && !$reader instanceof AttributeReader) {
+        if ($reader instanceof Reader) {
             Deprecation::trigger(
                 'gedmo/doctrine-extensions',
-                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2258',
-                'Passing an object not implementing "%s" or "%s" as argument 1 to "%s()" is deprecated and'
-                .' will throw an "%s" error in version 4.0. Instance of "%s" given.',
+                'TODO',
+                'Annotations support is deprecated, migrate your application to use attributes and pass an instance of %s to the %s() method instead.',
+                AttributeReader::class,
+                __METHOD__
+            );
+        } elseif (!$reader instanceof AttributeReader) {
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2558',
+                'Providing an annotation reader which does not implement %s or is not an instance of %s to %s() is deprecated.',
                 Reader::class,
                 AttributeReader::class,
-                __METHOD__,
-                \TypeError::class,
-                get_class($reader)
+                __METHOD__
             );
         }
 

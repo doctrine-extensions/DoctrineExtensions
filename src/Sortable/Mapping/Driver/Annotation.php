@@ -22,6 +22,8 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  *
+ * @deprecated since gedmo/doctrine-extensions 3.16, will be removed in version 4.0.
+ *
  * @internal
  */
 class Annotation extends AbstractAnnotationDriver

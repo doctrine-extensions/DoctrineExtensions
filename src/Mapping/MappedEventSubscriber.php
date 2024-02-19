@@ -205,11 +205,19 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @return void
      *
-     * NOTE Providing any object is deprecated, as of 4.0 a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` will be required
+     * @note Providing any object is deprecated, as of 4.0 an {@see AttributeReader} will be required
      */
     public function setAnnotationReader($reader)
     {
-        if (!$reader instanceof Reader && !$reader instanceof AttributeReader) {
+        if ($reader instanceof Reader) {
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'TODO',
+                'Annotations support is deprecated, migrate your application to use attributes and pass an instance of %s to the %s() method instead.',
+                AttributeReader::class,
+                __METHOD__
+            );
+        } elseif (!$reader instanceof AttributeReader) {
             Deprecation::trigger(
                 'gedmo/doctrine-extensions',
                 'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2558',

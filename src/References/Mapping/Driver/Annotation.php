@@ -25,6 +25,8 @@ use Gedmo\Mapping\Driver\AttributeReader;
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
  *
+ * @deprecated since gedmo/doctrine-extensions 3.16, will be removed in version 4.0.
+ *
  * @internal
  */
 class Annotation implements AnnotationDriverInterface
