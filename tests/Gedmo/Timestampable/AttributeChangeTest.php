@@ -25,6 +25,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  *
  * @requires PHP >= 8.0
+ *
+ * @todo This test requires {@see ChangeTest} to have been run first to load the {@see TimestampableListenerStub}
  */
 final class AttributeChangeTest extends BaseTestCaseORM
 {
