@@ -20,7 +20,7 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriver;
  *
  * @author Derek J. Lambert <dlambert@dereklambert.com>
  */
-abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
+abstract class AbstractAnnotationDriver implements AttributeDriverInterface
 {
     /**
      * Annotation reader instance
@@ -45,6 +45,23 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      */
     protected $validTypes = [];
 
+    /**
+     * Set the annotation reader instance
+     *
+     * When originally implemented, `Doctrine\Common\Annotations\Reader` was not available,
+     * therefore this method may accept any object implementing these methods from the interface:
+     *
+     *     getClassAnnotations([reflectionClass])
+     *     getClassAnnotation([reflectionClass], [name])
+     *     getPropertyAnnotations([reflectionProperty])
+     *     getPropertyAnnotation([reflectionProperty], [name])
+     *
+     * @param Reader|AttributeReader|object $reader
+     *
+     * @return void
+     *
+     * @note Providing any object is deprecated, as of 4.0 an {@see AttributeReader} will be required
+     */
     public function setAnnotationReader($reader)
     {
         if ($reader instanceof Reader) {

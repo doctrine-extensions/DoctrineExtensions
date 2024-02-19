@@ -21,9 +21,9 @@ parameters:
 			path: src/AbstractTrackingListener.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
+			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Blameable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
-			path: src/Blameable/Mapping/Driver/Annotation.php
+			path: src/Blameable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -34,11 +34,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/Blameable/Mapping/Driver/Yaml.php
-
-		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/IpTraceable/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -356,9 +351,9 @@ parameters:
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
+			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Timestampable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
-			path: src/Timestampable/Mapping/Driver/Annotation.php
+			path: src/Timestampable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"

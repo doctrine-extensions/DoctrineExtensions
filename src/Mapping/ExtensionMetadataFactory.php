@@ -258,13 +258,13 @@ class ExtensionMetadataFactory
                 }
 
                 if ($driver instanceof AnnotationDriverInterface) {
+                    $driver->setAnnotationReader($this->annotationReader);
+                } else {
                     if ($this->annotationReader instanceof AttributeReader) {
                         $driver->setAnnotationReader($this->annotationReader);
                     } else {
                         $driver->setAnnotationReader(new AttributeAnnotationReader(new AttributeReader(), $this->annotationReader));
                     }
-                } else {
-                    $driver->setAnnotationReader($this->annotationReader);
                 }
             }
         }
