@@ -252,12 +252,12 @@ class ExtensionMetadataFactory
                 }
             }
 
-            if ($driver instanceof AnnotationDriverInterface) {
+            if ($driver instanceof AttributeDriverInterface) {
                 if (null === $this->annotationReader) {
                     throw new RuntimeException("Cannot use metadata driver ({$driverClassName}), an annotation or attribute reader was not provided.");
                 }
 
-                if ($driver instanceof AttributeDriverInterface) {
+                if ($driver instanceof AnnotationDriverInterface) {
                     if ($this->annotationReader instanceof AttributeReader) {
                         $driver->setAnnotationReader($this->annotationReader);
                     } else {
