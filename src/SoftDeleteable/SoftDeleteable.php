@@ -10,9 +10,7 @@
 namespace Gedmo\SoftDeleteable;
 
 /**
- * This interface is not necessary but can be implemented for
- * Domain Objects which in some cases needs to be identified as
- * SoftDeleteable
+ * Marker interface for objects which can be identified as soft-deletable.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -22,12 +20,12 @@ interface SoftDeleteable
     // this interface is not necessary to implement
 
     /*
-     * @gedmo:SoftDeleteable
-     * to mark the class as SoftDeleteable use class annotation @gedmo:SoftDeleteable
+     * @Gedmo\SoftDeleteable
+     * to mark the class as SoftDeleteable use class annotation @Gedmo\SoftDeleteable
      * this object will be able to be soft deleted
      * example:
      *
-     * @gedmo:SoftDeleteable
+     * @Gedmo\SoftDeleteable
      * class MyEntity
      */
 }

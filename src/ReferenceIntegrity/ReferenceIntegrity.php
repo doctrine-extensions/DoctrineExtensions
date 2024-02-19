@@ -10,9 +10,7 @@
 namespace Gedmo\ReferenceIntegrity;
 
 /**
- * This interface is not necessary but can be implemented for
- * Entities which in some cases needs to be identified te have
- * ReferenceIntegrity checks
+ * Marker interface for objects which can be identified as requiring reference integrity checks.
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  */
