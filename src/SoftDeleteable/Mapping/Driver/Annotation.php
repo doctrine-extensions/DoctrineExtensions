@@ -23,6 +23,8 @@ use Gedmo\SoftDeleteable\Mapping\Validator;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
+ * @deprecated since gedmo/doctrine-extensions 3.16, will be removed in version 4.0.
+ *
  * @internal
  */
 class Annotation extends AbstractAnnotationDriver
