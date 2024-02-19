@@ -10,9 +10,7 @@
 namespace Gedmo\Sortable;
 
 /**
- * This interface is not necessary but can be implemented for
- * Entities which in some cases needs to be identified as
- * Sortable
+ * Marker interface for objects which can be identified as sortable.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  */
@@ -21,27 +19,27 @@ interface Sortable
     // use now annotations instead of predefined methods, this interface is not necessary
 
     /*
-     * @gedmo:SortablePosition - to mark property which will hold the item position use annotation @gedmo:SortablePosition
+     * @Gedmo\SortablePosition - to mark property which will hold the item position use annotation @Gedmo\SortablePosition
      *              This property has to be numeric. The position index can be negative and will be counted from right to left.
      *
      * example:
      *
-     * @gedmo:SortablePosition
+     * @Gedmo\SortablePosition
      * @Column(type="int")
      * $position
      *
-     * @gedmo:SortableGroup
+     * @Gedmo\SortableGroup
      * @Column(type="string", length=64)
      * $category
      *
      */
 
     /*
-     * @gedmo:SortableGroup - to group node sorting by a property use annotation @gedmo:SortableGroup on this property
+     * @Gedmo\SortableGroup - to group node sorting by a property use annotation @Gedmo\SortableGroup on this property
      *
      * example:
      *
-     * @gedmo:SortableGroup
+     * @Gedmo\SortableGroup
      * @Column(type="string", length=64)
      * $category
      */

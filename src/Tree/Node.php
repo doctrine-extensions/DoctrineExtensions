@@ -10,9 +10,7 @@
 namespace Gedmo\Tree;
 
 /**
- * This interface is not necessary but can be implemented for
- * Entities which in some cases needs to be identified as
- * Tree Node
+ * Marker interface for objects which can be identified as a tree node.
  *
  * @method void  setSibling(self $node)
  * @method ?self getSibling()
@@ -24,25 +22,25 @@ interface Node
     // use now annotations instead of predefined methods, this interface is not necessary
 
     /*
-     * @gedmo:TreeLeft
-     * to mark the field as "tree left" use property annotation @gedmo:TreeLeft
+     * @Gedmo\TreeLeft
+     * to mark the field as "tree left" use property annotation @Gedmo\TreeLeft
      * it will use this field to store tree left value
      */
 
     /*
-     * @gedmo:TreeRight
-     * to mark the field as "tree right" use property annotation @gedmo:TreeRight
+     * @Gedmo\TreeRight
+     * to mark the field as "tree right" use property annotation @Gedmo\TreeRight
      * it will use this field to store tree right value
      */
 
     /*
-     * @gedmo:TreeParent
+     * @Gedmo\TreeParent
      * in every tree there should be link to parent. To identify a relation
      * as parent relation to child use @Tree:Ancestor annotation on the related property
      */
 
     /*
-     * @gedmo:TreeLevel
+     * @Gedmo\TreeLevel
      * level of node.
      */
 

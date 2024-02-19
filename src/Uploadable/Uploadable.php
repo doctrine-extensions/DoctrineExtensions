@@ -10,9 +10,7 @@
 namespace Gedmo\Uploadable;
 
 /**
- * This interface is not necessary but can be implemented for
- * Domain Objects which in some cases needs to be identified as
- * Uploadable
+ * Marker interface for objects which can be identified as uploadable.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -22,12 +20,12 @@ interface Uploadable
     // this interface is not necessary to implement
 
     /*
-     * @gedmo:Uploadable
-     * to mark the class as Uploadable use class annotation @gedmo:Uploadable
+     * @Gedmo\Uploadable
+     * to mark the class as Uploadable use class annotation @Gedmo\Uploadable
      * this object will be able Uploadable
      * example:
      *
-     * @gedmo:Uploadable
+     * @Gedmo\Uploadable
      * class MyEntity
      */
 }
