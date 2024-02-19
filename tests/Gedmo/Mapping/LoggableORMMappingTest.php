@@ -59,9 +59,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
     {
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedLoggable::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationDriver::class)) {
             yield 'Model with annotations' => [AnnotatedLoggable::class];
         }
 
@@ -121,9 +119,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedLoggableComposite::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationDriver::class)) {
             yield 'Model with annotations' => [AnnotatedLoggableComposite::class];
         }
 
@@ -166,9 +162,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedLoggableCompositeRelation::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationDriver::class)) {
             yield 'Model with annotations' => [AnnotatedLoggableCompositeRelation::class];
         }
 
@@ -214,9 +208,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
     {
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedLoggableWithEmbedded::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationDriver::class)) {
             yield 'Model with annotations' => [AnnotatedLoggableWithEmbedded::class];
         }
     }

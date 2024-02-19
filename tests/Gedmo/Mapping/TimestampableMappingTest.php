@@ -49,9 +49,7 @@ final class TimestampableMappingTest extends ORMMappingTestCase
     {
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedCategory::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationDriver::class)) {
             yield 'Model with annotations' => [AnnotatedCategory::class];
         }
 
