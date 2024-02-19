@@ -14,7 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * NestedSet Trait, usable with PHP >= 5.4
+ * Trait for objects in a nested tree.
+ *
+ * This implementation provides a mapping configuration for the Doctrine ORM for entities using numeric primary keys.
  *
  * @author Renaat De Muynck <renaat.demuynck@gmail.com>
  */
