@@ -51,9 +51,7 @@ final class TranslatableMappingTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedUser::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationDriver::class)) {
             yield 'Model with annotations' => [AnnotatedUser::class];
         }
 
