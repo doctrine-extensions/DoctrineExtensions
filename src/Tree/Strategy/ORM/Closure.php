@@ -280,12 +280,20 @@ class Closure implements Strategy
         $uow = $em->getUnitOfWork();
         $emHash = spl_object_id($em);
 
-        while ($node = array_shift($this->pendingChildNodeInserts[$emHash])) {
+        foreach ($this->pendingChildNodeInserts[$emHash] as $node) {
             $meta = $em->getClassMetadata(get_class($node));
-            $config = $this->listener->getConfiguration($em, $meta->getName());
-
             $identifier = $meta->getSingleIdentifierFieldName();
             $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
+
+            if (null === $nodeId) {
+                // Do not update if the node has not been persisted yet.
+                continue;
+            }
+
+            // The closure for this node will now be inserted. Remove the node from the list of pending inserts to indicate this.
+            unset($this->pendingChildNodeInserts[$emHash][spl_object_id($node)]);
+
+            $config = $this->listener->getConfiguration($em, $meta->getName());
             $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
 
             $closureClass = $config['closure'];
@@ -341,6 +349,13 @@ class Closure implements Strategy
             }
 
             foreach ($entries as $closure) {
+                $existingClosure = $em->getRepository($closureClass)->findBy([
+                    $ancestorColumnName => $closure[$ancestorColumnName],
+                    $descendantColumnName => $closure[$descendantColumnName],
+                ]);
+                if ([] !== $existingClosure) {
+                    continue;
+                }
                 if (!$em->getConnection()->insert($closureTable, $closure)) {
                     throw new RuntimeException('Failed to insert new Closure record');
                 }
@@ -480,13 +495,15 @@ class Closure implements Strategy
      */
     protected function setLevelFieldOnPendingNodes(ObjectManager $em)
     {
-        if (!empty($this->pendingNodesLevelProcess)) {
+        while (!empty($this->pendingNodesLevelProcess)) {
+            // Nodes need to be processed one class at a time. Each iteration through the while loop will process one type, starting with the first item on the list.
             $first = array_slice($this->pendingNodesLevelProcess, 0, 1);
             $first = array_shift($first);
 
             assert(null !== $first);
 
-            $meta = $em->getClassMetadata(get_class($first));
+            $className = get_class($first);
+            $meta = $em->getClassMetadata($className);
             unset($first);
             $identifier = $meta->getIdentifier();
             $mapping = $meta->getFieldMapping($identifier[0]);
@@ -496,6 +513,10 @@ class Closure implements Strategy
             $uow = $em->getUnitOfWork();
 
             foreach ($this->pendingNodesLevelProcess as $node) {
+                if (get_class($node) !== $className) {
+                    // Only process nodes of the same type as the first element
+                    continue;
+                }
                 $children = $em->getRepository($meta->getName())->children($node);
 
                 foreach ($children as $child) {
@@ -523,6 +544,14 @@ class Closure implements Strategy
 
             // Now we update levels
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
+                if (get_class($node) !== $className) {
+                    // Only process nodes of the same time as the first element
+                    continue;
+                }
+
+                // This node will now be processed. Therefore, remove it from the list of pending nodes.
+                unset($this->pendingNodesLevelProcess[$nodeId]);
+
                 // Update new level
                 $level = $levels[$nodeId];
                 $levelProp = $meta->getReflectionProperty($config['level']);
@@ -535,8 +564,6 @@ class Closure implements Strategy
                 $levelProp->setValue($node, $level);
                 $uow->setOriginalEntityProperty(spl_object_id($node), $config['level'], $level);
             }
-
-            $this->pendingNodesLevelProcess = [];
         }
     }
 
