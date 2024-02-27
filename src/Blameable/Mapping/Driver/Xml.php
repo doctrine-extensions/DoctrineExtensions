@@ -34,6 +34,7 @@ class Xml extends BaseXml
         'one',
         'string',
         'int',
+        'ulid',
         'uuid',
     ];
 
