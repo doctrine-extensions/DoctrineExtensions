@@ -40,7 +40,6 @@
   <xs:element name="tree-left" type="gedmo:emptyType"/>
   <xs:element name="tree-right" type="gedmo:emptyType"/>
   <xs:element name="tree-level" type="gedmo:emptyType"/>
-  <xs:element name="tree-root" type="gedmo:emptyType"/>
   <xs:element name="tree-parent" type="gedmo:emptyType"/>
   <xs:element name="tree-path-source" type="gedmo:emptyType"/>
   <xs:element name="tree-lock-time" type="gedmo:emptyType"/>
@@ -185,4 +184,7 @@
     <xs:attribute name="disallowed-types" type="xs:string" use="optional" />
   </xs:complexType>
 
+  <xs:complexType name="tree-root">
+    <xs:attribute name="identifier-method" type="xs:string" use="optional" />
+  </xs:complexType>
 </xs:schema>
