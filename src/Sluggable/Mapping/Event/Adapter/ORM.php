@@ -14,6 +14,8 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\Translatable;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -76,7 +78,17 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             }
         }
 
-        return $qb->getQuery()->getArrayResult();
+        $q = $qb->getQuery();
+
+        // Force translation walker to look for slug translations to avoid duplicated slugs
+        if ($object instanceof Translatable) {
+            $q->setHint(
+                Query::HINT_CUSTOM_OUTPUT_WALKER,
+                TranslationWalker::class
+            );
+        }
+
+        return $q->getArrayResult();
     }
 
     public function replaceRelative($object, array $config, $target, $replacement)
