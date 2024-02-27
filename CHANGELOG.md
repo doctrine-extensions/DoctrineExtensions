@@ -18,6 +18,7 @@ a release.
 ---
 
 ## [Unreleased]
+- Blameable: Added UUID in allowed types list for Blameable fields in Annotation
 
 ## [3.15.0]
 ### Added

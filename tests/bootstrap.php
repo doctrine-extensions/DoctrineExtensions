@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
+use Doctrine\DBAL\Types\Type;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 
 /*
  * This is bootstrap for phpUnit unit tests,
@@ -30,3 +32,5 @@ require dirname(__DIR__).'/vendor/autoload.php';
 $reader = new AnnotationReader();
 $reader = new PsrCachedReader($reader, new ArrayAdapter());
 $_ENV['annotation_reader'] = $reader;
+
+Type::addType('uuid', UuidType::class);
