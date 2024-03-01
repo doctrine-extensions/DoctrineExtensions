@@ -104,14 +104,19 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 }
 
                 if (!empty($config['setterMethod'][$config['fieldName']])) {
-                    $reflectionClass = $meta->getReflectionClass();
                     $setterName = $config['setterMethod'][$config['fieldName']];
 
-                    if (!$reflectionClass->hasMethod($setterName)) {
-                        throw new InvalidMappingException("Setter method - [{$setterName}] does not exist in class - {$meta->getName()}");
+                    if (!method_exists($object, $setterName)) {
+                        throw new InvalidMappingException(
+                            sprintf(
+                                "Setter method [%s] does not exist in class %s",
+                                $setterName,
+                                $meta->getName(),
+                            ),
+                        );
                     }
 
-                    $reflectionClass->getMethod($setterName)->invoke($object, $date);
+                    $object->{$setterName}($date);
                 } else {
                     $reflProp->setValue($object, $date);
                 }
