@@ -237,14 +237,19 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         }
 
         if (!empty($config['setterMethod'][$field])) {
-            $reflectionClass = $meta->getReflectionClass();
             $setterName = $config['setterMethod'][$field];
 
-            if (!$reflectionClass->hasMethod($setterName)) {
-                throw new InvalidMappingException("Setter method - [{$setterName}] does not exist in class - {$meta->getName()}");
+            if (!method_exists($object, $setterName)) {
+                throw new InvalidMappingException(
+                    sprintf(
+                        "Setter method [%s] does not exist in class %s",
+                        $setterName,
+                        $meta->getName(),
+                    ),
+                );
             }
 
-            $reflectionClass->getMethod($setterName)->invoke($object, $newValue);
+            $object->{$setterName}($newValue);
         } else {
             $property->setValue($object, $newValue);
         }
