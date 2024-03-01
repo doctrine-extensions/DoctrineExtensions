@@ -58,6 +58,11 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 $config['hardDelete'] = $annot->hardDelete;
             }
+
+            // add the setter method for the field?
+            if (isset($annot->setterMethod)) {
+                $this->setSetterMethod($annot->fieldName, $annot->setterMethod, $config);
+            }
         }
 
         $this->validateFullMetadata($meta, $config);

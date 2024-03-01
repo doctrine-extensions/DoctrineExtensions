@@ -21,7 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 #[ORM\Entity]
-#[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', setterMethod: 'setDeletedAt')]
 class Comment
 {
     /**

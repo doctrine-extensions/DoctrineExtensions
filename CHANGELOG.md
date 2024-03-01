@@ -18,6 +18,7 @@ a release.
 ---
 
 ## [Unreleased]
+- Blameable/IpTraceable/SoftDeletable/Timestampable: Added functionality to use setter method instead of setting property values directly (#2644)
 
 ## [3.15.0]
 ### Added

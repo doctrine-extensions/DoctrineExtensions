@@ -84,6 +84,8 @@ class Annotation extends AbstractAnnotationDriver
                         'value' => $timestampable->value,
                     ];
                 }
+                // add the setter method for the field
+                $this->setSetterMethod($property->getName(), $timestampable->setterMethod, $config);
                 // properties are unique and mapper checks that, no risk here
                 $config[$timestampable->on][] = $field;
             }

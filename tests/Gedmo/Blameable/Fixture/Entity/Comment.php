@@ -53,6 +53,15 @@ class Comment implements Blameable
     private ?int $status = null;
 
     /**
+     * @Gedmo\Blameable(on="create")
+     *
+     * @ORM\Column(name="created", type="string")
+     */
+    #[ORM\Column(name: 'created', type: Types::STRING)]
+    #[Gedmo\Blameable(on: 'create', setterMethod: 'setCreated')]
+    private ?string $created = null;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="closed", type="string", nullable=true)
@@ -102,6 +111,16 @@ class Comment implements Blameable
     public function getMessage(): ?string
     {
         return $this->message;
+    }
+
+    public function getCreated(): ?string
+    {
+        return $this->created;
+    }
+
+    public function setCreated(?string $created): void
+    {
+        $this->created = $created;
     }
 
     public function getModified(): ?string

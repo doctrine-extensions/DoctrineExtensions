@@ -135,4 +135,20 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
 
         return class_exists($className) ? $className : '';
     }
+
+    /**
+     * Set the setter method for the given field.
+     */
+    protected function setSetterMethod(string $field, string $method, array &$config): void
+    {
+        if ('' === $method) {
+            return;
+        }
+
+        if (!isset($config['setterMethod'])) {
+            $config['setterMethod'] = [];
+        }
+
+        $config['setterMethod'][$field] = $method;
+    }
 }

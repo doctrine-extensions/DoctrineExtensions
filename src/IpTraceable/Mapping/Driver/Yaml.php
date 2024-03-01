@@ -58,6 +58,9 @@ class Yaml extends File implements Driver
                     if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], ['update', 'create', 'change'], true)) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
+                    if (isset($mappingProperty['setterMethod'])) {
+                        $this->setSetterMethod($field, $mappingProperty['setterMethod'], $config);
+                    }
 
                     if ('change' === $mappingProperty['on']) {
                         if (!isset($mappingProperty['field'])) {
