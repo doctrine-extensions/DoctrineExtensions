@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: Cascade remove not being triggered on entity children at `MaterializedPath::removeNode()`.
 
 ## [3.15.0]
 ### Added
