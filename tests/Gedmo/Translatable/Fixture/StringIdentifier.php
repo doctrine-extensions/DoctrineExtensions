@@ -15,25 +15,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class StringIdentifier
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="uid", type="string", length=32)
-     */
     #[ORM\Id]
     #[ORM\Column(name: 'uid', type: Types::STRING, length: 32)]
     private ?string $uid = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
@@ -42,8 +30,6 @@ class StringIdentifier
      * @var string|null
      *
      * Used locale to override Translation listener`s locale
-     *
-     * @Gedmo\Locale
      */
     #[Gedmo\Locale]
     private ?string $locale = null;

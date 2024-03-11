@@ -38,7 +38,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
 
         $qb = $em->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
-           ->from($config['useObjectClass'], 'n');
+            ->from($config['useObjectClass'], 'n');
         $this->addGroupWhere($qb, $meta, $groups);
         $query = $qb->getQuery();
         $query->useQueryCache(false);

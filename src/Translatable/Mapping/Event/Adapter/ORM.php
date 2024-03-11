@@ -34,8 +34,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             ->getObjectManager()
             ->getClassMetadata($translationClassName)
             ->getReflectionClass()
-            ->isSubclassOf(AbstractPersonalTranslation::class)
-        ;
+            ->isSubclassOf(AbstractPersonalTranslation::class);
     }
 
     public function getDefaultTranslationClass()
@@ -56,8 +55,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             foreach ($metadata->getAssociationMappings() as $assoc) {
                 $isRightCollection = $assoc['targetEntity'] === $translationClass
                     && 'object' === $assoc['mappedBy']
-                    && ClassMetadataInfo::ONE_TO_MANY === $assoc['type']
-                ;
+                    && ClassMetadataInfo::ONE_TO_MANY === $assoc['type'];
                 if ($isRightCollection) {
                     $collection = $wrapped->getPropertyValue($assoc['fieldName']);
                     foreach ($collection as $trans) {
@@ -116,16 +114,14 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 foreach ($objects as $trans) {
                     $isRequestedTranslation = !$trans instanceof Proxy
                         && $trans->getLocale() === $locale
-                        && $trans->getField() === $field
-                    ;
+                        && $trans->getField() === $field;
                     if ($isRequestedTranslation) {
                         if ($this->usesPersonalTranslation($translationClass)) {
                             $isRequestedTranslation = $trans->getObject() === $wrapped->getObject();
                         } else {
                             $objectId = $this->foreignKey($wrapped->getIdentifier(), $translationClass);
                             $isRequestedTranslation = $trans->getForeignKey() === $objectId
-                                && $trans->getObjectClass() === $wrapped->getMetadata()->getName()
-                            ;
+                                && $trans->getObjectClass() === $wrapped->getMetadata()->getName();
                         }
                     }
                     if ($isRequestedTranslation) {
@@ -143,8 +139,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 'trans.field = :field'
             )
             ->setParameter('locale', $locale)
-            ->setParameter('field', $field)
-        ;
+            ->setParameter('field', $field);
 
         if ($this->usesPersonalTranslation($translationClass)) {
             $qb->andWhere('trans.object = :object');
@@ -170,8 +165,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $qb = $this
             ->getObjectManager()
             ->createQueryBuilder()
-            ->delete($transClass, 'trans')
-        ;
+            ->delete($transClass, 'trans');
         if ($this->usesPersonalTranslation($transClass)) {
             $qb->where('trans.object = :object');
             $qb->setParameter('object', $wrapped->getObject());

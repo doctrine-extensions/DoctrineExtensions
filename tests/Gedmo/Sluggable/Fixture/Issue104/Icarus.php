@@ -14,24 +14,14 @@ namespace Gedmo\Tests\Sluggable\Fixture\Issue104;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Icarus extends Bus
 {
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $description = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"title"})
-     *
-     * @ORM\Column(length=128, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]
     #[ORM\Column(length: 128, unique: true)]

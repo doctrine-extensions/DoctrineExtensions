@@ -181,20 +181,15 @@ class ORM implements AdapterInterface
         $uow->setOriginalEntityProperty(spl_object_id($object), $property, $value);
     }
 
-    public function clearObjectChangeSet($uow, $object)
-    {
-        $uow->clearEntityChangeSet(spl_object_id($object));
-    }
-
     /**
-     * @deprecated use custom lifecycle event classes instead
-     *
-     * Creates an ORM specific LifecycleEventArgs
-     *
      * @param object                 $object
      * @param EntityManagerInterface $entityManager
      *
      * @return LifecycleEventArgs
+     *
+     * @deprecated use custom lifecycle event classes instead
+     *
+     * Creates an ORM specific LifecycleEventArgs
      */
     public function createLifecycleEventArgsInstance($object, $entityManager)
     {

@@ -18,14 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({"base": "BaseNode", "node": "Node"})
- *
- * @Gedmo\Tree(type="nested")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
@@ -36,34 +28,25 @@ class BaseNode extends ANode
     /**
      * @var Collection<int, BaseNode>
      *
-     * @ORM\OneToMany(targetEntity="BaseNode", mappedBy="parent")
-     */
+     *      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
     /**
      * @var \DateTimeInterface|null
      *
-     * @Gedmo\Timestampable(on="create")
      *
-     * @ORM\Column(type="datetime")
-     */
+     *      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $created = null;
 
-    /**
-     * @ORM\Column(length=128, unique=true)
-     */
     #[ORM\Column(length: 128, unique: true)]
     private ?string $identifier = null;
 
     /**
      * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(type="datetime")
-     *
-     * @Gedmo\Timestampable
+     *                              *
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable]

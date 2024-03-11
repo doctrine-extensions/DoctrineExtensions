@@ -17,48 +17,28 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class CommentCarbon implements Timestampable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="message", type="text")
-     */
     #[ORM\Column(name: 'message', type: Types::TEXT)]
     private ?string $message = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Timestampable\Fixture\ArticleCarbon", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: ArticleCarbon::class, inversedBy: 'comments')]
     private ?ArticleCarbon $article = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $status = null;
 
     /**
      * @var CarbonImmutable|null
-     *
-     * @ORM\Column(name="closed", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field="status", value=1)
      */
     #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'status', value: 1)]
@@ -66,10 +46,6 @@ class CommentCarbon implements Timestampable
 
     /**
      * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(name="modified", type="time")
-     *
-     * @Gedmo\Timestampable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::TIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]

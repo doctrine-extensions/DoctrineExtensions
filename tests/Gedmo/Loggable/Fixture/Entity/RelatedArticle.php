@@ -18,49 +18,28 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Loggable
- */
 #[ORM\Entity]
 #[Gedmo\Loggable]
 class RelatedArticle implements Loggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue()]
     private ?int $id = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     #[Gedmo\Versioned]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ORM\Column(type="text")
-     */
     #[ORM\Column(Types::TEXT)]
     #[Gedmo\Versioned]
     private ?string $content = null;
 
     /**
      * @var Collection<int, Comment>
-     *
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private Collection $comments;

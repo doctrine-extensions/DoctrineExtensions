@@ -20,27 +20,27 @@ interface Sortable
 
     /*
      * @Gedmo\SortablePosition - to mark property which will hold the item position use annotation @Gedmo\SortablePosition
-     *              This property has to be numeric. The position index can be negative and will be counted from right to left.
+          *              This property has to be numeric. The position index can be negative and will be counted from right to left.
      *
      * example:
      *
      * @Gedmo\SortablePosition
-     * @Column(type="int")
+          * @Column(type="int")
      * $position
      *
      * @Gedmo\SortableGroup
-     * @Column(type="string", length=64)
+          * @Column(type="string", length=64)
      * $category
      *
      */
 
     /*
      * @Gedmo\SortableGroup - to group node sorting by a property use annotation @Gedmo\SortableGroup on this property
-     *
+          *
      * example:
      *
      * @Gedmo\SortableGroup
-     * @Column(type="string", length=64)
+          * @Column(type="string", length=64)
      * $category
      */
 }

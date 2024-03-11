@@ -14,29 +14,18 @@ namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
-/**
- * @ODM\Document(collection="articles")
- */
 #[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type", inversedBy="articles")
-     */
     #[ODM\ReferenceOne(targetDocument: Type::class, inversedBy: 'articles')]
     private ?Type $type = null;
 

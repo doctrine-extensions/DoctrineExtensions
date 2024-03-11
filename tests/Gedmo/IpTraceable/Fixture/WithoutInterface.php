@@ -15,36 +15,22 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class WithoutInterface
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
     #[ORM\Column(type: Types::STRING, length: 128)]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\IpTraceable(on="create")
-     *
-     * @ORM\Column(type="string", length=45)
      */
     #[ORM\Column(type: Types::STRING, length: 45)]
     #[Gedmo\IpTraceable(on: 'create')]
@@ -52,10 +38,6 @@ class WithoutInterface
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(type="string", length=45)
-     *
-     * @Gedmo\IpTraceable(on="update")
      */
     #[ORM\Column(type: Types::STRING, length: 45)]
     #[Gedmo\IpTraceable(on: 'update')]

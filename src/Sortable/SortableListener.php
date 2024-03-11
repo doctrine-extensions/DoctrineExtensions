@@ -394,7 +394,7 @@ class SortableListener extends MappedEventSubscriber
         if (isset($this->relocations[$hash])) {
             foreach ($this->relocations[$hash]['deltas'] as $delta) {
                 if ($delta['start'] <= $newPosition
-                        && ($delta['stop'] > $newPosition || $delta['stop'] < 0)) {
+                    && ($delta['stop'] > $newPosition || $delta['stop'] < 0)) {
                     $applyDelta += $delta['delta'];
                 }
             }

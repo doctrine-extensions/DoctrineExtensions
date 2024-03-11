@@ -16,17 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 class Node extends BaseNode
 {
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\Translatable]
     private ?string $title = null;
@@ -34,11 +26,8 @@ class Node extends BaseNode
     /**
      * @var string|null
      *
-     * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"title"})
      *
-     * @ORM\Column(name="slug", type="string", length=128)
-     */
+     *      */
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title'])]

@@ -16,58 +16,33 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
 
-/**
- * @Mongo\Document(repositoryClass="Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository")
- *
- * @Gedmo\Tree(type="materializedPath", activateLocking=true)
- */
 #[Mongo\Document(repositoryClass: MaterializedPathRepository::class)]
 #[Gedmo\Tree(type: 'materializedPath', activateLocking: true)]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @Mongo\Id
      */
     #[Mongo\Id]
     private $id;
 
-    /**
-     * @Mongo\Field(type="string")
-     *
-     * @Gedmo\TreePathSource
-     */
     #[Mongo\Field(type: Type::STRING)]
     #[Gedmo\TreePathSource]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Mongo\Field(type="string")
-     *
-     * @Gedmo\TreePath(separator="|")
      */
     #[Mongo\Field(type: Type::STRING)]
     #[Gedmo\TreePath(separator: '|')]
     private $path;
 
-    /**
-     * @Gedmo\TreeParent
-     *
-     * @Mongo\ReferenceOne(targetDocument="Gedmo\Tests\Tree\Fixture\Document\Article")
-     */
     #[Mongo\ReferenceOne(targetDocument: self::class)]
     #[Gedmo\TreeParent]
     private ?Article $parent = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @Mongo\Field(type="int")
      */
     #[Mongo\Field(type: Type::INT)]
     #[Gedmo\TreeLevel]
@@ -75,10 +50,6 @@ class Article
 
     /**
      * @var \DateTimeInterface|null
-     *
-     * @Gedmo\TreeLockTime
-     *
-     * @Mongo\Field(type="date")
      */
     #[Mongo\Field(type: Type::DATE)]
     #[Gedmo\TreeLockTime]

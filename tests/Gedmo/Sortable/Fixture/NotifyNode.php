@@ -18,9 +18,6 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 /**
  * @author Charles J. C. Elling, 2017-07-31
- *
- * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 #[ORM\Entity(repositoryClass: SortableRepository::class)]
 #[ORM\ChangeTrackingPolicy(value: 'NOTIFY')]

@@ -66,8 +66,7 @@ class TranslationRepository extends DocumentRepository
             throw new InvalidArgumentException("Document: {$meta->getName()} does not translate field - {$field}");
         }
         $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
-            || $listener->getTranslatableLocale($document, $meta, $this->getDocumentManager()) === $locale
-        ;
+            || $listener->getTranslatableLocale($document, $meta, $this->getDocumentManager()) === $locale;
         if ($modRecordValue) {
             $meta->getReflectionProperty($field)->setValue($document, $value);
             $this->dm->persist($document);

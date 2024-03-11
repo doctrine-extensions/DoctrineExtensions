@@ -18,16 +18,12 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Embedded
  *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
- *
- * @ORM\Embeddable
  */
 #[ORM\Embeddable]
 class Embedded
 {
     /**
      * @var string
-     *
-     * @ORM\Column(type="string")
      */
     #[ORM\Column(type: Types::STRING)]
     private ?string $subtitle = null;

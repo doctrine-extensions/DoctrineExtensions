@@ -13,36 +13,18 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Loggable
- */
 #[ORM\Entity]
 #[Gedmo\Loggable]
 class CompositeRelation
 {
-    /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Article")
-     */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Article::class)]
     private Article $articleOne;
 
-    /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Article")
-     */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Article::class)]
     private Article $articleTwo;
 
-    /**
-     * @ORM\Column(length=8)
-     *
-     * @Gedmo\Versioned
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     #[Gedmo\Versioned]
     private ?string $title = null;

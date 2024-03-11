@@ -65,8 +65,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
             ->where("function() {
                 return this.{$config['slug']}.indexOf('{$target}') === 0;
             }")
-            ->getQuery()
-        ;
+            ->getQuery();
         $q->setHydrate(false);
         $result = $q->getIterator();
         $count = 0;
@@ -80,8 +79,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
                 ->field($config['slug'])->set($slug)
                 ->field($meta->getIdentifier()[0])->equals($targetObject['_id'])
                 ->getQuery()
-                ->execute()
-            ;
+                ->execute();
         }
 
         return $count;
@@ -101,8 +99,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         $q = $dm
             ->createQueryBuilder($config['useObjectClass'])
             ->field($config['mappedBy'].'.'.$meta->getIdentifier()[0])->equals($wrapped->getIdentifier())
-            ->getQuery()
-        ;
+            ->getQuery();
         $q->setHydrate(false);
         $result = $q->getIterator();
         $count = 0;
@@ -116,8 +113,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
                 ->field($config['slug'])->set($slug)
                 ->field($meta->getIdentifier()[0])->equals($targetObject['_id'])
                 ->getQuery()
-                ->execute()
-            ;
+                ->execute();
         }
 
         return $count;

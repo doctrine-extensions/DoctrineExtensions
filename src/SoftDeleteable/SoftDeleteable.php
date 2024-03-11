@@ -21,11 +21,11 @@ interface SoftDeleteable
 
     /*
      * @Gedmo\SoftDeleteable
-     * to mark the class as SoftDeleteable use class annotation @Gedmo\SoftDeleteable
+          * to mark the class as SoftDeleteable use class annotation @Gedmo\SoftDeleteable
      * this object will be able to be soft deleted
      * example:
      *
      * @Gedmo\SoftDeleteable
-     * class MyEntity
+          * class MyEntity
      */
 }

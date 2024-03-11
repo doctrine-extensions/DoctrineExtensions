@@ -21,14 +21,6 @@ use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Tests\Translatable\Fixture\CategoryTranslation;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="categories")
- *
- * @Gedmo\Loggable(logEntryClass="Gedmo\Loggable\Entity\LogEntry")
- * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\CategoryTranslation")
- * @Gedmo\Tree(type="nested")
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'categories')]
 #[Gedmo\Loggable(logEntryClass: LogEntry::class)]
@@ -38,33 +30,22 @@ class Category extends BaseCategory
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     *
-     * @Gedmo\Translatable
-     */
     #[ORM\Column(type: Types::STRING, length: 64)]
     #[Gedmo\Translatable]
     private ?string $title = null;
 
     /**
-     * @ORM\Column(type="string", length=64)
-     *
-     * @Gedmo\Slug(
      *     fields={"title"},
      *     style="camel",
      *     separator="_",
      *     handlers={
+     *
      *       @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
      *           @Gedmo\SlugHandlerOption(name="relationField", value="parent"),
      *           @Gedmo\SlugHandlerOption(name="relationSlugField", value="parent"),
@@ -85,27 +66,16 @@ class Category extends BaseCategory
 
     /**
      * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="Gedmo\Tests\Mapping\Fixture\Category", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Mapping\Fixture\Category", inversedBy="children")
-     *
-     * @Gedmo\TreeParent
-     */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[Gedmo\TreeParent]
     private ?Category $parent = null;
 
     /**
      * @var \DateTimeInterface
-     *
-     * @ORM\Column(type="date")
-     *
-     * @Gedmo\Timestampable(on="change", field="title", value="Test")
      */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Gedmo\Timestampable(on: 'change', field: 'title', value: 'Test')]

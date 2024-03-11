@@ -68,19 +68,9 @@ abstract class ORMMappingTestCase extends TestCase
     {
         $chain = new MappingDriverChain();
 
-        $chain->addDriver(new XmlDriver(__DIR__.'/Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
-
-        if (class_exists(YamlDriver::class)) {
-            $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
-        }
-
-        if (PHP_VERSION_ID >= 80000) {
-            $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
-            $chain->addDriver(new AnnotationDriver(new AnnotationReader()), 'Gedmo\Tests\Mapping\Fixture');
-        }
+//        $chain->addDriver(new XmlDriver(__DIR__.'/Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
+        $chain->addDriver(new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
+        $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
 
         return $chain;
     }

@@ -16,29 +16,14 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\EmbeddedDocument
- *
- * @Gedmo\Loggable
- */
 #[ODM\EmbeddedDocument]
 #[Gedmo\Loggable]
 class Author implements Loggable
 {
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $name = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $email = null;

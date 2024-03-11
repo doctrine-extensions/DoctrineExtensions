@@ -19,49 +19,27 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Sluggable;
 use Gedmo\Translatable\Translatable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class TranslatableArticle implements Sluggable, Translatable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="string", length=64)
-     */
     #[ORM\Column(type: Types::STRING, length: 64)]
     #[Gedmo\Translatable]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="string", length=16)
-     */
     #[ORM\Column(type: Types::STRING, length: 16)]
     #[Gedmo\Translatable]
     private ?string $code = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"title", "code"})
-     *
-     * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
@@ -70,20 +48,14 @@ class TranslatableArticle implements Sluggable, Translatable
 
     /**
      * @var Collection<int, Comment>
-     *
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private Collection $comments;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Page", inversedBy="articles")
-     */
     #[ORM\ManyToOne(targetEntity: Page::class, inversedBy: 'articles')]
     private ?Page $page = null;
 
     /**
-     * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      */
     #[Gedmo\Language]

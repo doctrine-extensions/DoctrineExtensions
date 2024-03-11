@@ -17,36 +17,22 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation")
- *
- * @MongoODM\Document(collection="articles")
- */
 #[Gedmo\TranslationEntity(class: ArticleTranslation::class)]
 #[MongoODM\Document(collection: 'articles')]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @MongoODM\Id
      */
     #[MongoODM\Id]
     private $id;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @MongoODM\Field(type="string")
-     */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
     private ?string $title = null;
 
     /**
      * @var Collection<int, ArticleTranslation>
-     *
-     * @MongoODM\ReferenceMany(targetDocument="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation", mappedBy="object")
      */
     #[MongoODM\ReferenceMany(targetDocument: ArticleTranslation::class, mappedBy: 'object')]
     private $translations;

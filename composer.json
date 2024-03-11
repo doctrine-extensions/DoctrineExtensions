@@ -40,7 +40,7 @@
         "wiki": "https://github.com/Atlantic18/DoctrineExtensions/tree/main/doc"
     },
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.1",
         "behat/transliterator": "^1.2",
         "doctrine/collections": "^1.2 || ^2.0",
         "doctrine/common": "^2.13 || ^3.0",
@@ -52,6 +52,8 @@
         "symfony/cache": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
+        "ext-libxml": "*",
+        "ext-dom": "*",
         "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/dbal": "^3.2",

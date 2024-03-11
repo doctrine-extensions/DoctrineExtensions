@@ -17,18 +17,11 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document(collection="types")
- */
 #[ODM\Document(collection: 'types')]
 class Type
 {
     /**
      * @var Collection<int, Article>
-     *
-     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
-     *
-     * @Gedmo\ReferenceIntegrity("pull")
      */
     #[ODM\ReferenceMany(targetDocument: Article::class, mappedBy: 'types')]
     #[Gedmo\ReferenceIntegrity(value: 'pull')]
@@ -36,21 +29,13 @@ class Type
 
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $identifier = null;
 

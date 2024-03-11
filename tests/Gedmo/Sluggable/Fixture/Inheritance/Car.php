@@ -13,15 +13,9 @@ namespace Gedmo\Tests\Sluggable\Fixture\Inheritance;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Car extends Vehicle
 {
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $description = null;
 

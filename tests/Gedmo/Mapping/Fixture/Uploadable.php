@@ -16,21 +16,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Uploadable\Mapping\Validator;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Uploadable(allowOverwrite=true, appendNumber=true, path="/my/path", pathMethod="getPath", callback="callbackMethod", filenameGenerator="SHA1", maxSize="1500", allowedTypes="text/plain,text/css", disallowedTypes="video/jpeg,text/html")
- */
 #[ORM\Entity]
 #[Gedmo\Uploadable(allowOverwrite: true, appendNumber: true, path: '/my/path', pathMethod: 'getPath', callback: 'callbackMethod', filenameGenerator: Validator::FILENAME_GENERATOR_SHA1, maxSize: '1500', allowedTypes: 'text/plain,text/css', disallowedTypes: 'video/jpeg,text/html')]
 class Uploadable
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -39,10 +30,6 @@ class Uploadable
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="mime", type="string")
-     *
-     * @Gedmo\UploadableFileMimeType
      */
     #[ORM\Column(name: 'mime', type: Types::STRING)]
     #[Gedmo\UploadableFileMimeType]
@@ -55,10 +42,6 @@ class Uploadable
 
     /**
      * @var float
-     *
-     * @ORM\Column(name="size", type="decimal")
-     *
-     * @Gedmo\UploadableFileSize
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL)]
     #[Gedmo\UploadableFileSize]
@@ -66,10 +49,6 @@ class Uploadable
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="path", type="string")
-     *
-     * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING)]
     #[Gedmo\UploadableFilePath]

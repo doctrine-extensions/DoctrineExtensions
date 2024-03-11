@@ -35,13 +35,9 @@ final class ReferencesMappingTest extends BaseTestCaseOM
     {
         parent::setUp();
 
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationDriver = new AttributeDriver([]);
-        } else {
-            $annotationDriver = new AnnotationDriver(new AnnotationReader());
-        }
+        $annotationDriver = new AttributeDriver([]);
 
-        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
+        $xmlDriver = new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');

@@ -220,10 +220,10 @@ class UploadableListener extends MappedEventSubscriber
      * @param object $object
      * @param string $action
      *
-     * @throws UploadableNoPathDefinedException
      * @throws UploadableCouldntGuessMimeTypeException
      * @throws UploadableMaxSizeException
      * @throws UploadableInvalidMimeTypeException
+     * @throws UploadableNoPathDefinedException
      *
      * @return void
      */

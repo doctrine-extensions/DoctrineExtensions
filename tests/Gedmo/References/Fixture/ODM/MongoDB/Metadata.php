@@ -17,7 +17,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\References\Fixture\ORM\Category;
 
 /**
- * @ODM\EmbeddedDocument
  * Metadata of type Category
  */
 #[ODM\EmbeddedDocument]
@@ -25,21 +24,13 @@ class Metadata
 {
     /**
      * @var string|null
-     *
-     * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     private $name;
 
-    /**
-     * @Gedmo\ReferenceOne(type="entity", class="Gedmo\Tests\References\Fixture\ORM\Category", identifier="categoryId")
-     */
     #[Gedmo\ReferenceOne(type: 'entity', class: Category::class, identifier: 'categoryId')]
     private Category $category;
 
-    /**
-     * @ODM\Field(type="int")
-     */
     #[ODM\Field(type: Type::INT)]
     private ?int $categoryId = null;
 

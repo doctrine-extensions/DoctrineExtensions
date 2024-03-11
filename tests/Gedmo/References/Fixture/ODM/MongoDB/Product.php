@@ -18,36 +18,23 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\References\Fixture\ORM\StockItem;
 
-/**
- * @ODM\Document
- */
 #[ODM\Document]
 class Product
 {
-    /**
-     * @ODM\Id
-     */
     #[ODM\Id]
     private ?string $id = null;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     private ?string $name = null;
 
     /**
      * @var Collection<int, StockItem>
-     *
-     * @Gedmo\ReferenceMany(type="entity", class="Gedmo\Tests\References\Fixture\ORM\StockItem", mappedBy="product")
      */
     #[Gedmo\ReferenceMany(type: 'entity', class: StockItem::class, mappedBy: 'product')]
     private $stockItems;
 
     /**
      * @var Collection<int, Metadata>
-     *
-     * @ODM\EmbedMany(targetDocument="Gedmo\Tests\References\Fixture\ODM\MongoDB\Metadata")
      */
     #[ODM\EmbedMany(targetDocument: Metadata::class)]
     private $metadatas;

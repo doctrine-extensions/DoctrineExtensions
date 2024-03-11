@@ -23,25 +23,25 @@ interface Node
 
     /*
      * @Gedmo\TreeLeft
-     * to mark the field as "tree left" use property annotation @Gedmo\TreeLeft
+          * to mark the field as "tree left" use property annotation @Gedmo\TreeLeft
      * it will use this field to store tree left value
      */
 
     /*
      * @Gedmo\TreeRight
-     * to mark the field as "tree right" use property annotation @Gedmo\TreeRight
+          * to mark the field as "tree right" use property annotation @Gedmo\TreeRight
      * it will use this field to store tree right value
      */
 
     /*
      * @Gedmo\TreeParent
-     * in every tree there should be link to parent. To identify a relation
+          * in every tree there should be link to parent. To identify a relation
      * as parent relation to child use @Tree:Ancestor annotation on the related property
      */
 
     /*
      * @Gedmo\TreeLevel
-     * level of node.
+          * level of node.
      */
 
     // @todo: In the next major release, remove this line and uncomment the method in the next line.

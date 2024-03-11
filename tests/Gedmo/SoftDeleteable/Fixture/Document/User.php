@@ -15,33 +15,21 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document(collection="users")
- *
- * @Gedmo\SoftDeleteable(fieldName="deletedAt")
- */
 #[ODM\Document(collection: 'users')]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
 class User
 {
     /**
      * @var \DateTimeInterface|null
-     *
-     * @ODM\Field(type="date")
      */
     #[ODM\Field(type: Type::DATE)]
     protected $deletedAt;
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     private ?string $username = null;
 

@@ -20,35 +20,35 @@ interface IpTraceable
 
     /*
      * @Gedmo\IpTraceable(on="create")
-     * strings which should be updated on insert only
+          * strings which should be updated on insert only
      */
 
     /*
      * @Gedmo\IpTraceable(on="update")
-     * strings which should be updated on update and insert
+          * strings which should be updated on update and insert
      */
 
     /*
      * @Gedmo\IpTraceable(on="change", field="field", value="value")
-     * strings which should be updated on changed "property"
+          * strings which should be updated on changed "property"
      * value and become equal to given "value"
      */
 
     /*
      * @Gedmo\IpTraceable(on="change", field="field")
-     * strings which should be updated on changed "property"
+          * strings which should be updated on changed "property"
      */
 
     /*
      * @Gedmo\IpTraceable(on="change", fields={"field1", "field2"})
-     * strings which should be updated if at least one of the given fields changed
+          * strings which should be updated if at least one of the given fields changed
      */
 
     /*
      * example
      *
      * @Gedmo\IpTraceable(on="create")
-     * @Column(type="string")
+          * @Column(type="string")
      * $created
      */
 }

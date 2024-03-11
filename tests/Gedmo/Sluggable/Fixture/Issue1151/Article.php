@@ -15,29 +15,15 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document
- */
 #[ODM\Document]
 class Article
 {
-    /**
-     * @ODM\Id(strategy="NONE")
-     */
     #[ODM\Id(strategy: 'NONE')]
     private ?string $id = null;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Slug(separator="-", updatable=true, fields={"title"})
-     *
-     * @ODM\Field(type="string")
-     */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
     #[ODM\Field(type: Type::STRING)]
     private ?string $slug = null;

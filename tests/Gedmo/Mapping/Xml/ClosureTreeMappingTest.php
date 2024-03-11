@@ -44,7 +44,7 @@ final class ClosureTreeMappingTest extends BaseTestCaseOM
             $annotationDriver = new AnnotationDriver(new AnnotationReader());
         }
 
-        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
+        $xmlDriver = new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');

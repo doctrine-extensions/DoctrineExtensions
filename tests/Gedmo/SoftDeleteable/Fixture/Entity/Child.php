@@ -14,15 +14,9 @@ namespace Gedmo\Tests\SoftDeleteable\Fixture\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Child extends MappedSuperclass
 {
-    /**
-     * @ORM\Column(name="title", type="string")
-     */
     #[ORM\Column(name: 'title', type: Types::STRING)]
     private ?string $title = null;
 

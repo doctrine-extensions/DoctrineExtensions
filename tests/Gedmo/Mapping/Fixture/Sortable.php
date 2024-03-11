@@ -17,20 +17,12 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="sortables")
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'sortables')]
 class Sortable
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -39,18 +31,12 @@ class Sortable
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     private ?string $title = null;
 
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer")
-     *
-     * @Gedmo\SortablePosition
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\SortablePosition]
@@ -58,10 +44,6 @@ class Sortable
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128)
-     *
-     * @Gedmo\SortableGroup
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\SortableGroup]
@@ -69,10 +51,6 @@ class Sortable
 
     /**
      * @var SortableGroup
-     *
-     * @ORM\ManyToOne(targetEntity="Sluggable")
-     *
-     * @Gedmo\SortableGroup
      */
     #[ORM\ManyToOne(targetEntity: SortableGroup::class)]
     #[Gedmo\SortableGroup]
@@ -81,13 +59,7 @@ class Sortable
     /**
      * @var Collection<int, SortableGroup>
      *
-     * @ORM\ManyToMany(targetEntity="SortableGroup")
-     * @ORM\JoinTable(name="sortable_sortable_groups",
-     *      joinColumns={@ORM\JoinColumn(name="sortable_id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id")}
-     *  )
-     *
-     * @Gedmo\SortableGroup
+     *      joinColumns={     *      inverseJoinColumns={     *  )
      */
     #[ORM\ManyToMany(targetEntity: SortableGroup::class)]
     #[ORM\JoinTable(name: 'sortable_sortable_groups')]

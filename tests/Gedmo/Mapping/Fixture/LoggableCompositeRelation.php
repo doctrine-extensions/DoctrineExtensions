@@ -14,20 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Loggable(logEntryClass="Gedmo\Loggable\Entity\LogEntry")
- */
 #[ORM\Entity]
 #[Gedmo\Loggable(logEntryClass: LogEntry::class)]
 class LoggableCompositeRelation
 {
     /**
      * @var Loggable
-     *
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Loggable")
      */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Loggable::class)]
@@ -35,19 +27,11 @@ class LoggableCompositeRelation
 
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $two = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     *
-     * @Gedmo\Versioned
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\Versioned]
     private ?string $title = null;

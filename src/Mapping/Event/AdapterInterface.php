@@ -27,14 +27,14 @@ use Doctrine\Persistence\ObjectManager;
 interface AdapterInterface
 {
     /**
-     * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
-     *
-     * Calls a method on the event args object.
-     *
      * @param string            $method
      * @param array<int, mixed> $args
      *
      * @return mixed
+     *
+     * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
+     *
+     * Calls a method on the event args object.
      */
     public function __call($method, $args);
 
@@ -159,14 +159,4 @@ interface AdapterInterface
      * @return void
      */
     public function setOriginalObjectProperty($uow, $object, $property, $value);
-
-    /**
-     * Clears the property changeset of the object with the given OID.
-     *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow
-     * @param object                          $object
-     *
-     * @return void
-     */
-    public function clearObjectChangeSet($uow, $object);
 }

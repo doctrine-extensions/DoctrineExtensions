@@ -15,19 +15,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- * @ORM\Table("entity")
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'entity')]
 class EntityWithTranslatableBoolean
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     *
      * @var int
      */
     #[ORM\Id]
@@ -35,27 +27,14 @@ class EntityWithTranslatableBoolean
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="string", nullable=true)
-     */
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Gedmo\Translatable]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="string", nullable=true)
-     */
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Gedmo\Translatable]
     private ?string $isOperating = null;
 
-    /**
-     * @Gedmo\Locale
-     */
     #[Gedmo\Locale]
     private ?string $locale = null;
 

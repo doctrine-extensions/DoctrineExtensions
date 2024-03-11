@@ -13,23 +13,15 @@ namespace Gedmo\Tests\Sluggable\Fixture\Issue104;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Car extends Vehicle
 {
     /**
      * @var string|null
-     *
-     * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
     protected $title;
 
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $description = null;
 

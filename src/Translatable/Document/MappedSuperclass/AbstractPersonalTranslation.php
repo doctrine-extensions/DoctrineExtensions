@@ -14,24 +14,18 @@ use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * Gedmo\Translatable\Document\AbstractPersonalTranslation
- *
- * @MongoODM\MappedSuperclass
  */
 #[MongoODM\MappedSuperclass]
 abstract class AbstractPersonalTranslation
 {
     /**
      * @var string|null
-     *
-     * @MongoODM\Id
      */
     #[MongoODM\Id]
     protected $id;
 
     /**
      * @var string|null
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $locale;
@@ -46,16 +40,12 @@ abstract class AbstractPersonalTranslation
 
     /**
      * @var string|null
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $field;
 
     /**
      * @var string|null
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $content;

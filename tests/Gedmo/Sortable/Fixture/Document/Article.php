@@ -15,18 +15,11 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document(collection="articles")
- */
 #[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
      * @var int|null
-     *
-     * @Gedmo\SortablePosition
-     *
-     * @ODM\Field(type="int")
      */
     #[Gedmo\SortablePosition]
     #[ODM\Field(type: MongoDBType::INT)]
@@ -34,15 +27,10 @@ class Article
 
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 

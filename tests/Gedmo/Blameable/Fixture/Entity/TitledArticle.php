@@ -16,48 +16,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class TitledArticle implements Blameable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="text", type="string", length=128)
-     */
     #[ORM\Column(name: 'text', type: Types::STRING, length: 128)]
     private ?string $text = null;
 
-    /**
-     * @ORM\Column(name="chtext", type="string", nullable=true)
-     *
-     * @Gedmo\Blameable(on="change", field="text")
-     */
     #[ORM\Column(name: 'chtext', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'text')]
     private ?string $chtext = null;
 
-    /**
-     * @ORM\Column(name="chtitle", type="string", nullable=true)
-     *
-     * @Gedmo\Blameable(on="change", field="title")
-     */
     #[ORM\Column(name: 'chtitle', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'title')]
     private ?string $chtitle = null;

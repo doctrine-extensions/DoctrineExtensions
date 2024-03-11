@@ -14,36 +14,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
- */
 #[ORM\Entity(repositoryClass: SortableRepository::class)]
 class ItemWithDateColumn
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @Gedmo\SortablePosition
-     *
-     * @ORM\Column(type="integer")
-     */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
     private int $position = 0;
 
-    /**
-     * @Gedmo\SortableGroup
-     *
-     * @ORM\Column(type="date")
-     */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;

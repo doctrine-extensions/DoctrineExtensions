@@ -132,8 +132,7 @@ class Closure implements Strategy
             $closureMetadata->mapManyToOne($ancestorMapping);
             $closureMetadata->reflFields['ancestor'] = $cmf
                 ->getReflectionService()
-                ->getAccessibleProperty($closureMetadata->getName(), 'ancestor')
-            ;
+                ->getAccessibleProperty($closureMetadata->getName(), 'ancestor');
         }
 
         if (!$closureMetadata->hasAssociation('descendant')) {
@@ -170,8 +169,7 @@ class Closure implements Strategy
             $closureMetadata->mapManyToOne($descendantMapping);
             $closureMetadata->reflFields['descendant'] = $cmf
                 ->getReflectionService()
-                ->getAccessibleProperty($closureMetadata->getName(), 'descendant')
-            ;
+                ->getAccessibleProperty($closureMetadata->getName(), 'descendant');
         }
 
         if (!$this->hasClosureTableUniqueConstraint($closureMetadata)) {

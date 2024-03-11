@@ -14,32 +14,20 @@ namespace Gedmo\Tests\Sluggable\Fixture\Inheritance2;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Car extends Vehicle
 {
     /**
      * @var string|null
-     *
-     * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
     protected $title;
 
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $description = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"title"})
-     *
-     * @ORM\Column(length=128, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]
     #[ORM\Column(length: 128, unique: true)]

@@ -233,8 +233,7 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function getTranslationClass(TranslatableAdapter $ea, $class)
     {
-        return self::$configurations[$this->name][$class]['translationClass'] ?? $ea->getDefaultTranslationClass()
-        ;
+        return self::$configurations[$this->name][$class]['translationClass'] ?? $ea->getDefaultTranslationClass();
     }
 
     /**
@@ -709,8 +708,7 @@ class TranslatableListener extends MappedEventSubscriber
 
             // create new translation if translation not already created and locale is different from default locale, otherwise, we have the date in the original record
             $persistNewTranslation = !$translation
-                && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
-            ;
+                && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation);
             if ($persistNewTranslation) {
                 $translation = $translationMetadata->newInstance();
                 $translation->setLocale($locale);
@@ -771,7 +769,6 @@ class TranslatableListener extends MappedEventSubscriber
             $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             // cleanup current changeset only if working in a another locale different than de default one, otherwise the changeset will always be reverted
             if ($locale !== $this->defaultLocale) {
-                $ea->clearObjectChangeSet($uow, $object);
                 // recompute changeset only if there are changes other than reverted translations
                 if ($modifiedChangeSet || $this->hasTranslationsInDefaultLocale($oid)) {
                     foreach ($modifiedChangeSet as $field => $changes) {

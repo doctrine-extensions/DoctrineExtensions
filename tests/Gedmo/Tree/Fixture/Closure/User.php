@@ -14,15 +14,9 @@ namespace Gedmo\Tests\Tree\Fixture\Closure;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class User extends Person
 {
-    /**
-     * @ORM\Column(name="username", type="string", length=64)
-     */
     #[ORM\Column(name: 'username', type: Types::STRING, length: 64)]
     private ?string $username = null;
 

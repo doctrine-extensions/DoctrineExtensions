@@ -12,18 +12,11 @@ namespace Gedmo\Tree\Entity\MappedSuperclass;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\MappedSuperclass
- */
 #[ORM\MappedSuperclass]
 abstract class AbstractClosure
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
@@ -36,7 +29,7 @@ abstract class AbstractClosure
      *
      * @var object|null
      */
-    protected $ancestor;
+    protected ?object $ancestor;
 
     /**
      * Mapped by listener
@@ -44,12 +37,10 @@ abstract class AbstractClosure
      *
      * @var object|null
      */
-    protected $descendant;
+    protected ?object $descendant;
 
     /**
      * @var int|null
-     *
-     * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     protected ?int $depth = null;

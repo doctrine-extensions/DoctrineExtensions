@@ -57,17 +57,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
      */
     public static function dataLoggableObject(): \Generator
     {
-        if (PHP_VERSION_ID >= 80000) {
-            yield 'Model with attributes' => [AnnotatedLoggable::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
-            yield 'Model with annotations' => [AnnotatedLoggable::class];
-        }
-
-        if (class_exists(YamlDriver::class)) {
-            yield 'Model with YAML mapping' => [YamlLoggable::class];
-        }
+        yield 'Model with attributes' => [AnnotatedLoggable::class];
     }
 
     /**

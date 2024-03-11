@@ -14,32 +14,15 @@ namespace Gedmo\Tests\Tree\Fixture\Closure;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 
-/**
- * @ORM\Entity
- * @ORM\Table(
- *     indexes={@ORM\Index(name="closure_category_depth_idx", columns={"depth"})},
- *     uniqueConstraints={@ORM\UniqueConstraint(name="closure_category_unique_idx", columns={
- *         "ancestor", "descendant"
- *     })}
- * )
- */
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'closure_category_unique_idx', columns: ['ancestor', 'descendant'])]
 #[ORM\Index(name: 'closure_category_depth_idx', columns: ['depth'])]
 class CategoryClosure extends AbstractClosure
 {
-    /**
-     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\Category")
-     * @ORM\JoinColumn(name="ancestor", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     protected ?Category $ancestor = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\Category")
-     * @ORM\JoinColumn(name="descendant", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     protected ?Category $descendant = null;

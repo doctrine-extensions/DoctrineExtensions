@@ -17,29 +17,17 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Article
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
@@ -47,11 +35,7 @@ class Article
     /**
      * @var Collection<int, Image>
      *
-     * @ORM\ManyToMany(targetEntity="Image", inversedBy="articles")
-     * @ORM\JoinTable(name="article_images",
-     *     joinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")}
-     * )
+     *     joinColumns={     *     inverseJoinColumns={     * )
      */
     #[ORM\ManyToMany(targetEntity: Image::class, inversedBy: 'articles')]
     #[ORM\JoinTable(name: 'article_images')]
@@ -61,8 +45,6 @@ class Article
 
     /**
      * @var Collection<int, File>
-     *
-     * @ORM\ManyToMany(targetEntity="File")
      */
     #[ORM\ManyToMany(targetEntity: File::class)]
     private Collection $files;

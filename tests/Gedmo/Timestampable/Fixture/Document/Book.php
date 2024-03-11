@@ -16,31 +16,22 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
-/**
- * @ODM\Document(collection="books")
- */
 #[ODM\Document(collection: 'books')]
 class Book
 {
     /**
-     * @ODM\Id
-     *
      * @var string
      */
     #[ODM\Id]
     protected $id;
 
     /**
-     * @ODM\Field(type="string")
-     *
      * @var string
      */
     #[ODM\Field(type: MongoDBType::STRING)]
     protected $title;
 
     /**
-     * @ODM\EmbedMany(targetDocument="Gedmo\Tests\Timestampable\Fixture\Document\Tag")
-     *
      * @var Collection<int, Tag>
      */
     #[ODM\EmbedMany(targetDocument: Tag::class)]

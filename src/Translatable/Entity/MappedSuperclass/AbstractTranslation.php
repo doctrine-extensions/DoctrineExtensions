@@ -14,18 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation
- *
- * @ORM\MappedSuperclass
  */
 #[ORM\MappedSuperclass]
 abstract class AbstractTranslation
 {
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
@@ -34,40 +28,30 @@ abstract class AbstractTranslation
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=8)
      */
     #[ORM\Column(type: Types::STRING, length: 8)]
     protected ?string $locale = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="object_class", type="string", length=191)
      */
     #[ORM\Column(name: 'object_class', type: Types::STRING, length: 191)]
     protected ?string $objectClass = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=32)
      */
     #[ORM\Column(type: Types::STRING, length: 32)]
     protected ?string $field = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="foreign_key", type="string", length=64)
      */
     #[ORM\Column(name: 'foreign_key', type: Types::STRING, length: 64)]
     protected ?string $foreignKey = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     protected ?string $content = null;

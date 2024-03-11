@@ -16,63 +16,31 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class TitledArticle implements Timestampable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="text", type="string", length=128)
-     */
     #[ORM\Column(name: 'text', type: Types::STRING, length: 128)]
     private ?string $text = null;
 
-    /**
-     * @ORM\Column(name="state", type="string", length=128)
-     */
     #[ORM\Column(name: 'state', type: Types::STRING, length: 128)]
     private ?string $state = null;
 
-    /**
-     * @ORM\Column(name="chtext", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field="text")
-     */
     #[ORM\Column(name: 'chtext', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'text')]
     private ?\DateTime $chText = null;
 
-    /**
-     * @ORM\Column(name="chtitle", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field="title")
-     */
     #[ORM\Column(name: 'chtitle', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'title')]
     private ?\DateTime $chTitle = null;
 
-    /**
-     * @ORM\Column(name="closed", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field="state", value={"Published", "Closed"})
-     */
     #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'state', value: ['Published', 'Closed'])]
     private ?\DateTime $closed = null;

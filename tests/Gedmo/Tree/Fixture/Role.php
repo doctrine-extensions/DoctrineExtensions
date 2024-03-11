@@ -18,15 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @ORM\Table(name="role")
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"user": "User", "usergroup": "UserGroup", "userldap": "UserLDAP"})
- *
- * @Gedmo\Tree(type="nested")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[ORM\Table(name: 'role')]
 #[ORM\InheritanceType('JOINED')]
@@ -37,39 +28,24 @@ abstract class Role
 {
     /**
      * @var Collection<int, Role>
-     *
-     * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     protected Collection $children;
 
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="UserGroup", inversedBy="children")
-     */
     #[ORM\ManyToOne(targetEntity: UserGroup::class, inversedBy: 'children')]
     #[Gedmo\TreeParent]
     private ?UserGroup $parent = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
@@ -77,10 +53,6 @@ abstract class Role
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
@@ -88,18 +60,11 @@ abstract class Role
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
     private ?int $lvl = null;
 
-    /**
-     * @ORM\Column(name="role", type="string", length=191, nullable=false)
-     */
     #[ORM\Column(name: 'role', type: Types::STRING, length: 191, nullable: false)]
     private ?string $role = null;
 

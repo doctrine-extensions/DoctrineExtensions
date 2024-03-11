@@ -14,9 +14,6 @@ namespace Gedmo\Tests\Sluggable\Fixture\MappedSuperclass;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\MappedSuperclass
- */
 #[ORM\MappedSuperclass]
 class Vehicle
 {
@@ -25,18 +22,11 @@ class Vehicle
      */
     private $id;
 
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"title"}, updatable=false)
-     *
-     * @ORM\Column(length=128, unique=true)
      */
     #[Gedmo\Slug(updatable: false, fields: ['title'])]
     #[ORM\Column(length: 128, unique: true)]

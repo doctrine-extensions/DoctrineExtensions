@@ -59,7 +59,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
             $annotationDriver2 = new AnnotationDriver($reader);
         }
 
-        $xmlDriver = new XmlDriver(__DIR__.'/Driver/Xml');
+        $xmlDriver = new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/Driver/Xml');
 
         $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Tests\Translatable\Fixture');

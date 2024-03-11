@@ -13,15 +13,9 @@ namespace Gedmo\Tests\Mapping\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class SuperClassExtension extends MappedSuperClass
 {
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 

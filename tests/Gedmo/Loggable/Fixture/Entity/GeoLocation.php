@@ -19,18 +19,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Class GeoLocation
  *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
- *
- * @ORM\Embeddable
  */
 #[ORM\Embeddable]
 class GeoLocation
 {
     /**
      * @var string
-     *
-     * @ORM\Column(type="string")
-     *
-     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Versioned]

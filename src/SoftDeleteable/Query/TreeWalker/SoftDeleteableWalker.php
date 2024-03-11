@@ -13,6 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\QuoteStrategy;
+use Doctrine\ORM\Query\AST as AST;
 use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
@@ -93,20 +94,17 @@ class SoftDeleteableWalker extends SqlWalker
         $this->extractComponents($this->getQueryComponents());
     }
 
-    /**
-     * @return AbstractSqlExecutor
-     */
-    public function getExecutor($AST)
+    public function getExecutor(AST\SelectStatement|AST\UpdateStatement|AST\DeleteStatement $statement): AbstractSqlExecutor
     {
         switch (true) {
-            case $AST instanceof DeleteStatement:
-                assert(class_exists($AST->deleteClause->abstractSchemaName));
+            case $statement instanceof DeleteStatement:
+                assert(class_exists($statement->deleteClause->abstractSchemaName));
 
-                $primaryClass = $this->getEntityManager()->getClassMetadata($AST->deleteClause->abstractSchemaName);
+                $primaryClass = $this->getEntityManager()->getClassMetadata($statement->deleteClause->abstractSchemaName);
 
                 return $primaryClass->isInheritanceTypeJoined()
-                    ? new MultiTableDeleteExecutor($AST, $this, $this->meta, $this->getConnection()->getDatabasePlatform(), $this->configuration)
-                    : new SingleTableDeleteUpdateExecutor($AST, $this);
+                    ? new MultiTableDeleteExecutor($statement, $this, $this->meta, $this->getConnection()->getDatabasePlatform(), $this->configuration)
+                    : new SingleTableDeleteUpdateExecutor($statement, $this);
             default:
                 throw new UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
         }
@@ -114,10 +112,8 @@ class SoftDeleteableWalker extends SqlWalker
 
     /**
      * Change a DELETE clause for an UPDATE clause
-     *
-     * @return string the SQL
      */
-    public function walkDeleteClause(DeleteClause $deleteClause)
+    public function walkDeleteClause(AST\DeleteClause $deleteClause): string
     {
         $em = $this->getEntityManager();
 

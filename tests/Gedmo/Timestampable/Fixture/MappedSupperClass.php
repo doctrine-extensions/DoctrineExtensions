@@ -15,18 +15,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\MappedSuperclass
- */
 #[ORM\MappedSuperclass]
 class MappedSupperClass
 {
     /**
      * @var int|null
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -35,18 +28,12 @@ class MappedSupperClass
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Locale
      */
     #[Gedmo\Locale]
     protected $locale;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="name", type="string", length=191)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 191)]
@@ -54,10 +41,6 @@ class MappedSupperClass
 
     /**
      * @var \DateTime|null
-     *
-     * @ORM\Column(name="created_at", type="datetime")
-     *
-     * @Gedmo\Timestampable(on="create")
      */
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]

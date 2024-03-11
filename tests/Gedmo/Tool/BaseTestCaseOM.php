@@ -89,11 +89,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     protected function getORMDriver(array $paths = []): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriverORM($paths);
-        }
-
-        return new AnnotationDriverORM($_ENV['annotation_reader'], $paths);
+        return new AttributeDriverORM($paths);
     }
 
     /**

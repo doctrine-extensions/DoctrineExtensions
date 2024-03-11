@@ -18,11 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\MaterializedPathRepository")
- *
- * @Gedmo\Tree(type="materializedPath")
- */
 #[ORM\Entity(repositoryClass: MaterializedPathRepository::class)]
 #[Gedmo\Tree(type: 'materializedPath')]
 class MPFeaturesCategory
@@ -30,51 +25,29 @@ class MPFeaturesCategory
     /**
      * @var int|null
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+     *      *      *      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @Gedmo\TreePath(appendId=false, startsWithSeparator=true, endsWithSeparator=false)
-     *
-     * @ORM\Column(name="path", type="string", length=3000, nullable=true)
-     */
     #[ORM\Column(name: 'path', type: Types::STRING, length: 3000, nullable: true)]
     #[Gedmo\TreePath(appendId: false, startsWithSeparator: true, endsWithSeparator: false)]
     private ?string $path = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\TreePathHash
-     *
-     * @ORM\Column(name="pathhash", type="string", length=32, nullable=true)
      */
     #[ORM\Column(name: 'pathhash', type: Types::STRING, length: 32, nullable: true)]
     #[Gedmo\TreePathHash]
     private ?string $pathHash = null;
 
-    /**
-     * @Gedmo\TreePathSource
-     *
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\TreePathSource]
     private ?string $title = null;
 
     /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="MPFeaturesCategory", inversedBy="children")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     *          * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -83,10 +56,6 @@ class MPFeaturesCategory
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
@@ -94,10 +63,6 @@ class MPFeaturesCategory
 
     /**
      * @var string|null
-     *
-     * @Gedmo\TreeRoot
-     *
-     * @ORM\Column(name="tree_root_value", type="string", nullable=true)
      */
     #[ORM\Column(name: 'tree_root_value', type: Types::STRING, nullable: true)]
     #[Gedmo\TreeRoot]
@@ -105,16 +70,12 @@ class MPFeaturesCategory
 
     /**
      * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="MPFeaturesCategory", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
     /**
      * @var Collection<int, Article>
-     *
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
     private Collection $comments;

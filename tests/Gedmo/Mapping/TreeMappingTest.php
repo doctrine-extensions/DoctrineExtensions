@@ -47,14 +47,7 @@ final class TreeMappingTest extends ORMMappingTestCase
 
         $chain = new MappingDriverChain();
 
-        // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
-        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
-
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationOrAttributeDriver = new AttributeDriver([]);
-        } else {
-            $annotationOrAttributeDriver = new AnnotationDriver(new AnnotationReader());
-        }
+        $annotationOrAttributeDriver = new AttributeDriver([]);
 
         $chain->addDriver($annotationOrAttributeDriver, 'Gedmo\Tests\Tree\Fixture');
         $chain->addDriver($annotationOrAttributeDriver, 'Gedmo\Tree');
