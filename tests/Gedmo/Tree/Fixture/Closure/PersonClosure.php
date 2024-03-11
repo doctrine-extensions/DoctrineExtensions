@@ -34,7 +34,7 @@ class PersonClosure extends AbstractClosure
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected $ancestor;
+    protected ?Person $ancestor = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\Person")
@@ -42,5 +42,5 @@ class PersonClosure extends AbstractClosure
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected $descendant;
+    protected ?Person $descendant = null;
 }

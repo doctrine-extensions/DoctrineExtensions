@@ -34,7 +34,7 @@ class Article implements Timestampable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
@@ -54,7 +54,7 @@ class Article implements Timestampable
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Timestampable\Fixture\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Timestampable\Fixture\Author")
@@ -98,7 +98,7 @@ class Article implements Timestampable
     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
     private ?\DateTime $contentChanged = null;
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="author_changed", type="datetime", nullable=true)
      *
@@ -106,7 +106,7 @@ class Article implements Timestampable
      */
     #[ORM\Column(name: 'author_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['author.name', 'author.email'])]
-    private $authorChanged;
+    private ?\DateTimeInterface $authorChanged = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
@@ -131,7 +131,7 @@ class Article implements Timestampable
      */
     #[ORM\Column(name: 'reached_relevant_level', type: Types::DATE_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'level', value: '10')]
-    private $reachedRelevantLevel;
+    private ?\DateTimeInterface $reachedRelevantLevel = null;
 
     public function __construct()
     {

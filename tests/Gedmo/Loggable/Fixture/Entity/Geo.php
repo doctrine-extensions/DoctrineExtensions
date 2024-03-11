@@ -36,7 +36,7 @@ class Geo
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Gedmo\Versioned]
-    protected $latitude;
+    protected ?string $latitude = null;
 
     /**
      * @var string|null
@@ -49,7 +49,7 @@ class Geo
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Gedmo\Versioned]
-    protected $longitude;
+    protected ?string $longitude = null;
 
     /**
      * @var GeoLocation

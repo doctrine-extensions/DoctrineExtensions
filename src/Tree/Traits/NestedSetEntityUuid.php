@@ -33,5 +33,5 @@ trait NestedSetEntityUuid
      */
     #[ORM\Column(name: 'root', type: Types::STRING, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?string $root = null;
 }

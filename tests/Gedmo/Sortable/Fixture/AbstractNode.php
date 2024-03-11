@@ -31,7 +31,7 @@ class AbstractNode
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string|null
@@ -39,7 +39,7 @@ class AbstractNode
      * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    protected $name;
+    protected ?string $name = null;
 
     /**
      * @var string|null
@@ -50,7 +50,7 @@ class AbstractNode
      */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::STRING, length: 191)]
-    protected $path;
+    protected ?string $path = null;
 
     /**
      * @var int|null
@@ -61,7 +61,7 @@ class AbstractNode
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
-    protected $position;
+    protected ?int $position = null;
 
     public function getId(): ?int
     {

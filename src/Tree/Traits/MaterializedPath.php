@@ -39,7 +39,7 @@ trait MaterializedPath
     /**
      * @var Collection<int, self>|self[]|null
      */
-    protected $children;
+    protected Collection $children;
 
     /**
      * @var string

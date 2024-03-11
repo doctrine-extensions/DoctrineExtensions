@@ -32,7 +32,7 @@ class Comment implements Timestampable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="message", type="text")
@@ -46,7 +46,7 @@ class Comment implements Timestampable
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Timestampable\Fixture\Article", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
-    private $article;
+    private ?Article $article = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -55,7 +55,7 @@ class Comment implements Timestampable
     private ?int $status = null;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      *
@@ -63,10 +63,10 @@ class Comment implements Timestampable
      */
     #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'status', value: 1)]
-    private $closed;
+    private ?\DateTimeInterface $closed = null;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="modified", type="time")
      *
@@ -74,7 +74,7 @@ class Comment implements Timestampable
      */
     #[ORM\Column(name: 'modified', type: Types::TIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
-    private $modified;
+    private ?\DateTimeInterface $modified = null;
 
     /**
      * @param Article|ArticleCarbon $article

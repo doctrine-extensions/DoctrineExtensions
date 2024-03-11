@@ -33,7 +33,7 @@ class RootAssociationCategory
      * @ORM\OneToMany(targetEntity="RootAssociationCategory", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
+    protected Collection $children;
     /**
      * @var int|null
      *
@@ -44,7 +44,7 @@ class RootAssociationCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -61,7 +61,7 @@ class RootAssociationCategory
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
@@ -72,7 +72,7 @@ class RootAssociationCategory
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -100,7 +100,7 @@ class RootAssociationCategory
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'tree_root', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?\Gedmo\Tests\Tree\Fixture\RootAssociationCategory $root = null;
 
     /**
      * @var int|null
@@ -111,7 +111,7 @@ class RootAssociationCategory
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     public function __construct()
     {

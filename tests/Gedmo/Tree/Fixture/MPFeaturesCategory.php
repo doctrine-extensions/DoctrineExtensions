@@ -37,7 +37,7 @@ class MPFeaturesCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreePath(appendId=false, startsWithSeparator=true, endsWithSeparator=false)
@@ -57,7 +57,7 @@ class MPFeaturesCategory
      */
     #[ORM\Column(name: 'pathhash', type: Types::STRING, length: 32, nullable: true)]
     #[Gedmo\TreePathHash]
-    private $pathHash;
+    private ?string $pathHash = null;
 
     /**
      * @Gedmo\TreePathSource
@@ -90,7 +90,7 @@ class MPFeaturesCategory
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var string|null
@@ -101,7 +101,7 @@ class MPFeaturesCategory
      */
     #[ORM\Column(name: 'tree_root_value', type: Types::STRING, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $treeRootValue;
+    private ?string $treeRootValue = null;
 
     /**
      * @var Collection<int, self>

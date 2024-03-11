@@ -42,7 +42,7 @@ class BaseNode extends ANode
     private Collection $children;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @Gedmo\Timestampable(on="create")
      *
@@ -50,7 +50,7 @@ class BaseNode extends ANode
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    private $created;
+    private ?\DateTimeInterface $created = null;
 
     /**
      * @ORM\Column(length=128, unique=true)
@@ -59,7 +59,7 @@ class BaseNode extends ANode
     private ?string $identifier = null;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @ORM\Column(type="datetime")
      *
@@ -67,7 +67,7 @@ class BaseNode extends ANode
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable]
-    private $updated;
+    private ?\DateTimeInterface $updated = null;
 
     public function __construct()
     {

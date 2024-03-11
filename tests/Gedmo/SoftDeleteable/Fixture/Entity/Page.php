@@ -42,7 +42,7 @@ class Page
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string")
@@ -62,7 +62,7 @@ class Page
      * @ORM\OneToMany(targetEntity="Module", mappedBy="page", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(targetEntity: Module::class, mappedBy: 'page', cascade: ['persist', 'remove'])]
-    private $modules;
+    private Collection $modules;
 
     public function __construct()
     {

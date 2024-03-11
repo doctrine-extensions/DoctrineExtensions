@@ -37,7 +37,7 @@ class Address implements Loggable
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string|null
@@ -48,7 +48,7 @@ class Address implements Loggable
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     #[Gedmo\Versioned]
-    protected $street;
+    protected ?string $street = null;
 
     /**
      * @var string|null
@@ -59,7 +59,7 @@ class Address implements Loggable
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     #[Gedmo\Versioned]
-    protected $city;
+    protected ?string $city = null;
 
     /**
      * @var Geo|null

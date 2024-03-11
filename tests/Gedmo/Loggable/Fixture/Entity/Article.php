@@ -35,7 +35,7 @@ class Article implements Loggable
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Versioned

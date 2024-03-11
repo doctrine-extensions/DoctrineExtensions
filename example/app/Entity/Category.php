@@ -39,7 +39,7 @@ class Category
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string|null
@@ -61,7 +61,7 @@ class Category
      */
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var string|null
@@ -83,7 +83,7 @@ class Category
      */
     #[Gedmo\TreeLeft]
     #[ORM\Column(type: Types::INTEGER)]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @Gedmo\TreeRight
@@ -92,7 +92,7 @@ class Category
      */
     #[Gedmo\TreeRight]
     #[ORM\Column(type: Types::INTEGER)]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -103,7 +103,7 @@ class Category
     #[Gedmo\TreeParent]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $parent;
+    private ?\App\Entity\Category $parent = null;
 
     /**
      * @Gedmo\TreeRoot
@@ -112,7 +112,7 @@ class Category
      */
     #[Gedmo\TreeRoot]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private $root;
+    private ?int $root = null;
 
     /**
      * @Gedmo\TreeLevel
@@ -121,10 +121,11 @@ class Category
      */
     #[Gedmo\TreeLevel]
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Category>
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
@@ -136,7 +137,7 @@ class Category
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $created;
+    private ?\DateTimeInterface $created = null;
 
     /**
      * @Gedmo\Timestampable(on="update")
@@ -145,7 +146,7 @@ class Category
      */
     #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $updated;
+    private ?\DateTimeInterface $updated = null;
 
     /**
      * @Gedmo\Blameable(on="create")
@@ -154,7 +155,7 @@ class Category
      */
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\Column(type: Types::STRING)]
-    private $createdBy;
+    private ?string $createdBy = null;
 
     /**
      * @Gedmo\Blameable(on="update")
@@ -163,7 +164,7 @@ class Category
      */
     #[Gedmo\Blameable(on: 'update')]
     #[ORM\Column(type: Types::STRING)]
-    private $updatedBy;
+    private ?string $updatedBy = null;
 
     /**
      * @ORM\OneToMany(
@@ -171,9 +172,10 @@ class Category
      *     mappedBy="object",
      *     cascade={"persist", "remove"}
      * )
+     * @var \Doctrine\Common\Collections\Collection<int, CategoryTranslation>
      */
     #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
-    private $translations;
+    private \Doctrine\Common\Collections\Collection $translations;
 
     public function __construct()
     {

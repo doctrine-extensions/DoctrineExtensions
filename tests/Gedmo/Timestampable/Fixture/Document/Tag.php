@@ -34,7 +34,7 @@ class Tag
      *
      * @Gedmo\Timestampable(on="create")
      *
-     * @var \DateTime
+     * @var \DateTimeInterface
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ODM\Field(type: MongoDBType::DATE)]
@@ -45,7 +45,7 @@ class Tag
      *
      * @Gedmo\Timestampable
      *
-     * @var \DateTime
+     * @var \DateTimeInterface
      */
     #[Gedmo\Timestampable]
     #[ODM\Field(type: MongoDBType::DATE)]

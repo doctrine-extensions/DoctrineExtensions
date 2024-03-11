@@ -30,7 +30,7 @@ class CompanyEmbedLink
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'website', type: Types::STRING, length: 191, nullable: true)]
-    protected $website;
+    protected ?string $website = null;
 
     /**
      * @var string
@@ -41,7 +41,7 @@ class CompanyEmbedLink
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'facebook', type: Types::STRING, length: 191, nullable: true)]
-    protected $facebook;
+    protected ?string $facebook = null;
 
     public function getWebsite(): string
     {

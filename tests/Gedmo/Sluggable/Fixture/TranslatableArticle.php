@@ -35,7 +35,7 @@ class TranslatableArticle implements Sluggable, Translatable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Translatable
@@ -66,7 +66,7 @@ class TranslatableArticle implements Sluggable, Translatable
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title', 'code'])]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @var Collection<int, Comment>
@@ -74,7 +74,7 @@ class TranslatableArticle implements Sluggable, Translatable
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @ORM\ManyToOne(targetEntity="Page", inversedBy="articles")

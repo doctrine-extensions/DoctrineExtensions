@@ -36,7 +36,7 @@ class Comment implements Loggable
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Versioned

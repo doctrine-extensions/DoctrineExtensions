@@ -25,7 +25,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class UserTimeAware
 {
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @ODM\Field(type="date")
      */

@@ -30,5 +30,5 @@ class Embedded
      * @ORM\Column(type="string")
      */
     #[ORM\Column(type: Types::STRING)]
-    private $subtitle;
+    private ?string $subtitle = null;
 }

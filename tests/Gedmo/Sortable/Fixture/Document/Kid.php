@@ -33,7 +33,7 @@ class Kid
     protected $position;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @Gedmo\SortableGroup
      *

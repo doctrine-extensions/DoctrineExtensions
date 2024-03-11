@@ -33,7 +33,7 @@ class CategoryTranslation extends AbstractPersonalTranslation
      */
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'translations')]
     #[ORM\JoinColumn(name: 'object_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected $object;
+    protected ?Category $object = null;
 
     /**
      * Convenient constructor

@@ -34,7 +34,7 @@ class Article implements IpTraceable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
@@ -48,7 +48,7 @@ class Article implements IpTraceable
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\IpTraceable\Fixture\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @Gedmo\IpTraceable(on="create")

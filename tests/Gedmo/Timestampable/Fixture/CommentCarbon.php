@@ -33,7 +33,7 @@ class CommentCarbon implements Timestampable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="message", type="text")
@@ -62,10 +62,10 @@ class CommentCarbon implements Timestampable
      */
     #[ORM\Column(name: 'closed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'status', value: 1)]
-    private $closed;
+    private ?\DateTimeInterface $closed = null;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="modified", type="time")
      *
@@ -73,7 +73,7 @@ class CommentCarbon implements Timestampable
      */
     #[ORM\Column(name: 'modified', type: Types::TIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
-    private $modified;
+    private ?\DateTimeInterface $modified = null;
 
     public function setArticle(?ArticleCarbon $article): void
     {

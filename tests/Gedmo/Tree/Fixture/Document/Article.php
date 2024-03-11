@@ -74,7 +74,7 @@ class Article
     private $level;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @Gedmo\TreeLockTime
      *

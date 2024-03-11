@@ -56,7 +56,7 @@ class CategoryUuid implements NodeInterface
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
@@ -67,7 +67,7 @@ class CategoryUuid implements NodeInterface
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -91,7 +91,7 @@ class CategoryUuid implements NodeInterface
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var string|null
@@ -102,7 +102,7 @@ class CategoryUuid implements NodeInterface
      */
     #[ORM\Column(name: 'root', type: Types::STRING)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?string $root = null;
 
     /**
      * @var Collection<int, self>

@@ -34,7 +34,7 @@ class CategoryWithoutLevelClosure extends AbstractClosure
      */
     #[ORM\ManyToOne(targetEntity: CategoryWithoutLevel::class)]
     #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected $ancestor;
+    protected ?CategoryWithoutLevel $ancestor = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel")
@@ -42,5 +42,5 @@ class CategoryWithoutLevelClosure extends AbstractClosure
      */
     #[ORM\ManyToOne(targetEntity: CategoryWithoutLevel::class)]
     #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected $descendant;
+    protected ?CategoryWithoutLevel $descendant = null;
 }

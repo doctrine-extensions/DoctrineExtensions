@@ -28,7 +28,7 @@ abstract class AbstractClosure
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * Mapped by listener
@@ -52,7 +52,7 @@ abstract class AbstractClosure
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
-    protected $depth;
+    protected ?int $depth = null;
 
     /**
      * @return int|null

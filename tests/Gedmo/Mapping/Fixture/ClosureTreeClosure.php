@@ -35,7 +35,7 @@ class ClosureTreeClosure extends AbstractClosure
      */
     #[ORM\ManyToOne(targetEntity: ClosureTree::class)]
     #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected $ancestor;
+    protected ?ClosureTree $ancestor = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree")
@@ -43,5 +43,5 @@ class ClosureTreeClosure extends AbstractClosure
      */
     #[ORM\ManyToOne(targetEntity: ClosureTree::class)]
     #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected $descendant;
+    protected ?ClosureTree $descendant = null;
 }

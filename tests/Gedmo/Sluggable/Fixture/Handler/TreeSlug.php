@@ -39,7 +39,7 @@ class TreeSlug implements Node
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -62,7 +62,7 @@ class TreeSlug implements Node
     #[Gedmo\Slug(fields: ['title'], separator: '-', updatable: true)]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @Gedmo\TreeParent
@@ -89,7 +89,7 @@ class TreeSlug implements Node
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
@@ -100,7 +100,7 @@ class TreeSlug implements Node
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @var int|null
@@ -111,7 +111,7 @@ class TreeSlug implements Node
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     /**
      * @var int|null
@@ -122,7 +122,7 @@ class TreeSlug implements Node
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     private ?Node $sibling = null;
 

@@ -41,5 +41,5 @@ abstract class BaseEntity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    protected $id;
+    protected ?int $id = null;
 }

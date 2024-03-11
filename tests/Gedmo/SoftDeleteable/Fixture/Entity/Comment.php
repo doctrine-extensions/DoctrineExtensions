@@ -34,7 +34,7 @@ class Comment
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="comment", type="string")
@@ -54,7 +54,7 @@ class Comment
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
      */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
-    private $article;
+    private ?Article $article = null;
 
     public function getId(): ?int
     {

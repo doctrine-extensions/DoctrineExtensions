@@ -33,7 +33,7 @@ class Sluggable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -74,7 +74,7 @@ class Sluggable
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'parent', 'relationSlugField' => 'test', 'separator' => '-'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @var Sluggable|null
@@ -82,7 +82,7 @@ class Sluggable
      * @ORM\ManyToOne(targetEntity="Sluggable")
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
-    private $parent;
+    private ?\Gedmo\Tests\Mapping\Fixture\Sluggable $parent = null;
 
     /**
      * @var User|null
@@ -90,7 +90,7 @@ class Sluggable
      * @ORM\ManyToOne(targetEntity="User")
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    private $user;
+    private ?User $user = null;
 
     public function getId(): ?int
     {

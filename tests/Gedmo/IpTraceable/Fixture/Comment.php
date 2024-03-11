@@ -32,7 +32,7 @@ class Comment implements IpTraceable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="message", type="text")
@@ -61,7 +61,7 @@ class Comment implements IpTraceable
      */
     #[ORM\Column(name: 'closed', type: Types::STRING, length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'change', field: 'status', value: 1)]
-    private $closed;
+    private ?string $closed = null;
 
     /**
      * @var string|null
@@ -72,7 +72,7 @@ class Comment implements IpTraceable
      */
     #[ORM\Column(name: 'modified', type: Types::STRING, length: 45)]
     #[Gedmo\IpTraceable(on: 'update')]
-    private $modified;
+    private ?string $modified = null;
 
     public function setArticle(?Article $article): void
     {

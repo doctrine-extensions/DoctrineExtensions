@@ -31,7 +31,7 @@ class WithoutInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=128)
@@ -40,7 +40,7 @@ class WithoutInterface
     private ?string $title = null;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @Gedmo\Timestampable(on="create")
      *
@@ -48,10 +48,10 @@ class WithoutInterface
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private $created;
+    private ?\DateTimeInterface $created = null;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
      * @ORM\Column(type="datetime")
      *
@@ -59,7 +59,7 @@ class WithoutInterface
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
-    private $updated;
+    private ?\DateTimeInterface $updated = null;
 
     public function getId(): ?int
     {

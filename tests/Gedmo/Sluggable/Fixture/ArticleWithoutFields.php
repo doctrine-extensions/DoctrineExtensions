@@ -32,7 +32,7 @@ class ArticleWithoutFields implements Sluggable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Slug(separator="-", updatable=true)

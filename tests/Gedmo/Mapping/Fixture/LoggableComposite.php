@@ -31,7 +31,7 @@ class LoggableComposite
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
-    private $one;
+    private ?int $one = null;
 
     /**
      * @var int
@@ -41,7 +41,7 @@ class LoggableComposite
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
-    private $two;
+    private ?int $two = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)

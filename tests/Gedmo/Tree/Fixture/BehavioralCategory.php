@@ -37,7 +37,7 @@ class BehavioralCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Translatable
@@ -57,7 +57,7 @@ class BehavioralCategory
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
@@ -68,7 +68,7 @@ class BehavioralCategory
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -102,7 +102,7 @@ class BehavioralCategory
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128, unique: true)]
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title'])]
-    private $slug;
+    private ?string $slug = null;
 
     public function __construct()
     {

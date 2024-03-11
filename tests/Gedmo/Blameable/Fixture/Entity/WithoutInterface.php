@@ -31,7 +31,7 @@ class WithoutInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=128)
@@ -48,7 +48,7 @@ class WithoutInterface
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Blameable(on: 'create')]
-    private $created;
+    private ?string $created = null;
 
     /**
      * @var string|null
@@ -59,7 +59,7 @@ class WithoutInterface
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Blameable(on: 'update')]
-    private $updated;
+    private ?string $updated = null;
 
     public function getId(): ?int
     {

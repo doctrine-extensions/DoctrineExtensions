@@ -35,7 +35,7 @@ class Uploadable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string
@@ -46,7 +46,7 @@ class Uploadable
      */
     #[ORM\Column(name: 'mime', type: Types::STRING)]
     #[Gedmo\UploadableFileMimeType]
-    private $mimeType;
+    private ?string $mimeType = null;
 
     /**
      * @var array<string, mixed>
@@ -62,7 +62,7 @@ class Uploadable
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL)]
     #[Gedmo\UploadableFileSize]
-    private $size;
+    private ?string $size = null;
 
     /**
      * @var string
@@ -73,7 +73,7 @@ class Uploadable
      */
     #[ORM\Column(name: 'path', type: Types::STRING)]
     #[Gedmo\UploadableFilePath]
-    private $path;
+    private ?string $path = null;
 
     public function getPath(): string
     {

@@ -28,7 +28,7 @@ trait SoftDeleteableEntity
      * @var \DateTime|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    protected $deletedAt;
+    protected ?\DateTimeInterface $deletedAt = null;
 
     /**
      * Set or clear the deleted at timestamp.

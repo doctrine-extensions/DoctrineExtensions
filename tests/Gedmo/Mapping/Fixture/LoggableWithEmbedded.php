@@ -35,7 +35,7 @@ class LoggableWithEmbedded
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string
@@ -46,7 +46,7 @@ class LoggableWithEmbedded
      */
     #[ORM\Column(name: 'title', type: Types::STRING)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var Embedded

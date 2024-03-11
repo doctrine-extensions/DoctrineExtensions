@@ -30,7 +30,7 @@ abstract class AbstractTranslation
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string
@@ -38,7 +38,7 @@ abstract class AbstractTranslation
      * @ORM\Column(type="string", length=8)
      */
     #[ORM\Column(type: Types::STRING, length: 8)]
-    protected $locale;
+    protected ?string $locale = null;
 
     /**
      * @var string
@@ -46,7 +46,7 @@ abstract class AbstractTranslation
      * @ORM\Column(name="object_class", type="string", length=191)
      */
     #[ORM\Column(name: 'object_class', type: Types::STRING, length: 191)]
-    protected $objectClass;
+    protected ?string $objectClass = null;
 
     /**
      * @var string
@@ -54,7 +54,7 @@ abstract class AbstractTranslation
      * @ORM\Column(type="string", length=32)
      */
     #[ORM\Column(type: Types::STRING, length: 32)]
-    protected $field;
+    protected ?string $field = null;
 
     /**
      * @var string
@@ -62,7 +62,7 @@ abstract class AbstractTranslation
      * @ORM\Column(name="foreign_key", type="string", length=64)
      */
     #[ORM\Column(name: 'foreign_key', type: Types::STRING, length: 64)]
-    protected $foreignKey;
+    protected ?string $foreignKey = null;
 
     /**
      * @var string
@@ -70,7 +70,7 @@ abstract class AbstractTranslation
      * @ORM\Column(type="text", nullable=true)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    protected $content;
+    protected ?string $content = null;
 
     /**
      * Get id

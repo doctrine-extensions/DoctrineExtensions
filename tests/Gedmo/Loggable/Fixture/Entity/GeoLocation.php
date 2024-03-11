@@ -34,7 +34,7 @@ class GeoLocation
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Versioned]
-    protected $location;
+    protected ?string $location = null;
 
     public function __construct(string $location)
     {

@@ -32,7 +32,7 @@ class ArticleRelativeSlug
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(length=64)
@@ -56,7 +56,7 @@ class ArticleRelativeSlug
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
     #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'article', 'relationSlugField' => 'slug', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Article")

@@ -37,7 +37,7 @@ class MPCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreePath
@@ -79,7 +79,7 @@ class MPCategory
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var string|null
@@ -90,7 +90,7 @@ class MPCategory
      */
     #[ORM\Column(name: 'tree_root_value', type: Types::STRING, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $treeRootValue;
+    private ?string $treeRootValue = null;
 
     /**
      * @var Collection<int, self>

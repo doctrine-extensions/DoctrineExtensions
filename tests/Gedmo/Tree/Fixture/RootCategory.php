@@ -34,7 +34,7 @@ class RootCategory implements Node
      * @ORM\OneToMany(targetEntity="RootCategory", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
+    protected Collection $children;
     /**
      * @var int|null
      *
@@ -45,7 +45,7 @@ class RootCategory implements Node
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -62,7 +62,7 @@ class RootCategory implements Node
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
@@ -73,7 +73,7 @@ class RootCategory implements Node
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -97,7 +97,7 @@ class RootCategory implements Node
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     /**
      * @var int|null
@@ -108,7 +108,7 @@ class RootCategory implements Node
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel(base: 1)]
-    private $level;
+    private ?int $level = null;
 
     private ?Node $sibling = null;
 

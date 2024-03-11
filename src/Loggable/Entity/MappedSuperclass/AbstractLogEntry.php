@@ -34,7 +34,7 @@ abstract class AbstractLogEntry implements LogEntryInterface
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string|null
@@ -44,7 +44,7 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * @ORM\Column(type="string", length=8)
      */
     #[ORM\Column(type: Types::STRING, length: 8)]
-    protected $action;
+    protected ?string $action = null;
 
     /**
      * @var \DateTime|null
@@ -52,7 +52,7 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * @ORM\Column(name="logged_at", type="datetime")
      */
     #[ORM\Column(name: 'logged_at', type: Types::DATETIME_MUTABLE)]
-    protected $loggedAt;
+    protected ?\DateTimeInterface $loggedAt = null;
 
     /**
      * @var string|null
@@ -70,7 +70,7 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * @ORM\Column(name="object_class", type="string", length=191)
      */
     #[ORM\Column(name: 'object_class', type: Types::STRING, length: 191)]
-    protected $objectClass;
+    protected ?string $objectClass = null;
 
     /**
      * @var int|null
@@ -78,7 +78,7 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
-    protected $version;
+    protected ?int $version = null;
 
     /**
      * @var array<string, mixed>|null

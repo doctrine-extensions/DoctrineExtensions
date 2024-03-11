@@ -40,7 +40,7 @@ class MPCategoryWithRootAssociation
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreePathSource]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreePath
@@ -79,7 +79,7 @@ class MPCategoryWithRootAssociation
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var self|null
@@ -94,7 +94,7 @@ class MPCategoryWithRootAssociation
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'tree_root_entity', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeRoot]
-    private $treeRootEntity;
+    private ?\Gedmo\Tests\Tree\Fixture\MPCategoryWithRootAssociation $treeRootEntity = null;
 
     /**
      * @var Collection<int, self>

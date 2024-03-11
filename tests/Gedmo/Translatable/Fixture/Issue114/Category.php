@@ -33,7 +33,7 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Translatable
@@ -50,7 +50,7 @@ class Category
      * @ORM\OneToMany(targetEntity="Article", mappedBy="category", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
-    private $articles;
+    private Collection $articles;
 
     public function __construct()
     {

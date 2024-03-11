@@ -46,7 +46,7 @@ class Category extends BaseCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -89,7 +89,7 @@ class Category extends BaseCategory
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Mapping\Fixture\Category", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    private $children;
+    private Collection $children;
 
     /**
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Mapping\Fixture\Category", inversedBy="children")
@@ -101,7 +101,7 @@ class Category extends BaseCategory
     private ?Category $parent = null;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      *
      * @ORM\Column(type="date")
      *
@@ -109,7 +109,7 @@ class Category extends BaseCategory
      */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Gedmo\Timestampable(on: 'change', field: 'title', value: 'Test')]
-    private $changed;
+    private ?\DateTimeInterface $changed = null;
 
     public function __construct()
     {

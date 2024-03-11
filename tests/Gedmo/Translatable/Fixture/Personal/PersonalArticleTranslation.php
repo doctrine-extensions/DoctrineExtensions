@@ -28,5 +28,5 @@ class PersonalArticleTranslation extends AbstractPersonalTranslation
      */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'translations')]
     #[ORM\JoinColumn(name: 'object_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected $object;
+    protected ?Article $object = null;
 }

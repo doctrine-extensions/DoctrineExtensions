@@ -37,7 +37,7 @@ class MPCategoryWithTrimmedSeparator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreePath(appendId=false, startsWithSeparator=false, endsWithSeparator=false)
@@ -79,7 +79,7 @@ class MPCategoryWithTrimmedSeparator
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var Collection<int, self>

@@ -33,7 +33,7 @@ class TransArticleManySlug implements Sluggable, Translatable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     private ?int $page = null;
 
@@ -61,7 +61,7 @@ class TransArticleManySlug implements Sluggable, Translatable
      */
     #[Gedmo\Slug(fields: ['uniqueTitle'])]
     #[ORM\Column(type: Types::STRING, length: 128)]
-    private $uniqueSlug;
+    private ?string $uniqueSlug = null;
 
     /**
      * @Gedmo\Translatable
@@ -83,7 +83,7 @@ class TransArticleManySlug implements Sluggable, Translatable
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\Slug(fields: ['title', 'code'])]
     #[Gedmo\Translatable]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @Gedmo\Locale

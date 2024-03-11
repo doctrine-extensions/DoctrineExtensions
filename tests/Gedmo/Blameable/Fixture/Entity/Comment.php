@@ -32,7 +32,7 @@ class Comment implements Blameable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="message", type="text")
@@ -61,7 +61,7 @@ class Comment implements Blameable
      */
     #[ORM\Column(name: 'closed', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'status', value: 1)]
-    private $closed;
+    private ?string $closed = null;
 
     /**
      * @var string|null
@@ -72,7 +72,7 @@ class Comment implements Blameable
      */
     #[ORM\Column(name: 'modified', type: Types::STRING)]
     #[Gedmo\Blameable(on: 'update')]
-    private $modified;
+    private ?string $modified = null;
 
     public function setArticle(?Article $article): void
     {

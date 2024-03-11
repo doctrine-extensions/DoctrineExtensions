@@ -33,7 +33,7 @@ class Country
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string|null
@@ -41,7 +41,7 @@ class Country
      * @ORM\Column(type="string", length=10, nullable=true)
      */
     #[ORM\Column(type: Types::STRING, length: 10, nullable: true)]
-    private $languageCode;
+    private ?string $languageCode = null;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -58,7 +58,7 @@ class Country
      */
     #[ORM\Column(type: Types::STRING, length: 50)]
     #[Gedmo\Slug(separator: '-', fields: ['originalName'])]
-    private $alias;
+    private ?string $alias = null;
 
     public function getId(): ?int
     {

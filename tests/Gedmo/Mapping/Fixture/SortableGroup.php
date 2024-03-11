@@ -32,7 +32,7 @@ class SortableGroup
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string
@@ -40,5 +40,5 @@ class SortableGroup
      * @ORM\Column(type="string", length=64)
      */
     #[ORM\Column(type: Types::STRING, length: 64)]
-    private $name;
+    private ?string $name = null;
 }

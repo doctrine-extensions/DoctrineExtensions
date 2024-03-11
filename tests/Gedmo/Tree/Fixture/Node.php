@@ -42,7 +42,7 @@ class Node extends BaseNode
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title'])]
-    private $slug;
+    private ?string $slug = null;
 
     public function getSlug(): ?string
     {

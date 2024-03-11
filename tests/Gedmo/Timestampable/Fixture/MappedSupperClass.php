@@ -31,7 +31,7 @@ class MappedSupperClass
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string|null
@@ -50,7 +50,7 @@ class MappedSupperClass
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 191)]
-    protected $name;
+    protected ?string $name = null;
 
     /**
      * @var \DateTime|null
@@ -61,7 +61,7 @@ class MappedSupperClass
      */
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    protected $createdAt;
+    protected ?\DateTimeInterface $createdAt = null;
 
     /**
      * @codeCoverageIgnore

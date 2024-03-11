@@ -28,7 +28,7 @@ class CompositeRelation
      */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Article::class)]
-    private $article;
+    private ?Article $article = null;
 
     /**
      * @ORM\Id
