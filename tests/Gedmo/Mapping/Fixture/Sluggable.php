@@ -82,7 +82,7 @@ class Sluggable
      * @ORM\ManyToOne(targetEntity="Sluggable")
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
-    private ?\Gedmo\Tests\Mapping\Fixture\Sluggable $parent = null;
+    private ?Sluggable $parent = null;
 
     /**
      * @var User|null

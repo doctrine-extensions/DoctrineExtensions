@@ -94,7 +94,7 @@ class MPCategoryWithRootAssociation
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'tree_root_entity', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeRoot]
-    private ?\Gedmo\Tests\Tree\Fixture\MPCategoryWithRootAssociation $treeRootEntity = null;
+    private ?MPCategoryWithRootAssociation $treeRootEntity = null;
 
     /**
      * @var Collection<int, self>

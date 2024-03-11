@@ -103,7 +103,7 @@ class Category
     #[Gedmo\TreeParent]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private ?\App\Entity\Category $parent = null;
+    private ?Category $parent = null;
 
     /**
      * @Gedmo\TreeRoot
@@ -125,6 +125,7 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     *
      * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Category>
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
@@ -172,6 +173,7 @@ class Category
      *     mappedBy="object",
      *     cascade={"persist", "remove"}
      * )
+     *
      * @var \Doctrine\Common\Collections\Collection<int, CategoryTranslation>
      */
     #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]

@@ -100,7 +100,7 @@ class RootAssociationCategory
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'tree_root', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeRoot]
-    private ?\Gedmo\Tests\Tree\Fixture\RootAssociationCategory $root = null;
+    private ?RootAssociationCategory $root = null;
 
     /**
      * @var int|null
