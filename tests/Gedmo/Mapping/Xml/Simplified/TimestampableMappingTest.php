@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping\Xml\Simplified;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Mapping\Driver\ORM\XmlDriver;
 use Gedmo\Tests\Mapping\Fixture\Xml\Status;
 use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -38,6 +40,18 @@ final class TimestampableMappingTest extends BaseTestCaseORM
         $evm->addEventSubscriber($this->timestampable);
 
         $this->getDefaultMockSqliteEntityManager($evm);
+    }
+
+    protected function getDefaultConfiguration(): Configuration
+    {
+        $config = parent::getDefaultConfiguration();
+
+        $chain = new MappingDriverChain();
+        $chain->addDriver(new XmlDriver(__DIR__.'/../../Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
+
+        $config->setMetadataDriverImpl($chain);
+
+        return $config;
     }
 
     public function testTimestampableMetadata(): void

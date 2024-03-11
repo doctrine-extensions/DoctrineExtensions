@@ -29,6 +29,8 @@ use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableEventAdapter;
 use Gedmo\Translatable\TranslatableListener;
+use Doctrine\ORM\Query\AST;
+use Doctrine\ORM\Query\Exec;
 
 /**
  * The translation sql output walker makes it possible
@@ -119,24 +121,24 @@ class TranslationWalker extends SqlWalker
     /**
      * @return Query\Exec\AbstractSqlExecutor
      */
-    public function getExecutor($AST)
+    public function getExecutor(AST\SelectStatement|AST\UpdateStatement|AST\DeleteStatement $statement): Exec\AbstractSqlExecutor
     {
         // If it's not a Select, the TreeWalker ought to skip it, and just return the parent.
         // @see https://github.com/Atlantic18/DoctrineExtensions/issues/2013
-        if (!$AST instanceof SelectStatement) {
-            return parent::getExecutor($AST);
+        if (!$statement instanceof SelectStatement) {
+            return parent::getExecutor($statement);
         }
         $this->prepareTranslatedComponents();
 
-        return new SingleSelectExecutor($AST, $this);
+        return new SingleSelectExecutor($statement, $this);
     }
 
     /**
      * @return string
      */
-    public function walkSelectStatement(SelectStatement $AST)
+    public function walkSelectStatement(AST\SelectStatement $selectStatement): string
     {
-        $result = parent::walkSelectStatement($AST);
+        $result = parent::walkSelectStatement($selectStatement);
         if ([] === $this->translatedComponents) {
             return $result;
         }
@@ -164,7 +166,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSelectClause($selectClause)
+    public function walkSelectClause(AST\SelectClause $selectClause): string
     {
         $result = parent::walkSelectClause($selectClause);
 
@@ -174,7 +176,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkFromClause($fromClause)
+    public function walkFromClause(AST\FromClause $fromClause): string
     {
         $result = parent::walkFromClause($fromClause);
         $result .= $this->joinTranslations($fromClause);
@@ -185,7 +187,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkWhereClause($whereClause)
+    public function walkWhereClause(AST\WhereClause|null $whereClause): string
     {
         $result = parent::walkWhereClause($whereClause);
 
@@ -195,7 +197,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkHavingClause($havingClause)
+    public function walkHavingClause(AST\HavingClause $havingClause): string
     {
         $result = parent::walkHavingClause($havingClause);
 
@@ -205,7 +207,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkOrderByClause($orderByClause)
+    public function walkOrderByClause(AST\OrderByClause $orderByClause): string
     {
         $result = parent::walkOrderByClause($orderByClause);
 
@@ -215,7 +217,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSubselect($subselect)
+    public function walkSubselect(AST\Subselect $subselect): string
     {
         return parent::walkSubselect($subselect);
     }
@@ -223,7 +225,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSubselectFromClause($subselectFromClause)
+    public function walkSubselectFromClause(AST\SubselectFromClause $subselectFromClause): string
     {
         $result = parent::walkSubselectFromClause($subselectFromClause);
         $result .= $this->joinTranslations($subselectFromClause);
@@ -234,7 +236,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSimpleSelectClause($simpleSelectClause)
+    public function walkSimpleSelectClause(AST\SimpleSelectClause $simpleSelectClause): string
     {
         $result = parent::walkSimpleSelectClause($simpleSelectClause);
 
@@ -244,7 +246,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkGroupByClause($groupByClause)
+    public function walkGroupByClause(AST\GroupByClause $groupByClause): string
     {
         $result = parent::walkGroupByClause($groupByClause);
 
