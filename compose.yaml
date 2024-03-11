@@ -5,10 +5,10 @@ services:
       target: php
       dockerfile: ./.docker/php/Dockerfile
       args:
-        PHP_VERSION: ${PHP_VERSION:-8.2-cli}
+        PHP_VERSION: ${PHP_VERSION:-8.1-cli}
     volumes:
-      - .:/var/www
-    working_dir: /var/www
+      - .:/app
+    working_dir: /app
     environment:
       MONGODB_SERVER: 'mongodb://mongodb:27017'
     tty: true
