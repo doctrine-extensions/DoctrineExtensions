@@ -49,9 +49,7 @@ final class SortableMappingTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedSortable::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationDriver::class)) {
             yield 'Model with annotations' => [AnnotatedSortable::class];
         }
 
