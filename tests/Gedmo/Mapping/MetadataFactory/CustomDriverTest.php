@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\MetadataFactory;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
@@ -19,6 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 use Gedmo\Timestampable\TimestampableListener;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +50,13 @@ final class CustomDriverTest extends TestCase
 
         $evm = new EventManager();
         $this->timestampable = new TimestampableListener();
-        $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
+
+        if (PHP_VERSION >= 80000) {
+            $this->timestampable->setAnnotationReader(new AttributeReader());
+        } elseif (class_exists(AnnotationReader::class)) {
+            $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
+        }
+
         $evm->addEventSubscriber($this->timestampable);
         $connection = DriverManager::getConnection($conn, $config);
         $this->em = new EntityManager($connection, $config, $evm);

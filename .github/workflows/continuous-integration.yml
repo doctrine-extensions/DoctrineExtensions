@@ -11,7 +11,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})"
+    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.no-annotations == true && ' - Without Annotations' || '' }}"
     runs-on: "ubuntu-20.04"
 
     services:
@@ -30,11 +30,19 @@ jobs:
           - "8.3"
         deps:
           - "highest"
+        no-annotations:
+          - false
         include:
           - deps: "lowest"
             php-version: "7.4"
           - deps: "highest"
             php-version: "8.3"
+          - deps: "highest"
+            php-version: "7.4"
+            no-annotations: true
+          - deps: "highest"
+            php-version: "8.3"
+            no-annotations: true
 
     steps:
       - name: "Checkout"
@@ -52,6 +60,11 @@ jobs:
       # Remove PHP-CS-Fixer to avoid conflicting dependency ranges (i.e. doctrine/annotations)
       - name: "Remove PHP-CS-Fixer"
         run: "composer remove --dev --no-update friendsofphp/php-cs-fixer"
+
+      # Remove doctrine/annotations if configured to do so
+      - name: "Remove doctrine/annotations"
+        if: "${{ matrix.no-annotations }}"
+        run: "composer remove --dev --no-update doctrine/annotations"
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"

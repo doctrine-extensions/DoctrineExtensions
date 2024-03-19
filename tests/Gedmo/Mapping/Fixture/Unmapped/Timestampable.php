@@ -25,5 +25,6 @@ class Timestampable
      *
      * @Tmsp(on="create")
      */
+    #[Tmsp(on: 'create')]
     private $created;
 }
