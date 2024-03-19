@@ -78,7 +78,7 @@ abstract class ORMMappingTestCase extends TestCase
             $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
         }
 
-        if (class_exists(AnnotationDriver::class)) {
+        if (class_exists(AnnotationDriver::class) && class_exists(AnnotationReader::class)) {
             $chain->addDriver(new AnnotationDriver(new AnnotationReader()), 'Gedmo\Tests\Mapping\Fixture');
         }
 
