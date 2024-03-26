@@ -13,8 +13,6 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Gedmo\Tests\Mapping\Fixture\BaseCategory;
-use Gedmo\Tests\Translatable\Fixture\CategoryTranslation;
 
 class Category
 {

@@ -16,7 +16,6 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sortable\SortableListener;
 use Gedmo\Tests\Mapping\Fixture\Sortable as AnnotatedSortable;
 use Gedmo\Tests\Mapping\Fixture\Xml\Sortable as XmlSortable;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Sortable as YamlSortable;
 
 /**
  * These are mapping tests for sortable extension

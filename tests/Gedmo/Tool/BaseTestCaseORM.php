@@ -59,7 +59,7 @@ abstract class BaseTestCaseORM extends TestCase
             'memory' => true,
         ];
 
-//        $conn = (new DsnParser)->parse('pdo-mysql://de_user:de_password@mysql:3306/de_testing');
+        //        $conn = (new DsnParser)->parse('pdo-mysql://de_user:de_password@mysql:3306/de_testing');
 
         $config ??= $this->getDefaultConfiguration();
         $connection = DriverManager::getConnection($conn, $config);

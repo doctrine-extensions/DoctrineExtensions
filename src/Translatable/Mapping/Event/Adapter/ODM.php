@@ -175,15 +175,15 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         $wrapped->setPropertyValue($field, $value);
     }
 
-    private function getType(string $type): Type
-    {
-        return Type::getType($type);
-    }
-
     public function clearObjectChangeSet(ODMUnitOfWork|ORMUnitOfWork $uow, object $object)
     {
         assert($uow instanceof ODMUnitOfWork);
 
         $uow->clearDocumentChangeSet(spl_object_hash($object));
+    }
+
+    private function getType(string $type): Type
+    {
+        return Type::getType($type);
     }
 }

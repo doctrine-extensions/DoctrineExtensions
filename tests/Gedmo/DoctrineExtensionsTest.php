@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\Mapping\Driver as DriverMongodbODM;
 use Doctrine\ORM\Mapping\Driver as DriverORM;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;

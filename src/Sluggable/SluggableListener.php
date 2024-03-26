@@ -67,7 +67,7 @@ use Gedmo\Sluggable\Util\Urlizer;
  */
 class SluggableListener extends MappedEventSubscriber
 {
-    const PLACEHOLDER = '__id__';
+    public const PLACEHOLDER = '__id__';
 
     /**
      * The power exponent to jump

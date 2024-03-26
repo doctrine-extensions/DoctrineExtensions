@@ -81,7 +81,7 @@ interface AdapterInterface
      * Gets the state of an object from the unit of work.
      *
      * @param ORMUnitOfWork|ODMUnitOfWork $uow    The UnitOfWork as provided by the object manager
-     * @param object                          $object
+     * @param object                      $object
      *
      * @return int The object state as reported by the unit of work
      */
@@ -91,7 +91,7 @@ interface AdapterInterface
      * Gets the changeset for an object from the unit of work.
      *
      * @param ORMUnitOfWork|ODMUnitOfWork $uow    The UnitOfWork as provided by the object manager
-     * @param object                          $object
+     * @param object                      $object
      *
      * @return array<string, array<int, mixed>|object>
      *
@@ -114,8 +114,8 @@ interface AdapterInterface
      * of work's commit.
      *
      * @param ORMUnitOfWork|ODMUnitOfWork $uow    The UnitOfWork as provided by the object manager
-     * @param ClassMetadata                   $meta
-     * @param object                          $object
+     * @param ClassMetadata               $meta
+     * @param object                      $object
      *
      * @return void
      */
@@ -152,9 +152,9 @@ interface AdapterInterface
      * Sets a property value of the original data array of an object.
      *
      * @param ORMUnitOfWork|ODMUnitOfWork $uow
-     * @param object                          $object
-     * @param string                          $property
-     * @param mixed                           $value
+     * @param object                      $object
+     * @param string                      $property
+     * @param mixed                       $value
      *
      * @return void
      */
@@ -164,7 +164,7 @@ interface AdapterInterface
      * Clears the property changeset of the object with the given OID.
      *
      * @param ORMUnitOfWork|ODMUnitOfWork $uow
-     * @param object                          $object
+     * @param object                      $object
      *
      * @return void
      */
