@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Tool;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
+use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -53,10 +54,7 @@ abstract class BaseTestCaseORM extends TestCase
      */
     protected function getDefaultMockSqliteEntityManager(?EventManager $evm = null, ?Configuration $config = null): EntityManager
     {
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
+        $conn = (new DsnParser)->parse('pdo-mysql://de_user:de_password@mysql:3306/de_testing');
 
         $config ??= $this->getDefaultConfiguration();
         $connection = DriverManager::getConnection($conn, $config);

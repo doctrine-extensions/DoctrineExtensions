@@ -12,12 +12,10 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Category as AnnotatedCategory;
-use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Category as YamlCategory;
+use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable as XmlTimestampable;
+use Gedmo\Tests\Mapping\Fixture\Xml\User as XmlUser;
 use Gedmo\Timestampable\TimestampableListener;
 
 /**
@@ -47,17 +45,8 @@ final class TimestampableMappingTest extends ORMMappingTestCase
      */
     public static function dataTimestampableObject(): \Generator
     {
-        if (PHP_VERSION_ID >= 80000) {
-            yield 'Model with attributes' => [AnnotatedCategory::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
-            yield 'Model with annotations' => [AnnotatedCategory::class];
-        }
-
-        if (class_exists(YamlDriver::class)) {
-            yield 'Model with YAML mapping' => [YamlCategory::class];
-        }
+        yield 'Model with XML mapping' => [XmlTimestampable::class];
+        yield 'Model with attributes' => [AnnotatedCategory::class];
     }
 
     /**

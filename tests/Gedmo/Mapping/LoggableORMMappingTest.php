@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Mapping\ExtensionMetadataFactory;
@@ -25,9 +23,6 @@ use Gedmo\Tests\Mapping\Fixture\Xml\Loggable as XmlLoggable;
 use Gedmo\Tests\Mapping\Fixture\Xml\LoggableComposite as XmlLoggableComposite;
 use Gedmo\Tests\Mapping\Fixture\Xml\LoggableCompositeRelation as XmlLoggableCompositeRelation;
 use Gedmo\Tests\Mapping\Fixture\Xml\LoggableWithEmbedded as XmlLoggableWithEmbedded;
-use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableComposite as YamlLoggableComposite;
-use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableCompositeRelation as YamlLoggableCompositeRelation;
-use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded as YamlLoggableWithEmbedded;
 
 /**
  * These are mapping tests for the loggable extension
@@ -107,18 +102,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
     public static function dataLoggableObjectWithCompositeKey(): \Generator
     {
         yield 'Model with XML mapping' => [XmlLoggableComposite::class];
-
-        if (PHP_VERSION_ID >= 80000) {
-            yield 'Model with attributes' => [AnnotatedLoggableComposite::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
-            yield 'Model with annotations' => [AnnotatedLoggableComposite::class];
-        }
-
-        if (class_exists(YamlDriver::class)) {
-            yield 'Model with YAML mapping' => [YamlLoggableComposite::class];
-        }
+        yield 'Model with attributes' => [AnnotatedLoggableComposite::class];
     }
 
     /**
@@ -152,18 +136,7 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
     public static function dataLoggableObjectWithCompositeKeyAndRelation(): \Generator
     {
         yield 'Model with XML mapping' => [XmlLoggableCompositeRelation::class];
-
-        if (PHP_VERSION_ID >= 80000) {
-            yield 'Model with attributes' => [AnnotatedLoggableCompositeRelation::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
-            yield 'Model with annotations' => [AnnotatedLoggableCompositeRelation::class];
-        }
-
-        if (class_exists(YamlDriver::class)) {
-            yield 'Model with YAML mapping' => [YamlLoggableCompositeRelation::class];
-        }
+        yield 'Model with attributes' => [AnnotatedLoggableCompositeRelation::class];
     }
 
     /**
@@ -251,29 +224,5 @@ final class LoggableORMMappingTest extends ORMMappingTestCase
         static::assertContains('title', $config['versioned']);
         static::assertContains('status', $config['versioned']);
         static::assertContains('embedded', $config['versioned']);
-    }
-
-    public function testLoggableYamlWithEmbedded(): void
-    {
-        if (!class_exists(YamlDriver::class)) {
-            static::markTestSkipped('Test case requires the deprecated YAML mapping driver from the ORM.');
-        }
-
-        $className = YamlLoggableWithEmbedded::class;
-
-        // Force metadata class loading.
-        $this->em->getClassMetadata($className);
-        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Loggable');
-        $config = $this->cache->getItem($cacheId)->get();
-
-        static::assertArrayHasKey('logEntryClass', $config);
-        static::assertSame(LogEntry::class, $config['logEntryClass']);
-        static::assertArrayHasKey('loggable', $config);
-        static::assertTrue($config['loggable']);
-
-        static::assertArrayHasKey('versioned', $config);
-        static::assertCount(2, $config['versioned']);
-        static::assertContains('title', $config['versioned']);
-        static::assertContains('embedded.subtitle', $config['versioned']);
     }
 }
