@@ -28,7 +28,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-abstract class LoggableEntityTest extends BaseTestCaseORM
+abstract class LoggableEntity extends BaseTestCaseORM
 {
     private const ARTICLE = Article::class;
     private const COMMENT = Comment::class;

@@ -67,6 +67,8 @@ use Gedmo\Sluggable\Util\Urlizer;
  */
 class SluggableListener extends MappedEventSubscriber
 {
+    const PLACEHOLDER = '__id__';
+
     /**
      * The power exponent to jump
      * the slug unique number by tens.
@@ -257,7 +259,7 @@ class SluggableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['slugs'] as $slugField => $options) {
                 if ($meta->isIdentifier($slugField)) {
-                    $meta->getReflectionProperty($slugField)->setValue($object, '__id__');
+                    $meta->getReflectionProperty($slugField)->setValue($object, self::PLACEHOLDER.uniqid());
                 }
             }
         }
@@ -344,7 +346,7 @@ class SluggableListener extends MappedEventSubscriber
             $slug = $meta->getReflectionProperty($slugField)->getValue($object);
 
             // if slug should not be updated, skip it
-            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || '__id__' === $slug)) {
+            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || str_starts_with($slug, self::PLACEHOLDER))) {
                 continue;
             }
             // must fetch the old slug from changeset, since $object holds the new version
@@ -352,7 +354,7 @@ class SluggableListener extends MappedEventSubscriber
             $needToChangeSlug = false;
 
             // if slug is null, regenerate it, or needs an update
-            if (null === $slug || '__id__' === $slug || !isset($changeSet[$slugField])) {
+            if (null === $slug || str_starts_with($slug, self::PLACEHOLDER) || !isset($changeSet[$slugField])) {
                 $slug = '';
 
                 foreach ($options['fields'] as $sluggableField) {
