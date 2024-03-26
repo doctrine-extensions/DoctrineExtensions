@@ -184,6 +184,6 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     {
         assert($uow instanceof ODMUnitOfWork);
 
-        $uow->clearDocumentChangeSet(spl_object_id($object));
+        $uow->clearDocumentChangeSet(spl_object_hash($object));
     }
 }

@@ -21,9 +21,9 @@ class CategoryClosure extends AbstractClosure
 {
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected ?Category $ancestor = null;
+    protected ?object $ancestor = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected ?Category $descendant = null;
+    protected ?object $descendant = null;
 }

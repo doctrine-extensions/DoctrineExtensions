@@ -38,22 +38,6 @@ final class DoctrineExtensionsTest extends TestCase
         static::assertInstanceOf(DriverORM\AttributeDriver::class, $drivers['Gedmo'], 'The attribute driver should be registered to the chain on PHP 8');
     }
 
-    public function testRegistersAnnotationDriverForConcreteOrmEntitiesToChain(): void
-    {
-        if (\PHP_VERSION_ID >= 80000 || !class_exists(AnnotationReader::class)) {
-            static::markTestSkipped('Test only applies to PHP 7 and requires the doctrine/annotations package');
-        }
-
-        $chain = new MappingDriverChain();
-
-        DoctrineExtensions::registerMappingIntoDriverChainORM($chain);
-
-        $drivers = $chain->getDrivers();
-
-        static::assertArrayHasKey('Gedmo', $drivers);
-        static::assertInstanceOf(DriverORM\AnnotationDriver::class, $drivers['Gedmo'], 'The annotations driver should be registered to the chain on PHP 7');
-    }
-
     /**
      * @requires PHP >= 8.0
      */
@@ -67,22 +51,6 @@ final class DoctrineExtensionsTest extends TestCase
 
         static::assertArrayHasKey('Gedmo', $drivers);
         static::assertInstanceOf(DriverORM\AttributeDriver::class, $drivers['Gedmo'], 'The attribute driver should be registered to the chain on PHP 8');
-    }
-
-    public function testRegistersAnnotationDriverForAbstractOrmSuperclassesToChain(): void
-    {
-        if (\PHP_VERSION_ID >= 80000 || !class_exists(AnnotationReader::class)) {
-            static::markTestSkipped('Test only applies to PHP 7 and requires the doctrine/annotations package');
-        }
-
-        $chain = new MappingDriverChain();
-
-        DoctrineExtensions::registerAbstractMappingIntoDriverChainORM($chain);
-
-        $drivers = $chain->getDrivers();
-
-        static::assertArrayHasKey('Gedmo', $drivers);
-        static::assertInstanceOf(DriverORM\AnnotationDriver::class, $drivers['Gedmo'], 'The annotations driver should be registered to the chain on PHP 7');
     }
 
     /**
@@ -104,22 +72,6 @@ final class DoctrineExtensionsTest extends TestCase
         static::assertInstanceOf(DriverMongodbODM\AttributeDriver::class, $drivers['Gedmo'], 'The attribute driver should be registered to the chain on PHP 8');
     }
 
-    public function testRegistersAnnotationDriverForConcreteOdmDocumentsToChain(): void
-    {
-        if (\PHP_VERSION_ID >= 80000 || !class_exists(AnnotationReader::class)) {
-            static::markTestSkipped('Test only applies to PHP 7 and requires the doctrine/annotations package');
-        }
-
-        $chain = new MappingDriverChain();
-
-        DoctrineExtensions::registerMappingIntoDriverChainMongodbODM($chain);
-
-        $drivers = $chain->getDrivers();
-
-        static::assertArrayHasKey('Gedmo', $drivers);
-        static::assertInstanceOf(DriverMongodbODM\AnnotationDriver::class, $drivers['Gedmo'], 'The annotations driver should be registered to the chain on PHP 7');
-    }
-
     /**
      * @requires PHP >= 8.0
      */
@@ -137,21 +89,5 @@ final class DoctrineExtensionsTest extends TestCase
 
         static::assertArrayHasKey('Gedmo', $drivers);
         static::assertInstanceOf(DriverMongodbODM\AttributeDriver::class, $drivers['Gedmo'], 'The attribute driver should be registered to the chain on PHP 8');
-    }
-
-    public function testRegistersAnnotationDriverForAbstractOdmSuperclassesToChain(): void
-    {
-        if (\PHP_VERSION_ID >= 80000 || !class_exists(AnnotationReader::class)) {
-            static::markTestSkipped('Test only applies to PHP 7 and requires the doctrine/annotations package');
-        }
-
-        $chain = new MappingDriverChain();
-
-        DoctrineExtensions::registerAbstractMappingIntoDriverChainMongodbODM($chain);
-
-        $drivers = $chain->getDrivers();
-
-        static::assertArrayHasKey('Gedmo', $drivers);
-        static::assertInstanceOf(DriverMongodbODM\AnnotationDriver::class, $drivers['Gedmo'], 'The annotations driver should be registered to the chain on PHP 7');
     }
 }

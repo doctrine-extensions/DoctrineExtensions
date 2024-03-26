@@ -21,9 +21,9 @@ class PersonClosure extends AbstractClosure
 {
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'ancestor', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected ?Person $ancestor = null;
+    protected ?object $ancestor = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'descendant', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected ?Person $descendant = null;
+    protected ?object $descendant = null;
 }

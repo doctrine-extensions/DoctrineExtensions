@@ -65,7 +65,6 @@ abstract class ORMMappingTestCase extends TestCase
     {
         $chain = new MappingDriverChain();
 
-        //        $chain->addDriver(new XmlDriver(__DIR__.'/Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
         $chain->addDriver(new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
         $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
 

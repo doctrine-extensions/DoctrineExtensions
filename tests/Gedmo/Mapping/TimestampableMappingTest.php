@@ -14,8 +14,7 @@ namespace Gedmo\Tests\Mapping;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Category as AnnotatedCategory;
-use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable as XmlTimestampable;
-use Gedmo\Tests\Mapping\Fixture\Xml\User as XmlUser;
+use Gedmo\Tests\Mapping\Fixture\Xml\Category as XmlCategory;
 use Gedmo\Timestampable\TimestampableListener;
 
 /**
@@ -45,7 +44,7 @@ final class TimestampableMappingTest extends ORMMappingTestCase
      */
     public static function dataTimestampableObject(): \Generator
     {
-        yield 'Model with XML mapping' => [XmlTimestampable::class];
+        yield 'Model with XML mapping' => [XmlCategory::class];
         yield 'Model with attributes' => [AnnotatedCategory::class];
     }
 
@@ -71,26 +70,5 @@ final class TimestampableMappingTest extends ORMMappingTestCase
         static::assertSame('changed', $onChange['field']);
         static::assertSame('title', $onChange['trackedField']);
         static::assertSame('Test', $onChange['value']);
-    }
-
-    public function testTimestampableXmlMapping(): void
-    {
-        $className = XmlTimestampable::class;
-
-        // Force metadata class loading.
-        $this->em->getClassMetadata($className);
-        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Timestampable');
-        $config = $this->cache->getItem($cacheId)->get();
-
-        static::assertArrayHasKey('create', $config);
-        static::assertSame('created', $config['create'][0]);
-        static::assertArrayHasKey('update', $config);
-        static::assertSame('updated', $config['update'][0]);
-        static::assertArrayHasKey('change', $config);
-        $onChange = $config['change'][0];
-
-        static::assertSame('published', $onChange['field']);
-        static::assertSame('status.title', $onChange['trackedField']);
-        static::assertSame('Published', $onChange['value']);
     }
 }

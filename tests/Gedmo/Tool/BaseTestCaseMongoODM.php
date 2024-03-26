@@ -99,11 +99,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
      */
     protected function getMetadataDriverImplementation(): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriver();
-        }
-
-        return new AnnotationDriver($_ENV['annotation_reader']);
+        return new AttributeDriver();
     }
 
     /**
@@ -145,11 +141,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
 
     private function getMetadataDefaultDriverImplementation(): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
-            return new AttributeDriver([]);
-        }
-
-        return new AnnotationDriver($_ENV['annotation_reader']);
+        return new AttributeDriver([]);
     }
 
     /**

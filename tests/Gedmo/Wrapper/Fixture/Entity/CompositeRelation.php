@@ -22,7 +22,7 @@ class CompositeRelation
      */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Article::class)]
-    private ?Article $article = null;
+    private $article = null;
 
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
