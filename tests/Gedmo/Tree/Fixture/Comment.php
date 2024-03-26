@@ -19,7 +19,6 @@ class Comment
 {
     /**
      * @var int|null
-     *
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]

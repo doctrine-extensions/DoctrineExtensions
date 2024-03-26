@@ -24,7 +24,6 @@ class MPCategory
 {
     /**
      * @var int|null
-     *
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -49,33 +48,27 @@ class MPCategory
 
     /**
      * @var int|null
-     *
-     *
-    */
+     */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
     private ?int $level = null;
 
     /**
      * @var string|null
-     *
-     *
-    */
+     */
     #[ORM\Column(name: 'tree_root_value', type: Types::STRING, nullable: true)]
     #[Gedmo\TreeRoot]
     private ?string $treeRootValue = null;
 
     /**
      * @var Collection<int, self>
-     *
-    */
+     */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
     /**
      * @var Collection<int, Article>
-     *
-    */
+     */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
     private Collection $comments;
 

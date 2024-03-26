@@ -24,7 +24,6 @@ class MPFeaturesCategory
 {
     /**
      * @var int|null
-     *
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]

@@ -20,7 +20,6 @@ class ANode
 {
     /**
      * @var int|null
-     *
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,18 +28,14 @@ class ANode
 
     /**
      * @var int|null
-     *
-     *
-    */
+     */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLeft]
     private ?int $lft = null;
 
     /**
      * @var int|null
-     *
-     *
-    */
+     */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRight]
     private ?int $rgt = null;

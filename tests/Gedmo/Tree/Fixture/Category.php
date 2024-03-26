@@ -25,7 +25,6 @@ class Category implements NodeInterface
 {
     /**
      * @var int|null
-     *
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]

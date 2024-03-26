@@ -24,8 +24,6 @@ class MPCategoryWithRootAssociation
 {
     /**
      * @var int|null
-     *
-     *
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -50,9 +48,7 @@ class MPCategoryWithRootAssociation
 
     /**
      * @var int|null
-     *
-     *
-    */
+     */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
     private ?int $level = null;
@@ -69,15 +65,13 @@ class MPCategoryWithRootAssociation
 
     /**
      * @var Collection<int, self>
-     *
-    */
+     */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
     /**
      * @var Collection<int, Article>
-     *
-    */
+     */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
     private Collection $comments;
 
