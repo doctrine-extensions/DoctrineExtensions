@@ -16,7 +16,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Tests\Mapping\Fixture\Xml\User;
 use Gedmo\Tests\Sluggable\Fixture\Article as ArticleEntity;

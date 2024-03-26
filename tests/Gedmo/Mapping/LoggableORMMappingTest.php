@@ -25,7 +25,6 @@ use Gedmo\Tests\Mapping\Fixture\Xml\Loggable as XmlLoggable;
 use Gedmo\Tests\Mapping\Fixture\Xml\LoggableComposite as XmlLoggableComposite;
 use Gedmo\Tests\Mapping\Fixture\Xml\LoggableCompositeRelation as XmlLoggableCompositeRelation;
 use Gedmo\Tests\Mapping\Fixture\Xml\LoggableWithEmbedded as XmlLoggableWithEmbedded;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Loggable as YamlLoggable;
 use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableComposite as YamlLoggableComposite;
 use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableCompositeRelation as YamlLoggableCompositeRelation;
 use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded as YamlLoggableWithEmbedded;

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\SoftDeleteable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Query;
 use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker;
@@ -28,8 +27,6 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherComment;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Page;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\User;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete;
-use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithLifecycleEventArgsFromORMTypeListener;
-use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithoutTypeListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithPreAndPostSoftDeleteEventArgsTypeListener;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -535,18 +532,6 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
     public function testPostSoftDeleteEventIsDispatched(): void
     {
         $this->em->getEventManager()->addEventSubscriber(new WithPreAndPostSoftDeleteEventArgsTypeListener());
-
-        $this->doTestPostSoftDeleteEventIsDispatched();
-    }
-
-    /** @group legacy */
-    public function testPostSoftDeleteEventIsDispatchedWithDeprecatedListeners(): void
-    {
-        $this->em->getEventManager()->addEventSubscriber(new WithoutTypeListener());
-
-        if (class_exists(LifecycleEventArgs::class)) {
-            $this->em->getEventManager()->addEventSubscriber(new WithLifecycleEventArgsFromORMTypeListener());
-        }
 
         $this->doTestPostSoftDeleteEventIsDispatched();
     }

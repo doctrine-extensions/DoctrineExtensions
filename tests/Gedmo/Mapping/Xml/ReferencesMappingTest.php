@@ -11,12 +11,9 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Xml;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\References\ReferencesListener;
 use Gedmo\Tests\Mapping\Fixture\Xml\References;

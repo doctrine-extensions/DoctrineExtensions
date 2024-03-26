@@ -13,7 +13,6 @@ namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\MappingException;
-use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Issue104\Car;
 use Gedmo\Tests\Tool\BaseTestCaseORM;

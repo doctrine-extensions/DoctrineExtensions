@@ -16,12 +16,14 @@ use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\AST;
 use Doctrine\ORM\Query\AST\FromClause;
 use Doctrine\ORM\Query\AST\Join;
 use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\AST\SubselectFromClause;
+use Doctrine\ORM\Query\Exec;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\Exception\RuntimeException;
@@ -29,8 +31,6 @@ use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableEventAdapter;
 use Gedmo\Translatable\TranslatableListener;
-use Doctrine\ORM\Query\AST;
-use Doctrine\ORM\Query\Exec;
 
 /**
  * The translation sql output walker makes it possible
@@ -119,9 +119,9 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * @return Query\Exec\AbstractSqlExecutor
+     * @return Exec\AbstractSqlExecutor
      */
-    public function getExecutor(AST\SelectStatement|AST\UpdateStatement|AST\DeleteStatement $statement): Exec\AbstractSqlExecutor
+    public function getExecutor(SelectStatement|AST\UpdateStatement|AST\DeleteStatement $statement): Exec\AbstractSqlExecutor
     {
         // If it's not a Select, the TreeWalker ought to skip it, and just return the parent.
         // @see https://github.com/Atlantic18/DoctrineExtensions/issues/2013
@@ -136,7 +136,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSelectStatement(AST\SelectStatement $selectStatement): string
+    public function walkSelectStatement(SelectStatement $selectStatement): string
     {
         $result = parent::walkSelectStatement($selectStatement);
         if ([] === $this->translatedComponents) {
@@ -176,7 +176,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkFromClause(AST\FromClause $fromClause): string
+    public function walkFromClause(FromClause $fromClause): string
     {
         $result = parent::walkFromClause($fromClause);
         $result .= $this->joinTranslations($fromClause);
@@ -187,7 +187,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkWhereClause(AST\WhereClause|null $whereClause): string
+    public function walkWhereClause(?AST\WhereClause $whereClause): string
     {
         $result = parent::walkWhereClause($whereClause);
 
@@ -217,15 +217,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSubselect(AST\Subselect $subselect): string
-    {
-        return parent::walkSubselect($subselect);
-    }
-
-    /**
-     * @return string
-     */
-    public function walkSubselectFromClause(AST\SubselectFromClause $subselectFromClause): string
+    public function walkSubselectFromClause(SubselectFromClause $subselectFromClause): string
     {
         $result = parent::walkSubselectFromClause($subselectFromClause);
         $result .= $this->joinTranslations($subselectFromClause);
@@ -358,7 +350,7 @@ class TranslationWalker extends SqlWalker
                     || (!($this->platform instanceof MySQLPlatform)
                         && !in_array($fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
                     $type = Type::getType($fieldMapping['type']);
-                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration($fieldMapping, $this->platform).')';
+                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration((array) $fieldMapping, $this->platform).')';
                 }
 
                 // Fallback to original if was asked for

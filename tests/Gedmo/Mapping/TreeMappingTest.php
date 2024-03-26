@@ -11,11 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category;

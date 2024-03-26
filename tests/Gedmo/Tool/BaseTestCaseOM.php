@@ -23,7 +23,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as AttributeDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ORM\Tools\SchemaTool;

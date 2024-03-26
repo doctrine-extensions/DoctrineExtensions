@@ -42,18 +42,6 @@ final class TimestampableMappingTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    protected function getDefaultConfiguration(): Configuration
-    {
-        $config = parent::getDefaultConfiguration();
-
-        $chain = new MappingDriverChain();
-        $chain->addDriver(new XmlDriver(__DIR__.'/../../Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
-
-        $config->setMetadataDriverImpl($chain);
-
-        return $config;
-    }
-
     public function testTimestampableMetadata(): void
     {
         $meta = $this->em->getClassMetadata(Timestampable::class);
@@ -69,6 +57,18 @@ final class TimestampableMappingTest extends BaseTestCaseORM
         static::assertSame('published', $onChange['field']);
         static::assertSame('status.title', $onChange['trackedField']);
         static::assertSame('Published', $onChange['value']);
+    }
+
+    protected function getDefaultConfiguration(): Configuration
+    {
+        $config = parent::getDefaultConfiguration();
+
+        $chain = new MappingDriverChain();
+        $chain->addDriver(new XmlDriver(__DIR__.'/../../Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
+
+        $config->setMetadataDriverImpl($chain);
+
+        return $config;
     }
 
     protected function getMetadataDriverImplementation(): MappingDriver

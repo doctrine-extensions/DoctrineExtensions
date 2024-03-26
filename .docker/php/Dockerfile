@@ -16,5 +16,5 @@ RUN apt-get update \
 
 # Install PHP extensions
 RUN docker-php-ext-install zip pcntl bcmath \
-    && pecl install mongodb \
-    && docker-php-ext-enable mongodb
+    && pecl install mongodb && docker-php-ext-enable mongodb \
+    && pecl install xdebug && docker-php-ext-enable xdebug
