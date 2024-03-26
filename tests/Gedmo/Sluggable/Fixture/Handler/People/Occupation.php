@@ -37,17 +37,6 @@ class Occupation
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *     }),
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\People\Person"),
-     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="occupation"),
-     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *     })
-     * }, fields={"title"})
      */
     #[Gedmo\Slug(fields: ['title'])]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]

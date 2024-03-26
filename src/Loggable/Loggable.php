@@ -20,13 +20,13 @@ interface Loggable
 
     /*
      * @Gedmo\Loggable
-          * to mark the class as loggable use class annotation @Gedmo\Loggable
+     * to mark the class as loggable use class annotation @Gedmo\Loggable
      * this object will contain now a history
      * available options:
      *         logEntryClass="My\LogEntryObject" (optional) defaultly will use internal object class
      * example:
      *
      * @Gedmo\Loggable(logEntryClass="My\LogEntryObject")
-          * class MyEntity
+     * class MyEntity
      */
 }

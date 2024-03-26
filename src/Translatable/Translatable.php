@@ -22,19 +22,19 @@ interface Translatable
 
     /*
      * @Gedmo\TranslationEntity
-          * to specify custom translation class use
+     * to specify custom translation class use
      * class annotation @Gedmo\TranslationEntity(class="your\class")
      */
 
     /*
      * @Gedmo\Translatable
-          * to mark the field as translatable,
+     * to mark the field as translatable,
      * these fields will be translated
      */
 
     /*
      * @Gedmo\Locale OR @Gedmo\Language
-          * to mark the field as locale used to override global
+     * to mark the field as locale used to override global
      * locale settings from TranslatableListener
      */
 }

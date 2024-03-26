@@ -21,11 +21,11 @@ interface Uploadable
 
     /*
      * @Gedmo\Uploadable
-          * to mark the class as Uploadable use class annotation @Gedmo\Uploadable
+     * to mark the class as Uploadable use class annotation @Gedmo\Uploadable
      * this object will be able Uploadable
      * example:
      *
      * @Gedmo\Uploadable
-          * class MyEntity
+     * class MyEntity
      */
 }

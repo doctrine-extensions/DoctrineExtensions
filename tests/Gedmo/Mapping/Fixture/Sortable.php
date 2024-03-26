@@ -58,8 +58,6 @@ class Sortable
 
     /**
      * @var Collection<int, SortableGroup>
-     *
-     *      joinColumns={     *      inverseJoinColumns={     *  )
      */
     #[ORM\ManyToMany(targetEntity: SortableGroup::class)]
     #[ORM\JoinTable(name: 'sortable_sortable_groups')]

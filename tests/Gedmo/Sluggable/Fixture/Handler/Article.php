@@ -36,13 +36,6 @@ class Article implements Sluggable
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\ArticleRelativeSlug"),
-     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
-     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *     })
-     * }, separator="-", updatable=true, fields={"title", "code"})
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
     #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => ArticleRelativeSlug::class, 'mappedBy' => 'article', 'inverseSlugField' => 'slug'])]

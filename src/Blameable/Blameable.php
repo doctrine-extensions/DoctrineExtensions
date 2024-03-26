@@ -20,35 +20,35 @@ interface Blameable
 
     /*
      * @Gedmo\Blameable(on="create")
-          * fields which should be updated on insert only
+     * fields which should be updated on insert only
      */
 
     /*
      * @Gedmo\Blameable(on="update")
-          * fields which should be updated on update and insert
+     * fields which should be updated on update and insert
      */
 
     /*
      * @Gedmo\Blameable(on="change", field="field", value="value")
-          * fields which should be updated on changed "property"
+     * fields which should be updated on changed "property"
      * value and become equal to given "value"
      */
 
     /*
      * @Gedmo\Blameable(on="change", field="field")
-          * fields which should be updated on changed "property"
+     * fields which should be updated on changed "property"
      */
 
     /*
      * @Gedmo\Blameable(on="change", fields={"field1", "field2"})
-          * fields which should be updated if at least one of the given fields changed
+     * fields which should be updated if at least one of the given fields changed
      */
 
     /*
      * example
      *
      * @Gedmo\Blameable(on="create")
-          * @Column(type="string")
+     * @Column(type="string")
      * $created
      */
 }

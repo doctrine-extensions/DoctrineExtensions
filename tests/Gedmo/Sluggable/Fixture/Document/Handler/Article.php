@@ -33,13 +33,6 @@ class Article
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Document\Handler\RelativeSlug"),
-     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
-     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="alias")
-     *     })
-     * }, separator="-", updatable=true, fields={"title", "code"})
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
     #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => RelativeSlug::class, 'mappedBy' => 'article', 'inverseSlugField' => 'alias'])]

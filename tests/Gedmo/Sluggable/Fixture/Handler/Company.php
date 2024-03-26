@@ -32,13 +32,6 @@ class Company
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\User"),
-     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
-     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *     })
-     * }, fields={"title"})
      */
     #[Gedmo\Slug(fields: ['title'])]
     #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => User::class, 'mappedBy' => 'company', 'inverseSlugField' => 'slug'])]

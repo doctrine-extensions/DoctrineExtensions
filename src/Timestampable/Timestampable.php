@@ -20,35 +20,35 @@ interface Timestampable
 
     /*
      * @Gedmo\Timestampable(on="create")
-          * dates which should be updated on insert only
+     * dates which should be updated on insert only
      */
 
     /*
      * @Gedmo\Timestampable(on="update")
-          * dates which should be updated on update and insert
+     * dates which should be updated on update and insert
      */
 
     /*
      * @Gedmo\Timestampable(on="change", field="field", value="value")
-          * dates which should be updated on changed "property"
+     * dates which should be updated on changed "property"
      * value and become equal to given "value"
      */
 
     /*
      * @Gedmo\Timestampable(on="change", field="field")
-          * dates which should be updated on changed "property"
+     * dates which should be updated on changed "property"
      */
 
     /*
      * @Gedmo\Timestampable(on="change", fields={"field1", "field2"})
-          * dates which should be updated if at least one of the given fields changed
+     * dates which should be updated if at least one of the given fields changed
      */
 
     /*
      * example
      *
      * @Gedmo\Timestampable(on="create")
-          * @Column(type="date")
+     * @Column(type="date")
      * $created
      */
 }

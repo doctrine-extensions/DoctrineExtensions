@@ -36,13 +36,6 @@ class PrefixWithTreeHandler implements Sluggable
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private ?string $title = null;
 
-    /**
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *     })
-     * }, separator="-", updatable=true, fields={"title"}, prefix="test.")
-     */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'], prefix: 'test.')]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]

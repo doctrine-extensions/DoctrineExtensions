@@ -36,14 +36,6 @@ class TreeSlugPrefixSuffix
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/"),
-     *         @Gedmo\SlugHandlerOption(name="prefix", value="prefix."),
-     *         @Gedmo\SlugHandlerOption(name="suffix", value=".suffix")
-     *     })
-     * }, separator="-", updatable=true)
      */
     #[Gedmo\Slug(fields: ['title'], separator: '-', updatable: true)]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/', 'prefix' => 'prefix.', 'suffix' => '.suffix'])]

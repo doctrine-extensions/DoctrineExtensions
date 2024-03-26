@@ -54,6 +54,7 @@
     "require-dev": {
         "ext-libxml": "*",
         "ext-dom": "*",
+        "ext-mongodb": "*",
         "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/dbal": "^3.2",

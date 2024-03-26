@@ -31,16 +31,10 @@ class User
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @Ext\Encode(type="sha1", secret="xxx")
-     */
     #[Ext\Encode(type: 'sha1', secret: 'xxx')]
     #[ORM\Column(length: 64)]
     private ?string $name = null;
 
-    /**
-     * @Ext\Encode(type="md5")
-     */
     #[Ext\Encode(type: 'md5')]
     #[ORM\Column(length: 32)]
     #[Gedmo\Translatable]

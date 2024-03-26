@@ -32,13 +32,6 @@ class Person
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationField", value="occupation"),
-     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *     })
-     * }, separator="-", updatable=true, fields={"name"})
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['name'])]
     #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'occupation', 'relationSlugField' => 'slug', 'separator' => '/'])]

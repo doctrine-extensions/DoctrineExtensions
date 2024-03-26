@@ -32,13 +32,6 @@ class ArticleRelativeSlug
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationField", value="article"),
-     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *     })
-     * }, separator="-", updatable=true, fields={"title"})
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
     #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'article', 'relationSlugField' => 'slug', 'separator' => '/'])]

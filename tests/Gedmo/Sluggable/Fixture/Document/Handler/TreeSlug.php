@@ -30,12 +30,6 @@ class TreeSlug
 
     /**
      * @var string|null
-     *
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *     })
-     * }, separator="-", updatable=true, fields={"title"})
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]

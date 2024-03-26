@@ -24,16 +24,10 @@ class User
     #[ODM\Id]
     private $id;
 
-    /**
-     * @Ext\Encode(type="sha1", secret="xxx")
-     */
     #[Ext\Encode(type: 'sha1', secret: 'xxx')]
     #[ODM\Field(type: Type::STRING)]
     private ?string $name = null;
 
-    /**
-     * @Ext\Encode(type="md5")
-     */
     #[Ext\Encode(type: 'md5')]
     #[ODM\Field(type: Type::STRING)]
     private ?string $password = null;
