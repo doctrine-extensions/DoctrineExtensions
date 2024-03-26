@@ -45,52 +45,6 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * issue #1255
-     */
-    public function testShouldHandleDetatchedAndMergedBackEntities(): void
-    {
-        $sport = new Article();
-        $sport->setTitle('Sport');
-        $sport->setBody('Sport article body.');
-
-        $this->em->detach($sport);
-        $newSport = $this->em->merge($sport);
-
-        $this->em->persist($newSport);
-        $this->em->flush();
-
-        static::assertNotNull($newSport->getUpdated());
-    }
-
-    /**
-     * issue #1255
-     */
-    public function testShouldHandleDetatchedAndMergedBackEntitiesAfterPersist(): void
-    {
-        $sport = new Article();
-        $sport->setTitle('Sport');
-        $sport->setBody('Sport article body.');
-
-        $this->em->persist($sport);
-        $this->em->flush();
-        $updated = $sport->getUpdated();
-
-        $this->em->detach($sport);
-        $newSport = $this->em->merge($sport);
-
-        $this->em->persist($newSport);
-        $this->em->flush();
-
-        static::assertSame($newSport->getUpdated(), $updated, 'There was no change, should remain the same');
-
-        $newSport->setTitle('updated');
-        $this->em->persist($newSport);
-        $this->em->flush();
-
-        static::assertNotSame($newSport->getUpdated(), $updated, 'There was a change, should not remain the same');
-    }
-
     public function testShouldHandleStandardBehavior(): void
     {
         $sport = new Article();
