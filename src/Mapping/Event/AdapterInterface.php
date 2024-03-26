@@ -10,7 +10,7 @@
 namespace Gedmo\Mapping\Event;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
 use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -80,7 +80,7 @@ interface AdapterInterface
     /**
      * Gets the state of an object from the unit of work.
      *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow    The UnitOfWork as provided by the object manager
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow    The UnitOfWork as provided by the object manager
      * @param object                          $object
      *
      * @return int The object state as reported by the unit of work
@@ -90,7 +90,7 @@ interface AdapterInterface
     /**
      * Gets the changeset for an object from the unit of work.
      *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow    The UnitOfWork as provided by the object manager
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow    The UnitOfWork as provided by the object manager
      * @param object                          $object
      *
      * @return array<string, array<int, mixed>|object>
@@ -113,7 +113,7 @@ interface AdapterInterface
      * computeChangeSets() routine that is used at the beginning of a unit
      * of work's commit.
      *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow    The UnitOfWork as provided by the object manager
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow    The UnitOfWork as provided by the object manager
      * @param ClassMetadata                   $meta
      * @param object                          $object
      *
@@ -124,7 +124,7 @@ interface AdapterInterface
     /**
      * Gets the currently scheduled object updates from the unit of work.
      *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
      * @return array<int|string, object>
      */
@@ -133,7 +133,7 @@ interface AdapterInterface
     /**
      * Gets the currently scheduled object insertions in the unit of work.
      *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
      * @return array<int|string, object>
      */
@@ -142,7 +142,7 @@ interface AdapterInterface
     /**
      * Gets the currently scheduled object deletions in the unit of work.
      *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow The UnitOfWork as provided by the object manager
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow The UnitOfWork as provided by the object manager
      *
      * @return array<int|string, object>
      */
@@ -151,7 +151,7 @@ interface AdapterInterface
     /**
      * Sets a property value of the original data array of an object.
      *
-     * @param ORMUnitOfWork|MongoDBUnitOfWork $uow
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow
      * @param object                          $object
      * @param string                          $property
      * @param mixed                           $value
@@ -159,4 +159,14 @@ interface AdapterInterface
      * @return void
      */
     public function setOriginalObjectProperty($uow, $object, $property, $value);
+
+    /**
+     * Clears the property changeset of the object with the given OID.
+     *
+     * @param ORMUnitOfWork|ODMUnitOfWork $uow
+     * @param object                          $object
+     *
+     * @return void
+     */
+    public function clearObjectChangeSet(ORMUnitOfWork|ODMUnitOfWork $uow, object $object);
 }

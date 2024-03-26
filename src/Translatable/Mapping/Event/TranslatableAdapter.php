@@ -9,6 +9,8 @@
 
 namespace Gedmo\Translatable\Mapping\Event;
 
+use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
+use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -115,4 +117,6 @@ interface TranslatableAdapter extends AdapterInterface
      * @return void
      */
     public function setTranslationValue($object, $field, $value);
+
+    public function clearObjectChangeSet(ORMUnitOfWork|ODMUnitOfWork $uow, object $object);
 }

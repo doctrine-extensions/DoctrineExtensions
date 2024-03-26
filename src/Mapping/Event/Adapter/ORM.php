@@ -11,9 +11,11 @@ namespace Gedmo\Mapping\Event\Adapter;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Deprecations\Deprecation;
+use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -205,5 +207,13 @@ class ORM implements AdapterInterface
         }
 
         return new LifecycleEventArgs($object, $entityManager);
+    }
+
+    public function clearObjectChangeSet(ODMUnitOfWork|ORMUnitOfWork $uow, object $object)
+    {
+        assert($uow instanceof ORMUnitOfWork);
+
+        $changeSet = &$uow->getEntityChangeSet($object);
+        $changeSet = [];
     }
 }

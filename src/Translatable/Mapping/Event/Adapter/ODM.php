@@ -11,6 +11,8 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
+use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
+use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -176,5 +178,12 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     private function getType(string $type): Type
     {
         return Type::getType($type);
+    }
+
+    public function clearObjectChangeSet(ODMUnitOfWork|ORMUnitOfWork $uow, object $object)
+    {
+        assert($uow instanceof ODMUnitOfWork);
+
+        $uow->clearDocumentChangeSet(spl_object_id($object));
     }
 }

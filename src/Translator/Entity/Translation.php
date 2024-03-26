@@ -33,19 +33,19 @@ abstract class Translation extends BaseTranslation
      * @var string
      */
     #[ORM\Column(type: Types::STRING, length: 8)]
-    protected ?string $locale = null;
+    protected $locale = null;
 
     /**
      * @var string
      */
     #[ORM\Column(type: Types::STRING, length: 32)]
-    protected ?string $property = null;
+    protected $property = null;
 
     /**
      * @var string
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    protected ?string $value = null;
+    protected $value = null;
 
     /**
      * Get id

@@ -769,6 +769,7 @@ class TranslatableListener extends MappedEventSubscriber
             $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             // cleanup current changeset only if working in a another locale different than de default one, otherwise the changeset will always be reverted
             if ($locale !== $this->defaultLocale) {
+                $ea->clearObjectChangeSet($uow, $object);
                 // recompute changeset only if there are changes other than reverted translations
                 if ($modifiedChangeSet || $this->hasTranslationsInDefaultLocale($oid)) {
                     foreach ($modifiedChangeSet as $field => $changes) {

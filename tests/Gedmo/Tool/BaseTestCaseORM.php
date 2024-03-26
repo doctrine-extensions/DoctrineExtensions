@@ -54,7 +54,12 @@ abstract class BaseTestCaseORM extends TestCase
      */
     protected function getDefaultMockSqliteEntityManager(?EventManager $evm = null, ?Configuration $config = null): EntityManager
     {
-        $conn = (new DsnParser)->parse('pdo-mysql://de_user:de_password@mysql:3306/de_testing');
+        $conn = [
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
+        ];
+
+//        $conn = (new DsnParser)->parse('pdo-mysql://de_user:de_password@mysql:3306/de_testing');
 
         $config ??= $this->getDefaultConfiguration();
         $connection = DriverManager::getConnection($conn, $config);
@@ -63,7 +68,7 @@ abstract class BaseTestCaseORM extends TestCase
         $schema = array_map(static fn (string $class): ClassMetadata => $em->getClassMetadata($class), $this->getUsedEntityFixtures());
 
         $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema([]);
+        $schemaTool->dropSchema($schema);
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;

@@ -75,7 +75,7 @@ final class TimestampableMappingTest extends ORMMappingTestCase
 
     public function testTimestampableXmlMapping(): void
     {
-        $className = Timestampable::class;
+        $className = XmlTimestampable::class;
 
         // Force metadata class loading.
         $this->em->getClassMetadata($className);
