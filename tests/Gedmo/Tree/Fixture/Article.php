@@ -22,7 +22,7 @@ class Article
     /**
      * @var int|null
      *
-     *      *      *      */
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
@@ -34,7 +34,7 @@ class Article
     /**
      * @var Collection<int, Comment>
      *
-     *      */
+    */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private Collection $comments;
 

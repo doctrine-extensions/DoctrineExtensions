@@ -25,13 +25,13 @@ class RootAssociationCategory
     /**
      * @var Collection<int, self>
      *
-     *      */
+    */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     protected Collection $children;
     /**
      * @var int|null
      *
-     *      *      *      */
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]

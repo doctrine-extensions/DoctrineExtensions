@@ -28,7 +28,7 @@ class BaseNode extends ANode
     /**
      * @var Collection<int, BaseNode>
      *
-     *      */
+    */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
@@ -36,7 +36,7 @@ class BaseNode extends ANode
      * @var \DateTimeInterface|null
      *
      *
-     *      */
+    */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $created = null;

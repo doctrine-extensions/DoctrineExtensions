@@ -26,7 +26,7 @@ class Category implements NodeInterface
     /**
      * @var int|null
      *
-     *      *      *      */
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]

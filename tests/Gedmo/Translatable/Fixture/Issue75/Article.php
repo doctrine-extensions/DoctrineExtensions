@@ -34,8 +34,6 @@ class Article
 
     /**
      * @var Collection<int, Image>
-     *
-     *     joinColumns={     *     inverseJoinColumns={     * )
      */
     #[ORM\ManyToMany(targetEntity: Image::class, inversedBy: 'articles')]
     #[ORM\JoinTable(name: 'article_images')]

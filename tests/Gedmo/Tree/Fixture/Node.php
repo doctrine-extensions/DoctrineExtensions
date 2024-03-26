@@ -27,7 +27,7 @@ class Node extends BaseNode
      * @var string|null
      *
      *
-     *      */
+    */
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title'])]
