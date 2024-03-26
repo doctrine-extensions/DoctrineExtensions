@@ -14,6 +14,7 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -455,18 +456,13 @@ class Closure implements Strategy
         }
     }
 
-    /**
-     * @param array<string, mixed> $association
-     *
-     * @return string|null
-     */
-    protected function getJoinColumnFieldName($association)
+    protected function getJoinColumnFieldName(ManyToOneAssociationMapping $association): ?string
     {
-        if (count($association['joinColumnFieldNames']) > 1) {
+        if (count($association->joinColumnFieldNames) > 1) {
             throw new RuntimeException('More association on field '.$association['fieldName']);
         }
 
-        return array_shift($association['joinColumnFieldNames']);
+        return current($association->joinColumnFieldNames);
     }
 
     /**
