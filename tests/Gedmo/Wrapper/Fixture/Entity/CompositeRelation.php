@@ -24,7 +24,8 @@ class CompositeRelation
          */
         #[ORM\Id]
         #[ORM\ManyToOne(targetEntity: Article::class)]
-        private Article $article,
+        private $article,
+
         #[ORM\Id]
         #[ORM\Column(type: Types::INTEGER)]
         private int $status

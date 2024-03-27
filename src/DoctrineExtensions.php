@@ -44,11 +44,7 @@ final class DoctrineExtensions
             __DIR__.'/Tree/Entity',
         ];
 
-        if (\PHP_VERSION_ID >= 80000) {
-            $driver = new DriverORM\AttributeDriver($paths);
-        } else {
-            $driver = new DriverORM\AnnotationDriver($reader ?? self::createAnnotationReader(), $paths);
-        }
+        $driver = new DriverORM\AttributeDriver($paths);
 
         $driverChain->addDriver($driver, 'Gedmo');
     }

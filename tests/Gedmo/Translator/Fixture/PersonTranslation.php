@@ -23,5 +23,5 @@ class PersonTranslation extends Translation
      * @var Person|null
      */
     #[ORM\ManyToOne(targetEntity: Person::class, inversedBy: 'translations')]
-    protected ?Person $translatable = null;
+    protected $translatable;
 }

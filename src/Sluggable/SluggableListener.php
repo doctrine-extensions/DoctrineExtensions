@@ -84,7 +84,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @phpstan-var callable(string $text, string $separator, object $object): string
      */
-    private $transliterator = Urlizer::transliterate(...);
+    private $transliterator = [Urlizer::class, 'transliterate'];
 
     /**
      * Urlize callback for slugs
@@ -93,7 +93,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @phpstan-var callable(string $text, string $separator, object $object): string
      */
-    private $urlizer = Urlizer::urlize(...);
+    private $urlizer = [Urlizer::class, 'urlize'];
 
     /**
      * List of inserted slugs for each object class.
