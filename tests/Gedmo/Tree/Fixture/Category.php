@@ -19,62 +19,37 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Gedmo\Tree\Node as NodeInterface;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- *
- * @Gedmo\Tree(type="nested")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[Gedmo\Tree(type: 'nested')]
 class Category implements NodeInterface
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private ?string $title = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     *          * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -83,27 +58,19 @@ class Category implements NodeInterface
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
     /**
      * @var Collection<int, Article>
-     *
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'article')]
     private Collection $comments;

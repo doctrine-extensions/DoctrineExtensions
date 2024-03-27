@@ -9,34 +9,46 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Mapping\Fixture\Yaml;
+namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-class ClosureCategory
+class Category
 {
     /**
      * @var int
      */
-    private $id;
+    private ?int $id = null;
 
     private ?string $title = null;
 
+    private ?string $slug = null;
+
+    private ?\DateTime $created = null;
+
+    private ?\DateTime $updated = null;
+
     /**
-     * @var Collection<int, ClosureCategory>
+     * @var Collection<int, self>
      */
-    private $children;
+    private Collection $children;
 
-    private ?ClosureCategory $parent = null;
+    private ?Category $parent = null;
 
-    private ?int $level = null;
+    /**
+     * @var \DateTimeInterface
+     */
+    private ?\DateTimeInterface $changed = null;
 
     public function __construct()
     {
         $this->children = new ArrayCollection();
     }
 
+    /**
+     * @return int $id
+     */
     public function getId(): int
     {
         return $this->id;
@@ -52,15 +64,28 @@ class ClosureCategory
         return $this->title;
     }
 
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    /**
+     * @return string $slug
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
     public function addChildren(self $children): void
     {
         $this->children[] = $children;
     }
 
     /**
-     * @return Collection<int, self>
+     * @return Collection<int, self> $children
      */
-    public function getChildren(): Collection
+    public function getChildren()
     {
         return $this->children;
     }
@@ -70,18 +95,11 @@ class ClosureCategory
         $this->parent = $parent;
     }
 
+    /**
+     * @return self $parent
+     */
     public function getParent(): self
     {
         return $this->parent;
-    }
-
-    public function setLevel(int $level): void
-    {
-        $this->level = $level;
-    }
-
-    public function getLevel(): int
-    {
-        return $this->level;
     }
 }

@@ -18,10 +18,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
- *
- * @ORM\Entity
- *
- * @Gedmo\Loggable
  */
 #[ORM\Entity]
 #[Gedmo\Loggable]
@@ -29,44 +25,28 @@ class Address implements Loggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(type="string", length=191)
-     *
-     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     #[Gedmo\Versioned]
-    protected $street;
+    protected ?string $street = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(type="string", length=191)
-     *
-     * @Gedmo\Versioned
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
     #[Gedmo\Versioned]
-    protected $city;
+    protected ?string $city = null;
 
     /**
      * @var Geo|null
-     *
-     * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\Geo")
-     *
-     * @Gedmo\Versioned
      */
     #[ORM\Embedded(class: Geo::class)]
     #[Gedmo\Versioned]

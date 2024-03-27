@@ -16,41 +16,23 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Sluggable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class ConfigurationArticle implements Sluggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="code", type="string", length=16)
-     */
     #[ORM\Column(name: 'code', type: Types::STRING, length: 16)]
     private ?string $code = null;
 
-    /**
-     * @Gedmo\Slug(updatable=false, unique=false, unique_base=null, fields={"title", "code"})
-     *
-     * @ORM\Column(name="slug", type="string", length=32)
-     */
     #[Gedmo\Slug(updatable: false, unique: false, unique_base: null, fields: ['title', 'code'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 32)]
     private ?string $slug = null;

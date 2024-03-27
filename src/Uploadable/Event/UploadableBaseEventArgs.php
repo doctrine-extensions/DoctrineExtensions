@@ -25,25 +25,6 @@ use Gedmo\Uploadable\UploadableListener;
 abstract class UploadableBaseEventArgs extends EventArgs
 {
     /**
-     * The instance of the Uploadable listener that fired this event
-     */
-    private UploadableListener $uploadableListener;
-
-    private EntityManagerInterface $em;
-
-    /**
-     * @todo Check if this property must be removed, as it is not used.
-     */
-    private array $config = [];
-
-    /**
-     * The Uploadable entity
-     *
-     * @var object
-     */
-    private $entity;
-
-    /**
      * The configuration of the Uploadable extension for this entity class
      *
      * @todo Check if this property must be removed, as it is never set.
@@ -52,28 +33,31 @@ abstract class UploadableBaseEventArgs extends EventArgs
      */
     private $extensionConfiguration;
 
-    private FileInfoInterface $fileInfo;
-
-    /**
-     * Is the file being created, updated or removed?
-     * This value can be: CREATE, UPDATE or DELETE
-     *
-     * @var string
-     */
-    private $action;
-
     /**
      * @param object $entity
      * @param string $action
      */
-    public function __construct(UploadableListener $listener, EntityManagerInterface $em, array $config, FileInfoInterface $fileInfo, $entity, $action)
-    {
-        $this->uploadableListener = $listener;
-        $this->em = $em;
-        $this->config = $config;
-        $this->fileInfo = $fileInfo;
-        $this->entity = $entity;
-        $this->action = $action;
+    public function __construct(
+        /**
+         * The instance of the Uploadable listener that fired this event
+         */
+        private readonly UploadableListener $uploadableListener,
+        private readonly EntityManagerInterface $em,
+        /**
+         * @todo Check if this property must be removed, as it is not used.
+         */
+        private readonly array $config,
+        private readonly FileInfoInterface $fileInfo,
+        /**
+         * The Uploadable entity
+         */
+        private $entity,
+        /**
+         * Is the file being created, updated or removed?
+         * This value can be: CREATE, UPDATE or DELETE
+         */
+        private $action
+    ) {
     }
 
     /**

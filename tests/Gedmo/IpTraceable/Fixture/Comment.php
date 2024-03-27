@@ -16,63 +16,39 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\IpTraceable\IpTraceable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Comment implements IpTraceable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="message", type="text")
-     */
     #[ORM\Column(name: 'message', type: Types::TEXT)]
     private ?string $message = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\IpTraceable\Fixture\Article", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
     private ?Article $article = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $status = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="closed", type="string", length=45, nullable=true)
-     *
-     * @Gedmo\IpTraceable(on="change", field="status", value=1)
      */
     #[ORM\Column(name: 'closed', type: Types::STRING, length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'change', field: 'status', value: 1)]
-    private $closed;
+    private ?string $closed = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="modified", type="string", length=45)
-     *
-     * @Gedmo\IpTraceable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::STRING, length: 45)]
     #[Gedmo\IpTraceable(on: 'update')]
-    private $modified;
+    private ?string $modified = null;
 
     public function setArticle(?Article $article): void
     {

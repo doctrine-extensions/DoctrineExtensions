@@ -14,29 +14,17 @@ namespace Gedmo\Tests\Sluggable\Fixture;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Identifier
 {
     /**
      * @var string|null
-     *
-     * @ORM\Id
-     *
-     * @Gedmo\Slug(separator="_", updatable=false, fields={"title"})
-     *
-     * @ORM\Column(length=32, unique=true)
      */
     #[ORM\Id]
     #[ORM\Column(length: 32, unique: true)]
     #[Gedmo\Slug(separator: '_', updatable: false, fields: ['title'])]
     private $id;
 
-    /**
-     * @ORM\Column(length=32)
-     */
     #[ORM\Column(length: 32)]
     private ?string $title = null;
 

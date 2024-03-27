@@ -15,42 +15,24 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\SoftDeleteable(fieldName="deletedAt")
- */
 #[ORM\Entity]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
 class Address
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $street = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deletedAt = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Person", mappedBy="address", cascade={"remove"})
-     */
     #[ORM\OneToOne(targetEntity: Person::class, mappedBy: 'address', cascade: ['remove'])]
     private ?Person $owner = null;
 

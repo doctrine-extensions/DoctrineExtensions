@@ -14,33 +14,20 @@ namespace Gedmo\Tests\Sluggable\Fixture;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Comment
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="text")
-     */
     #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="TranslatableArticle", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: TranslatableArticle::class, inversedBy: 'comments')]
     private ?TranslatableArticle $article = null;
 

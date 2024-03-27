@@ -16,58 +16,33 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
 
-/**
- * @Mongo\Document(repositoryClass="Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository")
- *
- * @Gedmo\Tree(type="materializedPath")
- */
 #[Mongo\Document(repositoryClass: MaterializedPathRepository::class)]
 #[Gedmo\Tree(type: 'materializedPath')]
 class Category
 {
     /**
      * @var string|null
-     *
-     * @Mongo\Id
      */
     #[Mongo\Id]
     private $id;
 
-    /**
-     * @Mongo\Field(type="string")
-     *
-     * @Gedmo\TreePathSource
-     */
     #[Mongo\Field(type: Type::STRING)]
     #[Gedmo\TreePathSource]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Mongo\Field(type="string")
-     *
-     * @Gedmo\TreePath(separator="|")
      */
     #[Mongo\Field(type: Type::STRING)]
     #[Gedmo\TreePath(separator: '|')]
     private $path;
 
-    /**
-     * @Gedmo\TreeParent
-     *
-     * @Mongo\ReferenceOne(targetDocument="Gedmo\Tests\Tree\Fixture\Document\Category")
-     */
     #[Mongo\ReferenceOne(targetDocument: self::class)]
     #[Gedmo\TreeParent]
     private ?Category $parent = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @Mongo\Field(type="int")
      */
     #[Mongo\Field(type: Type::INT)]
     #[Gedmo\TreeLevel]

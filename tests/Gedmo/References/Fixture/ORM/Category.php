@@ -18,34 +18,22 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Category
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=128)
-     */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Product>
-     *
-     * @Gedmo\ReferenceManyEmbed(class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
      */
     #[Gedmo\ReferenceManyEmbed(class: Product::class, identifier: 'metadatas.categoryId')]
     private Collection $products;

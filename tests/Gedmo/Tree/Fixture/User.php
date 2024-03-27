@@ -15,31 +15,18 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @ORM\Table(name="user")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[ORM\Table(name: 'user')]
 class User extends Role
 {
     private const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
 
-    /**
-     * @ORM\Column(name="email", type="string", unique=true)
-     */
     #[ORM\Column(name: 'email', type: Types::STRING, unique: true)]
     private ?string $email = null;
 
-    /**
-     * @ORM\Column(name="password_hash", type="string", length=32)
-     */
     #[ORM\Column(name: 'password_hash', type: Types::STRING, length: 32)]
     private string $passwordHash;
 
-    /**
-     * @ORM\Column(name="activation_code", type="string", length=12)
-     */
     #[ORM\Column(name: 'activation_code', type: Types::STRING, length: 12)]
     private ?string $activationCode = null;
 

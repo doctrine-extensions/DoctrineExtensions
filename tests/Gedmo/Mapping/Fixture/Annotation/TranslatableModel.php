@@ -17,22 +17,19 @@ class TranslatableModel
 {
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
      */
+    #[Gedmo\Translatable]
     private $title;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable(fallback=true)
      */
+    #[Gedmo\Translatable(fallback: true)]
     private $titleFallbackTrue;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable(fallback=false)
      */
+    #[Gedmo\Translatable(fallback: false)]
     private $titleFallbackFalse;
 }

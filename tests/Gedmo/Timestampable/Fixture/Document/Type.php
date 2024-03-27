@@ -14,29 +14,18 @@ namespace Gedmo\Tests\Timestampable\Fixture\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
-/**
- * @ODM\Document(collection="types")
- */
 #[ODM\Document(collection: 'types')]
 class Type
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $identifier = null;
 

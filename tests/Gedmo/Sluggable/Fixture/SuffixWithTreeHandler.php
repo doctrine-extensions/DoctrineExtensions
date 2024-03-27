@@ -19,10 +19,6 @@ use Gedmo\Sluggable\Sluggable;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- *
- * @Gedmo\Tree(type="nested")
- *
  * @author Dirk Luijk <dirk@luijkwebcreations.nl>
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
@@ -31,80 +27,37 @@ class SuffixWithTreeHandler implements Sluggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Slug(handlers={
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *     })
-     * }, separator="-", updatable=true, fields={"title"}, suffix=".test")
-     *
-     * @ORM\Column(name="slug", type="string", length=64, unique=true)
-     */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'], suffix: '.test')]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private ?string $slug = null;
 
-    /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="SuffixWithTreeHandler")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     */
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
     private ?SuffixWithTreeHandler $parent = null;
 
-    /**
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(name="lft", type="integer")
-     */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
     private ?int $lft = null;
 
-    /**
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer")
-     */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
     private ?int $lvl = null;
 
-    /**
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(name="rgt", type="integer")
-     */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
     private ?int $rgt = null;
 
-    /**
-     * @Gedmo\TreeRoot
-     *
-     * @ORM\Column(name="root", type="integer", nullable=true)
-     */
     #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRoot]
     private ?int $root = null;

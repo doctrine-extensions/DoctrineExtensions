@@ -18,30 +18,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-/**
- * @Gedmo\Tree(type="nested")
- *
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[Gedmo\Tree(type: 'nested')]
 class Car extends Vehicle
 {
     /**
      * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="Car", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
+    protected Collection $children;
 
     /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="Car", inversedBy="children")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     *          * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -50,47 +38,31 @@ class Car extends Vehicle
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRoot
-     *
-     * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $classLevel;
+    private ?int $classLevel = null;
 
     public function __construct()
     {

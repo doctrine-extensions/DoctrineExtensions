@@ -19,26 +19,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Class GeoLocation
  *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
- *
- * @ORM\Embeddable
  */
 #[ORM\Embeddable]
 class GeoLocation
 {
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     *
-     * @Gedmo\Versioned
-     */
-    #[ORM\Column(type: Types::STRING)]
-    #[Gedmo\Versioned]
-    protected $location;
-
-    public function __construct(string $location)
+    public function __construct(#[ORM\Column(type: Types::STRING)]
+        #[Gedmo\Versioned]
+        protected ?string $location)
     {
-        $this->location = $location;
     }
 
     public function getLocation(): string

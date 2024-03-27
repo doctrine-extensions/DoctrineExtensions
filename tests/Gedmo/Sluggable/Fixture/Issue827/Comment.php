@@ -15,36 +15,22 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Comment
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", length=64)
-     */
     #[ORM\Column(name: 'title', length: 64)]
     private ?string $title = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="post_title", referencedColumnName="title", nullable=false),
-     *     @ORM\JoinColumn(name="post_slug", referencedColumnName="slug", nullable=false)
-     * })
+     *          *          * })
      */
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(name: 'post_title', referencedColumnName: 'title', nullable: false)]
@@ -53,10 +39,6 @@ class Comment
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(updatable=true, unique=true, unique_base="post", fields={"title"})
-     *
-     * @ORM\Column(length=64, nullable=true)
      */
     #[Gedmo\Slug(updatable: true, unique: true, unique_base: 'post', fields: ['title'])]
     #[ORM\Column(length: 64, nullable: true)]

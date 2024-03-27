@@ -15,34 +15,19 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 
-/**
- * @ODM\Document(collection="test_users")
- */
 #[ODM\Document(collection: 'test_users')]
 class User
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @Ext\Encode(type="sha1", secret="xxx")
-     *
-     * @ODM\Field(type="string")
-     */
     #[Ext\Encode(type: 'sha1', secret: 'xxx')]
     #[ODM\Field(type: Type::STRING)]
     private ?string $name = null;
 
-    /**
-     * @Ext\Encode(type="md5")
-     *
-     * @ODM\Field(type="string")
-     */
     #[Ext\Encode(type: 'md5')]
     #[ODM\Field(type: Type::STRING)]
     private ?string $password = null;

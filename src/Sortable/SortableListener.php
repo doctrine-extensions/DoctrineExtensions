@@ -126,7 +126,7 @@ class SortableListener extends MappedEventSubscriber
 
         // process all objects being deleted
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->processDeletion($ea, $config, $meta, $object);
             }
@@ -135,7 +135,7 @@ class SortableListener extends MappedEventSubscriber
         $updateValues = [];
         // process all objects being updated
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $position = $meta->getReflectionProperty($config['position'])->getValue($object);
                 $updateValues[$position] = [$ea, $config, $meta, $object];
@@ -148,7 +148,7 @@ class SortableListener extends MappedEventSubscriber
 
         // process all objects being inserted
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->processInsert($ea, $config, $meta, $object);
             }
@@ -169,7 +169,7 @@ class SortableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             // Get groups
@@ -394,7 +394,7 @@ class SortableListener extends MappedEventSubscriber
         if (isset($this->relocations[$hash])) {
             foreach ($this->relocations[$hash]['deltas'] as $delta) {
                 if ($delta['start'] <= $newPosition
-                        && ($delta['stop'] > $newPosition || $delta['stop'] < 0)) {
+                    && ($delta['stop'] > $newPosition || $delta['stop'] < 0)) {
                     $applyDelta += $delta['delta'];
                 }
             }
@@ -402,7 +402,7 @@ class SortableListener extends MappedEventSubscriber
         $newPosition += $applyDelta;
 
         // Add relocations
-        call_user_func_array([$this, 'addRelocation'], $relocation);
+        call_user_func_array($this->addRelocation(...), $relocation);
 
         // Set new position
         if ($old < 0 || null === $old) {
@@ -535,7 +535,7 @@ class SortableListener extends MappedEventSubscriber
 
         if ($relocation) {
             // Add relocation
-            call_user_func_array([$this, 'addRelocation'], $relocation);
+            call_user_func_array($this->addRelocation(...), $relocation);
         }
 
         // Set new position
@@ -613,7 +613,7 @@ class SortableListener extends MappedEventSubscriber
             $data .= $group.$val;
         }
 
-        return md5($data);
+        return md5((string) $data);
     }
 
     /**
@@ -698,7 +698,7 @@ class SortableListener extends MappedEventSubscriber
                 }
             }, $newDelta);
             $this->relocations[$hash]['deltas'][] = $newDelta;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
     }
 

@@ -9,7 +9,6 @@
 
 namespace Gedmo\SoftDeleteable\Traits;
 
-use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -23,12 +22,10 @@ use Doctrine\ORM\Mapping as ORM;
 trait SoftDeleteableEntity
 {
     /**
-     * @ORM\Column(type="datetime", nullable=true)
-     *
      * @var \DateTime|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    protected $deletedAt;
+    protected ?\DateTimeInterface $deletedAt = null;
 
     /**
      * Set or clear the deleted at timestamp.

@@ -18,16 +18,12 @@ use Gedmo\Loggable\Loggable;
  * @phpstan-template T of Loggable|object
  *
  * @phpstan-implements LogEntryInterface<T>
- *
- * @MongoODM\MappedSuperclass
  */
 #[MongoODM\MappedSuperclass]
 abstract class AbstractLogEntry implements LogEntryInterface
 {
     /**
      * @var string|null
-     *
-     * @MongoODM\Id
      */
     #[MongoODM\Id]
     protected $id;
@@ -36,24 +32,18 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * @var string|null
      *
      * @phpstan-var self::ACTION_CREATE|self::ACTION_UPDATE|self::ACTION_REMOVE|null
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $action;
 
     /**
      * @var \DateTime|null
-     *
-     * @MongoODM\Field(type="date")
      */
     #[MongoODM\Field(type: Type::DATE)]
     protected $loggedAt;
 
     /**
      * @var string|null
-     *
-     * @MongoODM\Field(type="string", nullable=true)
      */
     #[MongoODM\Field(type: Type::STRING, nullable: true)]
     protected $objectId;
@@ -62,32 +52,24 @@ abstract class AbstractLogEntry implements LogEntryInterface
      * @var string|null
      *
      * @phpstan-var class-string<T>|null
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $objectClass;
 
     /**
      * @var int|null
-     *
-     * @MongoODM\Field(type="int")
      */
     #[MongoODM\Field(type: Type::INT)]
     protected $version;
 
     /**
      * @var array<string, mixed>|null
-     *
-     * @MongoODM\Field(type="hash", nullable=true)
      */
     #[MongoODM\Field(type: Type::HASH, nullable: true)]
     protected $data;
 
     /**
      * @var string|null
-     *
-     * @MongoODM\Field(type="string", nullable=true)
      */
     #[MongoODM\Field(type: Type::STRING, nullable: true)]
     protected $username;

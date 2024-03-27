@@ -100,9 +100,10 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
+        // this will refresh entity from database
         $file = $this->em->find(self::FILE, $file->getId());
-
         static::assertSame('title in en', $file->getTitle());
+
         $file->locale = 'de';
         $this->em->refresh($file);
         static::assertSame('title in de', $file->getTitle());

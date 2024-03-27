@@ -12,13 +12,10 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sortable\SortableListener;
 use Gedmo\Tests\Mapping\Fixture\Sortable as AnnotatedSortable;
 use Gedmo\Tests\Mapping\Fixture\Xml\Sortable as XmlSortable;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Sortable as YamlSortable;
 
 /**
  * These are mapping tests for sortable extension
@@ -46,18 +43,7 @@ final class SortableMappingTest extends ORMMappingTestCase
     public static function dataSortableObject(): \Generator
     {
         yield 'Model with XML mapping' => [XmlSortable::class];
-
-        if (PHP_VERSION_ID >= 80000) {
-            yield 'Model with attributes' => [AnnotatedSortable::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
-            yield 'Model with annotations' => [AnnotatedSortable::class];
-        }
-
-        if (class_exists(YamlDriver::class)) {
-            yield 'Model with YAML mapping' => [YamlSortable::class];
-        }
+        yield 'Model with attributes' => [AnnotatedSortable::class];
     }
 
     /**

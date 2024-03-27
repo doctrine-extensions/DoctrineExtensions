@@ -18,14 +18,9 @@ class Custom extends Type
 {
     private const NAME = 'custom';
 
-    /**
-     * @param mixed[] $fieldDeclaration
-     *
-     * @return string
-     */
-    public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSqlDeclaration(array $column, AbstractPlatform $platform)
     {
-        return $platform->getClobTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getClobTypeDeclarationSQL($column);
     }
 
     /**

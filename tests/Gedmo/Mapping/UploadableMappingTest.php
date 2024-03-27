@@ -12,12 +12,9 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Uploadable as AnnotatedUploadable;
 use Gedmo\Tests\Mapping\Fixture\Xml\Uploadable as XmlUploadable;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable as YamlUploadable;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\UploadableListener;
 
@@ -51,18 +48,7 @@ final class UploadableMappingTest extends ORMMappingTestCase
     public static function dataUploadableObject(): \Generator
     {
         yield 'Model with XML mapping' => [XmlUploadable::class];
-
-        if (PHP_VERSION_ID >= 80000) {
-            yield 'Model with attributes' => [AnnotatedUploadable::class];
-        }
-
-        if (class_exists(AnnotationDriver::class)) {
-            yield 'Model with annotations' => [AnnotatedUploadable::class];
-        }
-
-        if (class_exists(YamlDriver::class)) {
-            yield 'Model with YAML mapping' => [YamlUploadable::class];
-        }
+        yield 'Model with attributes' => [AnnotatedUploadable::class];
     }
 
     /**

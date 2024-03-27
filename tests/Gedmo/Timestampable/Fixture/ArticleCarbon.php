@@ -20,114 +20,70 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class ArticleCarbon implements Timestampable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="body", type="string")
-     */
     #[ORM\Column(name: 'body', type: Types::STRING)]
     private ?string $body = null;
 
     /**
      * @var Collection<int, Comment>
-     *
-     * @ORM\OneToMany(targetEntity="Gedmo\Tests\Timestampable\Fixture\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
-    /**
-     * @ORM\Embedded(class="Gedmo\Tests\Timestampable\Fixture\Author")
-     */
     #[ORM\Embedded(class: Author::class)]
     private ?Author $author = null;
 
     /**
      * @var \DateTime|Carbon|null
-     *
-     * @Gedmo\Timestampable(on="create")
-     *
-     * @ORM\Column(name="created", type="date")
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(name: 'created', type: Types::DATE_MUTABLE)]
-    private $created;
+    private ?\DateTimeInterface $created = null;
 
     /**
      * @var \DateTime|CarbonImmutable|null
-     *
-     * @ORM\Column(name="updated", type="datetime")
-     *
-     * @Gedmo\Timestampable
      */
     #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable]
-    private $updated;
+    private ?\DateTimeInterface $updated = null;
 
     /**
      * @var \DateTime|CarbonImmutable|null
-     *
-     * @ORM\Column(name="published", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     #[ORM\Column(name: 'published', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'type.title', value: 'Published')]
-    private $published;
+    private ?\DateTimeInterface $published = null;
 
     /**
      * @var \DateTime|CarbonImmutable|null
-     *
-     * @ORM\Column(name="content_changed", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
-    private $contentChanged;
+    private ?\DateTimeInterface $contentChanged = null;
 
     /**
      * @var CarbonImmutable|null
-     *
-     * @ORM\Column(name="author_changed", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
      */
     #[ORM\Column(name: 'author_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['author.name', 'author.email'])]
-    private $authorChanged;
+    private ?\DateTimeInterface $authorChanged = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
-     */
     #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
     private ?Type $type = null;
 
-    /**
-     * @ORM\Column(name="level", type="integer")
-     */
     #[ORM\Column(name: 'level', type: Types::INTEGER)]
     private int $level = 0;
 
@@ -135,14 +91,10 @@ class ArticleCarbon implements Timestampable
      * We use the value "10" as string here in order to check the behavior of `AbstractTrackingListener`
      *
      * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(name="reached_relevant_level", type="datetime", nullable=true)
-     *
-     * @Gedmo\Timestampable(on="change", field="level", value="10")
      */
     #[ORM\Column(name: 'reached_relevant_level', type: Types::DATE_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'level', value: '10')]
-    private $reachedRelevantLevel;
+    private ?\DateTimeInterface $reachedRelevantLevel = null;
 
     public function __construct()
     {

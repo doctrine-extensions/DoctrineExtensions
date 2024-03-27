@@ -20,7 +20,7 @@ interface Sortable
 
     /*
      * @Gedmo\SortablePosition - to mark property which will hold the item position use annotation @Gedmo\SortablePosition
-     *              This property has to be numeric. The position index can be negative and will be counted from right to left.
+     * This property has to be numeric. The position index can be negative and will be counted from right to left.
      *
      * example:
      *
@@ -36,7 +36,6 @@ interface Sortable
 
     /*
      * @Gedmo\SortableGroup - to group node sorting by a property use annotation @Gedmo\SortableGroup on this property
-     *
      * example:
      *
      * @Gedmo\SortableGroup

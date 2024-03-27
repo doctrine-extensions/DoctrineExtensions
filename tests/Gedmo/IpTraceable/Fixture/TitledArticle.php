@@ -16,48 +16,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\IpTraceable\IpTraceable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class TitledArticle implements IpTraceable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="text", type="string", length=128)
-     */
     #[ORM\Column(name: 'text', type: Types::STRING, length: 128)]
     private ?string $text = null;
 
-    /**
-     * @ORM\Column(name="chtext", type="string", length=45, nullable=true)
-     *
-     * @Gedmo\IpTraceable(on="change", field="text")
-     */
     #[ORM\Column(name: 'chtext', type: Types::STRING, length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'change', field: 'text')]
     private ?string $chtext = null;
 
-    /**
-     * @ORM\Column(name="chtitle", type="string", length=45, nullable=true)
-     *
-     * @Gedmo\IpTraceable(on="change", field="title")
-     */
     #[ORM\Column(name: 'chtitle', type: Types::STRING, length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'change', field: 'title')]
     private ?string $chtitle = null;

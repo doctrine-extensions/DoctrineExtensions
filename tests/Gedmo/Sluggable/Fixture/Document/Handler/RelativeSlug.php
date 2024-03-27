@@ -16,47 +16,26 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 
-/**
- * @ODM\Document
- */
 #[ODM\Document]
 class RelativeSlug
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(handlers={
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationField", value="article"),
-     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/")
-     *     })
-     * }, separator="-", updatable=true, fields={"title"})
-     *
-     * @ODM\Field(type="string")
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
     #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'article', 'relationSlugField' => 'slug', 'separator' => '/'])]
     #[ODM\Field(type: Type::STRING)]
     private $alias;
 
-    /**
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sluggable\Fixture\Document\Handler\Article")
-     */
     #[ODM\ReferenceOne(targetDocument: Article::class)]
     private ?Article $article = null;
 

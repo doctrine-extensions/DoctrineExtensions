@@ -106,7 +106,7 @@ class Yaml extends File implements Driver
                 $handlers = [];
                 if (isset($slug['handlers'])) {
                     foreach ($slug['handlers'] as $handlerClass => $options) {
-                        if (!strlen($handlerClass)) {
+                        if (!strlen((string) $handlerClass)) {
                             throw new InvalidMappingException("SlugHandler class: {$handlerClass} should be a valid class name in entity - {$meta->getName()}");
                         }
                         $handlers[$handlerClass] = $options;

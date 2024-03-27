@@ -99,8 +99,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertSame(10, $meat->getRight());
 
         // Raw query to show the issue #108 with wrong left value by Doctrine
-        $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c';
-        $dql .= ' WHERE c.id = 5'; // 5 == meat
+        $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c WHERE c.id = 5'; // 5 == meat
         $meat_array = $this->em->createQuery($dql)->getScalarResult();
 
         static::assertSame(9, $meat_array[0]['c_lft']);

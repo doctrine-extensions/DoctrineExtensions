@@ -17,53 +17,30 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Handler\InversedRelativeSlugHandler;
 use Gedmo\Sluggable\Sluggable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Article implements Sluggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="code", type="string", length=16)
-     */
     #[ORM\Column(name: 'code', type: Types::STRING, length: 16)]
     private ?string $code = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(handlers={
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\ArticleRelativeSlug"),
-     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
-     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *     })
-     * }, separator="-", updatable=true, fields={"title", "code"})
-     *
-     * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
     #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => ArticleRelativeSlug::class, 'mappedBy' => 'article', 'inverseSlugField' => 'slug'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {

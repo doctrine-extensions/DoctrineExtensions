@@ -16,46 +16,25 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Uploadable\Mapping\Validator;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Uploadable(appendNumber=true, path="./", filenameGenerator="ALPHANUMERIC")
- */
 #[ORM\Entity]
 #[Gedmo\Uploadable(appendNumber: true, path: './', filenameGenerator: Validator::FILENAME_GENERATOR_ALPHANUMERIC)]
 class FileAppendNumberRelative
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", nullable=true)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, nullable: true)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="path", type="string")
-     *
-     * @Gedmo\UploadableFilePath
-     */
     #[ORM\Column(name: 'path', type: Types::STRING)]
     #[Gedmo\UploadableFilePath]
     private ?string $filePath = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
-     */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'files')]
     #[ORM\JoinColumn(name: 'article_id', referencedColumnName: 'id')]
     private ?Article $article = null;

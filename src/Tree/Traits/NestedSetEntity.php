@@ -24,45 +24,29 @@ trait NestedSetEntity
 {
     /**
      * @var int
-     *
-     * @Gedmo\TreeRoot
-     *
-     * @ORM\Column(name="root", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     /**
      * @var int
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var int
-     *
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $left;
+    private ?int $left = null;
 
     /**
      * @var int
-     *
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $right;
+    private ?int $right = null;
 }

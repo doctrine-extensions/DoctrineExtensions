@@ -12,14 +12,17 @@ declare(strict_types=1);
 namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Tests\Loggable\LoggableEntityTest;
+use Gedmo\Mapping\Driver\AttributeReader;
+use Gedmo\Tests\Loggable\LoggableEntity;
 
 /**
- * These are tests for loggable behavior with an annotation reader (created by the listener by default)
+ * These are tests for loggable behavior with an attribute reader
+ *
+ * @requires PHP >= 8.0
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class AnnotationLoggableEntityTest extends LoggableEntityTest
+final class AttributeLoggableEntity extends LoggableEntity
 {
     protected function setUp(): void
     {
@@ -27,6 +30,7 @@ final class AnnotationLoggableEntityTest extends LoggableEntityTest
 
         $evm = new EventManager();
         $loggableListener = new LoggableListener();
+        $loggableListener->setAnnotationReader(new AttributeReader());
         $loggableListener->setUsername('jules');
         $evm->addEventSubscriber($loggableListener);
 

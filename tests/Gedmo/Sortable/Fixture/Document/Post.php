@@ -15,18 +15,11 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document(collection="posts")
- */
 #[ODM\Document(collection: 'posts')]
 class Post
 {
     /**
      * @var int|null
-     *
-     * @Gedmo\SortablePosition
-     *
-     * @ODM\Field(type="int")
      */
     #[Gedmo\SortablePosition]
     #[ODM\Field(type: MongoDBType::INT)]
@@ -34,10 +27,6 @@ class Post
 
     /**
      * @var Category|null
-     *
-     * @Gedmo\SortableGroup
-     *
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sortable\Fixture\Document\Category")
      */
     #[Gedmo\SortableGroup]
     #[ODM\ReferenceOne(targetDocument: Category::class)]
@@ -45,15 +34,10 @@ class Post
 
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 

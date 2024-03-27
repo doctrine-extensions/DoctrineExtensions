@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\Sluggable;
@@ -84,7 +85,7 @@ final class SluggableTest extends BaseTestCaseORM
             $this->em->clear();
 
             $shorten = $article->getSlug();
-            static::assertSame(64, strlen($shorten));
+            static::assertSame(64, strlen((string) $shorten));
             $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
             $expected = substr($expected, 0, 64 - (strlen($uniqueSuffix) + 1)).'-'.$uniqueSuffix;
             static::assertSame($shorten, $expected);
@@ -233,10 +234,10 @@ final class SluggableTest extends BaseTestCaseORM
         $eventManager = new EventManager();
         $eventManager->addEventSubscriber(new SluggableListener());
 
-        $em = EntityManager::create([
+        $em = new EntityManager(DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        ], $this->getDefaultConfiguration(), $eventManager);
+        ]), $this->getDefaultConfiguration(), $eventManager);
 
         $this->expectException(InvalidMappingException::class);
         $this->expectExceptionMessage(\sprintf(

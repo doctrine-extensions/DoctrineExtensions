@@ -21,19 +21,7 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Encode implements GedmoAnnotation
 {
-    /**
-     * @var string
-     */
-    public $type = 'md5';
-
-    /**
-     * @var string|null
-     */
-    public $secret;
-
-    public function __construct(string $type = 'md5', ?string $secret = null)
+    public function __construct(public string $type = 'md5', public ?string $secret = null)
     {
-        $this->type = $type;
-        $this->secret = $secret;
     }
 }

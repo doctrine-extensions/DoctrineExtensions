@@ -13,40 +13,24 @@ namespace App\Entity;
 
 use App\Entity\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @Gedmo\Tree(type="nested")
- *
- * @ORM\Table(name="ext_categories")
- * @ORM\Entity(repositoryClass="App\Entity\Repository\CategoryRepository")
- *
- * @Gedmo\TranslationEntity(class="App\Entity\CategoryTranslation")
- */
 #[Gedmo\Tree(type: 'nested')]
 #[ORM\Table(name: 'ext_categories')]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[Gedmo\TranslationEntity(class: CategoryTranslation::class)]
-class Category
+class Category implements \Stringable
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(length=64)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(length: 64)]
@@ -54,126 +38,67 @@ class Category
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="text", nullable=true)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"created", "title"})
-     *
-     * @ORM\Column(length=64, unique=true)
      */
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['created', 'title'])]
     #[ORM\Column(length: 64, unique: true)]
     private $slug;
 
-    /**
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(type="integer")
-     */
     #[Gedmo\TreeLeft]
     #[ORM\Column(type: Types::INTEGER)]
-    private $lft;
+    private ?int $lft = null;
 
-    /**
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(type="integer")
-     */
     #[Gedmo\TreeRight]
     #[ORM\Column(type: Types::INTEGER)]
-    private $rgt;
+    private ?int $rgt = null;
 
-    /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     */
     #[Gedmo\TreeParent]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $parent;
+    private ?Category $parent = null;
 
-    /**
-     * @Gedmo\TreeRoot
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     */
     #[Gedmo\TreeRoot]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private $root;
+    private ?int $root = null;
 
-    /**
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer")
-     */
     #[Gedmo\TreeLevel]
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
-    private $level;
+    private ?int $level = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     * @var Collection<int, Category>
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     *
-     * @ORM\Column(type="datetime")
-     */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $created;
+    private ?\DateTimeInterface $created = null;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     *
-     * @ORM\Column(type="datetime")
-     */
     #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $updated;
+    private ?\DateTimeInterface $updated = null;
 
-    /**
-     * @Gedmo\Blameable(on="create")
-     *
-     * @ORM\Column(type="string")
-     */
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\Column(type: Types::STRING)]
-    private $createdBy;
+    private ?string $createdBy = null;
 
-    /**
-     * @Gedmo\Blameable(on="update")
-     *
-     * @ORM\Column(type="string")
-     */
     #[Gedmo\Blameable(on: 'update')]
     #[ORM\Column(type: Types::STRING)]
-    private $updatedBy;
+    private ?string $updatedBy = null;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="CategoryTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
+     * @var Collection<int, CategoryTranslation>
      */
     #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
-    private $translations;
+    private Collection $translations;
 
     public function __construct()
     {
@@ -181,9 +106,9 @@ class Category
         $this->translations = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getTitle();
+        return (string) $this->getTitle();
     }
 
     public function getTranslations()

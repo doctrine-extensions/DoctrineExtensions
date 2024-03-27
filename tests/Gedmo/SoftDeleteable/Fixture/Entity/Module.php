@@ -15,42 +15,24 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\SoftDeleteable(fieldName="deletedAt")
- */
 #[ORM\Entity]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
 class Module
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string")
-     */
     #[ORM\Column(name: 'title', type: Types::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
-     */
     #[ORM\Column(name: 'deletedAt', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deletedAt = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Page", inversedBy="modules")
-     */
     #[ORM\ManyToOne(targetEntity: Page::class, inversedBy: 'modules')]
     private ?Page $page = null;
 

@@ -99,7 +99,7 @@ class SortableRepository extends EntityRepository
         $i = 1;
         foreach ($groupValues as $group => $value) {
             $qb->andWhere('n.'.$group.' = :group'.$i)
-               ->setParameter('group'.$i, $value);
+                ->setParameter('group'.$i, $value);
             ++$i;
         }
 

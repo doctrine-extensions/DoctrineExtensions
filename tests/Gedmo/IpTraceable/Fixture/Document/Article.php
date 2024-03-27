@@ -15,71 +15,37 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document(collection="articles")
- */
 #[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\IpTraceable\Fixture\Document\Type")
-     */
     #[ODM\ReferenceOne(targetDocument: Type::class)]
     private ?Type $type = null;
 
-    /**
-     * @ODM\Field(type="string")
-     *
-     * @Gedmo\IpTraceable(on="create")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     #[Gedmo\IpTraceable(on: 'create')]
     private ?string $created = null;
 
-    /**
-     * @ODM\Field(type="string")
-     *
-     * @Gedmo\IpTraceable
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     #[Gedmo\IpTraceable]
     private ?string $updated = null;
 
-    /**
-     * @ODM\Field(type="string")
-     *
-     * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     #[Gedmo\IpTraceable(on: 'change', field: 'type.title', value: 'Published')]
     private ?string $published = null;
 
-    /**
-     * @ODM\Field(type="string")
-     *
-     * @Gedmo\IpTraceable(on="change", field="isReady", value=true)
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     #[Gedmo\IpTraceable(on: 'change', field: 'isReady', value: true)]
     private ?string $ready = null;
 
-    /**
-     * @ODM\Field(type="bool")
-     */
     #[ODM\Field(type: MongoDBType::BOOL)]
     private bool $isReady = false;
 

@@ -16,32 +16,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Loggable
- */
 #[ORM\Entity]
 #[Gedmo\Loggable]
 class Article implements Loggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ORM\Column(name="title", type="string", length=8)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     #[Gedmo\Versioned]
     private ?string $title = null;

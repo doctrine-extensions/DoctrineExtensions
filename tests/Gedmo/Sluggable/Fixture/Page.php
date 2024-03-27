@@ -17,48 +17,32 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Page
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=191)
-     */
     #[ORM\Column(type: Types::STRING, length: 191)]
     private ?string $content = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(style="camel", separator="_", fields={"content"})
-     *
-     * @ORM\Column(type="string", length=128)
      */
     #[Gedmo\Slug(style: 'camel', separator: '_', fields: ['content'])]
     #[ORM\Column(type: Types::STRING, length: 128)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @var Collection<int, TranslatableArticle>
-     *
-     * @ORM\OneToMany(targetEntity="TranslatableArticle", mappedBy="page")
      */
     #[ORM\OneToMany(targetEntity: TranslatableArticle::class, mappedBy: 'page')]
-    private $articles;
+    private Collection $articles;
 
     public function __construct()
     {

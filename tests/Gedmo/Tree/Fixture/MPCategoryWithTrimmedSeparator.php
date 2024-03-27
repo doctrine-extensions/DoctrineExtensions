@@ -18,11 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\MaterializedPathRepository")
- *
- * @Gedmo\Tree(type="materializedPath")
- */
 #[ORM\Entity(repositoryClass: MaterializedPathRepository::class)]
 #[Gedmo\Tree(type: 'materializedPath')]
 class MPCategoryWithTrimmedSeparator
@@ -30,40 +25,22 @@ class MPCategoryWithTrimmedSeparator
     /**
      * @var int|null
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+     *      *           */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\TreePath(appendId=false, startsWithSeparator=false, endsWithSeparator=false)
-     *
-     * @ORM\Column(name="path", type="string", length=3000, nullable=true)
-     */
     #[ORM\Column(name: 'path', type: Types::STRING, length: 3000, nullable: true)]
     #[Gedmo\TreePath(appendId: false, startsWithSeparator: false, endsWithSeparator: false)]
     private ?string $path = null;
 
-    /**
-     * @Gedmo\TreePathSource
-     *
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\TreePathSource]
     private ?string $title = null;
 
     /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="MPCategoryWithTrimmedSeparator", inversedBy="children")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     *          * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -72,19 +49,13 @@ class MPCategoryWithTrimmedSeparator
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="MPCategoryWithTrimmedSeparator", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;

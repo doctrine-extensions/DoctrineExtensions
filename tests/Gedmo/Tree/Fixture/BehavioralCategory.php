@@ -18,11 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\Tree\Fixture\Repository\BehavioralCategoryRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tests\Tree\Fixture\Repository\BehavioralCategoryRepository")
- *
- * @Gedmo\Tree(type="nested")
- */
 #[ORM\Entity(repositoryClass: BehavioralCategoryRepository::class)]
 #[Gedmo\Tree(type: 'nested')]
 class BehavioralCategory
@@ -30,53 +25,32 @@ class BehavioralCategory
     /**
      * @var int|null
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+     *                */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\Translatable]
     private ?string $title = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(name="lft", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(name="rgt", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="BehavioralCategory", inversedBy="children")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     *          * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -85,24 +59,17 @@ class BehavioralCategory
 
     /**
      * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="BehavioralCategory", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"title"})
-     *
-     * @ORM\Column(name="slug", type="string", length=128, unique=true)
      */
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128, unique: true)]
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title'])]
-    private $slug;
+    private ?string $slug = null;
 
     public function __construct()
     {

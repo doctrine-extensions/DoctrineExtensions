@@ -152,13 +152,12 @@ class LogEntryRepository extends EntityRepository
 
     /**
      * @param string $field
-     * @param mixed  $value
      *
      * @return void
      *
      * @phpstan-param ClassMetadata<T> $objectMeta
      */
-    protected function mapValue(ClassMetadata $objectMeta, $field, &$value)
+    protected function mapValue(ClassMetadata $objectMeta, $field, mixed &$value)
     {
         if (!$objectMeta->isSingleValuedAssociation($field)) {
             return;

@@ -17,40 +17,30 @@ use Gedmo\Translator\Translation as BaseTranslation;
  * Document translation class.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @ODM\MappedSuperclass
  */
 #[ODM\MappedSuperclass]
 abstract class Translation extends BaseTranslation
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     protected $id;
 
     /**
      * @var string|null
-     *
-     * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
      * @var string|null
-     *
-     * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     protected $property;
 
     /**
      * @var string|null
-     *
-     * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
     protected $value;

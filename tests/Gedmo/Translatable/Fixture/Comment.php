@@ -15,45 +15,25 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Comment
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="subject", type="string", length=128)
-     */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'subject', type: Types::STRING, length: 128)]
     private ?string $subject = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="message", type="text")
-     */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'message', type: Types::TEXT)]
     private ?string $message = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
     private ?Article $article = null;
 
@@ -61,8 +41,6 @@ class Comment
      * @var string|null
      *
      * Used locale to override Translation listener`s locale
-     *
-     * @Gedmo\Language
      */
     #[Gedmo\Language]
     private ?string $locale = null;

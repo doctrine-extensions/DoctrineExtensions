@@ -125,7 +125,7 @@ class Nested implements Strategy
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
         /** @var ClassMetadata $meta */
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
 
         $meta->getReflectionProperty($config['left'])->setValue($node, 0);
@@ -145,7 +145,7 @@ class Nested implements Strategy
      */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
@@ -159,7 +159,7 @@ class Nested implements Strategy
             $wrapped = AbstractWrapper::wrap($node, $em);
             $parent = $wrapped->getPropertyValue($config['parent']);
             // revert simulated changeset
-            $uow->clearEntityChangeSet($oid);
+            $ea->clearObjectChangeSet($uow, $node);
             $wrapped->setPropertyValue($config['left'], $changeSet[$config['left']][0]);
             $uow->setOriginalEntityProperty($oid, $config['left'], $changeSet[$config['left']][0]);
             // set back all other changes
@@ -186,7 +186,7 @@ class Nested implements Strategy
      */
     public function processPostPersist($em, $node, AdapterInterface $ea)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
 
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
@@ -198,7 +198,7 @@ class Nested implements Strategy
      */
     public function processScheduledDelete($em, $node)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
@@ -624,7 +624,7 @@ class Nested implements Strategy
 
                 assert(null !== $node);
 
-                $nodeMeta = $em->getClassMetadata(get_class($node));
+                $nodeMeta = $em->getClassMetadata($node::class);
 
                 if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
                     continue;
@@ -715,7 +715,7 @@ class Nested implements Strategy
 
                 assert(null !== $node);
 
-                $nodeMeta = $em->getClassMetadata(get_class($node));
+                $nodeMeta = $em->getClassMetadata($node::class);
 
                 if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
                     continue;

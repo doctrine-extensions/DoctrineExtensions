@@ -68,7 +68,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $class = get_class($object);
+        $class = $object::class;
         $meta = $om->getClassMetadata($class);
 
         if ($config = $this->getConfiguration($om, $meta->getName())) {

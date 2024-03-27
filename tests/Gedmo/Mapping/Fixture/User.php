@@ -17,16 +17,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
 
-/**
- * @ORM\Table(name="users")
- * @ORM\Table(
- *     name="users",
- *     indexes={@ORM\Index(name="search_idx", columns={"username"})}
- * )
- * @ORM\Entity
- *
- * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\PersonTranslation")
- */
 #[ORM\Table(name: 'users')]
 #[ORM\Entity]
 #[ORM\Index(columns: ['username'], name: 'search_idx')]
@@ -35,59 +25,31 @@ class User
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Ext\Encode(type="sha1", secret="xxx")
-     *
-     * @ORM\Column(length=64)
-     */
     #[Ext\Encode(type: 'sha1', secret: 'xxx')]
     #[ORM\Column(length: 64)]
     private ?string $name = null;
 
-    /**
-     * @Ext\Encode(type="md5")
-     *
-     * @ORM\Column(length=32)
-     *
-     * @Gedmo\Translatable
-     */
     #[Ext\Encode(type: 'md5')]
     #[ORM\Column(length: 32)]
     #[Gedmo\Translatable]
     private ?string $password = null;
 
-    /**
-     * @ORM\Column(length=128)
-     *
-     * @Gedmo\Translatable
-     */
     #[ORM\Column(length: 128)]
     #[Gedmo\Translatable]
     private ?string $username = null;
 
-    /**
-     * @ORM\Column(length=128, nullable=true)
-     *
-     * @Gedmo\Translatable(fallback=true)
-     */
     #[ORM\Column(length: 128, nullable: true)]
     #[Gedmo\Translatable(fallback: true)]
     private ?string $company = null;
 
     /**
      * @var string
-     *
-     * @Gedmo\Locale
      */
     #[Gedmo\Locale]
     private $localeField;

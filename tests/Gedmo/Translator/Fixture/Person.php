@@ -18,59 +18,41 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translator\TranslationInterface;
 use Gedmo\Translator\TranslationProxy;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Person
 {
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="name", type="string", length=128)
      */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    public $name;
+    public ?string $name = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="desc", type="string", length=128)
      */
     #[ORM\Column(name: 'desc', type: Types::STRING, length: 128)]
-    public $description;
+    public ?string $description = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="last_name", type="string", length=128, nullable=true)
      */
     #[ORM\Column(name: 'last_name', type: Types::STRING, length: 128, nullable: true)]
-    public $lastName;
+    public ?string $lastName = null;
 
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var Collection<int, TranslationInterface>
-     *
-     * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
      */
     #[ORM\OneToMany(targetEntity: PersonTranslation::class, mappedBy: 'translatable', cascade: ['persist'])]
     private Collection $translations;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Person")
-     */
     #[ORM\ManyToOne(targetEntity: self::class)]
     private ?Person $parent = null;
 

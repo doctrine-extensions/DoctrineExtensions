@@ -233,8 +233,7 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function getTranslationClass(TranslatableAdapter $ea, $class)
     {
-        return self::$configurations[$this->name][$class]['translationClass'] ?? $ea->getDefaultTranslationClass()
-        ;
+        return self::$configurations[$this->name][$class]['translationClass'] ?? $ea->getDefaultTranslationClass();
     }
 
     /**
@@ -360,7 +359,7 @@ class TranslatableListener extends MappedEventSubscriber
         } elseif ($om instanceof DocumentManager) {
             [, $parentObject] = $om->getUnitOfWork()->getParentAssociation($object);
             if (null !== $parentObject) {
-                $parentMeta = $om->getClassMetadata(get_class($parentObject));
+                $parentMeta = $om->getClassMetadata($parentObject::class);
                 $locale = $this->getTranslatableLocale($parentObject, $parentMeta, $om);
             }
         }
@@ -391,7 +390,7 @@ class TranslatableListener extends MappedEventSubscriber
 
             assert(false !== $trans);
 
-            if ($ea->usesPersonalTranslation(get_class($trans))) {
+            if ($ea->usesPersonalTranslation($trans::class)) {
                 $entity = $trans->getObject();
             } else {
                 $entity = $uow->tryGetById($trans->getForeignKey(), $trans->getObjectClass());
@@ -403,7 +402,7 @@ class TranslatableListener extends MappedEventSubscriber
 
             try {
                 $uow->scheduleForUpdate($entity);
-            } catch (ORMInvalidArgumentException $e) {
+            } catch (ORMInvalidArgumentException) {
                 foreach ($fields as $field => $trans) {
                     $this->removeTranslationInDefaultLocale($oid, $field);
                 }
@@ -428,7 +427,7 @@ class TranslatableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         // check all scheduled inserts for Translatable objects
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             $config = $this->getConfiguration($om, $meta->getName());
             if (isset($config['fields'])) {
                 $this->handleTranslatableObjectUpdate($ea, $object, true);
@@ -436,7 +435,7 @@ class TranslatableListener extends MappedEventSubscriber
         }
         // check all scheduled updates for Translatable entities
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             $config = $this->getConfiguration($om, $meta->getName());
             if (isset($config['fields'])) {
                 $this->handleTranslatableObjectUpdate($ea, $object, false);
@@ -444,7 +443,7 @@ class TranslatableListener extends MappedEventSubscriber
         }
         // check scheduled deletions for Translatable entities
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             $config = $this->getConfiguration($om, $meta->getName());
             if (isset($config['fields'])) {
                 $wrapped = AbstractWrapper::wrap($object, $om);
@@ -470,7 +469,7 @@ class TranslatableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         // check if entity is tracked by translatable and without foreign key
         if ($this->getConfiguration($om, $meta->getName()) && [] !== $this->pendingTranslationInserts) {
             $oid = spl_object_id($object);
@@ -478,7 +477,7 @@ class TranslatableListener extends MappedEventSubscriber
                 // load the pending translations without key
                 $wrapped = AbstractWrapper::wrap($object, $om);
                 $objectId = $wrapped->getIdentifier();
-                $translationClass = $this->getTranslationClass($ea, get_class($object));
+                $translationClass = $this->getTranslationClass($ea, $object::class);
                 foreach ($this->pendingTranslationInserts[$oid] as $translation) {
                     if ($ea->usesPersonalTranslation($translationClass)) {
                         $translation->setObject($objectId);
@@ -507,7 +506,7 @@ class TranslatableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
         $locale = $this->defaultLocale;
         $oid = null;
@@ -662,7 +661,7 @@ class TranslatableListener extends MappedEventSubscriber
             $translation = null;
             foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
                 if ($locale !== $this->defaultLocale
-                    && get_class($trans) === $translationClass
+                    && $trans::class === $translationClass
                     && $trans->getLocale() === $this->defaultLocale
                     && $trans->getField() === $field
                     && $this->belongsToObject($ea, $trans, $object)) {
@@ -674,7 +673,7 @@ class TranslatableListener extends MappedEventSubscriber
 
             // lookup persisted translations
             foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
-                if (get_class($trans) !== $translationClass
+                if ($trans::class !== $translationClass
                     || $trans->getLocale() !== $locale
                     || $trans->getField() !== $field) {
                     continue;
@@ -709,8 +708,7 @@ class TranslatableListener extends MappedEventSubscriber
 
             // create new translation if translation not already created and locale is different from default locale, otherwise, we have the date in the original record
             $persistNewTranslation = !$translation
-                && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
-            ;
+                && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation);
             if ($persistNewTranslation) {
                 $translation = $translationMetadata->newInstance();
                 $translation->setLocale($locale);
@@ -830,11 +828,11 @@ class TranslatableListener extends MappedEventSubscriber
      */
     private function belongsToObject(TranslatableAdapter $ea, object $trans, object $object): bool
     {
-        if ($ea->usesPersonalTranslation(get_class($trans))) {
+        if ($ea->usesPersonalTranslation($trans::class)) {
             return $trans->getObject() === $object;
         }
 
         return $trans->getForeignKey() === $object->getId()
-            && ($trans->getObjectClass() === get_class($object));
+            && ($trans->getObjectClass() === $object::class);
     }
 }

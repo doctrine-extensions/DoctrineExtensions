@@ -17,76 +17,46 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Sluggable;
 use Gedmo\Translatable\Translatable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class TransArticleManySlug implements Sluggable, Translatable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     private ?int $page = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="string", length=64)
-     */
     #[ORM\Column(type: Types::STRING, length: 64)]
     #[Gedmo\Translatable]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     */
     #[ORM\Column(type: Types::STRING, length: 64)]
     private ?string $uniqueTitle = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"uniqueTitle"})
-     *
-     * @ORM\Column(type="string", length=128)
      */
     #[Gedmo\Slug(fields: ['uniqueTitle'])]
     #[ORM\Column(type: Types::STRING, length: 128)]
-    private $uniqueSlug;
+    private ?string $uniqueSlug = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="string", length=16)
-     */
     #[ORM\Column(type: Types::STRING, length: 16)]
     #[Gedmo\Translatable]
     private ?string $code = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"title", "code"})
-     *
-     * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\Slug(fields: ['title', 'code'])]
     #[Gedmo\Translatable]
-    private $slug;
+    private ?string $slug = null;
 
     /**
-     * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      */
     #[Gedmo\Locale]

@@ -15,33 +15,22 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Embeddable
- */
 #[ORM\Embeddable]
 class CompanyEmbedLink
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="website", type="string", length=191, nullable=true)
-     *
-     * @Gedmo\Translatable
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'website', type: Types::STRING, length: 191, nullable: true)]
-    protected $website;
+    protected ?string $website = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="facebook", type="string", length=191, nullable=true)
-     *
-     * @Gedmo\Translatable
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'facebook', type: Types::STRING, length: 191, nullable: true)]
-    protected $facebook;
+    protected ?string $facebook = null;
 
     public function getWebsite(): string
     {

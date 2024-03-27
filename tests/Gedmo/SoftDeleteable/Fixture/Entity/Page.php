@@ -17,14 +17,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"page": "Page", "mega_page": "MegaPage"})
- *
- * @Gedmo\SoftDeleteable(fieldName="deletedAt")
- */
 #[ORM\Entity]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: Types::STRING)]
@@ -34,35 +26,23 @@ class Page
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string")
-     */
     #[ORM\Column(name: 'title', type: Types::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
-     */
     #[ORM\Column(name: 'deletedAt', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $deletedAt = null;
 
     /**
      * @var Collection<int, Module>
-     *
-     * @ORM\OneToMany(targetEntity="Module", mappedBy="page", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(targetEntity: Module::class, mappedBy: 'page', cascade: ['persist', 'remove'])]
-    private $modules;
+    private Collection $modules;
 
     public function __construct()
     {

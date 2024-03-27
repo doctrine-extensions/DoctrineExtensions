@@ -17,55 +17,28 @@ use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\Loggable\Fixture\Document\Log\Comment as CommentLog;
 
-/**
- * @ODM\Document
- *
- * @Gedmo\Loggable(logEntryClass="Gedmo\Tests\Loggable\Fixture\Document\Log\Comment")
- */
 #[ODM\Document]
 #[Gedmo\Loggable(logEntryClass: CommentLog::class)]
 class Comment implements Loggable
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $subject = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $message = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\RelatedArticle", inversedBy="comments")
-     */
     #[ODM\ReferenceOne(targetDocument: RelatedArticle::class, inversedBy: 'comments')]
     #[Gedmo\Versioned]
     private ?RelatedArticle $article = null;
 
-    /**
-     * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
-     *
-     * @Gedmo\Versioned
-     */
     #[ODM\EmbedOne(targetDocument: Author::class)]
     #[Gedmo\Versioned]
     private ?Author $author = null;

@@ -18,68 +18,38 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Article implements Blameable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
     /**
      * @var Collection<int, Comment>
-     *
-     * @ORM\OneToMany(targetEntity="Gedmo\Tests\Blameable\Fixture\Entity\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
-    /**
-     * @Gedmo\Blameable(on="create")
-     *
-     * @ORM\Column(name="created", type="string")
-     */
     #[ORM\Column(name: 'created', type: Types::STRING)]
     #[Gedmo\Blameable(on: 'create')]
     private ?string $created = null;
 
-    /**
-     * @ORM\Column(name="updated", type="string")
-     *
-     * @Gedmo\Blameable
-     */
     #[Gedmo\Blameable]
     #[ORM\Column(name: 'updated', type: Types::STRING)]
     private ?string $updated = null;
 
-    /**
-     * @ORM\Column(name="published", type="string", nullable=true)
-     *
-     * @Gedmo\Blameable(on="change", field="type.title", value="Published")
-     */
     #[ORM\Column(name: 'published', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'type.title', value: 'Published')]
     private ?string $published = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
-     */
     #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
     private ?Type $type = null;
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\Category" table="categories">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="title" length="64"/>
+        <field name="slug" length="64">
+            <gedmo:slug style="camel" separator="_" fields="title"/>
+        </field>
+        <field name="created" type="datetime">
+            <gedmo:timestampable on="create"/>
+        </field>
+        <field name="updated" type="datetime">
+            <gedmo:timestampable on="update"/>
+        </field>
+        <field name="changed" type="datetime" nullable="true">
+            <gedmo:timestampable on="change" field="title" value="Test"/>
+        </field>
+    </entity>
+</doctrine-mapping>

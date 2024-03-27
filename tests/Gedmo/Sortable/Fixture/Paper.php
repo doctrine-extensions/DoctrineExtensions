@@ -16,34 +16,22 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Paper
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="name", type="string")
-     */
     #[ORM\Column(name: 'name', type: Types::STRING)]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Author>
-     *
-     * @ORM\OneToMany(targetEntity="Author", mappedBy="paper", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Author::class, cascade: ['persist', 'remove'])]
     private Collection $authors;

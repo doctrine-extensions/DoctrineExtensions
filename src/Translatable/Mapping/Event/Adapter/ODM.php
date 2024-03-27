@@ -11,6 +11,8 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
+use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
+use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -33,8 +35,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             ->getObjectManager()
             ->getClassMetadata($translationClassName)
             ->getReflectionClass()
-            ->isSubclassOf(AbstractPersonalTranslation::class)
-        ;
+            ->isSubclassOf(AbstractPersonalTranslation::class);
     }
 
     public function getDefaultTranslationClass()
@@ -55,8 +56,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
                 $isRightCollection = isset($mapping['association'])
                     && ClassMetadata::REFERENCE_MANY === $mapping['association']
                     && $mapping['targetDocument'] === $translationClass
-                    && 'object' === $mapping['mappedBy']
-                ;
+                    && 'object' === $mapping['mappedBy'];
                 if ($isRightCollection) {
                     $collection = $wrapped->getPropertyValue($mapping['fieldName']);
                     foreach ($collection as $trans) {
@@ -75,8 +75,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
                 ->createQueryBuilder($translationClass)
                 ->field('object.$id')->equals($wrapped->getIdentifier())
                 ->field('locale')->equals($locale)
-                ->getQuery()
-            ;
+                ->getQuery();
         } else {
             // load translated content for all translatable fields
             // construct query
@@ -85,8 +84,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
                 ->field('foreignKey')->equals($wrapped->getIdentifier())
                 ->field('locale')->equals($locale)
                 ->field('objectClass')->equals($objectClass)
-                ->getQuery()
-            ;
+                ->getQuery();
         }
         $q->setHydrate(false);
 
@@ -100,8 +98,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             ->createQueryBuilder($translationClass)
             ->field('locale')->equals($locale)
             ->field('field')->equals($field)
-            ->limit(1)
-        ;
+            ->limit(1);
         if ($this->usesPersonalTranslation($translationClass)) {
             $qb->field('object.$id')->equals($wrapped->getIdentifier());
         } else {
@@ -118,8 +115,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         $dm = $this->getObjectManager();
         $qb = $dm
             ->createQueryBuilder($transClass)
-            ->remove()
-        ;
+            ->remove();
         if ($this->usesPersonalTranslation($transClass)) {
             $qb->field('object.$id')->equals($wrapped->getIdentifier());
         } else {
@@ -134,7 +130,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function insertTranslationRecord($translation)
     {
         $dm = $this->getObjectManager();
-        $meta = $dm->getClassMetadata(get_class($translation));
+        $meta = $dm->getClassMetadata($translation::class);
         $collection = $dm->getDocumentCollection($meta->getName());
         $data = [];
 
@@ -177,6 +173,13 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
 
         $value = $type->convertToPHPValue($value);
         $wrapped->setPropertyValue($field, $value);
+    }
+
+    public function clearObjectChangeSet(ODMUnitOfWork|ORMUnitOfWork $uow, object $object)
+    {
+        assert($uow instanceof ODMUnitOfWork);
+
+        $uow->clearDocumentChangeSet(spl_object_hash($object));
     }
 
     private function getType(string $type): Type

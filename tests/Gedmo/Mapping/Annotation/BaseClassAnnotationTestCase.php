@@ -21,10 +21,8 @@ abstract class BaseClassAnnotationTestCase extends TestCase
      * @requires PHP 8
      *
      * @dataProvider getValidParameters
-     *
-     * @param mixed $expectedReturn
      */
-    public function testLoadFromAttribute(string $annotationProperty, $expectedReturn): void
+    public function testLoadFromAttribute(string $annotationProperty, mixed $expectedReturn): void
     {
         $annotation = $this->getClassAnnotation(true);
         static::assertSame($annotation->$annotationProperty, $expectedReturn);
@@ -32,10 +30,8 @@ abstract class BaseClassAnnotationTestCase extends TestCase
 
     /**
      * @dataProvider getValidParameters
-     *
-     * @param mixed $expectedReturn
      */
-    public function testLoadFromDoctrineAnnotation(string $annotationProperty, $expectedReturn): void
+    public function testLoadFromDoctrineAnnotation(string $annotationProperty, mixed $expectedReturn): void
     {
         $annotation = $this->getClassAnnotation(false);
         static::assertSame($annotation->$annotationProperty, $expectedReturn);

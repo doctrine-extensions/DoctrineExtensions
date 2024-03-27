@@ -20,45 +20,27 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
- * @ORM\HasLifecycleCallbacks
- */
 #[ORM\Entity(repositoryClass: SortableRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class CustomerType
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="name", type="string")
-     */
     #[ORM\Column(name: 'name', type: Types::STRING)]
     private ?string $name = null;
 
-    /**
-     * @Gedmo\SortablePosition
-     *
-     * @ORM\Column(name="position", type="integer")
-     */
     #[Gedmo\SortablePosition]
     #[ORM\Column(name: 'position', type: Types::INTEGER)]
     private ?int $position = null;
 
     /**
      * @var Collection<int, Customer>
-     *
-     * @ORM\OneToMany(targetEntity="Customer", mappedBy="type")
      */
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Customer::class)]
     private Collection $customers;
@@ -111,9 +93,6 @@ class CustomerType
         $this->customers->removeElement($customer);
     }
 
-    /**
-     * @ORM\PostRemove
-     */
     #[ORM\PostRemove]
     public function postRemove(): void
     {

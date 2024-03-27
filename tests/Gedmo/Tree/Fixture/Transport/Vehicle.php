@@ -14,16 +14,6 @@ namespace Gedmo\Tests\Tree\Fixture\Transport;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({
- *     "vehicle": "Vehicle",
- *     "car": "Car",
- *     "bus": "Bus"
- * })
- */
 #[ORM\Entity]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
@@ -32,25 +22,15 @@ class Vehicle
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Engine")
-     */
     #[ORM\OneToOne(targetEntity: Engine::class)]
     private ?Engine $engine = null;
 
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(type: Types::STRING)]
     private ?string $title = null;
 

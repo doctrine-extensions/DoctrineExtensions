@@ -15,56 +15,29 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Post
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Translatable]
     private ?\DateTime $publishedAt = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="time")
-     */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     #[Gedmo\Translatable]
     private ?\DateTime $timestampAt = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="date")
-     */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Gedmo\Translatable]
     private ?\DateTime $dateAt = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="boolean")
-     */
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Gedmo\Translatable]
     private ?bool $boolean = null;

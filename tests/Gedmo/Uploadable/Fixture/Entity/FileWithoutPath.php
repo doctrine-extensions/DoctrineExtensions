@@ -15,32 +15,18 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Uploadable
- */
 #[ORM\Entity]
 #[Gedmo\Uploadable]
 class FileWithoutPath
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="path", type="string", nullable=true)
-     *
-     * @Gedmo\UploadableFilePath
-     */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     #[Gedmo\UploadableFilePath]
     private ?string $filePath = null;

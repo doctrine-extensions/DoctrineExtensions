@@ -250,10 +250,8 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     /**
      * @dataProvider invalidStringMethods
-     *
-     * @param mixed $stringMethod
      */
-    public function testGetPathAsStringWithInvalidStringMethod($stringMethod): void
+    public function testGetPathAsStringWithInvalidStringMethod(mixed $stringMethod): void
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);

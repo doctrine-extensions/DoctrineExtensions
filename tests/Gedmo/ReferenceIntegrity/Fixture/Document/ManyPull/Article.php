@@ -16,30 +16,20 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
-/**
- * @ODM\Document(collection="articles")
- */
 #[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 
     /**
      * @var Collection<int, Type>
-     *
-     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
      */
     #[ODM\ReferenceMany(targetDocument: Type::class, inversedBy: 'articles')]
     private $types;

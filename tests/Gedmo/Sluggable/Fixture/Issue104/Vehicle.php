@@ -15,38 +15,25 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\MappedSuperclass
- */
 #[ORM\MappedSuperclass]
 class Vehicle
 {
     /**
      * @var string|null
-     *
-     * @ORM\Column(length=128)
      */
     #[ORM\Column(length: 128)]
     protected $title;
 
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"title"})
-     *
-     * @ORM\Column(length=128, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]
     #[ORM\Column(length: 128, unique: true)]

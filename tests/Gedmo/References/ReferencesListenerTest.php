@@ -94,7 +94,7 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         $this->em->flush();
         $this->em->clear();
 
-        $stockItem = $this->em->find(get_class($stockItem), $stockItem->getId());
+        $stockItem = $this->em->find($stockItem::class, $stockItem->getId());
 
         static::assertSame($product, $stockItem->getProduct());
     }
@@ -125,19 +125,19 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         $this->em->persist($stockItem);
         $this->em->flush();
 
-        $product = $this->dm->find(get_class($product), $product->getId());
+        $product = $this->dm->find($product::class, $product->getId());
 
         static::assertInstanceOf(Collection::class, $product->getStockItems());
         static::assertSame(2, $product->getStockItems()->count());
 
         $first = $product->getStockItems()->first();
 
-        static::assertInstanceOf(get_class($stockItem), $first);
+        static::assertInstanceOf($stockItem::class, $first);
         static::assertSame('APP-TV', $first->getSku());
 
         $last = $product->getStockItems()->last();
 
-        static::assertInstanceOf(get_class($stockItem), $last);
+        static::assertInstanceOf($stockItem::class, $last);
         static::assertSame('AMZN-APP-TV', $last->getSku());
     }
 

@@ -16,32 +16,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\Uploadable\FakeFilenameGenerator;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Gedmo\Tests\Uploadable\FakeFilenameGenerator")
- */
 #[ORM\Entity]
 #[Gedmo\Uploadable(pathMethod: 'getPath', filenameGenerator: FakeFilenameGenerator::class)]
 class FileWithCustomFilenameGenerator
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="path", type="string", nullable=true)
-     *
-     * @Gedmo\UploadableFilePath
-     */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     #[Gedmo\UploadableFilePath]
     private ?string $filePath = null;

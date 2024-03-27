@@ -40,11 +40,9 @@ class Validator
     ];
 
     /**
-     * @param mixed $field
-     *
      * @return void
      */
-    public static function validateField(ClassMetadata $meta, $field)
+    public static function validateField(ClassMetadata $meta, mixed $field)
     {
         if ($meta->isMappedSuperclass) {
             return;

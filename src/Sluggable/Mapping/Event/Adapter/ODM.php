@@ -37,7 +37,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
             if (is_object($ubase = $wrapped->getPropertyValue($config['unique_base']))) {
                 $qb->field($config['unique_base'].'.$id')->equals(new \MongoId($ubase->getId()));
             } elseif ($ubase) {
-                $qb->where('/^'.preg_quote($ubase, '/').'/.test(this.'.$config['unique_base'].')');
+                $qb->where('/^'.preg_quote((string) $ubase, '/').'/.test(this.'.$config['unique_base'].')');
             } else {
                 $qb->field($config['unique_base'])->equals(null);
             }
@@ -65,23 +65,21 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
             ->where("function() {
                 return this.{$config['slug']}.indexOf('{$target}') === 0;
             }")
-            ->getQuery()
-        ;
+            ->getQuery();
         $q->setHydrate(false);
         $result = $q->getIterator();
         $count = 0;
 
         foreach ($result as $targetObject) {
             ++$count;
-            $slug = preg_replace("@^{$target}@smi", $replacement.$config['pathSeparator'], $targetObject[$config['slug']]);
+            $slug = preg_replace("@^{$target}@smi", $replacement.$config['pathSeparator'], (string) $targetObject[$config['slug']]);
             $dm
                 ->createQueryBuilder()
                 ->updateMany($config['useObjectClass'])
                 ->field($config['slug'])->set($slug)
                 ->field($meta->getIdentifier()[0])->equals($targetObject['_id'])
                 ->getQuery()
-                ->execute()
-            ;
+                ->execute();
         }
 
         return $count;
@@ -101,23 +99,21 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         $q = $dm
             ->createQueryBuilder($config['useObjectClass'])
             ->field($config['mappedBy'].'.'.$meta->getIdentifier()[0])->equals($wrapped->getIdentifier())
-            ->getQuery()
-        ;
+            ->getQuery();
         $q->setHydrate(false);
         $result = $q->getIterator();
         $count = 0;
 
         foreach ($result as $targetObject) {
             ++$count;
-            $slug = preg_replace("@^{$replacement}@smi", $target, $targetObject[$config['slug']]);
+            $slug = preg_replace("@^{$replacement}@smi", $target, (string) $targetObject[$config['slug']]);
             $dm
                 ->createQueryBuilder()
                 ->updateMany($config['useObjectClass'])
                 ->field($config['slug'])->set($slug)
                 ->field($meta->getIdentifier()[0])->equals($targetObject['_id'])
                 ->getQuery()
-                ->execute()
-            ;
+                ->execute();
         }
 
         return $count;

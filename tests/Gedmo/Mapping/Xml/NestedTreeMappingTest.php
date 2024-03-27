@@ -13,8 +13,8 @@ namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Mapping\Driver\ORM\XmlDriver;
 use Gedmo\Tests\Mapping\Fixture\Xml\NestedTree;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Tree\TreeListener;

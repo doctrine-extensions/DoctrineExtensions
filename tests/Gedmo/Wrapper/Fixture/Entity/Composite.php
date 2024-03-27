@@ -12,38 +12,18 @@ namespace Gedmo\Tests\Wrapper\Fixture\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Composite
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     */
-    #[ORM\Id]
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $one;
-
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     */
-    #[ORM\Id]
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $two;
-
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
-    public function __construct(int $one, int $two)
+    public function __construct(#[ORM\Id]
+        #[ORM\Column(type: Types::INTEGER)]
+        private int $one, #[ORM\Id]
+        #[ORM\Column(type: Types::INTEGER)]
+        private int $two)
     {
-        $this->one = $one;
-        $this->two = $two;
     }
 
     public function getOne(): int

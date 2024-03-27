@@ -18,45 +18,26 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document
- *
- * @Gedmo\Loggable
- */
 #[ODM\Document]
 #[Gedmo\Loggable]
 class RelatedArticle implements Loggable
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $content = null;
 
     /**
      * @var Collection<int, Comment>
-     *
-     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Comment", mappedBy="article")
      */
     #[ODM\ReferenceMany(targetDocument: Comment::class, mappedBy: 'article')]
     private $comments;

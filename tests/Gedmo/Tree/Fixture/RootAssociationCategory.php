@@ -18,69 +18,42 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- *
- * @Gedmo\Tree(type="nested")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[Gedmo\Tree(type: 'nested')]
 class RootAssociationCategory
 {
     /**
      * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="RootAssociationCategory", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
+    protected Collection $children;
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private ?string $title = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="RootAssociationCategory", inversedBy="children")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     *          * })
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -90,28 +63,19 @@ class RootAssociationCategory
     /**
      * @var self|null
      *
-     * @Gedmo\TreeRoot
-     *
-     * @ORM\ManyToOne(targetEntity="RootAssociationCategory")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     *          * })
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'tree_root', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?RootAssociationCategory $root = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     public function __construct()
     {

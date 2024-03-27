@@ -116,8 +116,7 @@ class Xml extends BaseXml
                     $handlers[$class] = [];
                     foreach ($handler->{'handler-option'} as $option) {
                         $handlers[$class][(string) $this->_getAttribute($option, 'name')]
-                            = (string) $this->_getAttribute($option, 'value')
-                        ;
+                            = (string) $this->_getAttribute($option, 'value');
                     }
                     $class::validate($handlers[$class], $meta);
                 }

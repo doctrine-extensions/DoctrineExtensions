@@ -22,8 +22,6 @@ use Doctrine\ODM\MongoDB\Types\Type;
 trait SoftDeleteableDocument
 {
     /**
-     * @ODM\Field(type="date")
-     *
      * @var \DateTime|null
      */
     #[ODM\Field(type: Type::DATE)]

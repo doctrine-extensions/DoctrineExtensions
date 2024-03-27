@@ -16,44 +16,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
- */
 #[ORM\Entity(repositoryClass: SortableRepository::class)]
 class Event
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\SortableGroup
-     *
-     * @ORM\Column(type="datetime")
-     */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $dateTime = null;
 
-    /**
-     * @ORM\Column(type="string", length=191)
-     */
     #[ORM\Column(type: Types::STRING, length: 191)]
     private ?string $name = null;
 
-    /**
-     * @Gedmo\SortablePosition
-     *
-     * @ORM\Column(type="integer")
-     */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $position = null;

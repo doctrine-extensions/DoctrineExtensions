@@ -78,7 +78,7 @@ class Chain implements Driver
     public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {
-            if (0 === strpos($meta->getName(), $namespace)) {
+            if (str_starts_with($meta->getName(), $namespace)) {
                 $extendedMetadata = $driver->readExtendedMetadata($meta, $config);
 
                 if (\is_array($extendedMetadata)) {

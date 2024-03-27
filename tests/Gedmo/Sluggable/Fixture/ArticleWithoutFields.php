@@ -16,29 +16,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Sluggable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class ArticleWithoutFields implements Sluggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Slug(separator="-", updatable=true)
-     *
-     * @ORM\Column(name="slug", type="string", length=64, unique=true)
-     */
     #[Gedmo\Slug(separator: '-', updatable: true)]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
     private ?string $slug = null;

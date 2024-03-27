@@ -16,42 +16,22 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Handler\InversedRelativeSlugHandler;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Company
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(length=64)
-     */
     #[ORM\Column(length: 64)]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(handlers={
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\User"),
-     *         @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
-     *         @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *     })
-     * }, fields={"title"})
-     *
-     * @ORM\Column(length=64, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]
     #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => User::class, 'mappedBy' => 'company', 'inverseSlugField' => 'slug'])]

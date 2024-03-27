@@ -16,73 +16,40 @@ use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 use MongoDB\BSON\Timestamp;
 
-/**
- * @ODM\Document(collection="articles")
- */
 #[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Timestampable\Fixture\Document\Type")
-     */
     #[ODM\ReferenceOne(targetDocument: Type::class)]
     private ?Type $type = null;
 
     /**
      * @var int|Timestamp|null
-     *
-     * @ODM\Field(type="timestamp")
-     *
-     * @Gedmo\Timestampable(on="create")
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ODM\Field(type: MongoDBType::TIMESTAMP)]
     private $created;
 
-    /**
-     * @ODM\Field(type="date")
-     *
-     * @Gedmo\Timestampable
-     */
     #[Gedmo\Timestampable]
     #[ODM\Field(type: MongoDBType::DATE)]
     private ?\DateTime $updated = null;
 
-    /**
-     * @ODM\Field(type="date")
-     *
-     * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
-     */
     #[Gedmo\Timestampable(on: 'change', field: 'type.title', value: 'Published')]
     #[ODM\Field(type: MongoDBType::DATE)]
     private ?\DateTime $published = null;
 
-    /**
-     * @ODM\Field(type="date")
-     *
-     * @Gedmo\Timestampable(on="change", field="isReady", value=true)
-     */
     #[Gedmo\Timestampable(on: 'change', field: 'isReady', value: true)]
     #[ODM\Field(type: MongoDBType::DATE)]
     private ?\DateTime $ready = null;
 
-    /**
-     * @ODM\Field(type="bool")
-     */
     #[ODM\Field(type: MongoDBType::BOOL)]
     private bool $isReady = false;
 

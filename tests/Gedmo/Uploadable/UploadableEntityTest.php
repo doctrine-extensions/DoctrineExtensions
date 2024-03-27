@@ -379,7 +379,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $sha1String = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
+        $sha1String = substr((string) $file->getFilePath(), strrpos((string) $file->getFilePath(), '/') + 1);
         $sha1String = str_replace('.txt', '', $sha1String);
 
         static::assertMatchesRegularExpression('/[a-z0-9]{40}/', $sha1String);
@@ -397,7 +397,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
+        $filename = substr((string) $file->getFilePath(), strrpos((string) $file->getFilePath(), '/') + 1);
 
         static::assertSame('test-3.txt', $filename);
     }
@@ -414,7 +414,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
+        $filename = substr((string) $file->getFilePath(), strrpos((string) $file->getFilePath(), '/') + 1);
 
         static::assertSame('123.txt', $filename);
     }
@@ -536,7 +536,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        static::assertSame($expectedFilename, basename($file2->getFilePath()));
+        static::assertSame($expectedFilename, basename((string) $file2->getFilePath()));
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath(): void
@@ -677,11 +677,9 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
-     * @param mixed $class
-     *
      * @dataProvider invalidFileInfoClassesProvider
      */
-    public function testSetDefaultFileInfoClassThrowExceptionIfInvalidClassArePassed($class): void
+    public function testSetDefaultFileInfoClassThrowExceptionIfInvalidClassArePassed(mixed $class): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->listener->setDefaultFileInfoClass($class);

@@ -16,63 +16,39 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Comment implements Blameable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="message", type="text")
-     */
     #[ORM\Column(name: 'message', type: Types::TEXT)]
     private ?string $message = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Blameable\Fixture\Entity\Article", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
     private ?Article $article = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $status = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="closed", type="string", nullable=true)
-     *
-     * @Gedmo\Blameable(on="change", field="status", value=1)
      */
     #[ORM\Column(name: 'closed', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'status', value: 1)]
-    private $closed;
+    private ?string $closed = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="modified", type="string")
-     *
-     * @Gedmo\Blameable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::STRING)]
     #[Gedmo\Blameable(on: 'update')]
-    private $modified;
+    private ?string $modified = null;
 
     public function setArticle(?Article $article): void
     {

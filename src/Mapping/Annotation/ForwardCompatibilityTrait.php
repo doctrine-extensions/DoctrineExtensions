@@ -21,11 +21,10 @@ trait ForwardCompatibilityTrait
     /**
      * @param array<string, mixed> $data
      * @param array<int, mixed>    $args
-     * @param mixed                $value
      *
      * @return mixed
      */
-    private function getAttributeValue(array $data, string $attributeName, array $args, int $argumentNum, $value)
+    private function getAttributeValue(array $data, string $attributeName, array $args, int $argumentNum, mixed $value)
     {
         if (array_key_exists($argumentNum, $args)) {
             return $args[$argumentNum];

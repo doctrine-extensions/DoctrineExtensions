@@ -11,9 +11,11 @@ namespace Gedmo\Mapping\Event\Adapter;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Deprecations\Deprecation;
+use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -105,7 +107,7 @@ class ORM implements AdapterInterface
             'Calling "%s()" on event args of class "%s" that does not implement "getObjectManager()" is deprecated since gedmo/doctrine-extensions 3.14'
             .' and will throw a "%s" error in version 4.0.',
             __METHOD__,
-            get_class($this->args),
+            $this->args::class,
             \Error::class
         );
 
@@ -131,7 +133,7 @@ class ORM implements AdapterInterface
             'Calling "%s()" on event args of class "%s" that does not imeplement "getObject()" is deprecated since gedmo/doctrine-extensions 3.14'
             .' and will throw a "%s" error in version 4.0.',
             __METHOD__,
-            get_class($this->args),
+            $this->args::class,
             \Error::class
         );
 
@@ -181,20 +183,15 @@ class ORM implements AdapterInterface
         $uow->setOriginalEntityProperty(spl_object_id($object), $property, $value);
     }
 
-    public function clearObjectChangeSet($uow, $object)
-    {
-        $uow->clearEntityChangeSet(spl_object_id($object));
-    }
-
     /**
-     * @deprecated use custom lifecycle event classes instead
-     *
-     * Creates an ORM specific LifecycleEventArgs
-     *
      * @param object                 $object
      * @param EntityManagerInterface $entityManager
      *
      * @return LifecycleEventArgs
+     *
+     * @deprecated use custom lifecycle event classes instead
+     *
+     * Creates an ORM specific LifecycleEventArgs
      */
     public function createLifecycleEventArgsInstance($object, $entityManager)
     {
@@ -210,5 +207,13 @@ class ORM implements AdapterInterface
         }
 
         return new LifecycleEventArgs($object, $entityManager);
+    }
+
+    public function clearObjectChangeSet(ODMUnitOfWork|ORMUnitOfWork $uow, object $object)
+    {
+        assert($uow instanceof ORMUnitOfWork);
+
+        $changeSet = &$uow->getEntityChangeSet($object);
+        $changeSet = [];
     }
 }

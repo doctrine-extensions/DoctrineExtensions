@@ -14,33 +14,20 @@ namespace Gedmo\Tests\SoftDeleteable\Fixture\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class OtherComment
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="comment", type="string")
-     */
     #[ORM\Column(name: 'comment', type: Types::STRING)]
     private ?string $comment = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="OtherArticle", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: OtherArticle::class, inversedBy: 'comments')]
     private ?OtherArticle $article = null;
 

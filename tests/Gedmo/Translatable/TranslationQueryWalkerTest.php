@@ -72,18 +72,20 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
     public function testSubselectByTranslatedField(): void
     {
+        $this->translatableListener->setPersistDefaultLocaleTranslation(true);
+
         $this->populateMore();
-        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
-        $subSelect = 'SELECT a2.title FROM '.self::ARTICLE.' a2';
-        $subSelect .= " WHERE a2.title LIKE '%ab%'";
-        $dql .= " WHERE a.title IN ({$subSelect})";
-        $dql .= ' ORDER BY a.title';
+
+        $subSelect = sprintf("SELECT a2.title FROM %s a2 WHERE a2.title LIKE '%s'", self::ARTICLE, '%ab%');
+        $dql = sprintf('SELECT a FROM %s a WHERE a.title IN (%s) ORDER BY a.title', self::ARTICLE, $subSelect);
+
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
+
         static::assertCount(2, $result);
         static::assertSame('Alfabet', $result[0]['title']);
         static::assertSame('Cabbages', $result[1]['title']);
@@ -689,10 +691,10 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::ARTICLE);
 
         $this->translatableListener->setTranslatableLocale('en_us');
-        $alfabet = new Article();
-        $alfabet->setTitle('Alfabet');
-        $alfabet->setContent('hey wtf!');
-        $alfabet->setViews(1);
+        $alphabet = new Article();
+        $alphabet->setTitle('Alphabet');
+        $alphabet->setContent('hey wtf!');
+        $alphabet->setViews(1);
 
         $woman = new Article();
         $woman->setTitle('Woman');
@@ -704,17 +706,17 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $cabbages->setContent('where went the woman?');
         $cabbages->setViews(2222);
 
-        $this->em->persist($alfabet);
+        $this->em->persist($alphabet);
         $this->em->persist($woman);
         $this->em->persist($cabbages);
         $this->em->flush();
         $this->em->clear();
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
-        $alfabet = $repo->find(2);
-        $alfabet->setTitle('Alfabetas');
-        $alfabet->setContent('ei wtf!');
-        $alfabet->setViews(111);
+        $alphabet = $repo->find(2);
+        $alphabet->setTitle('Alfabetas');
+        $alphabet->setContent('ei wtf!');
+        $alphabet->setViews(111);
 
         $woman = $repo->find(3);
         $woman->setTitle('Moteris');
@@ -726,7 +728,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $cabbages->setContent('kur dingo moteris?');
         $cabbages->setViews(22222);
 
-        $this->em->persist($alfabet);
+        $this->em->persist($alphabet);
         $this->em->persist($woman);
         $this->em->persist($cabbages);
         $this->em->flush();

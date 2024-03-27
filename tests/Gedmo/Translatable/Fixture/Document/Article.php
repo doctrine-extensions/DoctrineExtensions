@@ -15,45 +15,25 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @MongoODM\Document(collection="articles")
- */
 #[MongoODM\Document(collection: 'articles')]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @MongoODM\Id
      */
     #[MongoODM\Id]
     private $id;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @MongoODM\Field(type="string")
-     */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @MongoODM\Field(type="string")
-     */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]
     private ?string $code = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"title", "code"})
-     * @Gedmo\Translatable
-     *
-     * @MongoODM\Field(type="string")
      */
     #[Gedmo\Translatable]
     #[MongoODM\Field(type: Type::STRING)]

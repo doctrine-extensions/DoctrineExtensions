@@ -91,13 +91,11 @@ class LoggableListener extends MappedEventSubscriber
     /**
      * Set username for identification
      *
-     * @param mixed $username
-     *
      * @throws InvalidArgumentException Invalid username
      *
      * @return void
      */
-    public function setUsername($username)
+    public function setUsername(mixed $username)
     {
         if (is_string($username)) {
             $this->username = $username;
@@ -159,7 +157,7 @@ class LoggableListener extends MappedEventSubscriber
             $wrapped = AbstractWrapper::wrap($object, $om);
 
             $logEntry = $this->pendingLogEntryInserts[$oid];
-            $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
+            $logEntryMeta = $om->getClassMetadata($logEntry::class);
 
             $id = $wrapped->getIdentifier(false, true);
             $logEntryMeta->getReflectionProperty('objectId')->setValue($logEntry, $id);
@@ -174,7 +172,7 @@ class LoggableListener extends MappedEventSubscriber
             $identifiers = $wrapped->getIdentifier(false);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
-                $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
+                $logEntryMeta = $om->getClassMetadata($logEntry::class);
                 $oldData = $data = $logEntry->getData();
                 $data[$props['field']] = $identifiers;
 

@@ -73,7 +73,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $shorten = $article->getSlug();
-        static::assertSame(32, strlen($shorten));
+        static::assertSame(32, strlen((string) $shorten));
     }
 
     public function testNonUpdatableSlug(): void

@@ -17,11 +17,6 @@ use Gedmo\Loggable\Document\Repository\LogEntryRepository;
 use Gedmo\Tests\Loggable\Fixture\Document\Comment as CommentDocument;
 
 /**
- * @ODM\Document(
- *     collection="test_comment_log_entries",
- *     repositoryClass="Gedmo\Loggable\Document\Repository\LogEntryRepository"
- * )
- *
  * @phpstan-extends AbstractLogEntry<CommentDocument>
  */
 #[ODM\Document(collection: 'test_comment_log_entries', repositoryClass: LogEntryRepository::class)]

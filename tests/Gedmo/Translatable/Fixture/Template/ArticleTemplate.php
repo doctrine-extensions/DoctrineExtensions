@@ -15,9 +15,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\MappedSuperclass
- */
 #[ORM\MappedSuperclass]
 class ArticleTemplate
 {
@@ -25,25 +22,13 @@ class ArticleTemplate
      * @var string|null
      *
      * Used locale to override Translation listener`s locale
-     *
-     * @Gedmo\Locale
      */
     #[Gedmo\Locale]
     protected $locale;
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     #[Gedmo\Translatable]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="content", type="text")
-     */
     #[ORM\Column(name: 'content', type: Types::TEXT)]
     #[Gedmo\Translatable]
     private ?string $content = null;

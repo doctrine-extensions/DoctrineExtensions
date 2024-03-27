@@ -13,9 +13,6 @@ namespace Gedmo\Tests\SoftDeleteable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class MegaPage extends Page
 {

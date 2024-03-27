@@ -14,23 +14,15 @@ namespace Gedmo\Tests\Sortable\Fixture\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
-/**
- * @ODM\Document(collection="categories")
- */
 #[ODM\Document(collection: 'categories')]
 class Category
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $name = null;
 

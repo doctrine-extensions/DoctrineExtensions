@@ -41,7 +41,7 @@ final class SlugHandler implements GedmoAnnotation
     /**
      * @param array<string, mixed> $data
      *
-     * @phpstan-param string|class-string<SlugHandlerInterface>     $class
+     * @phpstan-param string|class-string<SlugHandlerInterface> $class
      * @phpstan-param array<SlugHandlerOption>|array<string, mixed> $options
      */
     public function __construct(

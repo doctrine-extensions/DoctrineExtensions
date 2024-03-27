@@ -18,77 +18,42 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\IpTraceable\IpTraceable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Article implements IpTraceable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
     /**
      * @var Collection<int, Comment>
-     *
-     * @ORM\OneToMany(targetEntity="Gedmo\Tests\IpTraceable\Fixture\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
-    /**
-     * @Gedmo\IpTraceable(on="create")
-     *
-     * @ORM\Column(name="created", type="string", length=45)
-     */
     #[ORM\Column(name: 'created', type: Types::STRING, length: 45)]
     #[Gedmo\IpTraceable(on: 'create')]
     private ?string $created = null;
 
-    /**
-     * @ORM\Column(name="updated", type="string", length=45)
-     *
-     * @Gedmo\IpTraceable
-     */
     #[ORM\Column(name: 'updated', type: Types::STRING, length: 45)]
     #[Gedmo\IpTraceable]
     private ?string $updated = null;
 
-    /**
-     * @ORM\Column(name="published", type="string", length=45, nullable=true)
-     *
-     * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
-     */
     #[ORM\Column(name: 'published', type: Types::STRING, length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'change', field: 'type.title', value: 'Published')]
     private ?string $published = null;
 
-    /**
-     * @ORM\Column(name="content_changed", type="string", length=45, nullable=true)
-     *
-     * @Gedmo\IpTraceable(on="change", field={"title", "body"})
-     */
     #[ORM\Column(name: 'content_changed', type: Types::STRING, length: 45, nullable: true)]
     #[Gedmo\IpTraceable(on: 'change', field: ['title', 'body'])]
     private ?string $contentChanged = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
-     */
     #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
     private ?Type $type = null;
 

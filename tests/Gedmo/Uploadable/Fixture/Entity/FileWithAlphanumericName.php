@@ -16,32 +16,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Uploadable\Mapping\Validator;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="ALPHANUMERIC", appendNumber=true)
- */
 #[ORM\Entity]
 #[Gedmo\Uploadable(pathMethod: 'getPath', filenameGenerator: Validator::FILENAME_GENERATOR_ALPHANUMERIC, appendNumber: true)]
 class FileWithAlphanumericName
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="path", type="string", nullable=true)
-     *
-     * @Gedmo\UploadableFilePath
-     */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     #[Gedmo\UploadableFilePath]
     private ?string $filePath = null;

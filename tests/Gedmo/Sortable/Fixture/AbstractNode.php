@@ -15,53 +15,36 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\MappedSuperclass
- */
 #[ORM\MappedSuperclass]
 class AbstractNode
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(type="string", length=191)
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    protected $name;
+    protected ?string $name = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\SortableGroup
-     *
-     * @ORM\Column(type="string", length=191)
      */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::STRING, length: 191)]
-    protected $path;
+    protected ?string $path = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\SortablePosition
-     *
-     * @ORM\Column(type="integer")
      */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
-    protected $position;
+    protected ?int $position = null;
 
     public function getId(): ?int
     {

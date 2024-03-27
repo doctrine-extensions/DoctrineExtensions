@@ -15,64 +15,33 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document(collection="articles")
- */
 #[ODM\Document(collection: 'articles')]
 class Article
 {
     /**
-     * @ODM\Id
-     *
      * @var string|null
      */
     #[ODM\Id]
     private $id;
 
-    /**
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $title = null;
 
-    /**
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Blameable\Fixture\Document\Type")
-     */
     #[ODM\ReferenceOne(targetDocument: Type::class)]
     private ?Type $type = null;
 
-    /**
-     * @ODM\Field(type="string")
-     *
-     * @Gedmo\Blameable(on="create")
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     #[Gedmo\Blameable(on: 'create')]
     private ?string $created = null;
 
-    /**
-     * @ODM\Field(type="string")
-     *
-     * @Gedmo\Blameable
-     */
     #[ODM\Field(type: MongoDBType::STRING)]
     #[Gedmo\Blameable]
     private ?string $updated = null;
 
-    /**
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Blameable\Fixture\Document\User")
-     *
-     * @Gedmo\Blameable(on="create")
-     */
     #[ODM\ReferenceOne(targetDocument: User::class)]
     #[Gedmo\Blameable(on: 'create')]
     private ?User $creator = null;
 
-    /**
-     * @ODM\Field(type="string")
-     *
-     * @Gedmo\Blameable(on="change", field="type.title", value="Published")
-     */
     #[Gedmo\Blameable(on: 'change', field: 'type.title', value: 'Published')]
     #[ODM\Field(type: MongoDBType::STRING)]
     private ?string $published = null;

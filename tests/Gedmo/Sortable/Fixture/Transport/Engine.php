@@ -14,33 +14,20 @@ namespace Gedmo\Tests\Sortable\Fixture\Transport;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Engine
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(length=32)
-     */
     #[ORM\Column(length: 32)]
     private ?string $type = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $valves = null;
 

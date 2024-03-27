@@ -429,7 +429,7 @@ final class SortableTest extends BaseTestCaseORM
             $this->em->flush();
 
             static::fail('Foreign key constraint violation exception not thrown.');
-        } catch (ForeignKeyConstraintViolationException $e) {
+        } catch (ForeignKeyConstraintViolationException) {
             $customerTypes = $repo->findAll();
 
             static::assertCount(3, $customerTypes);

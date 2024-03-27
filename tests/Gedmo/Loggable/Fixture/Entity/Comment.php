@@ -17,50 +17,26 @@ use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment as CommentLog;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Loggable(logEntryClass="Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment")
- */
 #[ORM\Entity]
 #[Gedmo\Loggable(logEntryClass: CommentLog::class)]
 class Comment implements Loggable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     #[Gedmo\Versioned]
     private ?string $subject = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ORM\Column(type="text")
-     */
     #[ORM\Column(type: Types::TEXT)]
     #[Gedmo\Versioned]
     private ?string $message = null;
 
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ORM\ManyToOne(targetEntity="RelatedArticle", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: RelatedArticle::class, inversedBy: 'comments')]
     #[Gedmo\Versioned]
     private ?RelatedArticle $article = null;

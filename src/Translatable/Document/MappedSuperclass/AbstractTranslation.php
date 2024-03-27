@@ -14,56 +14,42 @@ use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * Gedmo\Translatable\Document\MappedSuperclass\AbstractTranslation
- *
- * @MongoODM\MappedSuperclass
  */
 #[MongoODM\MappedSuperclass]
 abstract class AbstractTranslation
 {
     /**
      * @var int
-     *
-     * @MongoODM\Id
      */
     #[MongoODM\Id]
     protected $id;
 
     /**
      * @var string
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
      * @var string
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $objectClass;
 
     /**
      * @var string
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $field;
 
     /**
      * @var string
-     *
-     * @MongoODM\Field(type="string", name="foreign_key")
      */
     #[MongoODM\Field(name: 'foreign_key', type: Type::STRING)]
     protected $foreignKey;
 
     /**
      * @var string
-     *
-     * @MongoODM\Field(type="string")
      */
     #[MongoODM\Field(type: Type::STRING)]
     protected $content;

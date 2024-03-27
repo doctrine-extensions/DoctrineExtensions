@@ -15,15 +15,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({
- *     "vehicle": "Vehicle",
- *     "car": "Car"
- * })
- */
 #[ORM\Entity]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
@@ -32,28 +23,17 @@ class Vehicle
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"title"})
-     *
-     * @ORM\Column(length=128, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'])]
     #[ORM\Column(length: 128, unique: true)]

@@ -38,9 +38,8 @@ final class Timestampable implements GedmoAnnotation
     /**
      * @param array<string, mixed> $data
      * @param string|string[]      $field
-     * @param mixed                $value
      */
-    public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
+    public function __construct(array $data = [], string $on = 'update', $field = null, mixed $value = null)
     {
         if ([] !== $data) {
             Deprecation::trigger(

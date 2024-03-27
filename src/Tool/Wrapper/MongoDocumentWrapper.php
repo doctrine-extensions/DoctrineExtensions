@@ -44,7 +44,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     {
         $this->om = $dm;
         $this->object = $document;
-        $this->meta = $dm->getClassMetadata(get_class($this->object));
+        $this->meta = $dm->getClassMetadata($this->object::class);
     }
 
     public function getPropertyValue($property)
@@ -119,7 +119,7 @@ class MongoDocumentWrapper extends AbstractWrapper
                         $identifier = $this->getIdentifier();
                     } else {
                         // this may not happen but in case
-                        $getIdentifier = \Closure::bind(fn () => $this->identifier, $this->object, get_class($this->object));
+                        $getIdentifier = \Closure::bind(fn () => $this->identifier, $this->object, $this->object::class);
 
                         $identifier = $getIdentifier();
                     }

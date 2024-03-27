@@ -95,7 +95,7 @@ abstract class AbstractMaterializedPath implements Strategy
 
     public function processScheduledInsertion($om, $node, AdapterInterface $ea)
     {
-        $meta = $om->getClassMetadata(get_class($node));
+        $meta = $om->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($om, $meta->getName());
         $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
@@ -108,7 +108,7 @@ abstract class AbstractMaterializedPath implements Strategy
 
     public function processScheduledUpdate($om, $node, AdapterInterface $ea)
     {
-        $meta = $om->getClassMetadata(get_class($node));
+        $meta = $om->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $node);
@@ -184,7 +184,7 @@ abstract class AbstractMaterializedPath implements Strategy
 
     public function processScheduledDelete($om, $node)
     {
-        $meta = $om->getClassMetadata(get_class($node));
+        $meta = $om->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($om, $meta->getName());
 
         $this->removeNode($om, $meta, $config, $node);
@@ -200,7 +200,7 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function updateNode(ObjectManager $om, $node, AdapterInterface $ea)
     {
-        $meta = $om->getClassMetadata(get_class($node));
+        $meta = $om->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $parentProp = $meta->getReflectionProperty($config['parent']);
@@ -213,7 +213,7 @@ abstract class AbstractMaterializedPath implements Strategy
         $path = (string) $pathSourceProp->getValue($node);
 
         // We need to avoid the presence of the path separator in the path source
-        if (false !== strpos($path, $config['path_separator'])) {
+        if (str_contains($path, $config['path_separator'])) {
             $msg = 'You can\'t use the Path separator ("%s") as a character for your PathSource field value.';
 
             throw new RuntimeException(sprintf($msg, $config['path_separator']));
@@ -249,7 +249,7 @@ abstract class AbstractMaterializedPath implements Strategy
 
             $parentPath = $pathProp->getValue($parent);
             // if parent path not ends with separator
-            if ($parentPath[strlen($parentPath) - 1] !== $config['path_separator']) {
+            if ($parentPath[strlen((string) $parentPath) - 1] !== $config['path_separator']) {
                 // add separator
                 $path = $pathProp->getValue($parent).$config['path_separator'].$path;
             } else {
@@ -331,7 +331,7 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function updateChildren(ObjectManager $om, $node, AdapterInterface $ea, $originalPath)
     {
-        $meta = $om->getClassMetadata(get_class($node));
+        $meta = $om->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($om, $meta->getName());
         $children = $this->getChildren($om, $meta, $config, $originalPath);
 
@@ -351,7 +351,7 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function processPreLockingActions($om, $node, $action)
     {
-        $meta = $om->getClassMetadata(get_class($node));
+        $meta = $om->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($om, $meta->getName());
 
         if ($config['activate_locking']) {
@@ -419,7 +419,7 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function processPostEventsActions(ObjectManager $om, AdapterInterface $ea, $node, $action)
     {
-        $meta = $om->getClassMetadata(get_class($node));
+        $meta = $om->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($om, $meta->getName());
 
         if ($config['activate_locking']) {

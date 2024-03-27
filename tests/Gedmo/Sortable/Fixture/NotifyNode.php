@@ -18,12 +18,9 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 /**
  * @author Charles J. C. Elling, 2017-07-31
- *
- * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 #[ORM\Entity(repositoryClass: SortableRepository::class)]
-#[ORM\ChangeTrackingPolicy(value: 'NOTIFY')]
+#[ORM\ChangeTrackingPolicy(value: 'DEFERRED_EXPLICIT')]
 class NotifyNode extends AbstractNode implements NotifyPropertyChanged
 {
     /**
@@ -62,21 +59,15 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
 
     /**
      * Notify property change event to listeners
-     *
-     * @param mixed $oldValue
-     * @param mixed $newValue
      */
-    protected function triggerPropertyChanged(string $propName, $oldValue, $newValue): void
+    protected function triggerPropertyChanged(string $propName, mixed $oldValue, mixed $newValue): void
     {
         foreach ($this->_propertyChangedListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
         }
     }
 
-    /**
-     * @param mixed $newValue
-     */
-    protected function setProperty(string $property, $newValue): void
+    protected function setProperty(string $property, mixed $newValue): void
     {
         $oldValue = $this->{$property};
         if ($oldValue !== $newValue) {

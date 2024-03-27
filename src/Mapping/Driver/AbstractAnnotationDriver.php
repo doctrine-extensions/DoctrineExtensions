@@ -57,7 +57,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
                 AttributeReader::class,
                 __METHOD__,
                 \TypeError::class,
-                get_class($reader)
+                $reader::class
             );
         }
 

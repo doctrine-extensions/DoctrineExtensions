@@ -17,40 +17,26 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Category
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(name="title", type="string", length=128)
-     */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
     /**
      * @var Collection<int, Article>
-     *
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="category", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
-    private $articles;
+    private Collection $articles;
 
     public function __construct()
     {

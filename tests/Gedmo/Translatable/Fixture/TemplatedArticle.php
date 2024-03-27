@@ -16,29 +16,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\Translatable\Fixture\Template\ArticleTemplate;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class TemplatedArticle extends ArticleTemplate
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\Translatable
-     *
-     * @ORM\Column(type="string", length=128)
-     */
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::STRING, length: 128)]
     private ?string $name = null;

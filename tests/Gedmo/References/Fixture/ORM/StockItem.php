@@ -16,51 +16,29 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class StockItem
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column
-     */
     #[ORM\Column]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column
-     */
     #[ORM\Column]
     private ?string $sku = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $quantity = null;
 
-    /**
-     * @Gedmo\ReferenceOne(type="document", class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
-     */
     #[Gedmo\ReferenceOne(type: 'document', class: Product::class, inversedBy: 'stockItems', identifier: 'productId')]
     private ?Product $product = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
     #[ORM\Column(type: Types::STRING)]
     private ?string $productId = null;
 

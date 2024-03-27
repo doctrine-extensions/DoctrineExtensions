@@ -17,40 +17,25 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translator\TranslationInterface;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class PersonCustom
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=128)
-     */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(name="desc", type="string", length=128)
-     */
     #[ORM\Column(name: 'desc', type: Types::STRING, length: 128)]
     private ?string $description = null;
 
     /**
      * @var Collection<int, TranslationInterface>
-     *
-     * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
      */
     #[ORM\OneToMany(targetEntity: PersonCustomTranslation::class, mappedBy: 'translatable', cascade: ['persist'])]
     private Collection $translations;

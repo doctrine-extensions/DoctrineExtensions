@@ -19,58 +19,29 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-/**
- * @Gedmo\Tree(type="nested")
- *
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
 #[Gedmo\Tree(type: 'nested')]
 class TreeSlugPrefixSuffix
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     private ?string $title = null;
 
     /**
      * @var string|null
-     *
-     * @Gedmo\Slug(fields={"title"}, handlers={
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="/"),
-     *         @Gedmo\SlugHandlerOption(name="prefix", value="prefix."),
-     *         @Gedmo\SlugHandlerOption(name="suffix", value=".suffix")
-     *     })
-     * }, separator="-", updatable=true)
-     *
-     * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Slug(fields: ['title'], separator: '-', updatable: true)]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/', 'prefix' => 'prefix.', 'suffix' => '.suffix'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
-    /**
-     * @Gedmo\TreeParent
-     *
-     * @ORM\ManyToOne(targetEntity="TreeSlugPrefixSuffix")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     */
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
@@ -83,47 +54,31 @@ class TreeSlugPrefixSuffix
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLeft
-     *
-     * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRight
-     *
-     * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeRoot
-     *
-     * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     /**
      * @var int|null
-     *
-     * @Gedmo\TreeLevel
-     *
-     * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     public function __construct()
     {

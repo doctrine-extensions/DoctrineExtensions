@@ -14,33 +14,20 @@ namespace Gedmo\Tests\Tree\Fixture;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Comment
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="message", type="text")
-     */
     #[ORM\Column(name: 'message', type: Types::TEXT)]
     private ?string $message = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
-     */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
     private ?Article $article = null;
 

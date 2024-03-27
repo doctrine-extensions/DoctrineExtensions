@@ -11,13 +11,11 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Xml;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Mapping\Driver\ORM\XmlDriver;
 use Gedmo\References\ReferencesListener;
 use Gedmo\Tests\Mapping\Fixture\Xml\References;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
@@ -35,11 +33,7 @@ final class ReferencesMappingTest extends BaseTestCaseOM
     {
         parent::setUp();
 
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationDriver = new AttributeDriver([]);
-        } else {
-            $annotationDriver = new AnnotationDriver(new AnnotationReader());
-        }
+        $annotationDriver = new AttributeDriver([]);
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 

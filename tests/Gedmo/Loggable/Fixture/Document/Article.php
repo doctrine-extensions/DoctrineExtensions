@@ -16,44 +16,25 @@ use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Loggable\Loggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ODM\Document(collection="articles")
- *
- * @Gedmo\Loggable
- */
 #[ODM\Document(collection: 'articles')]
 #[Gedmo\Loggable]
-class Article implements Loggable
+class Article implements Loggable, \Stringable
 {
     /**
      * @var string|null
-     *
-     * @ODM\Id
      */
     #[ODM\Id]
     private $id;
-
-    /**
-     * @Gedmo\Versioned
-     *
-     * @ODM\Field(type="string")
-     */
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $title = null;
-
-    /**
-     * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
-     *
-     * @Gedmo\Versioned
-     */
     #[ODM\EmbedOne(targetDocument: Author::class)]
     #[Gedmo\Versioned]
     private ?Author $author = null;
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function getId(): ?string

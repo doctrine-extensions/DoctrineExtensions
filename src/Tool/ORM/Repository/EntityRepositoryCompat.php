@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
 
 if ((new \ReflectionClass(EntityRepository::class))->getMethod('__call')->hasReturnType()) {
     // ORM 3.x
+
     /**
      * Helper trait to address compatibility issues between ORM 2.x and 3.x.
      *
@@ -23,9 +24,6 @@ if ((new \ReflectionClass(EntityRepository::class))->getMethod('__call')->hasRet
     trait EntityRepositoryCompat
     {
         /**
-         * @param string $method
-         * @param array  $args
-         *
          * @return mixed
          *
          * @phpstan-param list<mixed> $args
@@ -47,6 +45,7 @@ if ((new \ReflectionClass(EntityRepository::class))->getMethod('__call')->hasRet
     }
 } else {
     // ORM 2.x
+
     /**
      * Helper trait to address compatibility issues between ORM 2.x and 3.x.
      *

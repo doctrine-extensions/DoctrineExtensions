@@ -14,39 +14,29 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation
- *
- * @ORM\MappedSuperclass
  */
 #[ORM\MappedSuperclass]
 abstract class AbstractPersonalTranslation
 {
     /**
      * @var int|null
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=8)
      */
     #[ORM\Column(type: Types::STRING, length: 8)]
-    protected $locale;
+    protected ?string $locale = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=32)
      */
     #[ORM\Column(type: Types::STRING, length: 32)]
-    protected $field;
+    protected ?string $field = null;
 
     /**
      * Related entity with ManyToOne relation
@@ -58,11 +48,9 @@ abstract class AbstractPersonalTranslation
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    protected $content;
+    protected ?string $content = null;
 
     /**
      * Get id

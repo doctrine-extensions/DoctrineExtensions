@@ -35,12 +35,11 @@ final class SlugHandlerOption implements GedmoAnnotation
 
     /**
      * @param array<string, mixed> $data
-     * @param mixed                $value
      */
     public function __construct(
         array $data = [],
         string $name = '',
-        $value = null
+        mixed $value = null
     ) {
         if ([] !== $data) {
             Deprecation::trigger(

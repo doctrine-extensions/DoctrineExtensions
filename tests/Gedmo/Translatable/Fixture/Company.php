@@ -16,36 +16,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Company implements Translatable
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=128)
-     *
-     * @Gedmo\Translatable
-     */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Embedded(class="Gedmo\Tests\Translatable\Fixture\CompanyEmbedLink")
-     */
     #[ORM\Embedded(class: CompanyEmbedLink::class)]
     private CompanyEmbedLink $link;
 
@@ -53,8 +38,6 @@ class Company implements Translatable
      * @var string|null
      *
      * Used locale to override Translation listener`s locale
-     *
-     * @Gedmo\Locale
      */
     #[Gedmo\Locale]
     private ?string $locale = null;

@@ -15,11 +15,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Uploadable(allowOverwrite=true, pathMethod="getPath", callback="callbackMethod", maxSize="2")
- */
 #[ORM\Entity]
 #[Gedmo\Uploadable(allowOverwrite: true, pathMethod: 'getPath', callback: 'callbackMethod', maxSize: '2')]
 class FileWithMaxSize
@@ -31,44 +26,23 @@ class FileWithMaxSize
 
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", nullable=true)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, nullable: true)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="path", type="string")
-     *
-     * @Gedmo\UploadableFilePath
-     */
     #[ORM\Column(name: 'path', type: Types::STRING)]
     #[Gedmo\UploadableFilePath]
     private ?string $filePath = null;
 
-    /**
-     * @ORM\Column(name="size", type="decimal")
-     *
-     * @Gedmo\UploadableFileSize
-     */
     #[ORM\Column(name: 'size', type: Types::DECIMAL)]
     #[Gedmo\UploadableFileSize]
     private ?string $fileSize = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
-     */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'files')]
     #[ORM\JoinColumn(name: 'article_id', referencedColumnName: 'id')]
     private ?Article $article = null;

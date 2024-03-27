@@ -14,23 +14,15 @@ namespace Gedmo\Tests\Wrapper\Fixture\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 
-/**
- * @MongoODM\Document(collection="articles")
- */
 #[MongoODM\Document(collection: 'article')]
 class Article
 {
     /**
      * @var string|null
-     *
-     * @MongoODM\Id
      */
     #[MongoODM\Id]
     private $id;
 
-    /**
-     * @MongoODM\Field(type="string")
-     */
     #[MongoODM\Field(type: Type::STRING)]
     private ?string $title = null;
 

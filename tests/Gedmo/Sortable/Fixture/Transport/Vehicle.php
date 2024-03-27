@@ -15,16 +15,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({
- *     "vehicle": "Vehicle",
- *     "car": "Car",
- *     "bus": "Bus"
- * })
- */
 #[ORM\Entity]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
@@ -33,36 +23,19 @@ class Vehicle
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @Gedmo\SortableGroup
-     *
-     * @ORM\ManyToOne(targetEntity="Engine")
-     */
     #[Gedmo\SortableGroup]
     #[ORM\ManyToOne(targetEntity: Engine::class)]
     private ?Engine $engine = null;
 
-    /**
-     * @ORM\Column(length=128)
-     */
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
-    /**
-     * @Gedmo\SortablePosition
-     *
-     * @ORM\Column(type="integer")
-     */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $sortByEngine = null;

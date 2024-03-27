@@ -15,62 +15,29 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\MappedSuperclass
- */
 #[ORM\MappedSuperclass]
 class BaseCategory
 {
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Gedmo\TreeLeft
-     */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
     private ?int $left = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Gedmo\TreeRight
-     */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRight]
     private ?int $right = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Gedmo\TreeLevel
-     */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
     private ?int $level = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Gedmo\TreeRoot
-     */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRoot]
     private ?int $rooted = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @Gedmo\Timestampable(on="create")
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTime $created = null;
 
-    /**
-     * @ORM\Column(type="date")
-     *
-     * @Gedmo\Timestampable(on="update")
-     */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTime $updated = null;

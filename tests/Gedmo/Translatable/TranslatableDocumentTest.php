@@ -143,6 +143,12 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
 
     private function populate(): void
     {
+        foreach ($this->dm->getRepository(Article::class)->findAll() as $item) {
+            $this->dm->remove($item);
+        }
+        $this->dm->flush();
+        $this->dm->clear();
+
         $art0 = new Article();
         $art0->setTitle('Title EN');
         $art0->setCode('Code EN');

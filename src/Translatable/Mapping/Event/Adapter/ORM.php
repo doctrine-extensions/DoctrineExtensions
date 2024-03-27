@@ -12,7 +12,7 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 use Doctrine\Common\Proxy\Proxy;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -34,8 +34,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             ->getObjectManager()
             ->getClassMetadata($translationClassName)
             ->getReflectionClass()
-            ->isSubclassOf(AbstractPersonalTranslation::class)
-        ;
+            ->isSubclassOf(AbstractPersonalTranslation::class);
     }
 
     public function getDefaultTranslationClass()
@@ -52,12 +51,11 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             // first try to load it using collection
             $found = false;
             $metadata = $wrapped->getMetadata();
-            assert($metadata instanceof ClassMetadataInfo);
+            assert($metadata instanceof ClassMetadata);
             foreach ($metadata->getAssociationMappings() as $assoc) {
                 $isRightCollection = $assoc['targetEntity'] === $translationClass
                     && 'object' === $assoc['mappedBy']
-                    && ClassMetadataInfo::ONE_TO_MANY === $assoc['type']
-                ;
+                    && ClassMetadata::ONE_TO_MANY === $assoc['type'];
                 if ($isRightCollection) {
                     $collection = $wrapped->getPropertyValue($assoc['fieldName']);
                     foreach ($collection as $trans) {
@@ -116,16 +114,14 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 foreach ($objects as $trans) {
                     $isRequestedTranslation = !$trans instanceof Proxy
                         && $trans->getLocale() === $locale
-                        && $trans->getField() === $field
-                    ;
+                        && $trans->getField() === $field;
                     if ($isRequestedTranslation) {
                         if ($this->usesPersonalTranslation($translationClass)) {
                             $isRequestedTranslation = $trans->getObject() === $wrapped->getObject();
                         } else {
                             $objectId = $this->foreignKey($wrapped->getIdentifier(), $translationClass);
                             $isRequestedTranslation = $trans->getForeignKey() === $objectId
-                                && $trans->getObjectClass() === $wrapped->getMetadata()->getName()
-                            ;
+                                && $trans->getObjectClass() === $wrapped->getMetadata()->getName();
                         }
                     }
                     if ($isRequestedTranslation) {
@@ -143,8 +139,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 'trans.field = :field'
             )
             ->setParameter('locale', $locale)
-            ->setParameter('field', $field)
-        ;
+            ->setParameter('field', $field);
 
         if ($this->usesPersonalTranslation($translationClass)) {
             $qb->andWhere('trans.object = :object');
@@ -170,8 +165,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $qb = $this
             ->getObjectManager()
             ->createQueryBuilder()
-            ->delete($transClass, 'trans')
-        ;
+            ->delete($transClass, 'trans');
         if ($this->usesPersonalTranslation($transClass)) {
             $qb->where('trans.object = :object');
             $qb->setParameter('object', $wrapped->getObject());
@@ -190,7 +184,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function insertTranslationRecord($translation)
     {
         $em = $this->getObjectManager();
-        $meta = $em->getClassMetadata(get_class($translation));
+        $meta = $em->getClassMetadata($translation::class);
         $data = [];
 
         foreach ($meta->getReflectionProperties() as $fieldName => $reflProp) {
@@ -239,18 +233,15 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
      *
      * @return int|string transformed foreign key
      */
-    private function foreignKey($key, string $className)
+    private function foreignKey(mixed $key, string $className)
     {
         $em = $this->getObjectManager();
         $meta = $em->getClassMetadata($className);
         $type = Type::getType($meta->getTypeOfField('foreignKey'));
-        switch ($type->getName()) {
-            case Types::BIGINT:
-            case Types::INTEGER:
-            case Types::SMALLINT:
-                return (int) $key;
-            default:
-                return (string) $key;
-        }
+
+        return match ($type->getName()) {
+            Types::BIGINT, Types::INTEGER, Types::SMALLINT => (int) $key,
+            default => (string) $key,
+        };
     }
 }

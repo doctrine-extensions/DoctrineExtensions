@@ -14,32 +14,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Loggable(logEntryClass="Gedmo\Loggable\Entity\LogEntry")
- */
 #[ORM\Entity]
 #[Gedmo\Loggable(logEntryClass: LogEntry::class)]
 class Loggable
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     *
-     * @Gedmo\Versioned
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\Versioned]
     private ?string $title = null;

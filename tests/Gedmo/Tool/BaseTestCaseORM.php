@@ -14,10 +14,10 @@ namespace Gedmo\Tests\Tool;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
+use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -59,6 +59,8 @@ abstract class BaseTestCaseORM extends TestCase
             'memory' => true,
         ];
 
+        //        $conn = (new DsnParser)->parse('pdo-mysql://de_user:de_password@mysql:3306/de_testing');
+
         $config ??= $this->getDefaultConfiguration();
         $connection = DriverManager::getConnection($conn, $config);
         $em = new EntityManager($connection, $config, $evm ?? $this->getEventManager());
@@ -66,7 +68,7 @@ abstract class BaseTestCaseORM extends TestCase
         $schema = array_map(static fn (string $class): ClassMetadata => $em->getClassMetadata($class), $this->getUsedEntityFixtures());
 
         $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema([]);
+        $schemaTool->dropSchema($schema);
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;
@@ -77,11 +79,7 @@ abstract class BaseTestCaseORM extends TestCase
      */
     protected function getMetadataDriverImplementation(): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriver([]);
-        }
-
-        return new AnnotationDriver($_ENV['annotation_reader']);
+        return new AttributeDriver([]);
     }
 
     /**

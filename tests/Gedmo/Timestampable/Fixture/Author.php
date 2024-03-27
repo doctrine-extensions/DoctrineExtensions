@@ -14,21 +14,12 @@ namespace Gedmo\Tests\Timestampable\Fixture;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Embeddable
- */
 #[ORM\Embeddable]
 class Author
 {
-    /**
-     * @ORM\Column(name="author_name", type="string", length=128, nullable=true)
-     */
     #[ORM\Column(name: 'author_name', type: Types::STRING, length: 128, nullable: true)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(name="author_email", type="string", length=50, nullable=true)
-     */
     #[ORM\Column(name: 'author_email', type: Types::STRING, length: 50, nullable: true)]
     private ?string $email = null;
 

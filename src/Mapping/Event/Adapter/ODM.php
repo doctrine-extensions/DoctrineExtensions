@@ -14,6 +14,8 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
+use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -147,20 +149,15 @@ class ODM implements AdapterInterface
         $uow->setOriginalDocumentProperty(spl_object_hash($object), $property, $value);
     }
 
-    public function clearObjectChangeSet($uow, $object)
-    {
-        $uow->clearDocumentChangeSet(spl_object_hash($object));
-    }
-
     /**
-     * @deprecated to be removed in 4.0, use custom lifecycle event classes instead.
-     *
-     * Creates a ODM specific LifecycleEventArgs.
-     *
      * @param object          $document
      * @param DocumentManager $documentManager
      *
      * @return LifecycleEventArgs
+     *
+     * @deprecated to be removed in 4.0, use custom lifecycle event classes instead.
+     *
+     * Creates a ODM specific LifecycleEventArgs.
      */
     public function createLifecycleEventArgsInstance($document, $documentManager)
     {
@@ -172,5 +169,12 @@ class ODM implements AdapterInterface
         );
 
         return new LifecycleEventArgs($document, $documentManager);
+    }
+
+    public function clearObjectChangeSet(ODMUnitOfWork|ORMUnitOfWork $uow, object $object)
+    {
+        assert($uow instanceof ODMUnitOfWork);
+
+        $uow->clearDocumentChangeSet(spl_object_hash($object));
     }
 }

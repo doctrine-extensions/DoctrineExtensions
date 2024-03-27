@@ -23,7 +23,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as AttributeDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -89,11 +88,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     protected function getORMDriver(array $paths = []): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriverORM($paths);
-        }
-
-        return new AnnotationDriverORM($_ENV['annotation_reader'], $paths);
+        return new AttributeDriverORM($paths);
     }
 
     /**

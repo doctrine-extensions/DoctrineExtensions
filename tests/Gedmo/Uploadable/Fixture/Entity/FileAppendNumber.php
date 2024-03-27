@@ -15,46 +15,25 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- *
- * @Gedmo\Uploadable(appendNumber=true, pathMethod="getPath")
- */
 #[ORM\Entity]
 #[Gedmo\Uploadable(appendNumber: true, pathMethod: 'getPath')]
 class FileAppendNumber
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", nullable=true)
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, nullable: true)]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(name="path", type="string")
-     *
-     * @Gedmo\UploadableFilePath
-     */
     #[ORM\Column(name: 'path', type: Types::STRING)]
     #[Gedmo\UploadableFilePath]
     private ?string $filePath = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
-     */
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'files')]
     #[ORM\JoinColumn(name: 'article_id', referencedColumnName: 'id')]
     private ?Article $article = null;

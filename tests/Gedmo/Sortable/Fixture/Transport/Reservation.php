@@ -15,62 +15,35 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Reservation
 {
     /**
      * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Bus")
-     */
     #[ORM\ManyToOne(targetEntity: Bus::class)]
     private ?Bus $bus = null;
 
     /**
      * Bus destination
-     *
-     * @Gedmo\SortableGroup
-     *
-     * @ORM\Column(length=191)
      */
     #[Gedmo\SortableGroup]
     #[ORM\Column(length: 191)]
     private ?string $destination = null;
 
-    /**
-     * @Gedmo\SortableGroup
-     *
-     * @ORM\Column(type="datetime")
-     */
     #[Gedmo\SortableGroup]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $travelDate = null;
 
-    /**
-     * @Gedmo\SortablePosition
-     *
-     * @ORM\Column(type="integer")
-     */
     #[Gedmo\SortablePosition]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $seat = null;
 
-    /**
-     * @ORM\Column(length=191)
-     */
     #[ORM\Column(length: 191)]
     private ?string $name = null;
 

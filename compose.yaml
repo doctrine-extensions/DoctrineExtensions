@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   php:
     build:
@@ -5,15 +7,18 @@ services:
       target: php
       dockerfile: ./.docker/php/Dockerfile
       args:
-        PHP_VERSION: ${PHP_VERSION:-8.2-cli}
+        PHP_VERSION: ${PHP_VERSION:-8.1-cli}
     volumes:
-      - .:/var/www
-    working_dir: /var/www
+      - .:/app
+    working_dir: /app
     environment:
       MONGODB_SERVER: 'mongodb://mongodb:27017'
     tty: true
     stdin_open: true
     init: true
+    links:
+      - mysql
+      - mongodb
 
   mysql:
     image: mysql:8.0
@@ -22,6 +27,8 @@ services:
       interval: 10s
       timeout: 2s
       retries: 5
+    ports:
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: de_root_password
       MYSQL_DATABASE: de_testing
@@ -30,3 +37,5 @@ services:
 
   mongodb:
     image: mongo
+    ports:
+      - 27017:27017

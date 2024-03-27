@@ -15,19 +15,6 @@ use Gedmo\Translatable\Document\Repository\TranslationRepository;
 
 /**
  * Gedmo\Translatable\Document\Translation
- *
- * @ODM\Document(repositoryClass="Gedmo\Translatable\Document\Repository\TranslationRepository")
- * @ODM\UniqueIndex(name="lookup_unique_idx", keys={
- *     "locale": "asc",
- *     "object_class": "asc",
- *     "foreign_key": "asc",
- *     "field": "asc"
- * })
- * @ODM\Index(name="translations_lookup_idx", keys={
- *     "locale": "asc",
- *     "object_class": "asc",
- *     "foreign_key": "asc"
- * })
  */
 #[ODM\Document(repositoryClass: TranslationRepository::class)]
 #[ODM\UniqueIndex(name: 'lookup_unique_idx', keys: ['locale' => 'asc', 'object_class' => 'asc', 'foreign_key' => 'asc', 'field' => 'asc'])]
