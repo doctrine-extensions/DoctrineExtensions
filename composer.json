@@ -52,8 +52,8 @@
         "symfony/cache": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
-        "ext-libxml": "*",
         "ext-dom": "*",
+        "ext-libxml": "*",
         "ext-mongodb": "*",
         "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/cache": "^1.11 || ^2.0",
