@@ -109,7 +109,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
                 $suffix = $options['suffix'];
 
                 if (str_ends_with((string) $this->parentSlug, (string) $suffix)) { // endsWith
-                    $this->parentSlug = substr_replace((string) $this->parentSlug, '', -1 * strlen($suffix));
+                    $this->parentSlug = substr_replace((string) $this->parentSlug, '', -1 * strlen((string) $suffix));
                 }
             }
         }
