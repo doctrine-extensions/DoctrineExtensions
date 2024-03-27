@@ -10,7 +10,9 @@ declare(strict_types=1);
  */
 
 use Rector\Config\RectorConfig;
+use Rector\Doctrine\CodeQuality\Rector\Property\TypedPropertyFromToOneRelationTypeRector;
 use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Set\ValueObject\LevelSetList;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -26,6 +28,14 @@ return static function (RectorConfig $rectorConfig): void {
         DoctrineSetList::GEDMO_ANNOTATIONS_TO_ATTRIBUTES,
         DoctrineSetList::MONGODB__ANNOTATIONS_TO_ATTRIBUTES,
         LevelSetList::UP_TO_PHP_81,
+    ]);
+
+    $rectorConfig->skip([
+        // https://github.com/rectorphp/rector/issues/8578
+        FirstClassCallableRector::class,
+
+        // https://github.com/rectorphp/rector-doctrine/issues/305
+        TypedPropertyFromToOneRelationTypeRector::class,
     ]);
 
     $rectorConfig->importNames();
