@@ -28,8 +28,7 @@ class CompositeRelation
         #[ORM\Id]
         #[ORM\Column(type: Types::INTEGER)]
         private int $status
-    )
-    {
+    ) {
     }
 
     public function getArticle(): Article

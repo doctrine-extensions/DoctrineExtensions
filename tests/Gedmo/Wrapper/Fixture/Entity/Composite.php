@@ -19,10 +19,10 @@ class Composite
     private ?string $title = null;
 
     public function __construct(#[ORM\Id]
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $one, #[ORM\Id]
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $two)
+        #[ORM\Column(type: Types::INTEGER)]
+        private int $one, #[ORM\Id]
+        #[ORM\Column(type: Types::INTEGER)]
+        private int $two)
     {
     }
 
