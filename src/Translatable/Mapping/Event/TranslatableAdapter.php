@@ -101,22 +101,20 @@ interface TranslatableAdapter extends AdapterInterface
      *
      * @param object $object
      * @param string $field
-     * @param mixed  $value
      *
      * @return mixed
      */
-    public function getTranslationValue($object, $field, $value = false);
+    public function getTranslationValue($object, $field, mixed $value = false);
 
     /**
      * Transform the value from the database for translation
      *
      * @param object $object
      * @param string $field
-     * @param mixed  $value
      *
      * @return void
      */
-    public function setTranslationValue($object, $field, $value);
+    public function setTranslationValue($object, $field, mixed $value);
 
     public function clearObjectChangeSet(ORMUnitOfWork|ODMUnitOfWork $uow, object $object);
 }

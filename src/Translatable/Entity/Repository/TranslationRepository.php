@@ -53,15 +53,14 @@ class TranslationRepository extends EntityRepository
      * @param object $entity
      * @param string $field
      * @param string $locale
-     * @param mixed  $value
      *
      * @throws InvalidArgumentException
      *
      * @return static
      */
-    public function translate($entity, $field, $locale, $value)
+    public function translate($entity, $field, $locale, mixed $value)
     {
-        $meta = $this->getEntityManager()->getClassMetadata(get_class($entity));
+        $meta = $this->getEntityManager()->getClassMetadata($entity::class);
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->getEntityManager(), $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'], true)) {
@@ -207,7 +206,7 @@ class TranslationRepository extends EntityRepository
      *
      * @return array<string, array<string, string>>
      */
-    public function findTranslationsByObjectId($id)
+    public function findTranslationsByObjectId(mixed $id)
     {
         $result = [];
         if ($id) {

@@ -17,22 +17,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[Gedmo\Loggable]
 class Composite
 {
-    #[ORM\Id]
-    #[ORM\Column(name: 'one', type: Types::INTEGER)]
-    private int $one;
-
-    #[ORM\Id]
-    #[ORM\Column(name: 'two', type: Types::INTEGER)]
-    private int $two;
-
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     #[Gedmo\Versioned]
     private ?string $title = null;
 
-    public function __construct(int $one, int $two)
+    public function __construct(#[ORM\Id]
+        #[ORM\Column(name: 'one', type: Types::INTEGER)]
+        private int $one, #[ORM\Id]
+        #[ORM\Column(name: 'two', type: Types::INTEGER)]
+        private int $two)
     {
-        $this->one = $one;
-        $this->two = $two;
     }
 
     public function getOne(): int

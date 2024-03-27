@@ -154,17 +154,15 @@ interface AdapterInterface
      * @param ORMUnitOfWork|ODMUnitOfWork $uow
      * @param object                      $object
      * @param string                      $property
-     * @param mixed                       $value
      *
      * @return void
      */
-    public function setOriginalObjectProperty($uow, $object, $property, $value);
+    public function setOriginalObjectProperty($uow, $object, $property, mixed $value);
 
     /**
      * Clears the property changeset of the object with the given OID.
      *
      * @param ORMUnitOfWork|ODMUnitOfWork $uow
-     * @param object                      $object
      *
      * @return void
      */

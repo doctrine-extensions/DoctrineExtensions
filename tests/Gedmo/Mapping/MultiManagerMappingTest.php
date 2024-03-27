@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Mapping\Driver\ORM\XmlDriver;
 use Gedmo\Tests\Mapping\Fixture\Xml\User;
 use Gedmo\Tests\Sluggable\Fixture\Article as ArticleEntity;
 use Gedmo\Tests\Sluggable\Fixture\Document\Article as ArticleDocument;
@@ -58,7 +59,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
             $annotationDriver2 = new AnnotationDriver($reader);
         }
 
-        $xmlDriver = new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/Driver/Xml');
+        $xmlDriver = new XmlDriver(__DIR__.'/Driver/Xml');
 
         $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Tests\Translatable\Fixture');

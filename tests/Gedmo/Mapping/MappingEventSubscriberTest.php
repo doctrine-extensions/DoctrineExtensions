@@ -45,7 +45,7 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
     public function testGetMetadataFactoryCacheFromDoctrineForSluggable(): void
     {
         $metadataFactory = $this->em->getMetadataFactory();
-        $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
+        $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, $metadataFactory::class);
 
         $cache = $getCache($metadataFactory);
 
@@ -63,7 +63,7 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
     public function testGetMetadataFactoryCacheFromDoctrineForSuperClassExtension(): void
     {
         $metadataFactory = $this->em->getMetadataFactory();
-        $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
+        $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, $metadataFactory::class);
 
         /** @var CacheItemPoolInterface $cache */
         $cache = $getCache($metadataFactory);

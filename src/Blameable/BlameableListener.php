@@ -67,11 +67,9 @@ class BlameableListener extends AbstractTrackingListener
     /**
      * Set a user value to return
      *
-     * @param mixed $user
-     *
      * @return void
      */
-    public function setUserValue($user)
+    public function setUserValue(mixed $user)
     {
         $this->user = $user;
     }

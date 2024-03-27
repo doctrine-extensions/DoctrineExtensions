@@ -23,16 +23,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Embeddable]
 class GeoLocation
 {
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: Types::STRING)]
-    #[Gedmo\Versioned]
-    protected ?string $location = null;
-
-    public function __construct(string $location)
+    public function __construct(#[ORM\Column(type: Types::STRING)]
+        #[Gedmo\Versioned]
+        protected ?string $location)
     {
-        $this->location = $location;
     }
 
     public function getLocation(): string

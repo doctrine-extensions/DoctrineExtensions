@@ -98,10 +98,10 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $node = new EntityWrapper($node, $this->getEntityManager());
         $nodePath = $node->getPropertyValue($config['path']);
         $paths = [];
-        $nodePathLength = strlen($nodePath);
+        $nodePathLength = strlen((string) $nodePath);
         $separatorMatchOffset = 0;
         while ($separatorMatchOffset < $nodePathLength) {
-            $separatorPos = strpos($nodePath, $config['path_separator'], $separatorMatchOffset);
+            $separatorPos = strpos((string) $nodePath, $config['path_separator'], $separatorMatchOffset);
 
             if (false === $separatorPos || $separatorPos === $nodePathLength - 1) {
                 // last node, done
@@ -112,7 +112,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
                 $separatorMatchOffset = 1;
             } else {
                 // add node
-                $paths[] = substr($nodePath, 0, $config['path_ends_with_separator'] ? $separatorPos + 1 : $separatorPos);
+                $paths[] = substr((string) $nodePath, 0, $config['path_ends_with_separator'] ? $separatorPos + 1 : $separatorPos);
                 $separatorMatchOffset = $separatorPos + 1;
             }
         }
@@ -254,7 +254,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $nodes = $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode)->getArrayResult();
         usort(
             $nodes,
-            static fn (array $a, array $b): int => strcmp($a[$path], $b[$path])
+            static fn (array $a, array $b): int => strcmp((string) $a[$path], (string) $b[$path])
         );
 
         return $nodes;

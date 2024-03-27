@@ -65,12 +65,9 @@ abstract class Person
     #[Gedmo\TreeLevel]
     private ?int $lvl = null;
 
-    #[ORM\Column(name: 'name', type: Types::STRING, length: 191, nullable: false)]
-    private string $name;
-
-    public function __construct(string $name)
+    public function __construct(#[ORM\Column(name: 'name', type: Types::STRING, length: 191, nullable: false)]
+        private string $name)
     {
-        $this->name = $name;
         $this->children = new ArrayCollection();
     }
 

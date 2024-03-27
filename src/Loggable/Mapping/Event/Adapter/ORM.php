@@ -39,7 +39,7 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
     public function getNewVersion($meta, $object)
     {
         $em = $this->getObjectManager();
-        $objectMeta = $em->getClassMetadata(get_class($object));
+        $objectMeta = $em->getClassMetadata($object::class);
         $wrapper = new EntityWrapper($object, $em);
         $objectId = $wrapper->getIdentifier(false, true);
 

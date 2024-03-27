@@ -51,13 +51,12 @@ class TreeObjectHydrator extends ObjectHydrator
     /**
      * @param object $object
      * @param string $property
-     * @param mixed  $value
      *
      * @return void
      */
-    public function setPropertyValue($object, $property, $value)
+    public function setPropertyValue($object, $property, mixed $value)
     {
-        $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
+        $meta = $this->getEntityManager()->getClassMetadata($object::class);
         $meta->getReflectionProperty($property)->setValue($object, $value);
     }
 
@@ -283,7 +282,7 @@ class TreeObjectHydrator extends ObjectHydrator
         $firstMappedEntity = array_values($data);
         $firstMappedEntity = $firstMappedEntity[0];
 
-        return $this->getEntityManager()->getClassMetadata(get_class($firstMappedEntity))->rootEntityName;
+        return $this->getEntityManager()->getClassMetadata($firstMappedEntity::class)->rootEntityName;
     }
 
     /**
@@ -294,7 +293,7 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     protected function getPropertyValue($object, $property)
     {
-        $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
+        $meta = $this->getEntityManager()->getClassMetadata($object::class);
 
         return $meta->getReflectionProperty($property)->getValue($object);
     }

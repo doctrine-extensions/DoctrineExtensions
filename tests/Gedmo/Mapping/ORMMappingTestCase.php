@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
+use Gedmo\Mapping\Driver\ORM\XmlDriver;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -64,7 +65,7 @@ abstract class ORMMappingTestCase extends TestCase
     {
         $chain = new MappingDriverChain();
 
-        $chain->addDriver(new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
+        $chain->addDriver(new XmlDriver(__DIR__.'/Driver/Xml'), 'Gedmo\Tests\Mapping\Fixture\Xml');
         $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
 
         return $chain;

@@ -17,22 +17,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[Gedmo\Loggable]
 class CompositeRelation
 {
-    #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: Article::class)]
-    private Article $articleOne;
-
-    #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: Article::class)]
-    private Article $articleTwo;
-
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
     #[Gedmo\Versioned]
     private ?string $title = null;
 
-    public function __construct(Article $articleOne, Article $articleTwo)
+    public function __construct(#[ORM\Id]
+        #[ORM\ManyToOne(targetEntity: Article::class)]
+        private Article $articleOne, #[ORM\Id]
+        #[ORM\ManyToOne(targetEntity: Article::class)]
+        private Article $articleTwo)
     {
-        $this->articleOne = $articleOne;
-        $this->articleTwo = $articleTwo;
     }
 
     public function getArticleOne(): Article

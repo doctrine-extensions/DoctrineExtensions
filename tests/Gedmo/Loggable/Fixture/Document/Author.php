@@ -18,17 +18,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ODM\EmbeddedDocument]
 #[Gedmo\Loggable]
-class Author implements Loggable
+class Author implements Loggable, \Stringable
 {
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $name = null;
-
     #[ODM\Field(type: Type::STRING)]
     #[Gedmo\Versioned]
     private ?string $email = null;
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getName();
     }

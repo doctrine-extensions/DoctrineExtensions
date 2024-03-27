@@ -16,14 +16,21 @@ use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\AST;
+use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\FromClause;
+use Doctrine\ORM\Query\AST\GroupByClause;
+use Doctrine\ORM\Query\AST\HavingClause;
 use Doctrine\ORM\Query\AST\Join;
 use Doctrine\ORM\Query\AST\Node;
+use Doctrine\ORM\Query\AST\OrderByClause;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
+use Doctrine\ORM\Query\AST\SelectClause;
 use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\AST\SimpleSelectClause;
 use Doctrine\ORM\Query\AST\SubselectFromClause;
-use Doctrine\ORM\Query\Exec;
+use Doctrine\ORM\Query\AST\UpdateStatement;
+use Doctrine\ORM\Query\AST\WhereClause;
+use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\Exception\RuntimeException;
@@ -107,7 +114,7 @@ class TranslationWalker extends SqlWalker
      */
     private array $components = [];
 
-    private TranslatableListener $listener;
+    private readonly TranslatableListener $listener;
 
     public function __construct($query, $parserResult, array $queryComponents)
     {
@@ -119,9 +126,9 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * @return Exec\AbstractSqlExecutor
+     * @return AbstractSqlExecutor
      */
-    public function getExecutor(SelectStatement|AST\UpdateStatement|AST\DeleteStatement $statement): Exec\AbstractSqlExecutor
+    public function getExecutor(SelectStatement|UpdateStatement|DeleteStatement $statement): AbstractSqlExecutor
     {
         // If it's not a Select, the TreeWalker ought to skip it, and just return the parent.
         // @see https://github.com/Atlantic18/DoctrineExtensions/issues/2013
@@ -166,7 +173,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSelectClause(AST\SelectClause $selectClause): string
+    public function walkSelectClause(SelectClause $selectClause): string
     {
         $result = parent::walkSelectClause($selectClause);
 
@@ -187,7 +194,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkWhereClause(?AST\WhereClause $whereClause): string
+    public function walkWhereClause(?WhereClause $whereClause): string
     {
         $result = parent::walkWhereClause($whereClause);
 
@@ -197,7 +204,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkHavingClause(AST\HavingClause $havingClause): string
+    public function walkHavingClause(HavingClause $havingClause): string
     {
         $result = parent::walkHavingClause($havingClause);
 
@@ -207,7 +214,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkOrderByClause(AST\OrderByClause $orderByClause): string
+    public function walkOrderByClause(OrderByClause $orderByClause): string
     {
         $result = parent::walkOrderByClause($orderByClause);
 
@@ -228,7 +235,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkSimpleSelectClause(AST\SimpleSelectClause $simpleSelectClause): string
+    public function walkSimpleSelectClause(SimpleSelectClause $simpleSelectClause): string
     {
         $result = parent::walkSimpleSelectClause($simpleSelectClause);
 
@@ -238,7 +245,7 @@ class TranslationWalker extends SqlWalker
     /**
      * @return string
      */
-    public function walkGroupByClause(AST\GroupByClause $groupByClause): string
+    public function walkGroupByClause(GroupByClause $groupByClause): string
     {
         $result = parent::walkGroupByClause($groupByClause);
 
@@ -431,7 +438,7 @@ class TranslationWalker extends SqlWalker
     private function replace(array $repl, string $str): string
     {
         foreach ($repl as $target => $result) {
-            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static fn (array $m): string => $m[1].$result.$m[3].$m[4], $str);
+            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static fn (array $m): string => $m[1].$result.$m[3].$m[4], (string) $str);
         }
 
         return $str;

@@ -46,18 +46,11 @@ use Gedmo\Mapping\MappedEventSubscriber;
 class ReferencesListener extends MappedEventSubscriber
 {
     /**
-     * @var array<string, ObjectManager>
-     */
-    private array $managers;
-
-    /**
      * @param array<string, ObjectManager> $managers
      */
-    public function __construct(array $managers = [])
+    public function __construct(private array $managers = [])
     {
         parent::__construct();
-
-        $this->managers = $managers;
     }
 
     /**
@@ -86,7 +79,7 @@ class ReferencesListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {
@@ -214,7 +207,7 @@ class ReferencesListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceManyEmbed'])) {
@@ -264,7 +257,7 @@ class ReferencesListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {

@@ -21,14 +21,8 @@ use Gedmo\Mapping\Annotation\Annotation;
  */
 final class AttributeAnnotationReader implements Reader
 {
-    private Reader $annotationReader;
-
-    private AttributeReader $attributeReader;
-
-    public function __construct(AttributeReader $attributeReader, Reader $annotationReader)
+    public function __construct(private readonly AttributeReader $attributeReader, private readonly Reader $annotationReader)
     {
-        $this->attributeReader = $attributeReader;
-        $this->annotationReader = $annotationReader;
     }
 
     /**

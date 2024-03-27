@@ -29,7 +29,7 @@ abstract class AbstractClosure
      *
      * @var object|null
      */
-    protected ?object $ancestor;
+    protected ?object $ancestor = null;
 
     /**
      * Mapped by listener
@@ -37,7 +37,7 @@ abstract class AbstractClosure
      *
      * @var object|null
      */
-    protected ?object $descendant;
+    protected ?object $descendant = null;
 
     /**
      * @var int|null

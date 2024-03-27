@@ -13,9 +13,10 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\QuoteStrategy;
-use Doctrine\ORM\Query\AST;
 use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\DeleteStatement;
+use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
 use Doctrine\ORM\Query\SqlWalker;
@@ -94,7 +95,7 @@ class SoftDeleteableWalker extends SqlWalker
         $this->extractComponents($this->getQueryComponents());
     }
 
-    public function getExecutor(AST\SelectStatement|AST\UpdateStatement|DeleteStatement $statement): AbstractSqlExecutor
+    public function getExecutor(SelectStatement|UpdateStatement|DeleteStatement $statement): AbstractSqlExecutor
     {
         switch (true) {
             case $statement instanceof DeleteStatement:

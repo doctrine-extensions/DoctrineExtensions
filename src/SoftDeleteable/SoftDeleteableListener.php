@@ -78,7 +78,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
         // getScheduledDocumentDeletions
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             $config = $this->getConfiguration($om, $meta->getName());
 
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
@@ -167,7 +167,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2649',
                     'Type-hinting to something different than "%s" in "%s::%s()" is deprecated.',
                     $eventClass,
-                    get_class($listener),
+                    $listener::class,
                     $reflMethod->getName()
                 );
 

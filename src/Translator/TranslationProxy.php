@@ -19,23 +19,9 @@ use Doctrine\Common\Collections\Collection;
 class TranslationProxy
 {
     /**
-     * @var string
-     */
-    protected $locale;
-    /**
-     * @var object
-     */
-    protected $translatable;
-    /**
      * @var string[]
      */
     protected $properties = [];
-    /**
-     * @var string
-     *
-     * @phpstan-var class-string<TranslationInterface>
-     */
-    protected $class;
     /**
      * @var Collection<int, TranslationInterface>
      */
@@ -54,16 +40,16 @@ class TranslationProxy
      * @phpstan-param class-string<TranslationInterface> $class
      * @phpstan-param Collection<int, TranslationInterface> $coll
      */
-    public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
+    public function __construct(protected $translatable, protected $locale, array $properties, /**
+     * @phpstan-var class-string<TranslationInterface>
+     */
+        protected $class, Collection $coll)
     {
-        $this->translatable = $translatable;
-        $this->locale = $locale;
         $this->properties = $properties;
-        $this->class = $class;
         $this->coll = $coll;
 
-        if (!is_subclass_of($class, TranslationInterface::class)) {
-            throw new \InvalidArgumentException(sprintf('Translation class should implement %s, "%s" given', TranslationInterface::class, $class));
+        if (!is_subclass_of($this->class, TranslationInterface::class)) {
+            throw new \InvalidArgumentException(sprintf('Translation class should implement %s, "%s" given', TranslationInterface::class, $this->class));
         }
     }
 
@@ -122,9 +108,8 @@ class TranslationProxy
 
     /**
      * @param string $property
-     * @param mixed  $value
      */
-    public function __set($property, $value)
+    public function __set($property, mixed $value)
     {
         if (in_array($property, $this->properties, true)) {
             if (method_exists($this, $setter = 'set'.ucfirst($property))) {

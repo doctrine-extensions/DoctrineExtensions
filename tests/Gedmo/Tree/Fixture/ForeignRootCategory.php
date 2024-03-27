@@ -142,10 +142,7 @@ class ForeignRootCategory
         $this->children = $children;
     }
 
-    /**
-     * @param mixed $root
-     */
-    public function setRoot($root): void
+    public function setRoot(mixed $root): void
     {
         $this->root = $root;
     }

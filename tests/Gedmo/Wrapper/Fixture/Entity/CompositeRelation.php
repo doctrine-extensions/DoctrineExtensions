@@ -15,26 +15,21 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class CompositeRelation
 {
-    /**
-     * @var Article
-     *
-     * @todo: add type hint when https://github.com/doctrine/orm/issues/8255 is solved
-     */
-    #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: Article::class)]
-    private $article;
-
-    #[ORM\Id]
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $status;
-
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
-    public function __construct(Article $articleOne, int $status)
+    public function __construct(
+        /**
+         * @todo: add type hint when https://github.com/doctrine/orm/issues/8255 is solved
+         */
+        #[ORM\Id]
+        #[ORM\ManyToOne(targetEntity: Article::class)]
+        private Article $article,
+        #[ORM\Id]
+        #[ORM\Column(type: Types::INTEGER)]
+        private int $status
+    )
     {
-        $this->article = $articleOne;
-        $this->status = $status;
     }
 
     public function getArticle(): Article

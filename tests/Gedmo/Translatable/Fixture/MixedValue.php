@@ -52,10 +52,7 @@ class MixedValue
         return $this->date;
     }
 
-    /**
-     * @param mixed $cust
-     */
-    public function setCust($cust): void
+    public function setCust(mixed $cust): void
     {
         $this->cust = $cust;
     }

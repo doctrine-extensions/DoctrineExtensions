@@ -164,7 +164,7 @@ final class TranslatableTest extends BaseTestCaseORM
 
         $comments = $article->getComments();
         foreach ($comments as $comment) {
-            $number = preg_replace("@[^\d]+@", '', $comment->getSubject());
+            $number = preg_replace("@[^\d]+@", '', (string) $comment->getSubject());
             $comment->setTranslatableLocale('de_de');
             $comment->setSubject("subject{$number} in de");
             $comment->setMessage("message{$number} in de");
@@ -193,7 +193,7 @@ final class TranslatableTest extends BaseTestCaseORM
             static::assertCount(1, $translations);
             static::assertArrayHasKey('de_de', $translations);
 
-            $number = preg_replace("@[^\d]+@", '', $comment->getSubject());
+            $number = preg_replace("@[^\d]+@", '', (string) $comment->getSubject());
             static::assertArrayHasKey('subject', $translations['de_de']);
             $expected = "subject{$number} in de";
             static::assertSame($expected, $translations['de_de']['subject']);
@@ -209,7 +209,7 @@ final class TranslatableTest extends BaseTestCaseORM
 
         $comments = $article->getComments();
         foreach ($comments as $comment) {
-            $number = preg_replace("@[^\d]+@", '', $comment->getSubject());
+            $number = preg_replace("@[^\d]+@", '', (string) $comment->getSubject());
 
             static::assertSame("subject{$number} in en", $comment->getSubject());
             static::assertSame("message{$number} in en", $comment->getMessage());

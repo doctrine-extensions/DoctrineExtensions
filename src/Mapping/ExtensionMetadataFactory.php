@@ -68,12 +68,10 @@ class ExtensionMetadataFactory
      */
     protected $annotationReader;
 
-    private ?CacheItemPoolInterface $cacheItemPool = null;
-
     /**
      * @param Reader|AttributeReader|object|null $annotationReader
      */
-    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null)
+    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, private readonly ?CacheItemPoolInterface $cacheItemPool = null)
     {
         if (null !== $annotationReader && !$annotationReader instanceof Reader && !$annotationReader instanceof AttributeReader) {
             Deprecation::trigger(
@@ -91,7 +89,6 @@ class ExtensionMetadataFactory
         $this->extensionNamespace = $extensionNamespace;
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
         $this->driver = $this->getDriver($omDriver);
-        $this->cacheItemPool = $cacheItemPool;
     }
 
     /**
@@ -101,7 +98,7 @@ class ExtensionMetadataFactory
      *
      * @return array<string, mixed> the metadata configuration
      */
-    public function getExtensionMetadata($meta)
+    public function getExtensionMetadata(mixed $meta)
     {
         if ($meta->isMappedSuperclass) {
             return []; // ignore mappedSuperclasses for now
@@ -188,8 +185,8 @@ class ExtensionMetadataFactory
         }
 
         $driver = null;
-        $className = get_class($omDriver);
-        $driverName = substr($className, strrpos($className, '\\') + 1);
+        $className = $omDriver::class;
+        $driverName = substr((string) $className, strrpos((string) $className, '\\') + 1);
         if ($omDriver instanceof MappingDriverChain || 'DriverChain' === $driverName) {
             $driver = new Chain();
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
@@ -201,7 +198,7 @@ class ExtensionMetadataFactory
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
             $isSimplified = false;
-            if ('Simplified' === substr($driverName, 0, 10)) {
+            if (str_starts_with($driverName, 'Simplified')) {
                 // support for simplified file drivers
                 $driverName = substr($driverName, 10);
                 $isSimplified = true;

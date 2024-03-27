@@ -30,16 +30,10 @@ class News
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private string $title;
-
-    #[ORM\OneToOne(targetEntity: Category::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
-    private Category $category;
-
-    public function __construct(string $title, Category $category)
+    public function __construct(#[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+        private string $title, #[ORM\OneToOne(targetEntity: Category::class, cascade: ['persist'])]
+        #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
+        private Category $category)
     {
-        $this->title = $title;
-        $this->category = $category;
     }
 }

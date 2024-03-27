@@ -130,7 +130,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function insertTranslationRecord($translation)
     {
         $dm = $this->getObjectManager();
-        $meta = $dm->getClassMetadata(get_class($translation));
+        $meta = $dm->getClassMetadata($translation::class);
         $collection = $dm->getDocumentCollection($meta->getName());
         $data = [];
 

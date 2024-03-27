@@ -74,7 +74,7 @@ abstract class LoggableEntity extends BaseTestCaseORM
 
         static::assertNotNull($log);
         static::assertSame('create', $log->getAction());
-        static::assertSame(get_class($art0), $log->getObjectClass());
+        static::assertSame($art0::class, $log->getObjectClass());
         static::assertSame('jules', $log->getUsername());
         static::assertSame(1, $log->getVersion());
         $data = $log->getData();
@@ -167,7 +167,7 @@ abstract class LoggableEntity extends BaseTestCaseORM
 
         static::assertNotNull($log);
         static::assertSame('create', $log->getAction());
-        static::assertSame(get_class($cmp), $log->getObjectClass());
+        static::assertSame($cmp::class, $log->getObjectClass());
         static::assertSame('jules', $log->getUsername());
         static::assertSame(1, $log->getVersion());
         $data = $log->getData();
@@ -221,7 +221,7 @@ abstract class LoggableEntity extends BaseTestCaseORM
 
         static::assertNotNull($log);
         static::assertSame('create', $log->getAction());
-        static::assertSame(get_class($cmp0), $log->getObjectClass());
+        static::assertSame($cmp0::class, $log->getObjectClass());
         static::assertSame('jules', $log->getUsername());
         static::assertSame(1, $log->getVersion());
         $data = $log->getData();

@@ -53,13 +53,12 @@ class TranslationRepository extends DocumentRepository
      * @param object $document
      * @param string $field
      * @param string $locale
-     * @param mixed  $value
      *
      * @return static
      */
-    public function translate($document, $field, $locale, $value)
+    public function translate($document, $field, $locale, mixed $value)
     {
-        $meta = $this->dm->getClassMetadata(get_class($document));
+        $meta = $this->dm->getClassMetadata($document::class);
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->dm, $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'], true)) {
@@ -202,7 +201,7 @@ class TranslationRepository extends DocumentRepository
      *
      * @return array<string, array<string, string>>
      */
-    public function findTranslationsByObjectId($id)
+    public function findTranslationsByObjectId(mixed $id)
     {
         $result = [];
         if ($id) {

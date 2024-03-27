@@ -24,9 +24,6 @@ if ((new \ReflectionClass(EntityRepository::class))->getMethod('__call')->hasRet
     trait EntityRepositoryCompat
     {
         /**
-         * @param string $method
-         * @param array  $args
-         *
          * @return mixed
          *
          * @phpstan-param list<mixed> $args

@@ -24,7 +24,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 #[ORM\DiscriminatorColumn(name: 'discr', type: Types::STRING)]
 #[ORM\DiscriminatorMap(['user' => User::class, 'usergroup' => UserGroup::class, 'userldap' => UserLDAP::class])]
 #[Gedmo\Tree(type: 'nested')]
-abstract class Role
+abstract class Role implements \Stringable
 {
     /**
      * @var Collection<int, Role>

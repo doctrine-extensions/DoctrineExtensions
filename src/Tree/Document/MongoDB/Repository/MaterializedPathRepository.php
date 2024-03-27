@@ -116,7 +116,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
         if (is_a($node, $meta->getName())) {
             $node = new MongoDocumentWrapper($node, $this->dm);
-            $nodePath = preg_quote($node->getPropertyValue($config['path']));
+            $nodePath = preg_quote((string) $node->getPropertyValue($config['path']));
 
             if ($direct) {
                 $regex = sprintf(

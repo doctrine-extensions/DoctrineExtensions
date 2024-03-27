@@ -40,11 +40,10 @@ interface WrapperInterface
      * Sets a property's value on the wrapped object.
      *
      * @param string $property
-     * @param mixed  $value
      *
      * @return $this
      */
-    public function setPropertyValue($property, $value);
+    public function setPropertyValue($property, mixed $value);
 
     /**
      * @param array<string, mixed> $data

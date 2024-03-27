@@ -213,7 +213,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             throw new InvalidArgumentException(sprintf('"stringMethod" option passed in argument 2 to %s must be a valid string.', __METHOD__));
         }
         if (!method_exists($node, $options['stringMethod'])) {
-            throw new InvalidArgumentException(sprintf('%s must implement method "%s".', get_class($node), $options['stringMethod']));
+            throw new InvalidArgumentException(sprintf('%s must implement method "%s".', $node::class, $options['stringMethod']));
         }
 
         $path = [];
@@ -1105,7 +1105,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      */
     protected function doCallWithCompat($method, $args)
     {
-        if ('persistAs' === substr($method, 0, 9)) {
+        if (str_starts_with($method, 'persistAs')) {
             if (!isset($args[0])) {
                 throw new InvalidArgumentException('Node to persist must be available as first argument.');
             }
@@ -1114,7 +1114,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $meta = $this->getClassMetadata();
             $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->getName());
             $position = substr($method, 9);
-            if ('Of' === substr($method, -2)) {
+            if (str_ends_with($method, 'Of')) {
                 if (!isset($args[1])) {
                     throw new InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument.');
                 }
@@ -1133,7 +1133,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                             'Not implementing the "%s" interface from node "%s" is deprecated since gedmo/doctrine-extensions'
                             .' 3.13 and will throw a "%s" error in version 4.0.',
                             Node::class,
-                            \get_class($node),
+                            $node::class,
                             \TypeError::class
                         );
                     }

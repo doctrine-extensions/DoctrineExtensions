@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Mapping\Driver\ORM\XmlDriver;
 use Gedmo\Tests\Mapping\Fixture\Xml\MaterializedPathTree;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Tree\TreeListener;
@@ -43,7 +44,7 @@ final class MaterializedPathTreeMappingTest extends BaseTestCaseOM
             $annotationDriver = new AnnotationDriver(new AnnotationReader());
         }
 
-        $xmlDriver = new \Gedmo\Mapping\Driver\ORM\XmlDriver(__DIR__.'/../Driver/Xml');
+        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');

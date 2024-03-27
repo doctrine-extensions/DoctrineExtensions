@@ -43,7 +43,7 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
     {
         $evm = new EventManager();
         $sluggableListener = new SluggableListener();
-        $sluggableListener->setTransliterator([Transliterator::class, 'transliterate']);
+        $sluggableListener->setTransliterator(Transliterator::transliterate(...));
         $evm->addEventSubscriber($sluggableListener);
 
         $this->getDefaultMockSqliteEntityManager($evm);
