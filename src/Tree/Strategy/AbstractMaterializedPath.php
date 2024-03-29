@@ -93,13 +93,14 @@ abstract class AbstractMaterializedPath implements Strategy
         return Strategy::MATERIALIZED_PATH;
     }
 
-    public function processScheduledInsertion($om, $node, AdapterInterface $ea)
+    public function processScheduledInsertion($om, $node, AdapterInterface $ea): void
     {
         $meta = $om->getClassMetadata($node::class);
-        $config = $this->listener->getConfiguration($om, $meta->getName());
-        $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
-        if ($meta->isIdentifier($config['path_source']) || 'string' === $fieldMapping['type']) {
+        // ID is always used in a path,
+        // and if it is generated value from engine (like AUTO_INCREMENT),
+        // we need to schedule the path update
+        if ([] === $meta->getIdentifierValues($node)) {
             $this->scheduledForPathProcess[spl_object_id($node)] = $node;
         } else {
             $this->updateNode($om, $node, $ea);

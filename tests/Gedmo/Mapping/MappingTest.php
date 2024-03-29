@@ -15,7 +15,6 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Sluggable\SluggableListener;
@@ -45,12 +44,7 @@ final class MappingTest extends TestCase
         $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-
-        if (PHP_VERSION_ID >= 80000) {
-            $config->setMetadataDriverImpl(new AttributeDriver([]));
-        } else {
-            $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
-        }
+        $config->setMetadataDriverImpl(new AttributeDriver([]));
 
         $conn = [
             'driver' => 'pdo_sqlite',

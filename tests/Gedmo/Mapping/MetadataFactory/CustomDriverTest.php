@@ -19,6 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 use Gedmo\Timestampable\TimestampableListener;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@ final class CustomDriverTest extends TestCase
 
         $evm = new EventManager();
         $this->timestampable = new TimestampableListener();
-        $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
+        $this->timestampable->setAnnotationReader(new AttributeReader());
         $evm->addEventSubscriber($this->timestampable);
         $connection = DriverManager::getConnection($conn, $config);
         $this->em = new EntityManager($connection, $config, $evm);

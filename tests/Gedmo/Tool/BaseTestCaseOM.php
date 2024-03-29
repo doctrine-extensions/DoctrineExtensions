@@ -15,7 +15,6 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -76,11 +75,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     protected function getMongoDBDriver(array $paths = []): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
-            return new AttributeDriver($paths);
-        }
-
-        return new AnnotationDriverODM($_ENV['annotation_reader'], $paths);
+        return new AttributeDriver($paths);
     }
 
     /**

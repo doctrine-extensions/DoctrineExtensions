@@ -11,40 +11,40 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Tree\Fixture\Document;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as Mongo;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
 
-#[Mongo\Document(repositoryClass: MaterializedPathRepository::class)]
+#[ODM\Document(repositoryClass: MaterializedPathRepository::class)]
 #[Gedmo\Tree(type: 'materializedPath')]
 class Category
 {
     /**
      * @var string|null
      */
-    #[Mongo\Id]
+    #[ODM\Id]
     private $id;
 
-    #[Mongo\Field(type: Type::STRING)]
+    #[ODM\Field(type: Type::STRING)]
     #[Gedmo\TreePathSource]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
-    #[Mongo\Field(type: Type::STRING)]
+    #[ODM\Field(type: Type::STRING)]
     #[Gedmo\TreePath(separator: '|')]
     private $path;
 
-    #[Mongo\ReferenceOne(targetDocument: self::class)]
+    #[ODM\ReferenceOne(targetDocument: self::class)]
     #[Gedmo\TreeParent]
     private ?Category $parent = null;
 
     /**
      * @var int|null
      */
-    #[Mongo\Field(type: Type::INT)]
+    #[ODM\Field(type: Type::INT)]
     #[Gedmo\TreeLevel]
     private $level;
 
