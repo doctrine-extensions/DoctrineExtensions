@@ -32,6 +32,7 @@ use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\AST\WhereClause;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
+use Doctrine\ORM\Query\ParserResult;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
@@ -116,7 +117,11 @@ class TranslationWalker extends SqlWalker
 
     private readonly TranslatableListener $listener;
 
-    public function __construct($query, $parserResult, array $queryComponents)
+    public function __construct(
+        Query $query,
+        ParserResult $parserResult,
+        $queryComponents,
+    )
     {
         parent::__construct($query, $parserResult, $queryComponents);
         $this->conn = $this->getConnection();

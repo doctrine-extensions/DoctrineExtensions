@@ -25,12 +25,9 @@ class Kid
     #[ODM\Field(type: MongoDBType::INT)]
     protected $position;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
     #[Gedmo\SortableGroup]
     #[ODM\Field(type: MongoDBType::DATE)]
-    protected $birthdate;
+    protected ?\DateTimeInterface $birthdate;
 
     /**
      * @var string|null
@@ -66,12 +63,12 @@ class Kid
         return $this->position;
     }
 
-    public function setBirthdate(\DateTime $birthdate): void
+    public function setBirthdate(\DateTimeInterface $birthdate): void
     {
         $this->birthdate = $birthdate;
     }
 
-    public function getBirthdate(): ?\DateTime
+    public function getBirthdate(): ?\DateTimeInterface
     {
         return $this->birthdate;
     }

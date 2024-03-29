@@ -13,12 +13,14 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\QuoteStrategy;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
+use Doctrine\ORM\Query\ParserResult;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
@@ -83,8 +85,11 @@ class SoftDeleteableWalker extends SqlWalker
      */
     private $quoteStrategy;
 
-    public function __construct($query, $parserResult, array $queryComponents)
-    {
+    public function __construct(
+         Query $query,
+         ParserResult $parserResult,
+         array $queryComponents
+    ) {
         parent::__construct($query, $parserResult, $queryComponents);
 
         $this->conn = $this->getConnection();

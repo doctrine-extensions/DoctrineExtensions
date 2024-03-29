@@ -14,7 +14,6 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as EntityClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo as LegacyEntityClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -115,7 +114,7 @@ class ExtensionMetadataFactory
 
                     $class = $this->objectManager->getClassMetadata($parentClass);
 
-                    assert($class instanceof DocumentClassMetadata || $class instanceof EntityClassMetadata || $class instanceof LegacyEntityClassMetadata);
+                    assert($class instanceof DocumentClassMetadata || $class instanceof EntityClassMetadata);
 
                     $extendedMetadata = $this->driver->readExtendedMetadata($class, $config);
 

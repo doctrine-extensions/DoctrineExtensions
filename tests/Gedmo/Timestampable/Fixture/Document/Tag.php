@@ -24,19 +24,13 @@ class Tag
     #[ODM\Field(type: MongoDBType::STRING)]
     protected $name;
 
-    /**
-     * @var \DateTimeInterface
-     */
     #[Gedmo\Timestampable(on: 'create')]
     #[ODM\Field(type: MongoDBType::DATE)]
-    protected $created;
+    protected ?\DateTimeInterface $created;
 
-    /**
-     * @var \DateTimeInterface
-     */
     #[Gedmo\Timestampable]
     #[ODM\Field(type: MongoDBType::DATE)]
-    protected $updated;
+    protected ?\DateTimeInterface $updated;
 
     public function getName(): string
     {
@@ -48,22 +42,22 @@ class Tag
         $this->name = $name;
     }
 
-    public function getCreated(): \DateTime
+    public function getCreated(): \DateTimeInterface
     {
         return $this->created;
     }
 
-    public function setCreated(\DateTime $created): void
+    public function setCreated(\DateTimeInterface $created): void
     {
         $this->created = $created;
     }
 
-    public function getUpdated(): \DateTime
+    public function getUpdated(): \DateTimeInterface
     {
         return $this->updated;
     }
 
-    public function setUpdated(\DateTime $updated): void
+    public function setUpdated(\DateTimeInterface $updated): void
     {
         $this->updated = $updated;
     }

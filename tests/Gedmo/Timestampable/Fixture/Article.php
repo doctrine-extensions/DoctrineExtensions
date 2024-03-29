@@ -58,10 +58,8 @@ class Article implements Timestampable
 
     #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
-    private ?\DateTime $contentChanged = null;
-    /**
-     * @var \DateTimeInterface|null
-     */
+    private ?\DateTimeInterface $contentChanged = null;
+
     #[ORM\Column(name: 'author_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['author.name', 'author.email'])]
     private ?\DateTimeInterface $authorChanged = null;
@@ -74,8 +72,6 @@ class Article implements Timestampable
 
     /**
      * We use the value "10" as string here in order to check the behavior of `AbstractTrackingListener`
-     *
-     * @var \DateTimeInterface|null
      */
     #[ORM\Column(name: 'reached_relevant_level', type: Types::DATE_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'level', value: '10')]
@@ -175,12 +171,12 @@ class Article implements Timestampable
         $this->contentChanged = $contentChanged;
     }
 
-    public function getContentChanged(): ?\DateTime
+    public function getContentChanged(): ?\DateTimeInterface
     {
         return $this->contentChanged;
     }
 
-    public function getAuthorChanged(): ?\DateTime
+    public function getAuthorChanged(): ?\DateTimeInterface
     {
         return $this->authorChanged;
     }

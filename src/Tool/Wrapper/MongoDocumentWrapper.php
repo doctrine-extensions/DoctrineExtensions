@@ -59,7 +59,7 @@ class MongoDocumentWrapper extends AbstractWrapper
         return $this->meta->rootDocumentName;
     }
 
-    public function setPropertyValue($property, $value)
+    public function setPropertyValue($property, mixed $value)
     {
         $this->initialize();
         $this->meta->getReflectionProperty($property)->setValue($this->object, $value);

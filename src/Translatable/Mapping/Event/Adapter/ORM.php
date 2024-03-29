@@ -199,7 +199,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         }
     }
 
-    public function getTranslationValue($object, $field, $value = false)
+    public function getTranslationValue($object, $field, mixed $value = false)
     {
         $em = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $em);
@@ -212,7 +212,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         return $type->convertToDatabaseValue($value, $em->getConnection()->getDatabasePlatform());
     }
 
-    public function setTranslationValue($object, $field, $value)
+    public function setTranslationValue($object, $field, mixed $value)
     {
         $em = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $em);

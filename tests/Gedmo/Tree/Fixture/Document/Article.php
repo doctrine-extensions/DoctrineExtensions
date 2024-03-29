@@ -90,7 +90,7 @@ class Article
         return $this->path;
     }
 
-    public function getLockTime(): ?\DateTime
+    public function getLockTime(): ?\DateTimeInterface
     {
         return $this->lockTime;
     }

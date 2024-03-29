@@ -22,3 +22,4 @@ parameters:
     excludePaths:
         # Generates non-ignorable errors like " Parameter #1 $method (string) of method Gedmo\Tree\Entity\Repository\NestedTreeRepository::__call() is not contravariant with parameter #1 $method (mixed) of method Doctrine\ORM\EntityRepository::__call()."
         - src/Tool/ORM/Repository/EntityRepositoryCompat.php
+        - tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php

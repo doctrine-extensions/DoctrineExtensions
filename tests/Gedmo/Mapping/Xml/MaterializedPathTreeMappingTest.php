@@ -11,10 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Xml;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\Driver\ORM\XmlDriver;
@@ -38,11 +36,7 @@ final class MaterializedPathTreeMappingTest extends BaseTestCaseOM
     {
         parent::setUp();
 
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationDriver = new AttributeDriver([]);
-        } else {
-            $annotationDriver = new AnnotationDriver(new AnnotationReader());
-        }
+        $annotationDriver = new AttributeDriver([]);
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 

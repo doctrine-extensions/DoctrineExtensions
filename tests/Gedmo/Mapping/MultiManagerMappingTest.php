@@ -11,10 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\Driver\ORM\XmlDriver;
@@ -47,17 +45,9 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
         ]);
 
         // EM with XML and annotation/attribute mapping
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationDriver = new AttributeDriver([]);
+        $annotationDriver = new AttributeDriver([]);
 
-            $annotationDriver2 = new AttributeDriver([]);
-        } else {
-            $reader = new AnnotationReader();
-            $annotationDriver = new AnnotationDriver($reader);
-
-            $reader = new AnnotationReader();
-            $annotationDriver2 = new AnnotationDriver($reader);
-        }
+        $annotationDriver2 = new AttributeDriver([]);
 
         $xmlDriver = new XmlDriver(__DIR__.'/Driver/Xml');
 

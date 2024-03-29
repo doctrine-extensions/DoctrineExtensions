@@ -18,7 +18,7 @@ class Custom extends Type
 {
     private const NAME = 'custom';
 
-    public function getSqlDeclaration(array $column, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
         return $platform->getClobTypeDeclarationSQL($column);
     }

@@ -12,9 +12,10 @@ namespace Gedmo\Tree\Strategy\ORM;
 use Doctrine\DBAL\Connection;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
+use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -128,7 +129,7 @@ class Closure implements Strategy
                 'inversedBy' => null,
                 'targetEntity' => $meta->getName(),
                 'cascade' => null,
-                'fetch' => ClassMetadataInfo::FETCH_LAZY,
+                'fetch' => \Doctrine\ORM\Mapping\ClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($ancestorMapping);
             $closureMetadata->reflFields['ancestor'] = $cmf
@@ -165,7 +166,7 @@ class Closure implements Strategy
                 'inversedBy' => null,
                 'targetEntity' => $meta->getName(),
                 'cascade' => null,
-                'fetch' => ClassMetadataInfo::FETCH_LAZY,
+                'fetch' => \Doctrine\ORM\Mapping\ClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($descendantMapping);
             $closureMetadata->reflFields['descendant'] = $cmf
@@ -456,8 +457,10 @@ class Closure implements Strategy
         }
     }
 
-    protected function getJoinColumnFieldName(ManyToOneAssociationMapping $association): ?string
+    protected function getJoinColumnFieldName(AssociationMapping $association): ?string
     {
+        assert($association instanceof ToOneOwningSideMapping);
+
         if (count($association->joinColumnFieldNames) > 1) {
             throw new RuntimeException('More association on field '.$association['fieldName']);
         }

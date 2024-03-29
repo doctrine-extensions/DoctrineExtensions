@@ -36,9 +36,6 @@ class WithoutInterface
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $created = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeInterface $updated = null;
@@ -58,12 +55,12 @@ class WithoutInterface
         return $this->title;
     }
 
-    public function getCreated(): ?\DateTime
+    public function getCreated(): ?\DateTimeInterface
     {
         return $this->created;
     }
 
-    public function getUpdated(): ?\DateTime
+    public function getUpdated(): ?\DateTimeInterface
     {
         return $this->updated;
     }

@@ -41,10 +41,6 @@ class BaseNode extends ANode
     #[ORM\Column(length: 128, unique: true)]
     private ?string $identifier = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     *                              *
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable]
     private ?\DateTimeInterface $updated = null;
@@ -54,12 +50,12 @@ class BaseNode extends ANode
         $this->children = new ArrayCollection();
     }
 
-    public function getCreated(): ?\DateTime
+    public function getCreated(): ?\DateTimeInterface
     {
         return $this->created;
     }
 
-    public function getUpdated(): ?\DateTime
+    public function getUpdated(): ?\DateTimeInterface
     {
         return $this->updated;
     }

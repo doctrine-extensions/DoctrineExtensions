@@ -57,7 +57,7 @@ class EntityWrapper extends AbstractWrapper
         return $this->meta->getReflectionProperty($property)->getValue($this->object);
     }
 
-    public function setPropertyValue($property, $value)
+    public function setPropertyValue($property, mixed $value)
     {
         $this->initialize();
         $this->meta->getReflectionProperty($property)->setValue($this->object, $value);

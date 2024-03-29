@@ -44,9 +44,6 @@ class CommentCarbon implements Timestampable
     #[Gedmo\Timestampable(on: 'change', field: 'status', value: 1)]
     private ?\DateTimeInterface $closed = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
     #[ORM\Column(name: 'modified', type: Types::TIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeInterface $modified = null;
@@ -81,7 +78,7 @@ class CommentCarbon implements Timestampable
         return $this->message;
     }
 
-    public function getModified(): ?\DateTime
+    public function getModified(): ?\DateTimeInterface
     {
         return $this->modified;
     }

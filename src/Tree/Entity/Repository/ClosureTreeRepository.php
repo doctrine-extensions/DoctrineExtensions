@@ -9,6 +9,8 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
+use Doctrine\ORM\Mapping\AssociationMapping;
+use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Gedmo\Exception\InvalidArgumentException;
@@ -629,17 +631,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return Strategy::CLOSURE === $this->listener->getStrategy($this->getEntityManager(), $this->getClassMetadata()->name)->getName();
     }
 
-    /**
-     * @param array<string, mixed> $association
-     *
-     * @return string|null
-     */
-    protected function getJoinColumnFieldName($association)
+    protected function getJoinColumnFieldName(AssociationMapping $association): ?string
     {
-        if (count($association['joinColumnFieldNames']) > 1) {
+        assert($association instanceof ToOneOwningSideMapping);
+
+        if (count($association->joinColumnFieldNames) > 1) {
             throw new \RuntimeException('More association on field '.$association['fieldName']);
         }
 
-        return array_shift($association['joinColumnFieldNames']);
+        return current($association->joinColumnFieldNames) ?: null;
     }
 }
