@@ -23,7 +23,7 @@ class XmlDriver extends BaseXmlDriver
         parent::__construct($locator, $fileExtension, $isXsdValidationEnabled);
     }
 
-    protected function loadMappingFile($file)
+    protected function loadMappingFile($file): array
     {
         $this->validateMapping($file);
 
