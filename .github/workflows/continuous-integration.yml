@@ -53,10 +53,12 @@ jobs:
 
       # Remove PHP-CS-Fixer to avoid conflicting dependency ranges (i.e. doctrine/annotations)
       - name: "Remove PHP-CS-Fixer"
+        continue-on-error: "${{ matrix.allow_failures }}"
         run: "composer remove --dev --no-update friendsofphp/php-cs-fixer"
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
+        continue-on-error: "${{ matrix.allow_failures }}"
         with:
           dependency-versions: "${{ matrix.deps }}"
 
