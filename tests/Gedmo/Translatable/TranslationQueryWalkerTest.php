@@ -72,8 +72,6 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
     public function testSubselectByTranslatedField(): void
     {
-        $this->translatableListener->setPersistDefaultLocaleTranslation(true);
-
         $this->populateMore();
 
         $subSelect = sprintf("SELECT a2.title FROM %s a2 WHERE a2.title LIKE '%s'", self::ARTICLE, '%ab%');
@@ -87,18 +85,16 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $result = $q->getArrayResult();
 
         static::assertCount(2, $result);
-        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Alphabet', $result[0]['title']);
         static::assertSame('Cabbages', $result[1]['title']);
     }
 
     public function testSubselectStatements(): void
     {
         $this->populateMore();
-        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
-        $subSelect = 'SELECT a2.id FROM '.self::ARTICLE.' a2';
-        $subSelect .= " WHERE a2.title LIKE '%ab%'";
-        $dql .= " WHERE a.id IN ({$subSelect})";
-        $dql .= ' ORDER BY a.title';
+        $subSelect = 'SELECT a2.id FROM '.self::ARTICLE.' a2 WHERE a2.title LIKE \'%ab%\'';
+        $dql = sprintf('SELECT a FROM '.self::ARTICLE.' a WHERE a.id IN (%s) ORDER BY a.title', $subSelect);
+
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -106,7 +102,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
         static::assertCount(2, $result);
-        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Alphabet', $result[0]['title']);
         static::assertSame('Cabbages', $result[1]['title']);
     }
 
@@ -391,7 +387,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
         static::assertCount(4, $result);
-        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Alphabet', $result[0]['title']);
         static::assertSame('Cabbages', $result[1]['title']);
         static::assertSame('Food', $result[2]['title']);
         static::assertSame('Woman', $result[3]['title']);
@@ -408,7 +404,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
         static::assertCount(4, $result);
-        static::assertSame('Alfabet', $result[0]->getTitle());
+        static::assertSame('Alphabet', $result[0]->getTitle());
         static::assertSame('Cabbages', $result[1]->getTitle());
         static::assertSame('Food', $result[2]->getTitle());
         static::assertSame('Woman', $result[3]->getTitle());
@@ -439,7 +435,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             $result[$key] = implode(' - ', $value);
         });
         static::assertSame(
-            ['Alfabet - 1', 'Food - 99', 'Cabbages - 2222', 'Woman - 3333'], $result,
+            ['Alphabet - 1', 'Food - 99', 'Cabbages - 2222', 'Woman - 3333'], $result,
             'Original of localizible integers should be sorted numerically'
         );
 
