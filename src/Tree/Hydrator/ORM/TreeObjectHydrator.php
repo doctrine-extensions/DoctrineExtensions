@@ -14,7 +14,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
 use Doctrine\ORM\PersistentCollection;
 use Gedmo\Exception\InvalidMappingException;
-use Gedmo\Tool\ORM\Hydration\EntityManagerRetriever;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -26,8 +25,6 @@ use Gedmo\Tree\TreeListener;
  */
 class TreeObjectHydrator extends ObjectHydrator
 {
-    use EntityManagerRetriever;
-
     /**
      * @var array<string, mixed>
      */
@@ -56,7 +53,7 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     public function setPropertyValue($object, $property, mixed $value)
     {
-        $meta = $this->getEntityManager()->getClassMetadata($object::class);
+        $meta = $this->em->getClassMetadata($object::class);
         $meta->getReflectionProperty($property)->setValue($object, $value);
     }
 
@@ -73,9 +70,9 @@ class TreeObjectHydrator extends ObjectHydrator
             return $data;
         }
 
-        $listener = $this->getTreeListener($this->getEntityManager());
+        $listener = $this->getTreeListener($this->em);
         $entityClass = $this->getEntityClassFromHydratedData($data);
-        $this->config = $listener->getConfiguration($this->getEntityManager(), $entityClass);
+        $this->config = $listener->getConfiguration($this->em, $entityClass);
         $this->idField = $this->getIdField($entityClass);
         $this->parentField = $this->getParentField();
         $this->childrenField = $this->getChildrenField($entityClass);
@@ -282,7 +279,7 @@ class TreeObjectHydrator extends ObjectHydrator
         $firstMappedEntity = array_values($data);
         $firstMappedEntity = $firstMappedEntity[0];
 
-        return $this->getEntityManager()->getClassMetadata($firstMappedEntity::class)->rootEntityName;
+        return $this->em->getClassMetadata($firstMappedEntity::class)->rootEntityName;
     }
 
     /**
@@ -293,7 +290,7 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     protected function getPropertyValue($object, $property)
     {
-        $meta = $this->getEntityManager()->getClassMetadata($object::class);
+        $meta = $this->em->getClassMetadata($object::class);
 
         return $meta->getReflectionProperty($property)->getValue($object);
     }

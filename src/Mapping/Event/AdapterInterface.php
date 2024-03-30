@@ -12,7 +12,6 @@ namespace Gedmo\Mapping\Event;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
 use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 
@@ -21,8 +20,7 @@ use Doctrine\Persistence\ObjectManager;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @method LifecycleEventArgs createLifecycleEventArgsInstance(object $object, ObjectManager $manager) @deprecated
- * @method object             getObject()
+ * @method object getObject()
  */
 interface AdapterInterface
 {

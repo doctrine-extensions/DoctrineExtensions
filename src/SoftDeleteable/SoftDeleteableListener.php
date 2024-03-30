@@ -10,8 +10,6 @@
 namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\Common\EventManager;
-use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
@@ -91,10 +89,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 }
 
                 if ($evm->hasListeners(self::PRE_SOFT_DELETE)) {
-                    // @todo: in the next major remove check and only instantiate the event
-                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class)
-                        ? new PreSoftDeleteEventArgs($object, $om)
-                        : $ea->createLifecycleEventArgsInstance($object, $om);
+                    $preSoftDeleteEventArgs = new PreSoftDeleteEventArgs($object, $om);
 
                     $evm->dispatchEvent(
                         self::PRE_SOFT_DELETE,
@@ -115,10 +110,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 }
 
                 if ($evm->hasListeners(self::POST_SOFT_DELETE)) {
-                    // @todo: in the next major remove check and only instantiate the event
-                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class)
-                        ? new PostSoftDeleteEventArgs($object, $om)
-                        : $ea->createLifecycleEventArgsInstance($object, $om);
+                    $postSoftDeleteEventArgs = new PostSoftDeleteEventArgs($object, $om);
 
                     $evm->dispatchEvent(
                         self::POST_SOFT_DELETE,
@@ -146,35 +138,5 @@ class SoftDeleteableListener extends MappedEventSubscriber
     protected function getNamespace()
     {
         return __NAMESPACE__;
-    }
-
-    /** @param class-string $eventClass */
-    private function hasToDispatchNewEvent(EventManager $eventManager, string $eventName, string $eventClass): bool
-    {
-        foreach ($eventManager->getListeners($eventName) as $listener) {
-            $reflMethod = new \ReflectionMethod($listener, $eventName);
-
-            $parameters = $reflMethod->getParameters();
-
-            if (
-                1 !== count($parameters)
-                || !$parameters[0]->hasType()
-                || !$parameters[0]->getType() instanceof \ReflectionNamedType
-                || $eventClass !== $parameters[0]->getType()->getName()
-            ) {
-                Deprecation::trigger(
-                    'gedmo/doctrine-extensions',
-                    'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2649',
-                    'Type-hinting to something different than "%s" in "%s::%s()" is deprecated.',
-                    $eventClass,
-                    $listener::class,
-                    $reflMethod->getName()
-                );
-
-                return false;
-            }
-        }
-
-        return true;
     }
 }

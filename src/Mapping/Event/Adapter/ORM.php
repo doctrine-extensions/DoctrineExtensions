@@ -13,7 +13,6 @@ use Doctrine\Common\EventArgs;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\UnitOfWork as ODMUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\UnitOfWork as ORMUnitOfWork;
 use Gedmo\Exception\RuntimeException;
@@ -178,35 +177,9 @@ class ORM implements AdapterInterface
         return $uow->getScheduledEntityDeletions();
     }
 
-    public function setOriginalObjectProperty($uow, $object, $property, $value)
+    public function setOriginalObjectProperty($uow, $object, $property, mixed $value)
     {
         $uow->setOriginalEntityProperty(spl_object_id($object), $property, $value);
-    }
-
-    /**
-     * @param object                 $object
-     * @param EntityManagerInterface $entityManager
-     *
-     * @return LifecycleEventArgs
-     *
-     * @deprecated use custom lifecycle event classes instead
-     *
-     * Creates an ORM specific LifecycleEventArgs
-     */
-    public function createLifecycleEventArgsInstance($object, $entityManager)
-    {
-        Deprecation::trigger(
-            'gedmo/doctrine-extensions',
-            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2649',
-            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.15 and will be removed in version 4.0.',
-            __METHOD__
-        );
-
-        if (!class_exists(LifecycleEventArgs::class)) {
-            throw new \RuntimeException(sprintf('Cannot call %s() when using doctrine/orm >=3.0, use a custom lifecycle event class instead.', __METHOD__));
-        }
-
-        return new LifecycleEventArgs($object, $entityManager);
     }
 
     public function clearObjectChangeSet(ODMUnitOfWork|ORMUnitOfWork $uow, object $object)

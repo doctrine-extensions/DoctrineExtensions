@@ -107,8 +107,9 @@ abstract class LoggableEntity extends BaseTestCaseORM
     public function testVersionControl(): void
     {
         $this->populate();
-        /** @var LogEntryRepository<Comment> $commentLogRepo */
+        /** @var LogEntryRepository<Fixture\Entity\Log\Comment|Comment> $commentLogRepo */
         $commentLogRepo = $this->em->getRepository(self::COMMENT_LOG);
+
         $commentRepo = $this->em->getRepository(self::COMMENT);
 
         $comment = $commentRepo->find(1);

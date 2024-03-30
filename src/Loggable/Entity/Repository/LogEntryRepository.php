@@ -25,9 +25,9 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @phpstan-template T of Loggable|object
+ * @template T of AbstractLogEntry|Loggable
  *
- * @phpstan-extends EntityRepository<AbstractLogEntry<T>>
+ * @template-extends EntityRepository<T>
  */
 class LogEntryRepository extends EntityRepository
 {
@@ -89,14 +89,12 @@ class LogEntryRepository extends EntityRepository
      * After this operation you will need to
      * persist and flush the $entity.
      *
-     * @param object $entity
-     * @param int    $version
+     * @param T   $entity
+     * @param int $version
      *
      * @throws UnexpectedValueException
      *
      * @return void
-     *
-     * @phpstan-param T $entity
      */
     public function revert($entity, $version = 1)
     {
@@ -151,22 +149,23 @@ class LogEntryRepository extends EntityRepository
     }
 
     /**
-     * @param string $field
+     * @param string           $field
+     * @param ClassMetadata<T> $meta
      *
      * @return void
-     *
-     * @phpstan-param ClassMetadata<T> $objectMeta
      */
-    protected function mapValue(ClassMetadata $objectMeta, $field, mixed &$value)
+    protected function mapValue(ClassMetadata $meta, string $field, mixed &$value): void
     {
-        if (!$objectMeta->isSingleValuedAssociation($field)) {
+        if (!$meta->isSingleValuedAssociation($field)) {
             return;
         }
 
-        $mapping = $objectMeta->getAssociationMapping($field);
+        $mapping = $meta->getAssociationMapping($field);
 
-        /** @var T|null $reference */
-        $reference = $this->getEntityManager()->getReference($mapping['targetEntity'], $value);
+        $entityManager = $this->getEntityManager();
+
+        $reference = $entityManager->getReference($mapping['targetEntity'], $value);
+
         $value = $value ? $reference : null;
     }
 

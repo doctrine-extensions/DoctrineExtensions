@@ -104,7 +104,7 @@ final class ForcedMetadataTest extends TestCase
 
         $metadata->mapField($created);
         $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_IDENTITY);
-        $metadata->setIdGenerator(new IdentityGenerator);
+        $metadata->setIdGenerator(new IdentityGenerator());
         $metadata->setPrimaryTable(['name' => 'temp_test']);
         $cmf->setMetadataFor(Timestampable::class, $metadata);
 

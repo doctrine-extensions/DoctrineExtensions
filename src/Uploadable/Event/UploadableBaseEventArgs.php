@@ -45,6 +45,8 @@ abstract class UploadableBaseEventArgs extends EventArgs
         private readonly EntityManagerInterface $em,
         /**
          * @todo Check if this property must be removed, as it is not used.
+         *
+         * @var array<mixed, mixed>
          */
         private readonly array $config,
         private readonly FileInfoInterface $fileInfo,
@@ -152,5 +154,11 @@ abstract class UploadableBaseEventArgs extends EventArgs
     public function getAction()
     {
         return $this->action;
+    }
+
+    /** @return array<mixed, mixed> */
+    public function getConfig(): array
+    {
+        return $this->config;
     }
 }

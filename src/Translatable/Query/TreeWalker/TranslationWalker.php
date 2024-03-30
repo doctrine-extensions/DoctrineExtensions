@@ -121,8 +121,7 @@ class TranslationWalker extends SqlWalker
         Query $query,
         ParserResult $parserResult,
         $queryComponents,
-    )
-    {
+    ) {
         parent::__construct($query, $parserResult, $queryComponents);
         $this->conn = $this->getConnection();
         $this->platform = $this->getConnection()->getDatabasePlatform();

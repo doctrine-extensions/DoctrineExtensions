@@ -49,12 +49,9 @@ class Sortable
     #[Gedmo\SortableGroup]
     private ?string $grouping = null;
 
-    /**
-     * @var SortableGroup
-     */
     #[ORM\ManyToOne(targetEntity: SortableGroup::class)]
     #[Gedmo\SortableGroup]
-    private ?Sluggable $sortable_group = null;
+    private ?SortableGroup $sortable_group = null;
 
     /**
      * @var Collection<int, SortableGroup>

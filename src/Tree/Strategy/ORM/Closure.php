@@ -14,7 +14,6 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
-use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
 use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;

@@ -162,7 +162,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         return $type->convertToDatabaseValue($value);
     }
 
-    public function setTranslationValue($object, $field, $value)
+    public function setTranslationValue($object, $field, mixed $value)
     {
         $dm = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $dm);

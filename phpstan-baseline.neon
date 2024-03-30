@@ -31,11 +31,6 @@ parameters:
 			path: src/Blameable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: src/Blameable/Mapping/Driver/Yaml.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Annotation.php
@@ -46,9 +41,9 @@ parameters:
 			path: src/IpTraceable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: "#^Unable to resolve the template type T in call to method Doctrine\\\\ORM\\\\EntityManagerInterface\\:\\:getReference\\(\\)$#"
 			count: 1
-			path: src/IpTraceable/Mapping/Driver/Yaml.php
+			path: src/Loggable/Entity/Repository/LogEntryRepository.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\<T of object\\>\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
@@ -266,16 +261,6 @@ parameters:
 			path: src/Sluggable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
-			count: 1
-			path: src/Sluggable/Mapping/Driver/Yaml.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: src/Sluggable/Mapping/Driver/Yaml.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 2
 			path: src/Sluggable/SluggableListener.php
@@ -289,21 +274,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
 			path: src/Sluggable/SluggableListener.php
-
-		-
-			message: "#^Access to property \\$type on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\FieldMapping\\.$#"
-			count: 1
-			path: src/SoftDeleteable/Mapping/Event/Adapter/ORM.php
-
-		-
-			message: "#^Class Doctrine\\\\ORM\\\\Mapping\\\\FieldMapping not found\\.$#"
-			count: 1
-			path: src/SoftDeleteable/Mapping/Event/Adapter/ORM.php
-
-		-
-			message: "#^Parameter \\$mapping of method Gedmo\\\\SoftDeleteable\\\\Mapping\\\\Event\\\\Adapter\\\\ORM\\:\\:getRawDateValue\\(\\) has invalid type Doctrine\\\\ORM\\\\Mapping\\\\FieldMapping\\.$#"
-			count: 1
-			path: src/SoftDeleteable/Mapping/Event/Adapter/ORM.php
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
@@ -324,11 +294,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 1
 			path: src/Sortable/Mapping/Driver/Xml.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: src/Sortable/Mapping/Driver/Yaml.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
@@ -366,26 +331,6 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Driver/Yaml.php
-
-		-
-			message: "#^Access to property \\$type on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\FieldMapping\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Event/Adapter/ORM.php
-
-		-
-			message: "#^Class Doctrine\\\\ORM\\\\Mapping\\\\FieldMapping not found\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Event/Adapter/ORM.php
-
-		-
-			message: "#^Parameter \\$mapping of method Gedmo\\\\Timestampable\\\\Mapping\\\\Event\\\\Adapter\\\\ORM\\:\\:getRawDateValue\\(\\) has invalid type Doctrine\\\\ORM\\\\Mapping\\\\FieldMapping\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Event/Adapter/ORM.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 1
 			path: src/Tool/Wrapper/EntityWrapper.php
@@ -404,16 +349,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Access to an undefined property Gedmo\\\\Translatable\\\\Hydrator\\\\ORM\\\\ObjectHydrator\\:\\:\\$em\\.$#"
-			count: 1
-			path: src/Translatable/Hydrator/ORM/ObjectHydrator.php
-
-		-
-			message: "#^Access to an undefined property Gedmo\\\\Translatable\\\\Hydrator\\\\ORM\\\\SimpleObjectHydrator\\:\\:\\$em\\.$#"
-			count: 1
-			path: src/Translatable/Hydrator/ORM/SimpleObjectHydrator.php
 
 		-
 			message: "#^Access to offset 'association' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
@@ -491,11 +426,6 @@ parameters:
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
-			message: "#^Access to an undefined property Gedmo\\\\Tree\\\\Hydrator\\\\ORM\\\\TreeObjectHydrator\\:\\:\\$em\\.$#"
-			count: 1
-			path: src/Tree/Hydrator/ORM/TreeObjectHydrator.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
 			count: 6
 			path: src/Tree/Mapping/Validator.php
@@ -504,26 +434,6 @@ parameters:
 			message: "#^Method Gedmo\\\\Tree\\\\RepositoryUtils\\:\\:buildTreeArray\\(\\) should return array\\<int, array\\<string, mixed\\>\\> but returns array\\<int\\<0, max\\>, ArrayAccess\\>\\.$#"
 			count: 1
 			path: src/Tree/RepositoryUtils.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
-			count: 2
-			path: src/Tree/Strategy/AbstractMaterializedPath.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getIdentifierValue\\(\\)\\.$#"
-			count: 1
-			path: src/Tree/Strategy/AbstractMaterializedPath.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
-			count: 10
-			path: src/Tree/Strategy/AbstractMaterializedPath.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getSingleIdentifierFieldName\\(\\)\\.$#"
-			count: 1
-			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getReference\\(\\)\\.$#"
@@ -546,22 +456,7 @@ parameters:
 			path: src/Tree/TreeListener.php
 
 		-
-			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
 			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:getExtensionConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
-			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config is never read, only written\\.$#"
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
-			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
@@ -624,26 +519,6 @@ parameters:
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
-
-		-
-			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$dm is never written, only read\\.$#"
-			count: 1
-			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
-
-		-
-			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$referenceIntegrity is never written, only read\\.$#"
-			count: 1
-			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
-
-		-
-			message: "#^Dead catch \\- Doctrine\\\\DBAL\\\\Exception\\\\ForeignKeyConstraintViolationException is never thrown in the try block\\.$#"
-			count: 1
-			path: tests/Gedmo/Sortable/SortableTest.php
 
 		-
 			message: "#^Method Gedmo\\\\Tests\\\\Timestampable\\\\Fixture\\\\ArticleCarbon\\:\\:getCreated\\(\\) should return Carbon\\\\Carbon\\|null but returns DateTime\\|null\\.$#"

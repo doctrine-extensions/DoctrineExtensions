@@ -110,6 +110,10 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processScheduledUpdate($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata($node::class);
+
+        // @see https://github.com/doctrine/persistence/pull/222
+        assert($meta instanceof \Doctrine\ORM\Mapping\ClassMetadata || $meta instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadata);
+
         $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $node);
@@ -194,7 +198,9 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * Update the $node
      *
-     * @param object           $node target node
+     * @template T of object
+     *
+     * @param T                $node target node
      * @param AdapterInterface $ea   event adapter
      *
      * @return void
@@ -202,6 +208,10 @@ abstract class AbstractMaterializedPath implements Strategy
     public function updateNode(ObjectManager $om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata($node::class);
+
+        // @see https://github.com/doctrine/persistence/pull/222
+        assert($meta instanceof \Doctrine\ORM\Mapping\ClassMetadata || $meta instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadata);
+
         $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $parentProp = $meta->getReflectionProperty($config['parent']);
@@ -353,6 +363,10 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processPreLockingActions($om, $node, $action)
     {
         $meta = $om->getClassMetadata($node::class);
+
+        // @see https://github.com/doctrine/persistence/pull/222
+        assert($meta instanceof \Doctrine\ORM\Mapping\ClassMetadata || $meta instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadata);
+
         $config = $this->listener->getConfiguration($om, $meta->getName());
 
         if ($config['activate_locking']) {

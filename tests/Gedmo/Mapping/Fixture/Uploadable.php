@@ -40,9 +40,6 @@ class Uploadable
      */
     private $fileInfo;
 
-    /**
-     * @var float
-     */
     #[ORM\Column(name: 'size', type: Types::DECIMAL)]
     #[Gedmo\UploadableFileSize]
     private ?string $size = null;
