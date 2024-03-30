@@ -12,15 +12,26 @@ declare(strict_types=1);
 namespace Gedmo\Tests\SoftDeleteable\Fixture\Listener;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 final class WithLifecycleEventArgsFromODMTypeListener implements EventSubscriber
 {
+    /**
+     * @param LifecycleEventArgs<DocumentManager> $args
+     *
+     * @return void
+     */
     public function preSoftDelete(LifecycleEventArgs $args): void
     {
     }
 
+    /**
+     * @param LifecycleEventArgs<DocumentManager> $args
+     *
+     * @return void
+     */
     public function postSoftDelete(LifecycleEventArgs $args): void
     {
     }
