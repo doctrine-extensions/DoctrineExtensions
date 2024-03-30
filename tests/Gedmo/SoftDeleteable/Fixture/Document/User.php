@@ -20,7 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class User
 {
     #[ODM\Field(type: Type::DATE)]
-    protected ?\DateTimeInterface $deletedAt;
+    protected ?\DateTimeInterface $deletedAt = null;
     /**
      * @var string|null
      */

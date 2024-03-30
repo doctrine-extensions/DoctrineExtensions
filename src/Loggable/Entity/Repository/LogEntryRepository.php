@@ -149,9 +149,7 @@ class LogEntryRepository extends EntityRepository
     }
 
     /**
-     * @param string           $field
      * @param ClassMetadata<T> $meta
-     *
      * @return void
      */
     protected function mapValue(ClassMetadata $meta, string $field, mixed &$value): void

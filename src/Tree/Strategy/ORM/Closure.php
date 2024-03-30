@@ -128,7 +128,7 @@ class Closure implements Strategy
                 'inversedBy' => null,
                 'targetEntity' => $meta->getName(),
                 'cascade' => null,
-                'fetch' => \Doctrine\ORM\Mapping\ClassMetadata::FETCH_LAZY,
+                'fetch' => ORMClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($ancestorMapping);
             $closureMetadata->reflFields['ancestor'] = $cmf
@@ -165,7 +165,7 @@ class Closure implements Strategy
                 'inversedBy' => null,
                 'targetEntity' => $meta->getName(),
                 'cascade' => null,
-                'fetch' => \Doctrine\ORM\Mapping\ClassMetadata::FETCH_LAZY,
+                'fetch' => ORMClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($descendantMapping);
             $closureMetadata->reflFields['descendant'] = $cmf

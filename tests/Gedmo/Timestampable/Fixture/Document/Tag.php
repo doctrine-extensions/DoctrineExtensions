@@ -26,11 +26,11 @@ class Tag
 
     #[Gedmo\Timestampable(on: 'create')]
     #[ODM\Field(type: MongoDBType::DATE)]
-    protected ?\DateTimeInterface $created;
+    protected ?\DateTimeInterface $created = null;
 
     #[Gedmo\Timestampable]
     #[ODM\Field(type: MongoDBType::DATE)]
-    protected ?\DateTimeInterface $updated;
+    protected ?\DateTimeInterface $updated = null;
 
     public function getName(): string
     {

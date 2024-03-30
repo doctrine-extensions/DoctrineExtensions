@@ -27,7 +27,7 @@ class Kid
 
     #[Gedmo\SortableGroup]
     #[ODM\Field(type: MongoDBType::DATE)]
-    protected ?\DateTimeInterface $birthdate;
+    protected ?\DateTimeInterface $birthdate = null;
 
     /**
      * @var string|null
