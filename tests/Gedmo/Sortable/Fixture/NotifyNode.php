@@ -20,10 +20,10 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
  * @author Charles J. C. Elling, 2017-07-31
  *
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
+ * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
 #[ORM\Entity(repositoryClass: SortableRepository::class)]
-#[ORM\ChangeTrackingPolicy(value: 'NOTIFY')]
+#[ORM\ChangeTrackingPolicy(value: 'DEFERRED_EXPLICIT')]
 class NotifyNode extends AbstractNode implements NotifyPropertyChanged
 {
     /**

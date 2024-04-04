@@ -32,7 +32,11 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
     {
         parent::__construct($AST, $sqlWalker);
 
-        $sqlStatements = $this->_sqlStatements;
+        if (property_exists($this, 'sqlStatements')) {
+            $sqlStatements = $this->sqlStatements;
+        } else {
+            $sqlStatements = $this->_sqlStatements;
+        }
 
         $quoteStrategy = $sqlWalker->getEntityManager()->getConfiguration()->getQuoteStrategy();
 
@@ -53,6 +57,10 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
             }
         }
 
-        $this->_sqlStatements = $sqlStatements;
+        if (property_exists($this, 'sqlStatements')) {
+            $this->sqlStatements = $sqlStatements;
+        } else {
+            $this->_sqlStatements = $sqlStatements;
+        }
     }
 }

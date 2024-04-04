@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Clock;
 use Gedmo\Tests\Timestampable\Fixture\Article;
@@ -50,6 +51,9 @@ final class TimestampableTest extends BaseTestCaseORM
      */
     public function testShouldHandleDetatchedAndMergedBackEntities(): void
     {
+        if (!method_exists(EntityManagerInterface::class, 'merge')) {
+            static::markTestSkipped();
+        }
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setBody('Sport article body.');
@@ -68,6 +72,9 @@ final class TimestampableTest extends BaseTestCaseORM
      */
     public function testShouldHandleDetatchedAndMergedBackEntitiesAfterPersist(): void
     {
+        if (!method_exists(EntityManagerInterface::class, 'merge')) {
+            static::markTestSkipped();
+        }
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setBody('Sport article body.');

@@ -66,7 +66,7 @@ class TreeObjectHydrator extends ObjectHydrator
      *
      * @return array<int, object>
      */
-    protected function hydrateAllData()
+    protected function hydrateAllData(): array
     {
         $data = parent::hydrateAllData();
 

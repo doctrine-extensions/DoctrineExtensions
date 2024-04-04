@@ -15,6 +15,8 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -92,7 +94,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 if ($evm->hasListeners(self::PRE_SOFT_DELETE)) {
                     // @todo: in the next major remove check and only instantiate the event
-                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class)
+                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class, $uow)
                         ? new PreSoftDeleteEventArgs($object, $om)
                         : $ea->createLifecycleEventArgsInstance($object, $om);
 
@@ -116,7 +118,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 if ($evm->hasListeners(self::POST_SOFT_DELETE)) {
                     // @todo: in the next major remove check and only instantiate the event
-                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class)
+                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class, $uow)
                         ? new PostSoftDeleteEventArgs($object, $om)
                         : $ea->createLifecycleEventArgsInstance($object, $om);
 
@@ -149,8 +151,12 @@ class SoftDeleteableListener extends MappedEventSubscriber
     }
 
     /** @param class-string $eventClass */
-    private function hasToDispatchNewEvent(EventManager $eventManager, string $eventName, string $eventClass): bool
+    private function hasToDispatchNewEvent(EventManager $eventManager, string $eventName, string $eventClass, object $uow): bool
     {
+        if (!class_exists(LifecycleEventArgs::class) && $uow instanceof UnitOfWork) {
+            return true;
+        }
+
         foreach ($eventManager->getListeners($eventName) as $listener) {
             $reflMethod = new \ReflectionMethod($listener, $eventName);
 

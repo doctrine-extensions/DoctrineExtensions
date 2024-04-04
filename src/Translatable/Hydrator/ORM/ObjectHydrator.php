@@ -38,10 +38,7 @@ class ObjectHydrator extends BaseObjectHydrator
      */
     private $savedSkipOnLoad;
 
-    /**
-     * @return void
-     */
-    protected function prepare()
+    protected function prepare(): void
     {
         $listener = $this->getTranslatableListener();
         $this->savedSkipOnLoad = $listener->isSkipOnLoad();
@@ -49,10 +46,7 @@ class ObjectHydrator extends BaseObjectHydrator
         parent::prepare();
     }
 
-    /**
-     * @return void
-     */
-    protected function cleanup()
+    protected function cleanup(): void
     {
         parent::cleanup();
         $listener = $this->getTranslatableListener();

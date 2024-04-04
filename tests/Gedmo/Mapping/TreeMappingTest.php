@@ -48,7 +48,9 @@ final class TreeMappingTest extends ORMMappingTestCase
         $chain = new MappingDriverChain();
 
         // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
-        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
+        if (class_exists(YamlDriver::class)) {
+            $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
+        }
 
         if (PHP_VERSION_ID >= 80000) {
             $annotationOrAttributeDriver = new AttributeDriver([]);
@@ -76,6 +78,9 @@ final class TreeMappingTest extends ORMMappingTestCase
      */
     public function testApcCached(): void
     {
+        if (!class_exists(YamlDriver::class)) {
+            static::markTestSkipped();
+        }
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $this->em->getClassMetadata(CategoryClosureWithoutMapping::class);
 
@@ -89,6 +94,9 @@ final class TreeMappingTest extends ORMMappingTestCase
 
     public function testYamlNestedMapping(): void
     {
+        if (!class_exists(YamlDriver::class)) {
+            static::markTestSkipped();
+        }
         $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
@@ -114,6 +122,9 @@ final class TreeMappingTest extends ORMMappingTestCase
      */
     public function testYamlClosureMapping(): void
     {
+        if (!class_exists(YamlDriver::class)) {
+            static::markTestSkipped();
+        }
         // Force metadata class loading.
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
@@ -129,6 +140,9 @@ final class TreeMappingTest extends ORMMappingTestCase
 
     public function testYamlMaterializedPathMapping(): void
     {
+        if (!class_exists(YamlDriver::class)) {
+            static::markTestSkipped();
+        }
         $meta = $this->em->getClassMetadata(self::YAML_MATERIALIZED_PATH_CATEGORY);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
 

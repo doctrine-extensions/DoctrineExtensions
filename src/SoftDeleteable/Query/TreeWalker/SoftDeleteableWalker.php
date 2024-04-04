@@ -93,10 +93,7 @@ class SoftDeleteableWalker extends SqlWalker
         $this->extractComponents($this->getQueryComponents());
     }
 
-    /**
-     * @return AbstractSqlExecutor
-     */
-    public function getExecutor($AST)
+    public function getExecutor($AST): AbstractSqlExecutor
     {
         switch (true) {
             case $AST instanceof DeleteStatement:
@@ -114,10 +111,8 @@ class SoftDeleteableWalker extends SqlWalker
 
     /**
      * Change a DELETE clause for an UPDATE clause
-     *
-     * @return string the SQL
      */
-    public function walkDeleteClause(DeleteClause $deleteClause)
+    public function walkDeleteClause(DeleteClause $deleteClause): string
     {
         $em = $this->getEntityManager();
 

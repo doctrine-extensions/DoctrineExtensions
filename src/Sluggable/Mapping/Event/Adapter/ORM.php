@@ -9,7 +9,7 @@
 
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -51,11 +51,11 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             if (($ubase || 0 === $ubase) && !$mapping) {
                 $qb->andWhere('rec.'.$config['unique_base'].' = :unique_base');
                 $qb->setParameter(':unique_base', $ubase);
-            } elseif ($ubase && $mapping && in_array($mapping['type'], [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE], true)) {
+            } elseif ($ubase && $mapping && in_array($mapping['type'], [ClassMetadata::ONE_TO_ONE, ClassMetadata::MANY_TO_ONE], true)) {
                 $mappedAlias = 'mapped_'.$config['unique_base'];
                 $wrappedUbase = AbstractWrapper::wrap($ubase, $em);
                 $metadata = $wrappedUbase->getMetadata();
-                assert($metadata instanceof ClassMetadataInfo);
+                assert($metadata instanceof ClassMetadata);
                 $qb->innerJoin('rec.'.$config['unique_base'], $mappedAlias);
                 foreach (array_keys($mapping['targetToSourceKeyColumns']) as $i => $mappedKey) {
                     $mappedProp = $metadata->getFieldName($mappedKey);

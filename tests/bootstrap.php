@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
+use Doctrine\ORM\Mapping\Annotation;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /*
@@ -28,5 +29,8 @@ define('TESTS_TEMP_DIR', sys_get_temp_dir().'/doctrine-extension-tests');
 require dirname(__DIR__).'/vendor/autoload.php';
 
 $reader = new AnnotationReader();
+if (!interface_exists(Annotation::class)) {
+    $reader->addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
+}
 $reader = new PsrCachedReader($reader, new ArrayAdapter());
 $_ENV['annotation_reader'] = $reader;

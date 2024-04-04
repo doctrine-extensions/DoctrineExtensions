@@ -22,6 +22,7 @@ use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\AST\SubselectFromClause;
+use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\Exception\RuntimeException;
@@ -116,10 +117,7 @@ class TranslationWalker extends SqlWalker
         $this->extractTranslatedComponents($queryComponents);
     }
 
-    /**
-     * @return Query\Exec\AbstractSqlExecutor
-     */
-    public function getExecutor($AST)
+    public function getExecutor($AST): AbstractSqlExecutor
     {
         // If it's not a Select, the TreeWalker ought to skip it, and just return the parent.
         // @see https://github.com/Atlantic18/DoctrineExtensions/issues/2013
@@ -131,10 +129,7 @@ class TranslationWalker extends SqlWalker
         return new SingleSelectExecutor($AST, $this);
     }
 
-    /**
-     * @return string
-     */
-    public function walkSelectStatement(SelectStatement $AST)
+    public function walkSelectStatement(SelectStatement $AST): string
     {
         $result = parent::walkSelectStatement($AST);
         if ([] === $this->translatedComponents) {
@@ -161,20 +156,14 @@ class TranslationWalker extends SqlWalker
         return $result;
     }
 
-    /**
-     * @return string
-     */
-    public function walkSelectClause($selectClause)
+    public function walkSelectClause($selectClause): string
     {
         $result = parent::walkSelectClause($selectClause);
 
         return $this->replace($this->replacements, $result);
     }
 
-    /**
-     * @return string
-     */
-    public function walkFromClause($fromClause)
+    public function walkFromClause($fromClause): string
     {
         $result = parent::walkFromClause($fromClause);
         $result .= $this->joinTranslations($fromClause);
@@ -182,48 +171,33 @@ class TranslationWalker extends SqlWalker
         return $result;
     }
 
-    /**
-     * @return string
-     */
-    public function walkWhereClause($whereClause)
+    public function walkWhereClause($whereClause): string
     {
         $result = parent::walkWhereClause($whereClause);
 
         return $this->replace($this->replacements, $result);
     }
 
-    /**
-     * @return string
-     */
-    public function walkHavingClause($havingClause)
+    public function walkHavingClause($havingClause): string
     {
         $result = parent::walkHavingClause($havingClause);
 
         return $this->replace($this->replacements, $result);
     }
 
-    /**
-     * @return string
-     */
-    public function walkOrderByClause($orderByClause)
+    public function walkOrderByClause($orderByClause): string
     {
         $result = parent::walkOrderByClause($orderByClause);
 
         return $this->replace($this->replacements, $result);
     }
 
-    /**
-     * @return string
-     */
-    public function walkSubselect($subselect)
+    public function walkSubselect($subselect): string
     {
         return parent::walkSubselect($subselect);
     }
 
-    /**
-     * @return string
-     */
-    public function walkSubselectFromClause($subselectFromClause)
+    public function walkSubselectFromClause($subselectFromClause): string
     {
         $result = parent::walkSubselectFromClause($subselectFromClause);
         $result .= $this->joinTranslations($subselectFromClause);
@@ -231,20 +205,14 @@ class TranslationWalker extends SqlWalker
         return $result;
     }
 
-    /**
-     * @return string
-     */
-    public function walkSimpleSelectClause($simpleSelectClause)
+    public function walkSimpleSelectClause($simpleSelectClause): string
     {
         $result = parent::walkSimpleSelectClause($simpleSelectClause);
 
         return $this->replace($this->replacements, $result);
     }
 
-    /**
-     * @return string
-     */
-    public function walkGroupByClause($groupByClause)
+    public function walkGroupByClause($groupByClause): string
     {
         $result = parent::walkGroupByClause($groupByClause);
 
@@ -356,7 +324,7 @@ class TranslationWalker extends SqlWalker
                     || (!($this->platform instanceof MySQLPlatform)
                     && !in_array($fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
                     $type = Type::getType($fieldMapping['type']);
-                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration($fieldMapping, $this->platform).')';
+                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration((array) $fieldMapping, $this->platform).')';
                 }
 
                 // Fallback to original if was asked for
