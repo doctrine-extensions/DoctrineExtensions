@@ -461,6 +461,8 @@ class Closure implements Strategy
      * @param array<string, mixed>|AssociationMapping $association
      *
      * @return string|null
+     *
+     * @todo Require an AssociationMapping instance after dropping support for doctrine/orm:<3.0
      */
     protected function getJoinColumnFieldName($association)
     {

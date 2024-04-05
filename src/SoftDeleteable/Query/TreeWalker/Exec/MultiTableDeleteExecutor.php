@@ -32,6 +32,7 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
     {
         parent::__construct($AST, $sqlWalker);
 
+        // @todo: remove check and do not support `_sqlStatements` property after dropping support of doctrine/orm:<2.17
         if (property_exists($this, 'sqlStatements')) {
             $sqlStatements = $this->sqlStatements;
         } else {
@@ -57,6 +58,7 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
             }
         }
 
+        // @todo: remove check and do not support `_sqlStatements` property after dropping support of doctrine/orm:<2.17
         if (property_exists($this, 'sqlStatements')) {
             $this->sqlStatements = $sqlStatements;
         } else {

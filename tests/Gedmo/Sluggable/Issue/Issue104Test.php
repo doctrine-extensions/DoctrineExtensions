@@ -30,6 +30,7 @@ final class Issue104Test extends BaseTestCaseORM
 
     public function testShouldThrowAnExceptionWhenMappedSuperclassProtectedProperty(): void
     {
+        // @todo: Do not expect `InvalidMappingException` after dropping support for doctrine/orm:<3.0
         $this->expectException(class_exists(LifecycleEventArgs::class) ? InvalidMappingException::class : MappingException::class);
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
