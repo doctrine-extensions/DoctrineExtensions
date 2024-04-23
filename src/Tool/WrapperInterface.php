@@ -101,4 +101,13 @@ interface WrapperInterface
      * @return bool
      */
     public function isEmbeddedAssociation($field);
+
+    /**
+     * Checks if association is a collection of embedded objects.
+     *
+     * @param string $field
+     *
+     * @return bool
+     */
+    public function isEmbeddedCollectionAssociation($field);
 }

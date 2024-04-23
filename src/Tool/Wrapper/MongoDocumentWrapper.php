@@ -101,6 +101,11 @@ class MongoDocumentWrapper extends AbstractWrapper
         return $this->getMetadata()->isSingleValuedEmbed($field);
     }
 
+    public function isEmbeddedCollectionAssociation($field)
+    {
+        return $this->getMetadata()->isCollectionValuedEmbed($field);
+    }
+
     /**
      * Initialize the document if it is proxy
      * required when is detached or not initialized

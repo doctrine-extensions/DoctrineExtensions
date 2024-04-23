@@ -9,6 +9,7 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Exception\RuntimeException;
@@ -41,7 +42,9 @@ class LogEntryRepository extends DocumentRepository
      * Loads all log entries for the
      * given $document
      *
-     * @param object $document
+     * @param object   $document
+     * @param int|null $limit
+     * @param int|null $skip
      *
      * @return LogEntry[]
      *
@@ -49,7 +52,7 @@ class LogEntryRepository extends DocumentRepository
      *
      * @phpstan-return array<array-key, LogEntry<T>>
      */
-    public function getLogEntries($document)
+    public function getLogEntries($document, $limit = null, $skip = null)
     {
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         $objectId = $wrapped->getIdentifier();
@@ -58,6 +61,12 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($wrapped->getMetadata()->getName());
         $qb->sort('version', 'DESC');
+        if ($limit) {
+            $qb->limit($limit);
+        }
+        if ($skip) {
+            $qb->skip($skip);
+        }
 
         return $qb->getQuery()->getIterator()->toArray();
     }
@@ -97,7 +106,15 @@ class LogEntryRepository extends DocumentRepository
 
         $data = [[]];
         while ($log = array_shift($logs)) {
-            $data[] = $log->getData();
+            $logData = $log->getData();
+            foreach ($logData as $field => $value) {
+                if ($value && $wrapped->isEmbeddedCollectionAssociation($field)) {
+                    foreach ($value as $i => $item) {
+                        $logData[$field][$i] = array_merge(@$data[$field][$i] ?: [], $item);
+                    }
+                }
+            }
+            $data[] = $logData;
         }
         $data = array_merge(...$data);
         $this->fillDocument($document, $data);
@@ -128,15 +145,16 @@ class LogEntryRepository extends DocumentRepository
             }
             $mapping = $objectMeta->getFieldMapping($field);
             // Fill the embedded document
-            if ($wrapped->isEmbeddedAssociation($field)) {
+            if ($wrapped->isEmbeddedCollectionAssociation($field)) {
                 if (!empty($value)) {
-                    assert(class_exists($mapping['targetDocument']));
-
-                    $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
-                    $document = $embeddedMetadata->newInstance();
-                    $this->fillDocument($document, $value);
-                    $value = $document;
+                    $items = [];
+                    foreach ($value as $item) {
+                        $items[] = $this->fillEmbeddedDocument($item, $mapping);
+                    }
+                    $value = new ArrayCollection($items);
                 }
+            } elseif ($wrapped->isEmbeddedAssociation($field)) {
+                $value = $this->fillEmbeddedDocument($value, $mapping);
             } elseif ($objectMeta->isSingleValuedAssociation($field)) {
                 assert(class_exists($mapping['targetDocument']));
 
@@ -151,6 +169,27 @@ class LogEntryRepository extends DocumentRepository
             throw new \Gedmo\Exception\UnexpectedValueException('Cound not fully revert the document to version: '.$version);
         }
         */
+    }
+
+    /**
+     * @param array<string, mixed> $value
+     * @param array<string, mixed> $mapping
+     *
+     * @return ?object
+     */
+    protected function fillEmbeddedDocument($value, $mapping)
+    {
+        if (!empty($value)) {
+            assert(class_exists($mapping['targetDocument']));
+
+            $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
+            $document = $embeddedMetadata->newInstance();
+            $this->fillDocument($document, $value);
+
+            return $document;
+        }
+
+        return null;
     }
 
     /**

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Loggable\Fixture\Document;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Loggable\Loggable;
@@ -51,6 +52,22 @@ class Article implements Loggable
     #[Gedmo\Versioned]
     private ?Author $author = null;
 
+    /**
+     * @var ?ArrayCollection<array-key, Reference>
+     *
+     * @ODM\EmbedMany(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Reference")
+     *
+     * @Gedmo\Versioned
+     */
+    #[ODM\EmbedMany(targetDocument: Reference::class)]
+    #[Gedmo\Versioned]
+    private ?ArrayCollection $references;
+
+    public function __construct()
+    {
+        $this->references = new ArrayCollection();
+    }
+
     public function __toString()
     {
         return $this->title;
@@ -79,5 +96,21 @@ class Article implements Loggable
     public function getAuthor(): ?Author
     {
         return $this->author;
+    }
+
+    /**
+     * @param ?ArrayCollection<array-key, Reference> $references
+     */
+    public function setReferences(?ArrayCollection $references): void
+    {
+        $this->references = $references;
+    }
+
+    /**
+     * @return ?ArrayCollection<array-key, Reference>
+     */
+    public function getReferences(): ?ArrayCollection
+    {
+        return $this->references;
     }
 }
