@@ -22,7 +22,6 @@ use Doctrine\ORM\Mapping as ORM;
 trait SoftDeleteableEntity
 {
     /**
-     * @ORM\Column(type="datetime", nullable=true)
      *
      * @var DateTime|null
      */
