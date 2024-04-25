@@ -12,6 +12,7 @@ namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
@@ -38,11 +39,11 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
     /**
      * Generates current timestamp for the specified mapping
      *
-     * @param array<string, mixed> $mapping
+     * @param FieldMapping $mapping
      *
      * @return \DateTimeInterface|int
      */
-    private function getRawDateValue(array $mapping)
+    private function getRawDateValue(FieldMapping $mapping)
     {
         if (isset($mapping['type']) && 'integer' === $mapping['type']) {
             return time();
