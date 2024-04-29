@@ -1,14 +1,13 @@
 # IpTraceable behavior extension for Doctrine
 
 **IpTraceable** behavior will automate the update of IP trace
-on your Entities or Documents. It works through annotations and can update
+on your Entities or Documents. It works through annotations or attributes and can update
 fields on creation, update, property subset update, or even on specific property value change.
 
-This is very similar to Timestampable but sets a string.
+This is very similar to the Timestampable behavior.
 
 Note that you need to set the IP on the IpTraceableListener (unless you use the
-Symfony extension which does automatically assign the current request IP).
-
+Symfony bundle which automatically assigns the current request IP).
 
 Features:
 
@@ -17,16 +16,16 @@ Features:
 - Specific attributes and annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
 - Can be nested with other behaviors
-- Attribute, Annotation and Xml mapping support for extensions
+- Attribute, Annotation and XML mapping support for extensions
 
-This article will cover the basic installation and functionality of **IpTraceable** behavior
+This article will cover the basic installation and functionality of the **IpTraceable** behavior
 
 Content:
 
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
-- [Xml](#xml-mapping) mapping example
+- [XML](#xml-mapping) mapping example
 - Advanced usage [examples](#advanced-examples)
 - Using [Traits](#traits)
 
@@ -36,7 +35,7 @@ Content:
 
 Read the [documentation](./annotations.md#em-setup)
 or check the [example code](../example)
-on how to setup and use the extensions in most optimized way.
+on how to set up and use the extensions.
 
 <a name="entity-mapping"></a>
 
@@ -58,11 +57,11 @@ should be updated
 - **value** - only valid if **on="change"** is specified and the tracked field is a single field (not an array), if the tracked field has this **value**
 then it updates the trace
 
-**Note:** that IpTraceable interface is not necessary, except in cases there
-you need to identify entity as being IpTraceable. The metadata is loaded only once then
-cache is activated
+**Note:** the IpTraceable interface is not necessary, except in cases where
+you need to identify the object as being IpTraceable in your application.
+The metadata is loaded only once when the cache is activated.
 
-**Note:** these examples are using annotations and attributes for mapping, you should use
+**Note:** these examples are using annotations and attributes for mapping, you should only use
 one of them, not both.
 
 Column is a string field:
@@ -91,7 +90,7 @@ class Article
     private $id;
 
     /**
- *   * @var string|null
+     * @var string|null
      * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
@@ -256,7 +255,7 @@ Now on update and creation these annotated fields will be automatically updated
 
 <a name="xml-mapping"></a>
 
-## Xml mapping example
+## XML mapping example
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -268,13 +267,13 @@ Now on update and creation these annotated fields will be automatically updated
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="createdFromIp" type="string", length="45", nullable="true">
+        <field name="createdFromIp" type="string" length="45" nullable="true">
             <gedmo:ip-traceable on="create"/>
         </field>
-        <field name="updatedFromIp" type="string", length="45", nullable="true">
+        <field name="updatedFromIp" type="string" length="45" nullable="true">
             <gedmo:ip-traceable on="update"/>
         </field>
-        <field name="publishedFromIp" type="string" nullable="true", length="45">
+        <field name="publishedFromIp" type="string" nullable="true" length="45">
             <gedmo:ip-traceable on="change" field="status.title" value="Published"/>
         </field>
 
@@ -423,7 +422,7 @@ class Article
 }
 ```
 
-Now few operations to get it all done:
+Now a few operations to get it all done:
 
 ```php
 <?php
@@ -455,12 +454,12 @@ Easy like that, any suggestions on improvements are very welcome
 
 ## Traits
 
-You can use IpTraceable traits for quick **createdFromIp** **updatedFromIp** string definitions
-when using annotation mapping.
-There is also a trait without annotations for easy integration purposes.
+You can use the IpTraceable traits to quickly add **createdFromIp** and **updatedFromIp** fields to your objects
+when using annotation or attribute mapping.
 
-**Note:** this feature is only available since php **5.4.0**. And you are not required
-to use the Traits provided by extensions.
+There is also a trait without annotation or attribute mappings for easy integration.
+
+**Note:** You are not required to use the traits provided by extensions.
 
 ```php
 <?php
@@ -500,9 +499,9 @@ own Traits specific to your project. The ones provided by this bundle can be use
 
 ## Example of implementation in Symfony
 
-In your Sf2 application, declare an event subscriber that automatically set IP value on IpTraceableListener.
+In your Symfony application, declare an event subscriber that automatically sets the IP address value on IpTraceableListener.
 
-### Code of subscriber class
+### Example event subscriber class
 
 ```php
 <?php
@@ -510,7 +509,7 @@ In your Sf2 application, declare an event subscriber that automatically set IP v
 namespace Acme\DemoBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -522,37 +521,29 @@ use Gedmo\IpTraceable\IpTraceableListener;
 class IpTraceSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Request
-     */
-    private $request;
-
-    /**
      * @var IpTraceableListener
      */
     private $ipTraceableListener;
 
-    public function __construct(IpTraceableListener $ipTraceableListener, Request $request = null)
+    public function __construct(IpTraceableListener $ipTraceableListener)
     {
         $this->ipTraceableListener = $ipTraceableListener;
-        $this->request = $request;
     }
 
     /**
-     * Set the username from the security context by listening on core.request
-     *
-     * @param GetResponseEvent $event
+     * Set the IP address during the `kernel.request` event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
-        if (null === $this->request) {
+        // Generally, the listener should only be updated during the main request
+        if (!$event->isMainRequest()) {
             return;
         }
 
         // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method
-        // $this->request->setTrustedProxies(array('127.0.0.1'));
+        // $event->getRequest()->setTrustedProxies(array('127.0.0.1'));
 
-        // $ip = $_SERVER['REMOTE_ADDR'];
-        $ip = $this->request->getClientIp();
+        $ip = $event->getRequest()->getClientIp();
 
         if (null !== $ip) {
             $this->ipTraceableListener->setIpValue($ip);
@@ -579,23 +570,26 @@ class IpTraceSubscriber implements EventSubscriberInterface
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="alterphp_doctrine_extensions.event_listener.ip_trace.class">Acme\DemoBundle\EventListener\IpTraceListener</parameter>
+        <parameter key="acme_doctrine_extensions.event_listener.ip_trace.class">Acme\DemoBundle\EventListener\IpTraceListener</parameter>
     </parameters>
 
     <services>
 
-        ...
+        <!-- If your application is using PHP 8 and attributes, you can provide this attribute reader to the listener instead of an annotation reader -->
+        <service id="gedmo_doctrine_extensions.mapping.driver.attribute" class="Gedmo\Mapping\Driver\AttributeReader" public="false" />
 
         <service id="gedmo_doctrine_extensions.listener.ip_traceable" class="Gedmo\IpTraceable\IpTraceableListener" public="false">
             <tag name="doctrine.event_subscriber" connection="default" />
             <call method="setAnnotationReader">
+                <!-- Uncomment the below argument if using attributes, and comment the argument for the annotation reader -->
+                <!-- <argument type="service" id="gedmo_doctrine_extensions.mapping.driver.attribute" /> -->
+                <!-- The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0 -->
                 <argument type="service" id="annotation_reader" />
             </call>
         </service>
 
-        <service id="alterphp_doctrine_extensions.event_listener.ip_trace" class="%alterphp_doctrine_extensions.event_listener.ip_trace.class%" public="false" scope="request">
+        <service id="acme_doctrine_extensions.event_listener.ip_trace" class="%acme_doctrine_extensions.event_listener.ip_trace.class%" public="false">
             <argument type="service" id="gedmo_doctrine_extensions.listener.ip_traceable" />
-            <argument type="service" id="request" on-invalid="null" />
             <tag name="kernel.event_subscriber" />
         </service>
 

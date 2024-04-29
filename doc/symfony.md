@@ -151,6 +151,10 @@ in the bundle, it depends on your preferences. Edit **config/packages/doctrine_e
 # services to handle doctrine extensions
 # import it in config/packages/doctrine_extensions.yaml
 services:
+    # Attribute mapping driver for the Doctrine Extension listeners
+    gedmo.mapping.driver.attribute:
+        class: Gedmo\Mapping\Driver\AttributeReader
+
     # Doctrine Extension listeners to handle behaviors
     gedmo.listener.tree:
         class: Gedmo\Tree\TreeListener
@@ -164,6 +168,9 @@ services:
             - { name: doctrine.event_listener, event: 'postUpdate'}
             - { name: doctrine.event_listener, event: 'postRemove'}
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     Gedmo\Translatable\TranslatableListener:
@@ -174,7 +181,11 @@ services:
             - { name: doctrine.event_listener, event: 'onFlush' }
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
             - [ setDefaultLocale, [ "%locale%" ] ]
             - [ setTranslationFallback, [ false ] ]
 
@@ -185,6 +196,9 @@ services:
             - { name: doctrine.event_listener, event: 'onFlush' }
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sluggable:
@@ -194,6 +208,9 @@ services:
             - { name: doctrine.event_listener, event: 'onFlush' }
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sortable:
@@ -207,6 +224,9 @@ services:
             - { name: doctrine.event_listener, event: 'postRemove' }
             - { name: doctrine.event_listener, event: 'postFlush' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.softdeleteable:
@@ -215,6 +235,9 @@ services:
             - { name: doctrine.event_listener, event: 'onFlush' }
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
             
     Gedmo\Loggable\LoggableListener:
@@ -223,6 +246,9 @@ services:
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
             - { name: doctrine.event_listener, event: 'postPersist' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     Gedmo\Blameable\BlameableListener:
@@ -231,6 +257,9 @@ services:
             - { name: doctrine.event_listener, event: 'onFlush' }
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
             
     Gedmo\IpTraceable\IpTraceableListener:
@@ -239,7 +268,10 @@ services:
             - { name: doctrine.event_listener, event: 'onFlush' }
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
-            - [ setAnnotationReader, [ "@annotation_reader" ] ]            
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
 ```
 
@@ -258,12 +290,16 @@ You also need to manually tag the listeners. Otherwise, the listeners will not b
 of Doctrine.
 
 ```yaml
-Gedmo\Loggable\LoggableListener:
+services:
+    Gedmo\Loggable\LoggableListener:
         tags:
             - { name: doctrine_mongodb.odm.event_listener, event: 'onFlush' }
             - { name: doctrine_mongodb.odm.event_listener, event: 'loadClassMetadata' }
             - { name: doctrine_mongodb.odm.event_listener, event: 'postPersist' }
         calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 ```
 
