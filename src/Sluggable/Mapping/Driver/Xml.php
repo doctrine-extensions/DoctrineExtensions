@@ -135,6 +135,8 @@ class Xml extends BaseXml
                     $this->_getAttribute($slug, 'dateFormat') : 'Y-m-d-H:i',
                 'unique' => $this->_isAttributeSet($slug, 'unique') ?
                     $this->_getBooleanAttribute($slug, 'unique') : true,
+                'uniqueOverTranslations' => $this->_isAttributeSet($slug, 'uniqueOverTranslations') ?
+                    $this->_getBooleanAttribute($slug, 'uniqueOverTranslations') : false,
                 'unique_base' => $this->_isAttributeSet($slug, 'unique-base') ?
                     $this->_getAttribute($slug, 'unique-base') : null,
                 'separator' => $this->_isAttributeSet($slug, 'separator') ?

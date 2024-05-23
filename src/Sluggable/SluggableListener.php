@@ -43,6 +43,7 @@ use Gedmo\Sluggable\Util\Urlizer;
  *     dateFormat?: string,
  *     updatable?: bool,
  *     unique?: bool,
+ *     uniqueOverTranslations?: bool,
  *     unique_base?: string,
  *     separator?: string,
  *     prefix?: string,

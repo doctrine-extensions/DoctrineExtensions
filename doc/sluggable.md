@@ -272,6 +272,7 @@ echo $article->getSlug();
 - **fields** (required, default=[]) - list of fields for slug
 - **updatable** (optional, default=true) - **true** to update the slug on sluggable field changes, **false** - otherwise
 - **unique** (optional, default=true) - **true** if slug should be unique and if identical it will be suffixed, **false** - otherwise
+- **uniqueOverTranslations** (optional, default=false) - **true** if slug should be unique over translations and if identical it will be suffixed, **false** - otherwise
 - **unique_base** (optional, default=null) - used in conjunction with **unique**. The name of the entity property that should be used as a key when doing a uniqueness check.
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **prefix** (optional, default="") - prefix which will be added to the generated slug
@@ -584,7 +585,7 @@ class Article
     /**
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title", "code"})
-     * @ORM\Column(length=128, unique=true)
+     * @ORM\Column(length=128, unique=true, uniqueOverTranslations=true)
      */
     private $slug;
 
@@ -595,7 +596,7 @@ class Article
 
     /**
      * @Gedmo\Slug(fields={"uniqueTitle"}, prefix="some-prefix-")
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(type="string", length=128, unique=true, uniqueOverTranslations=true)
      */
     private $uniqueSlug;
 
@@ -641,6 +642,8 @@ class Article
 Now the generated slug will be translated by Translatable behavior
 
 <a name="slug-handlers"></a>
+
+`uniqueOverTranslations` option is used to ensure that the slug is unique for each translated slugs.
 
 ## Using slug handlers:
 
