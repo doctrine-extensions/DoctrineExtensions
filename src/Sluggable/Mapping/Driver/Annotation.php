@@ -202,12 +202,12 @@ class Annotation extends AbstractAnnotationDriver
             'dateFormat' => $slug->dateFormat,
             'updatable' => $slug->updatable,
             'unique' => $slug->unique,
-            'uniqueOverTranslations' => $slug->uniqueOverTranslations,
             'unique_base' => $slug->unique_base,
             'separator' => $slug->separator,
             'prefix' => $slug->prefix,
             'suffix' => $slug->suffix,
             'handlers' => $handlers,
+            'uniqueOverTranslations' => $slug->uniqueOverTranslations,
         ];
 
         return $config;

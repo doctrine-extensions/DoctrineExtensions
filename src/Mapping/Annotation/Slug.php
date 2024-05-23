@@ -59,13 +59,13 @@ final class Slug implements GedmoAnnotation
         bool $updatable = true,
         string $style = 'default',
         bool $unique = true,
-        bool $uniqueOverTranslations = false,
         ?string $unique_base = null,
         string $separator = '-',
         string $prefix = '',
         string $suffix = '',
         array $handlers = [],
-        string $dateFormat = 'Y-m-d-H:i'
+        string $dateFormat = 'Y-m-d-H:i',
+        bool $uniqueOverTranslations = false
     ) {
         if ([] !== $data) {
             Deprecation::trigger(
@@ -81,13 +81,13 @@ final class Slug implements GedmoAnnotation
             $this->updatable = $this->getAttributeValue($data, 'updatable', $args, 2, $updatable);
             $this->style = $this->getAttributeValue($data, 'style', $args, 3, $style);
             $this->unique = $this->getAttributeValue($data, 'unique', $args, 4, $unique);
-            $this->uniqueOverTranslations = $this->getAttributeValue($data, 'uniqueOverTranslations', $args, 5, $uniqueOverTranslations);
-            $this->unique_base = $this->getAttributeValue($data, 'unique_base', $args, 6, $unique_base);
-            $this->separator = $this->getAttributeValue($data, 'separator', $args, 7, $separator);
-            $this->prefix = $this->getAttributeValue($data, 'prefix', $args, 8, $prefix);
-            $this->suffix = $this->getAttributeValue($data, 'suffix', $args, 9, $suffix);
-            $this->handlers = $this->getAttributeValue($data, 'handlers', $args, 10, $handlers);
-            $this->dateFormat = $this->getAttributeValue($data, 'dateFormat', $args, 11, $dateFormat);
+            $this->unique_base = $this->getAttributeValue($data, 'unique_base', $args, 5, $unique_base);
+            $this->separator = $this->getAttributeValue($data, 'separator', $args, 6, $separator);
+            $this->prefix = $this->getAttributeValue($data, 'prefix', $args, 7, $prefix);
+            $this->suffix = $this->getAttributeValue($data, 'suffix', $args, 8, $suffix);
+            $this->handlers = $this->getAttributeValue($data, 'handlers', $args, 9, $handlers);
+            $this->dateFormat = $this->getAttributeValue($data, 'dateFormat', $args, 10, $dateFormat);
+            $this->uniqueOverTranslations = $this->getAttributeValue($data, 'uniqueOverTranslations', $args, 11, $uniqueOverTranslations);
 
             return;
         }

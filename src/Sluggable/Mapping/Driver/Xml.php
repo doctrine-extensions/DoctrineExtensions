@@ -135,8 +135,6 @@ class Xml extends BaseXml
                     $this->_getAttribute($slug, 'dateFormat') : 'Y-m-d-H:i',
                 'unique' => $this->_isAttributeSet($slug, 'unique') ?
                     $this->_getBooleanAttribute($slug, 'unique') : true,
-                'uniqueOverTranslations' => $this->_isAttributeSet($slug, 'uniqueOverTranslations') ?
-                    $this->_getBooleanAttribute($slug, 'uniqueOverTranslations') : false,
                 'unique_base' => $this->_isAttributeSet($slug, 'unique-base') ?
                     $this->_getAttribute($slug, 'unique-base') : null,
                 'separator' => $this->_isAttributeSet($slug, 'separator') ?
@@ -146,6 +144,8 @@ class Xml extends BaseXml
                 'suffix' => $this->_isAttributeSet($slug, 'suffix') ?
                     $this->_getAttribute($slug, 'suffix') : '',
                 'handlers' => $handlers,
+                'uniqueOverTranslations' => $this->_isAttributeSet($slug, 'uniqueOverTranslations') ?
+                    $this->_getBooleanAttribute($slug, 'uniqueOverTranslations') : false,
             ];
             if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
                 throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->getName()}");
