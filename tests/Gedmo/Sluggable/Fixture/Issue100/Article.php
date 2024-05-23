@@ -49,7 +49,7 @@ class Article implements Sluggable, Translatable
      * @var string|null
      *
      * @Gedmo\Translatable
-     * @Gedmo\Slug(separator="-", updatable=true, fields={"title"}, unique=true)
+     * @Gedmo\Slug(separator="-", updatable=true, fields={"title"}, unique=true, uniqueOverTranslations=true)
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     #[Gedmo\Translatable]
