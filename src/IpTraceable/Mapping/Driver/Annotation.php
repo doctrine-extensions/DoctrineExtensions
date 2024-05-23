@@ -37,6 +37,7 @@ class Annotation extends AbstractAnnotationDriver
      */
     protected $validTypes = [
         'string',
+        'ascii_string',
     ];
 
     public function readExtendedMetadata($meta, array &$config)

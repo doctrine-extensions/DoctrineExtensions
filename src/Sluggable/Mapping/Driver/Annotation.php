@@ -61,6 +61,7 @@ class Annotation extends AbstractAnnotationDriver
         'datetimetz',
         'datetimetz_immutable',
         'citext',
+        'ascii_string',
     ];
 
     public function readExtendedMetadata($meta, array &$config)
