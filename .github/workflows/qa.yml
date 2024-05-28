@@ -19,9 +19,9 @@ jobs:
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: none
-          extensions: mongodb-1.9.0, zip
+          extensions: mongodb, zip
           tools: composer:v2
 
       - name: Install Composer dependencies (highest)
