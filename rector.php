@@ -10,27 +10,22 @@ declare(strict_types=1);
  */
 
 use Rector\Config\RectorConfig;
-use Rector\Set\ValueObject\LevelSetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
+use Rector\ValueObject\PhpVersion;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
+return RectorConfig::configure()
+    ->withPaths([
         __DIR__.'/src',
         __DIR__.'/tests',
         __DIR__.'/example',
-    ]);
-
-    $rectorConfig->sets([
-        LevelSetList::UP_TO_PHP_74,
-    ]);
-
-    $rectorConfig->skip([
+    ])
+    ->withPhpVersion(PhpVersion::PHP_74)
+    ->withPhpSets()
+    ->withSkip([
         TypedPropertyFromAssignsRector::class => [
             __DIR__.'/src/Mapping/MappedEventSubscriber.php', // Rector is trying to set a type on the $annotationReader property which requires a union type, not supported on PHP 7.4
             __DIR__.'/tests/Gedmo/Wrapper/Fixture/Entity/CompositeRelation.php', // @todo: remove this when https://github.com/doctrine/orm/issues/8255 is solved
         ],
-    ]);
-
-    $rectorConfig->importNames();
-    $rectorConfig->importShortClasses(false);
-};
+    ])
+    ->withImportNames(true, true, false)
+;

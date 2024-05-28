@@ -175,7 +175,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $birthdates = [
             new \DateTime(self::KID_DATE1),
             new \DateTime(self::KID_DATE2),
-            ];
+        ];
 
         for ($i = 0; $i < 4; ++$i) {
             $kid = new Kid();
