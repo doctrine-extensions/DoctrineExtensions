@@ -15,6 +15,7 @@ use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
 use Doctrine\ORM\PersistentCollection;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Tool\ORM\Hydration\EntityManagerRetriever;
+use Gedmo\Tool\ORM\Hydration\HydratorCompat;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -27,6 +28,7 @@ use Gedmo\Tree\TreeListener;
 class TreeObjectHydrator extends ObjectHydrator
 {
     use EntityManagerRetriever;
+    use HydratorCompat;
 
     /**
      * @var array<string, mixed>
@@ -66,7 +68,7 @@ class TreeObjectHydrator extends ObjectHydrator
      *
      * @return array<int, object>
      */
-    protected function hydrateAllData()
+    protected function doHydrateAllData()
     {
         $data = parent::hydrateAllData();
 
