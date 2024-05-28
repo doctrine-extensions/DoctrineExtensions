@@ -12,6 +12,7 @@ namespace Gedmo\Translatable\Hydrator\ORM;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator as BaseObjectHydrator;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Tool\ORM\Hydration\EntityManagerRetriever;
+use Gedmo\Tool\ORM\Hydration\HydratorCompat;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -27,21 +28,17 @@ use Gedmo\Translatable\TranslatableListener;
 class ObjectHydrator extends BaseObjectHydrator
 {
     use EntityManagerRetriever;
+    use HydratorCompat;
 
     /**
      * State of skipOnLoad for listener between hydrations
      *
      * @see ObjectHydrator::prepare()
      * @see ObjectHydrator::cleanup()
-     *
-     * @var bool|null
      */
-    private $savedSkipOnLoad;
+    private ?bool $savedSkipOnLoad = null;
 
-    /**
-     * @return void
-     */
-    protected function prepare()
+    protected function doPrepareWithCompat(): void
     {
         $listener = $this->getTranslatableListener();
         $this->savedSkipOnLoad = $listener->isSkipOnLoad();
@@ -49,10 +46,7 @@ class ObjectHydrator extends BaseObjectHydrator
         parent::prepare();
     }
 
-    /**
-     * @return void
-     */
-    protected function cleanup()
+    protected function doCleanupWithCompat(): void
     {
         parent::cleanup();
         $listener = $this->getTranslatableListener();
