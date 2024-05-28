@@ -17,14 +17,21 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\AST\FromClause;
+use Doctrine\ORM\Query\AST\GroupByClause;
+use Doctrine\ORM\Query\AST\HavingClause;
 use Doctrine\ORM\Query\AST\Join;
 use Doctrine\ORM\Query\AST\Node;
+use Doctrine\ORM\Query\AST\OrderByClause;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
+use Doctrine\ORM\Query\AST\SelectClause;
 use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\AST\SimpleSelectClause;
 use Doctrine\ORM\Query\AST\SubselectFromClause;
+use Doctrine\ORM\Query\AST\WhereClause;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\Exception\RuntimeException;
+use Gedmo\Tool\ORM\Walker\SqlWalkerCompat;
 use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableEventAdapter;
@@ -46,6 +53,8 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class TranslationWalker extends SqlWalker
 {
+    use SqlWalkerCompat;
+
     /**
      * Name for translation fallback hint
      *
@@ -131,12 +140,9 @@ class TranslationWalker extends SqlWalker
         return new SingleSelectExecutor($AST, $this);
     }
 
-    /**
-     * @return string
-     */
-    public function walkSelectStatement(SelectStatement $AST)
+    protected function doWalkSelectStatementWithCompat(SelectStatement $selectStatement): string
     {
-        $result = parent::walkSelectStatement($AST);
+        $result = parent::walkSelectStatement($selectStatement);
         if ([] === $this->translatedComponents) {
             return $result;
         }
@@ -161,94 +167,44 @@ class TranslationWalker extends SqlWalker
         return $result;
     }
 
-    /**
-     * @return string
-     */
-    public function walkSelectClause($selectClause)
+    protected function doWalkSelectClauseWithCompat(SelectClause $selectClause): string
     {
-        $result = parent::walkSelectClause($selectClause);
-
-        return $this->replace($this->replacements, $result);
+        return $this->replace($this->replacements, parent::walkSelectClause($selectClause));
     }
 
-    /**
-     * @return string
-     */
-    public function walkFromClause($fromClause)
+    protected function doWalkFromClauseWithCompat(FromClause $fromClause): string
     {
-        $result = parent::walkFromClause($fromClause);
-        $result .= $this->joinTranslations($fromClause);
-
-        return $result;
+        return parent::walkFromClause($fromClause).$this->joinTranslations($fromClause);
     }
 
-    /**
-     * @return string
-     */
-    public function walkWhereClause($whereClause)
+    protected function doWalkWhereClauseWithCompat(?WhereClause $whereClause): string
     {
-        $result = parent::walkWhereClause($whereClause);
-
-        return $this->replace($this->replacements, $result);
+        return $this->replace($this->replacements, parent::walkWhereClause($whereClause));
     }
 
-    /**
-     * @return string
-     */
-    public function walkHavingClause($havingClause)
+    protected function doWalkHavingClauseWithCompat(HavingClause $havingClause): string
     {
-        $result = parent::walkHavingClause($havingClause);
-
-        return $this->replace($this->replacements, $result);
+        return $this->replace($this->replacements, parent::walkHavingClause($havingClause));
     }
 
-    /**
-     * @return string
-     */
-    public function walkOrderByClause($orderByClause)
+    protected function doWalkOrderByClauseWithCompat(OrderByClause $orderByClause): string
     {
-        $result = parent::walkOrderByClause($orderByClause);
-
-        return $this->replace($this->replacements, $result);
+        return $this->replace($this->replacements, parent::walkOrderByClause($orderByClause));
     }
 
-    /**
-     * @return string
-     */
-    public function walkSubselect($subselect)
+    protected function doWalkSubselectFromClauseWithCompat(SubselectFromClause $subselectFromClause): string
     {
-        return parent::walkSubselect($subselect);
+        return parent::walkSubselectFromClause($subselectFromClause).$this->joinTranslations($subselectFromClause);
     }
 
-    /**
-     * @return string
-     */
-    public function walkSubselectFromClause($subselectFromClause)
+    protected function doWalkSimpleSelectClauseWithCompat(SimpleSelectClause $simpleSelectClause): string
     {
-        $result = parent::walkSubselectFromClause($subselectFromClause);
-        $result .= $this->joinTranslations($subselectFromClause);
-
-        return $result;
+        return $this->replace($this->replacements, parent::walkSimpleSelectClause($simpleSelectClause));
     }
 
-    /**
-     * @return string
-     */
-    public function walkSimpleSelectClause($simpleSelectClause)
+    protected function doWalkGroupByClauseWithCompat(GroupByClause $groupByClause): string
     {
-        $result = parent::walkSimpleSelectClause($simpleSelectClause);
-
-        return $this->replace($this->replacements, $result);
-    }
-
-    /**
-     * @return string
-     */
-    public function walkGroupByClause($groupByClause)
-    {
-        $result = parent::walkGroupByClause($groupByClause);
-
-        return $this->replace($this->replacements, $result);
+        return $this->replace($this->replacements, parent::walkGroupByClause($groupByClause));
     }
 
     /**
