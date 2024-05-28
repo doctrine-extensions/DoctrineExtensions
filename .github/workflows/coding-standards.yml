@@ -19,7 +19,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
-          php-version: "8.1"
+          php-version: "8.3"
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
@@ -40,7 +40,7 @@ jobs:
       - name: "Install PHP"
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2"
+          php-version: "8.3"
           coverage: "none"
           tools: "composer:v2"
 
@@ -65,7 +65,7 @@ jobs:
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: none
           tools: composer:v2, composer-normalize:2
         env:
