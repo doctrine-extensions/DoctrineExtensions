@@ -66,6 +66,7 @@
         "phpunit/phpunit": "^9.6",
         "rector/rector": "^1.1",
         "symfony/console": "^5.4 || ^6.0 || ^7.0",
+        "symfony/doctrine-bridge": "^5.4 || ^6.0 || ^7.0",
         "symfony/phpunit-bridge": "^6.0 || ^7.0",
         "symfony/uid": "^5.4 || ^6.0 || ^7.0",
         "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
