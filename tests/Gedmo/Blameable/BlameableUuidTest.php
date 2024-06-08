@@ -45,7 +45,7 @@ final class BlameableUuidTest extends BaseTestCaseORM
         $company = new Company();
         $company->setName('ACME');
 
-        self::assertInstanceOf(Blameable::class, $company);
+        static::assertInstanceOf(Blameable::class, $company);
 
         $this->em->persist($company);
         $this->em->flush();
@@ -58,7 +58,7 @@ final class BlameableUuidTest extends BaseTestCaseORM
         $created = $foundCompany->getCreated();
         $createdUuid = $created instanceof Uuid ? $created->toRfc4122() : null;
 
-        self::assertSame($this->uuid->toRfc4122(), $createdUuid);
+        static::assertSame($this->uuid->toRfc4122(), $createdUuid);
     }
 
     protected function getUsedEntityFixtures(): array
