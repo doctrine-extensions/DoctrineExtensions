@@ -48,6 +48,7 @@ class Company implements Blameable
      * @var UuidV6|null
      *
      * @Gedmo\Blameable(on="create")
+     *
      * @ORM\Column(name="created", type="uuid")
      */
     #[ORM\Column(name: 'created', type: 'uuid')]

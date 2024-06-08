@@ -12,8 +12,8 @@ declare(strict_types=1);
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\DBAL\Types\Type;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /*
  * This is bootstrap for phpUnit unit tests,
