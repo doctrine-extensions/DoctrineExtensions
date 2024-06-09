@@ -21,9 +21,9 @@ parameters:
 			path: src/AbstractTrackingListener.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
+			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Blameable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
-			path: src/Blameable/Mapping/Driver/Annotation.php
+			path: src/Blameable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
@@ -44,11 +44,6 @@ parameters:
 			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
 			count: 2
 			path: src/DoctrineExtensions.php
-
-		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/IpTraceable/Mapping/Driver/Annotation.php
 
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
@@ -451,9 +446,9 @@ parameters:
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
+			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Timestampable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
-			path: src/Timestampable/Mapping/Driver/Annotation.php
+			path: src/Timestampable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
