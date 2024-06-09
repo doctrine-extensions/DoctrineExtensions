@@ -16,6 +16,7 @@ use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\FromClause;
 use Doctrine\ORM\Query\AST\GroupByClause;
 use Doctrine\ORM\Query\AST\HavingClause;
@@ -27,7 +28,9 @@ use Doctrine\ORM\Query\AST\SelectClause;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\AST\SimpleSelectClause;
 use Doctrine\ORM\Query\AST\SubselectFromClause;
+use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\AST\WhereClause;
+use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\Exception\RuntimeException;
@@ -126,18 +129,20 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * @return Query\Exec\AbstractSqlExecutor
+     * Gets an executor that can be used to execute the result of this walker.
+     *
+     * @param SelectStatement|UpdateStatement|DeleteStatement $statement
      */
-    public function getExecutor($AST)
+    protected function doGetExecutorWithCompat($statement): AbstractSqlExecutor
     {
         // If it's not a Select, the TreeWalker ought to skip it, and just return the parent.
-        // @see https://github.com/Atlantic18/DoctrineExtensions/issues/2013
-        if (!$AST instanceof SelectStatement) {
-            return parent::getExecutor($AST);
+        // @see https://github.com/doctrine-extensions/DoctrineExtensions/issues/2013
+        if (!$statement instanceof SelectStatement) {
+            return parent::getExecutor($statement);
         }
         $this->prepareTranslatedComponents();
 
-        return new SingleSelectExecutor($AST, $this);
+        return new SingleSelectExecutor($statement, $this);
     }
 
     protected function doWalkSelectStatementWithCompat(SelectStatement $selectStatement): string
@@ -312,7 +317,9 @@ class TranslationWalker extends SqlWalker
                     || (!($this->platform instanceof MySQLPlatform)
                     && !in_array($fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
                     $type = Type::getType($fieldMapping['type']);
-                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration($fieldMapping, $this->platform).')';
+
+                    // In ORM 2.x, $fieldMapping is an array. In ORM 3.x, it's a data object. Always cast to an array for compatibility across versions.
+                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration((array) $fieldMapping, $this->platform).')';
                 }
 
                 // Fallback to original if was asked for
