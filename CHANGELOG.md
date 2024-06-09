@@ -23,8 +23,6 @@ a release.
 - Blameable: Allow ascii_string to validTypes (issue #2726)
 - Sluggable: Allow ascii_string to validTypes
 - IpTraceable: Allow ascii_string to validTypes
-
-### Added
 - Sluggable: Use `TranslationWalker` hint when looking for similar slugs (`getSimilarSlugs` method) for entities which implement `Translatable` interface and have `uniqueOverTranslations: true` Slug option (#100, #2530)
 
 ## [3.15.0]
@@ -82,7 +80,6 @@ a release.
 ### Fixed
 - Tree: Creation of dynamic `Node::$sibling` property, which is deprecated as of PHP >= 8.2
 - Return type from `TranslationProxy::__set()` in order to honor its original signature (`void`)
-- Sluggable: Use `TranslationWalker` hint only for Translatable objects when looking for similar slugs (`getSimilarSlugs` method)
 
 ### Deprecated
 - Tree: Not implementing `Node` interface in classes that are used as nodes
