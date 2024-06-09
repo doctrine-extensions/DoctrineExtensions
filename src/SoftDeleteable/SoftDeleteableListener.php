@@ -15,6 +15,7 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -92,7 +93,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 if ($evm->hasListeners(self::PRE_SOFT_DELETE)) {
                     // @todo: in the next major remove check and only instantiate the event
-                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class)
+                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($om, $evm, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class)
                         ? new PreSoftDeleteEventArgs($object, $om)
                         : $ea->createLifecycleEventArgsInstance($object, $om);
 
@@ -116,7 +117,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 if ($evm->hasListeners(self::POST_SOFT_DELETE)) {
                     // @todo: in the next major remove check and only instantiate the event
-                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($evm, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class)
+                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($om, $evm, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class)
                         ? new PostSoftDeleteEventArgs($object, $om)
                         : $ea->createLifecycleEventArgsInstance($object, $om);
 
@@ -149,8 +150,12 @@ class SoftDeleteableListener extends MappedEventSubscriber
     }
 
     /** @param class-string $eventClass */
-    private function hasToDispatchNewEvent(EventManager $eventManager, string $eventName, string $eventClass): bool
+    private function hasToDispatchNewEvent(ObjectManager $objectManager, EventManager $eventManager, string $eventName, string $eventClass): bool
     {
+        if ($objectManager instanceof EntityManagerInterface && !class_exists(LifecycleEventArgs::class)) {
+            return true;
+        }
+
         foreach ($eventManager->getListeners($eventName) as $listener) {
             $reflMethod = new \ReflectionMethod($listener, $eventName);
 
