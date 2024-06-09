@@ -54,7 +54,7 @@ if ((new \ReflectionClass(AbstractHydrator::class))->getMethod('onClear')->hasRe
         /**
          * Hydrates all rows from the current statement instance at once.
          */
-        protected function hydrateAllData(): mixed
+        protected function hydrateAllData(): array
         {
             return $this->doHydrateAllData();
         }
