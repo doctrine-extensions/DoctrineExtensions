@@ -12,8 +12,9 @@ namespace Gedmo\Tree\Strategy\ORM;
 use Doctrine\DBAL\Connection;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -127,7 +128,7 @@ class Closure implements Strategy
                 'inversedBy' => null,
                 'targetEntity' => $meta->getName(),
                 'cascade' => null,
-                'fetch' => ClassMetadataInfo::FETCH_LAZY,
+                'fetch' => ORMClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($ancestorMapping);
             $closureMetadata->reflFields['ancestor'] = $cmf
@@ -165,7 +166,7 @@ class Closure implements Strategy
                 'inversedBy' => null,
                 'targetEntity' => $meta->getName(),
                 'cascade' => null,
-                'fetch' => ClassMetadataInfo::FETCH_LAZY,
+                'fetch' => ORMClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($descendantMapping);
             $closureMetadata->reflFields['descendant'] = $cmf
@@ -187,10 +188,14 @@ class Closure implements Strategy
 
             // create unique index on ancestor and descendant
             $indexName = substr(strtoupper('IDX_'.md5($closureMetadata->getName())), 0, 20);
+
+            $ancestorAssociationMapping = $em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor');
+            $descendantAssociationMapping = $em->getClassMetadata($config['closure'])->getAssociationMapping('descendant');
+
             $closureMetadata->table['uniqueConstraints'][$indexName] = [
                 'columns' => [
-                    $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor')),
-                    $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant')),
+                    $this->getJoinColumnFieldName(is_array($ancestorAssociationMapping) ? $ancestorAssociationMapping : clone $ancestorAssociationMapping),
+                    $this->getJoinColumnFieldName(is_array($descendantAssociationMapping) ? $descendantAssociationMapping : clone $descendantAssociationMapping),
                 ],
             ];
         }
@@ -292,8 +297,11 @@ class Closure implements Strategy
             $closureMeta = $em->getClassMetadata($closureClass);
             $closureTable = $closureMeta->getTableName();
 
-            $ancestorColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor'));
-            $descendantColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'));
+            $ancestorAssociationMapping = $em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor');
+            $descendantAssociationMapping = $em->getClassMetadata($config['closure'])->getAssociationMapping('descendant');
+
+            $ancestorColumnName = $this->getJoinColumnFieldName(is_array($ancestorAssociationMapping) ? $ancestorAssociationMapping : clone $ancestorAssociationMapping);
+            $descendantColumnName = $this->getJoinColumnFieldName(is_array($descendantAssociationMapping) ? $descendantAssociationMapping : clone $descendantAssociationMapping);
             $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
 
             $entries = [
@@ -458,17 +466,29 @@ class Closure implements Strategy
     }
 
     /**
-     * @param array<string, mixed> $association
+     * @param array<string, mixed>|AssociationMapping $association
      *
      * @return string|null
      */
     protected function getJoinColumnFieldName($association)
     {
-        if (count($association['joinColumnFieldNames']) > 1) {
-            throw new RuntimeException('More association on field '.$association['fieldName']);
+        if (is_array($association)) {
+            if (count($association['joinColumnFieldNames']) > 1) {
+                throw new RuntimeException('More association on field '.$association['fieldName']);
+            }
+
+            return array_shift($association['joinColumnFieldNames']);
         }
 
-        return array_shift($association['joinColumnFieldNames']);
+        if ($association instanceof ToOneOwningSideMapping) {
+            if (count($association->joinColumnFieldNames) > 1) {
+                throw new RuntimeException('More association on field '.$association->fieldName);
+            }
+
+            return array_shift($association->joinColumnFieldNames);
+        }
+
+        throw new RuntimeException('Unsupported mapping type '.gettype($association));
     }
 
     /**

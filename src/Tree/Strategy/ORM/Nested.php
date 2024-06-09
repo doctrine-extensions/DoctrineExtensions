@@ -159,7 +159,7 @@ class Nested implements Strategy
             $wrapped = AbstractWrapper::wrap($node, $em);
             $parent = $wrapped->getPropertyValue($config['parent']);
             // revert simulated changeset
-            $uow->clearEntityChangeSet($oid);
+            $ea->clearObjectChangeSet($uow, $node);
             $wrapped->setPropertyValue($config['left'], $changeSet[$config['left']][0]);
             $uow->setOriginalEntityProperty($oid, $config['left'], $changeSet[$config['left']][0]);
             // set back all other changes
