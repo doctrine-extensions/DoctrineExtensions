@@ -41,7 +41,7 @@ final class ReferencesMappingTest extends BaseTestCaseOM
             $annotationDriver = new AnnotationDriver(new AnnotationReader());
         }
 
-        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
+        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml', XmlDriver::DEFAULT_FILE_EXTENSION, false);
 
         $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
