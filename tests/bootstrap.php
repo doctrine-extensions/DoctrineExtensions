@@ -12,6 +12,7 @@ declare(strict_types=1);
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -34,3 +35,8 @@ if (class_exists(AnnotationReader::class)) {
 }
 
 Type::addType('uuid', UuidType::class);
+
+// With ORM 3 and `doctrine/annotations` installed together, have the annotations library ignore the ORM's mapping namespace
+if (!class_exists(AnnotationDriver::class) && class_exists(AnnotationReader::class)) {
+    AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
+}
