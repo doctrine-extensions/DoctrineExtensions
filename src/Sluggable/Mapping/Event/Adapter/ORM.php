@@ -79,17 +79,17 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             }
         }
 
-        $q = $qb->getQuery();
-        $q->setHydrationMode(Query::HYDRATE_ARRAY);
+        $query = $qb->getQuery();
+        $query->setHydrationMode(Query::HYDRATE_ARRAY);
         // Force translation walker to look for slug translations to avoid duplicated slugs
         if ($config['uniqueOverTranslations'] && $object instanceof Translatable) {
-            $q->setHint(
+            $query->setHint(
                 Query::HINT_CUSTOM_OUTPUT_WALKER,
                 TranslationWalker::class
             );
         }
 
-        return $qb->getQuery()->getArrayResult();
+        return $query->getArrayResult();
     }
 
     public function replaceRelative($object, array $config, $target, $replacement)
