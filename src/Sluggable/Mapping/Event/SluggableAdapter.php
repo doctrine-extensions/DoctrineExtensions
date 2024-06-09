@@ -19,6 +19,7 @@ use Gedmo\Sluggable\SluggableListener;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
  * @phpstan-import-type SluggableConfiguration from SluggableListener
+ * @phpstan-import-type SlugConfiguration from SluggableListener
  */
 interface SluggableAdapter extends AdapterInterface
 {
@@ -29,7 +30,7 @@ interface SluggableAdapter extends AdapterInterface
      * @param ClassMetadata $meta
      * @param string        $slug
      *
-     * @phpstan-param SluggableConfiguration $config
+     * @phpstan-param SlugConfiguration $config
      *
      * @return array<int, array<string, mixed>>
      */
@@ -42,7 +43,7 @@ interface SluggableAdapter extends AdapterInterface
      * @param string $target
      * @param string $replacement
      *
-     * @phpstan-param SluggableConfiguration $config
+     * @phpstan-param SlugConfiguration $config
      *
      * @return int the number of updated records
      */

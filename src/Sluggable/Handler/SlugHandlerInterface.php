@@ -20,6 +20,8 @@ use Gedmo\Sluggable\SluggableListener;
  * Sluggable extension and should not be used elsewhere.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-import-type SlugConfiguration from SluggableListener
  */
 interface SlugHandlerInterface
 {
@@ -32,10 +34,10 @@ interface SlugHandlerInterface
      * Hook on slug handlers before the decision is made whether
      * the slug needs to be recalculated.
      *
-     * @param array<string, mixed> $config
-     * @param object               $object
-     * @param string               $slug
-     * @param bool                 $needToChangeSlug
+     * @param SlugConfiguration $config
+     * @param object            $object
+     * @param string            $slug
+     * @param bool              $needToChangeSlug
      *
      * @return void
      */
@@ -44,9 +46,9 @@ interface SlugHandlerInterface
     /**
      * Hook on slug handlers called after the slug is built.
      *
-     * @param array<string, mixed> $config
-     * @param object               $object
-     * @param string               $slug
+     * @param SlugConfiguration $config
+     * @param object            $object
+     * @param string            $slug
      *
      * @return void
      */
@@ -55,9 +57,9 @@ interface SlugHandlerInterface
     /**
      * Hook for slug handlers called after the slug is completed.
      *
-     * @param array<string, mixed> $config
-     * @param object               $object
-     * @param string               $slug
+     * @param SlugConfiguration $config
+     * @param object            $object
+     * @param string            $slug
      *
      * @return void
      */

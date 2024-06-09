@@ -10,6 +10,7 @@
 namespace Gedmo\Sluggable\Handler;
 
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+use Gedmo\Sluggable\SluggableListener;
 
 /**
  * This adds the ability for a slug handler to change the slug just before its
@@ -17,15 +18,17 @@ use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
  * set.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-import-type SlugConfiguration from SluggableListener
  */
 interface SlugHandlerWithUniqueCallbackInterface extends SlugHandlerInterface
 {
     /**
      * Hook for slug handlers called before it is made unique.
      *
-     * @param array<string, mixed> $config
-     * @param object               $object
-     * @param string               $slug
+     * @param SlugConfiguration $config
+     * @param object            $object
+     * @param string            $slug
      *
      * @return void
      */

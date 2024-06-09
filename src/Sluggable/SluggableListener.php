@@ -36,29 +36,32 @@ use Gedmo\Sluggable\Util\Urlizer;
  *   mappedBy?: string,
  *   pathSeparator?: string,
  *   slug?: string,
- *   slugs?: array<string, array{
- *     fields?: string[],
- *     slug?: string,
- *     style?: string,
- *     dateFormat?: string,
- *     updatable?: bool,
- *     unique?: bool,
- *     unique_base?: string,
- *     separator?: string,
- *     prefix?: string,
- *     suffix?: string,
- *     handlers?: array<class-string, array{
- *       mappedBy?: string,
- *       inverseSlugField?: string,
- *       parentRelationField?: string,
- *       relationClass?: class-string,
- *       relationField?: string,
- *       relationSlugField?: string,
- *       separator?: string,
- *     }>,
- *     uniqueOverTranslations?: bool,
- *   }>,
+ *   slugs?: array<string, SlugConfiguration>,
  *   unique?: bool,
+ *   useObjectClass?: class-string,
+ * }
+ * @phpstan-type SlugConfiguration = array{
+ *   fields?: string[],
+ *   slug?: string,
+ *   style?: string,
+ *   dateFormat?: string,
+ *   pathSeparator?: string,
+ *   updatable?: bool,
+ *   unique?: bool,
+ *   unique_base?: string,
+ *   separator?: string,
+ *   prefix?: string,
+ *   suffix?: string,
+ *   handlers?: array<class-string, array{
+ *     mappedBy?: string,
+ *     inverseSlugField?: string,
+ *     parentRelationField?: string,
+ *     relationClass?: class-string,
+ *     relationField?: string,
+ *     relationSlugField?: string,
+ *     separator?: string,
+ *   }>,
+ *   uniqueOverTranslations?: bool,
  *   useObjectClass?: class-string,
  * }
  *
@@ -485,7 +488,7 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Generates the unique slug
      *
-     * @param array<string, mixed> $config
+     * @param SlugConfiguration $config
      */
     private function makeUniqueSlug(SluggableAdapter $ea, object $object, string $preferredSlug, bool $recursing = false, array $config = []): string
     {
