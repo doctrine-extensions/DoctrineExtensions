@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\Sluggable;
@@ -233,10 +234,19 @@ final class SluggableTest extends BaseTestCaseORM
         $eventManager = new EventManager();
         $eventManager->addEventSubscriber(new SluggableListener());
 
-        $em = EntityManager::create([
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ], $this->getDefaultConfiguration(), $eventManager);
+        $config = $this->getDefaultConfiguration();
+
+        $em = new EntityManager(
+            DriverManager::getConnection(
+                [
+                    'driver' => 'pdo_sqlite',
+                    'memory' => true,
+                ],
+                $config
+            ),
+            $config,
+            $eventManager
+        );
 
         $this->expectException(InvalidMappingException::class);
         $this->expectExceptionMessage(\sprintf(

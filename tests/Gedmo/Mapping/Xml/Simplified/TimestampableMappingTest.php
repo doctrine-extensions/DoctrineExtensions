@@ -61,7 +61,7 @@ final class TimestampableMappingTest extends BaseTestCaseORM
     {
         $xmlDriver = new SimplifiedXmlDriver([
             __DIR__.'/../../Driver/Xml' => 'Gedmo\Tests\Mapping\Fixture\Xml',
-        ]);
+        ], SimplifiedXmlDriver::DEFAULT_FILE_EXTENSION, false);
 
         $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');

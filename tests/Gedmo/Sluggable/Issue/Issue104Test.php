@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Issue104\Car;
@@ -25,6 +26,13 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 final class Issue104Test extends BaseTestCaseORM
 {
     private const CAR = Car::class;
+
+    public static function setUpBeforeClass(): void
+    {
+        if (!class_exists(AnnotationDriver::class)) {
+            static::markTestSkipped('Test validates checks for invalid mapping configuration which have changed between ORM 2.x and 3.x causing the ORM to abort before reaching our checks.');
+        }
+    }
 
     public function testShouldThrowAnExceptionWhenMappedSuperclassProtectedProperty(): void
     {

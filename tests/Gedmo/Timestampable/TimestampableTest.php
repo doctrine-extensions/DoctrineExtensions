@@ -50,6 +50,10 @@ final class TimestampableTest extends BaseTestCaseORM
      */
     public function testShouldHandleDetatchedAndMergedBackEntities(): void
     {
+        if (!method_exists($this->em, 'merge')) {
+            static::markTestSkipped('Test covers behavior with EntityManager::merge() which does not exist on ORM 3');
+        }
+
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setBody('Sport article body.');
@@ -68,6 +72,10 @@ final class TimestampableTest extends BaseTestCaseORM
      */
     public function testShouldHandleDetatchedAndMergedBackEntitiesAfterPersist(): void
     {
+        if (!method_exists($this->em, 'merge')) {
+            static::markTestSkipped('Test covers behavior with EntityManager::merge() which does not exist on ORM 3');
+        }
+
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setBody('Sport article body.');
