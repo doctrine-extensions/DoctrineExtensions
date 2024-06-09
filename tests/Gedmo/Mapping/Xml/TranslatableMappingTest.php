@@ -45,7 +45,7 @@ final class TranslatableMappingTest extends BaseTestCaseOM
             $annotationDriver = new AnnotationDriver(new AnnotationReader());
         }
 
-        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
+        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml', XmlDriver::DEFAULT_FILE_EXTENSION, false);
 
         $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Translatable');
