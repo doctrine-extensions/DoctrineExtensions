@@ -1,7 +1,7 @@
 # Annotations Reference
 
 > [!IMPORTANT]
-> To use annotations, you will need the deprecated [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library. PHP 8 users are encouraged to migrate to attributes as annotation support is deprecated in all supported Doctrine object managers.
+> To use annotations, you will need the deprecated [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library. PHP 8 users are encouraged to migrate and use [attributes](./attributes.md) as annotation support is deprecated in all supported Doctrine object managers.
 
 Below you will a reference for annotations supported in this extensions library.
 There will be introduction on usage with examples. For more detailed usage of each
@@ -442,9 +442,9 @@ class Article
 }
 ```
 
-#### `@Gedmo\Mapping\Annotation\ReferenceMany`
+#### `@Gedmo\Mapping\Annotation\ReferenceManyEmbed`
 
-The `ReferenceMany` annotation is a property annotation used to create a reference between two objects in different
+The `ReferenceManyEmbed` annotation is a property annotation used to create a reference between two objects in different
 databases or object managers. This is similar to a `ReferenceMany` relationship in the MongoDB ODM.
 
 Required Attributes:
@@ -871,7 +871,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @Gedmo\TranslationEntity(logEntryClass="App\Entity\ArticleTranslation")
+ * @Gedmo\TranslationEntity(class="App\Entity\ArticleTranslation")
  */
 class Article {}
 ```
@@ -896,7 +896,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @Gedmo\TranslationEntity(logEntryClass="App\Entity\ArticleTranslation")
+ * @Gedmo\TranslationEntity(class="App\Entity\ArticleTranslation")
  */
 class Article
 {
@@ -937,7 +937,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @Gedmo\TranslationEntity(logEntryClass="App\Entity\ArticleTranslation")
+ * @Gedmo\TranslationEntity(class="App\Entity\ArticleTranslation")
  */
 class Article
 {
@@ -1024,6 +1024,9 @@ class Category
 ```
 
 #### Closure Tree Strategy
+
+> [!WARNING]
+> This strategy is only usable with the Doctrine ORM
 
 ##### `@Gedmo\Mapping\Annotation\TreeClosure`
 
@@ -1180,18 +1183,21 @@ class Category
 
 #### Nested Tree Strategy
 
+> [!WARNING]
+> This strategy is only usable with the Doctrine ORM
+
 ##### `@Gedmo\Mapping\Annotation\TreeRoot`
 
 The `TreeRoot` annotation is a property annotation used to identify the relationship for a tree object to its root node.
 This is an optional annotation for nested trees which improves performance and allows supporting multiple trees within
 a single table, and when used, the annotation must be defined on a many-to-one relationship.
 
-This annotation will use **integer** type field to specify the root of tree. This way
+This annotation will use an **integer** type field to specify the root of tree. This way
 updating tree will cost less because each root will act as separate tree.
 
 Optional Attributes:
 
-- **identifierMethod** - Allows specifying a a method on the related object to call to retrieve the identifier;
+- **identifierMethod** - Allows specifying a method on the related object to call to retrieve the identifier;
                          when not configured, the root property value will be used
 
 Example:
