@@ -183,7 +183,8 @@ class ORM implements AdapterInterface
 
     public function clearObjectChangeSet($uow, $object)
     {
-        $uow->clearEntityChangeSet(spl_object_id($object));
+        $changeSet = &$uow->getEntityChangeSet($object);
+        $changeSet = [];
     }
 
     /**
