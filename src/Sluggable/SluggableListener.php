@@ -41,18 +41,18 @@ use Gedmo\Sluggable\Util\Urlizer;
  *   useObjectClass?: class-string,
  * }
  * @phpstan-type SlugConfiguration = array{
- *   fields?: string[],
- *   slug?: string,
- *   style?: string,
- *   dateFormat?: string,
+ *   fields: string[],
+ *   slug: string,
+ *   style: string,
+ *   dateFormat: string,
  *   pathSeparator?: string,
- *   updatable?: bool,
- *   unique?: bool,
- *   unique_base?: string,
- *   separator?: string,
- *   prefix?: string,
- *   suffix?: string,
- *   handlers?: array<class-string, array{
+ *   updatable: bool,
+ *   unique: bool,
+ *   unique_base: string,
+ *   separator: string,
+ *   prefix: string,
+ *   suffix: string,
+ *   handlers: array<class-string, array{
  *     mappedBy?: string,
  *     inverseSlugField?: string,
  *     parentRelationField?: string,
@@ -61,7 +61,7 @@ use Gedmo\Sluggable\Util\Urlizer;
  *     relationSlugField?: string,
  *     separator?: string,
  *   }>,
- *   uniqueOverTranslations?: bool,
+ *   uniqueOverTranslations: bool,
  *   useObjectClass?: class-string,
  * }
  *
@@ -490,7 +490,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param SlugConfiguration $config
      */
-    private function makeUniqueSlug(SluggableAdapter $ea, object $object, string $preferredSlug, bool $recursing = false, array $config = []): string
+    private function makeUniqueSlug(SluggableAdapter $ea, object $object, string $preferredSlug, bool $recursing, array $config): string
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
