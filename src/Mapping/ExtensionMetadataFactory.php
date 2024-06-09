@@ -81,7 +81,7 @@ class ExtensionMetadataFactory
             if ($annotationReader instanceof Reader) {
                 Deprecation::trigger(
                     'gedmo/doctrine-extensions',
-                    'TODO',
+                    'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2772',
                     'Annotations support is deprecated, migrate your application to use attributes and pass an instance of %s to the %s constructor instead.',
                     AttributeReader::class,
                     static::class

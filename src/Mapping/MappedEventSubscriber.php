@@ -212,7 +212,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
         if ($reader instanceof Reader) {
             Deprecation::trigger(
                 'gedmo/doctrine-extensions',
-                'TODO',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2772',
                 'Annotations support is deprecated, migrate your application to use attributes and pass an instance of %s to the %s() method instead.',
                 AttributeReader::class,
                 __METHOD__
