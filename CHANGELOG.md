@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: Cascade remove not being triggered on entity children at `MaterializedPath::removeNode()`.
+
 ### Added
 - Blameable: Added UUID in allowed types list for Blameable fields in Annotation
 - Blameable: Allow ascii_string to validTypes (issue #2726)
