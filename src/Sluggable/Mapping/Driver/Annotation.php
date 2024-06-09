@@ -174,11 +174,17 @@ class Annotation extends AbstractAnnotationDriver
         if (!is_bool($slug->unique)) {
             throw new InvalidMappingException("Slug annotation [unique], type is not valid and must be 'boolean' in class - {$meta->getName()}");
         }
+        if (!is_bool($slug->uniqueOverTranslations)) {
+            throw new InvalidMappingException("Slug annotation [uniqueOverTranslations], type is not valid and must be 'boolean' in class - {$meta->getName()}");
+        }
         if ([] !== $meta->getIdentifier() && $meta->isIdentifier($fieldName) && !(bool) $slug->unique) {
             throw new InvalidMappingException("Identifier field - [{$fieldName}] slug must be unique in order to maintain primary key in class - {$meta->getName()}");
         }
         if (false === $slug->unique && $slug->unique_base) {
             throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
+        }
+        if (false === $slug->unique && $slug->uniqueOverTranslations) {
+            throw new InvalidMappingException("Slug annotation [uniqueOverTranslations] can not be set if unique is unset or 'false'");
         }
         if ($slug->unique_base && !$meta->hasField($slug->unique_base) && !$meta->hasAssociation($slug->unique_base)) {
             throw new InvalidMappingException("Unable to find [{$slug->unique_base}] as mapped property in entity - {$meta->getName()}");
@@ -201,6 +207,7 @@ class Annotation extends AbstractAnnotationDriver
             'prefix' => $slug->prefix,
             'suffix' => $slug->suffix,
             'handlers' => $handlers,
+            'uniqueOverTranslations' => $slug->uniqueOverTranslations,
         ];
 
         return $config;

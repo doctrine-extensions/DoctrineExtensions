@@ -10,10 +10,13 @@
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Query;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\Translatable;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -76,7 +79,18 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             }
         }
 
-        return $qb->getQuery()->getArrayResult();
+        $query = $qb->getQuery();
+        $query->setHydrationMode(Query::HYDRATE_ARRAY);
+        // Force translation walker to look for slug translations to avoid duplicated slugs
+        // TODO: Remove isset when removing support of YAML driver
+        if (isset($config['uniqueOverTranslations']) && $config['uniqueOverTranslations'] && $object instanceof Translatable) {
+            $query->setHint(
+                Query::HINT_CUSTOM_OUTPUT_WALKER,
+                TranslationWalker::class
+            );
+        }
+
+        return $query->getArrayResult();
     }
 
     public function replaceRelative($object, array $config, $target, $replacement)

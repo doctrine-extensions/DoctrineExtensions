@@ -278,6 +278,7 @@ echo $article->getSlug();
 - **suffix** (optional, default="") - suffix which will be added to the generated slug
 - **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase, **"upper"**- all word letter will be uppercase and **"lower"**- all word letter will be lowercase
 - **handlers** (only available in annotations, optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow
+- **uniqueOverTranslations** (optional, default=false) - **true** if slug should be unique over translations and if identical it will be suffixed, **false** - otherwise
 
 **Note**: handlers are totally optional
 
@@ -584,7 +585,7 @@ class Article
     /**
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title", "code"})
-     * @ORM\Column(length=128, unique=true)
+     * @ORM\Column(length=128, unique=true, uniqueOverTranslations=true)
      */
     private $slug;
 
@@ -595,7 +596,7 @@ class Article
 
     /**
      * @Gedmo\Slug(fields={"uniqueTitle"}, prefix="some-prefix-")
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(type="string", length=128, unique=true, uniqueOverTranslations=true)
      */
     private $uniqueSlug;
 
@@ -641,6 +642,8 @@ class Article
 Now the generated slug will be translated by Translatable behavior
 
 <a name="slug-handlers"></a>
+
+`uniqueOverTranslations` option is used to ensure that the slug is unique for each translated slugs.
 
 ## Using slug handlers:
 

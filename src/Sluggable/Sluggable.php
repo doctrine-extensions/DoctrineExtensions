@@ -35,6 +35,7 @@ interface Sluggable
      *         suffix (optional, default="") - suffix which will be added to the generated slug
      *         style (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
      *         dateFormat (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
+     *         uniqueOverTranslations (optional, default=false) - true if slug should be unique over translations and if identical it will be prefixed, false - otherwise
      *
      * example:
      *
