@@ -32,7 +32,7 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
     {
         parent::__construct($AST, $sqlWalker);
 
-        $sqlStatements = $this->_sqlStatements;
+        $sqlStatements = $this->getSqlStatements();
 
         $quoteStrategy = $sqlWalker->getEntityManager()->getConfiguration()->getQuoteStrategy();
 
@@ -53,6 +53,11 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
             }
         }
 
-        $this->_sqlStatements = $sqlStatements;
+        // @todo: Once the minimum supported ORM version is 2.17, this can always write to the `$this->sqlStatements` property
+        if (property_exists($this, 'sqlStatements')) {
+            $this->sqlStatements = $sqlStatements;
+        } else {
+            $this->_sqlStatements = $sqlStatements;
+        }
     }
 }
