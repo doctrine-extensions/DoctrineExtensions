@@ -22,5 +22,7 @@ parameters:
     excludePaths:
         # Generates non-ignorable errors like " Parameter #1 $method (string) of method Gedmo\Tree\Entity\Repository\NestedTreeRepository::__call() is not contravariant with parameter #1 $method (mixed) of method Doctrine\ORM\EntityRepository::__call()."
         - src/Tool/ORM/Repository/EntityRepositoryCompat.php
-        # Compat file for ORM 3, causes analysis errors with ORM 2
-        - src/Tool/ORM/Walker/orm-3.php
+        # Compat file for ORM 2, causes analysis errors with ORM 3
+        - src/Tool/ORM/Walker/orm-2.php
+        # Uses a tracking policy that was removed in ORM 3, PHPStan crashes on this file
+        - tests/Gedmo/Sortable/Fixture/NotifyNode.php
