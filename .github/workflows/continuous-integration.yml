@@ -11,7 +11,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.no-annotations == true && ' - Without Annotations' || '' }}"
+    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.no-annotations == true && ' - Without Annotations' || '' }}${{ matrix.orm != '' && format(' - ORM {0}', matrix.orm) || '' }}"
     runs-on: "ubuntu-20.04"
 
     services:
@@ -33,17 +33,27 @@ jobs:
           - "highest"
         no-annotations:
           - false
+        orm:
+          - ""
         include:
           - deps: "lowest"
             php-version: "7.4"
           - deps: "highest"
             php-version: "8.3"
+          # Run builds on low and high PHP versions with `doctrine/annotations` removed
           - deps: "highest"
             php-version: "7.4"
             no-annotations: true
           - deps: "highest"
             php-version: "8.3"
             no-annotations: true
+          # Run builds on high PHP version with `doctrine/orm` version pinned
+          - deps: "highest"
+            php-version: "8.3"
+            orm: "^2.14"
+          - deps: "highest"
+            php-version: "8.3"
+            orm: "^3.0"
 
     steps:
       - name: "Checkout"
@@ -67,6 +77,11 @@ jobs:
         if: "${{ matrix.no-annotations }}"
         run: "composer remove --dev --no-update doctrine/annotations"
 
+      # Pin doctrine/orm if configured to do so
+      - name: "Pin doctrine/orm"
+        if: "${{ matrix.orm }}"
+        run: "composer require --dev --no-update doctrine/orm:${{ matrix.orm }}"
+
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"
         with:
@@ -78,7 +93,7 @@ jobs:
       - name: "Upload coverage file"
         uses: "actions/upload-artifact@v4"
         with:
-          name: "${{ github.job }}-${{ matrix.php-version }}-${{ matrix.deps }}-${{ matrix.no-annotations == true && 'no-annotations' || 'with-annotations' }}-coverage"
+          name: "${{ github.job }}-${{ matrix.php-version }}-${{ matrix.deps }}-${{ matrix.no-annotations == true && 'no-annotations' || 'with-annotations' }}${{ matrix.orm != '' && format('-orm-{0}', matrix.orm) || '' }}-coverage"
           path: "coverage.xml"
 
   lint-doctrine-xml-schema:
