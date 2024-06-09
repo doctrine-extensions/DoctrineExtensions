@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Sortable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Gedmo\Sortable\SortableListener;
 use Gedmo\Tests\Sortable\Fixture\Author;
 use Gedmo\Tests\Sortable\Fixture\Category;
@@ -830,6 +831,10 @@ final class SortableTest extends BaseTestCaseORM
 
     public function testShouldFixIssue1809(): void
     {
+        if (!class_exists(AnnotationDriver::class)) {
+            static::markTestSkipped('Test uses a fixture using the deprecated "NOTIFY" change tracking policy.');
+        }
+
         $manager = $this->em;
         $nodes = [];
         for ($i = 1; $i <= 3; ++$i) {
@@ -848,9 +853,8 @@ final class SortableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures(): array
     {
-        return [
+        $fixtures = [
             self::NODE,
-            self::NOTIFY_NODE,
             self::ITEM,
             self::CATEGORY,
             self::SIMPLE_LIST_ITEM,
@@ -860,6 +864,12 @@ final class SortableTest extends BaseTestCaseORM
             self::CUSTOMER,
             self::CUSTOMER_TYPE,
         ];
+
+        if (class_exists(AnnotationDriver::class)) {
+            $fixtures[] = self::NOTIFY_NODE;
+        }
+
+        return $fixtures;
     }
 
     private function populate(): void
