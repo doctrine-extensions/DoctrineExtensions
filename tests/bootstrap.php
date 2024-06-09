@@ -29,8 +29,8 @@ define('TESTS_TEMP_DIR', sys_get_temp_dir().'/doctrine-extension-tests');
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-$reader = new AnnotationReader();
-$reader = new PsrCachedReader($reader, new ArrayAdapter());
-$_ENV['annotation_reader'] = $reader;
+if (class_exists(AnnotationReader::class)) {
+    $_ENV['annotation_reader'] = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
+}
 
 Type::addType('uuid', UuidType::class);
