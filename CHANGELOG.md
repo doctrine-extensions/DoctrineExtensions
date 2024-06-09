@@ -18,7 +18,11 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
 - Blameable: Added UUID in allowed types list for Blameable fields in Annotation
+- Blameable: Allow ascii_string to validTypes (issue #2726)
+- Sluggable: Allow ascii_string to validTypes
+- IpTraceable: Allow ascii_string to validTypes
 
 ## [3.15.0]
 ### Added
