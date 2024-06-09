@@ -48,8 +48,6 @@ class SoftDeleteableFilter extends SQLFilter
      * @param string $targetTableAlias
      *
      * @throws Exception
-     *
-     * @return string
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
