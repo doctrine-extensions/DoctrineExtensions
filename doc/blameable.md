@@ -133,7 +133,7 @@ class Article
      * @Gedmo\Blameable(on="change", field={"title", "body"})
      */
     #[ORM\Column(name: 'content_changed_by', type: Types::STRING, nullable: true)]
-    #[Gedmo\Blameable(on: 'change', 'field: ['title', 'body'])]
+    #[Gedmo\Blameable(on: 'change', field: ['title', 'body'])]
     private $contentChangedBy;
 
     public function getId()
