@@ -71,7 +71,7 @@ class Comment implements IpTraceable
      * @Gedmo\IpTraceable(on="update")
      */
     #[ORM\Column(name: 'modified', type: Types::STRING, length: 45)]
-    #[Gedmo\IpTraceable(on: 'update')]
+    #[Gedmo\IpTraceable(on: 'update', setterMethod: 'setModified')]
     private $modified;
 
     public function setArticle(?Article $article): void
@@ -107,6 +107,11 @@ class Comment implements IpTraceable
     public function getModified(): ?string
     {
         return $this->modified;
+    }
+
+    public function setModified(?string $modified): void
+    {
+        $this->modified = $modified;
     }
 
     public function getClosed(): ?string

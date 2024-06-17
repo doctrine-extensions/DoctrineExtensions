@@ -72,6 +72,17 @@ class Comment implements Timestampable
      *
      * @Gedmo\Timestampable(on="update")
      */
+    #[ORM\Column(name: 'created', type: Types::TIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create', setterMethod: 'setCreated')]
+    private $created;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="modified", type="time")
+     *
+     * @Gedmo\Timestampable(on="update")
+     */
     #[ORM\Column(name: 'modified', type: Types::TIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private $modified;
@@ -107,6 +118,16 @@ class Comment implements Timestampable
     public function getMessage(): ?string
     {
         return $this->message;
+    }
+
+    public function getCreated(): ?\DateTime
+    {
+        return $this->created;
+    }
+
+    public function setCreated(?\DateTime $created): void
+    {
+        $this->created = $created;
     }
 
     public function getModified(): ?\DateTime

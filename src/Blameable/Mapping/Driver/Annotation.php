@@ -87,6 +87,8 @@ class Annotation extends AbstractAnnotationDriver
                         'value' => $blameable->value,
                     ];
                 }
+                // add the setter method for the field
+                $this->setSetterMethod($property->getName(), $blameable->setterMethod, $config);
                 // properties are unique and mapper checks that, no risk here
                 $config[$blameable->on][] = $field;
             }

@@ -76,6 +76,8 @@ class Annotation extends AbstractAnnotationDriver
                         'value' => $ipTraceable->value,
                     ];
                 }
+                // add the setter method for the field
+                $this->setSetterMethod($property->getName(), $ipTraceable->setterMethod, $config);
                 // properties are unique and mapper checks that, no risk here
                 $config[$ipTraceable->on][] = $field;
             }

@@ -20,6 +20,7 @@ use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs;
 use Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs;
@@ -103,7 +104,23 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     );
                 }
 
-                $reflProp->setValue($object, $date);
+                if (!empty($config['setterMethod'][$config['fieldName']])) {
+                    $setterName = $config['setterMethod'][$config['fieldName']];
+
+                    if (!method_exists($object, $setterName)) {
+                        throw new InvalidMappingException(
+                            sprintf(
+                                "Setter method [%s] does not exist in class %s",
+                                $setterName,
+                                $meta->getName(),
+                            ),
+                        );
+                    }
+
+                    $object->{$setterName}($date);
+                } else {
+                    $reflProp->setValue($object, $date);
+                }
 
                 $om->persist($object);
                 $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
