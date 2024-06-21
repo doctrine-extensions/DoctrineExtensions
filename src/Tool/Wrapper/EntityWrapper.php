@@ -114,6 +114,11 @@ class EntityWrapper extends AbstractWrapper
         return false;
     }
 
+    public function isEmbeddedCollectionAssociation($field)
+    {
+        return false;
+    }
+
     /**
      * Initialize the entity if it is proxy
      * required when is detached or not initialized

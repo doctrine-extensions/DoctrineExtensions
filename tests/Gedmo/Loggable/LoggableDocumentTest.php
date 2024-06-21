@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Loggable;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventManager;
 use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Loggable\Document\Repository\LogEntryRepository;
@@ -18,6 +19,7 @@ use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Loggable\Fixture\Document\Article;
 use Gedmo\Tests\Loggable\Fixture\Document\Author;
 use Gedmo\Tests\Loggable\Fixture\Document\Comment;
+use Gedmo\Tests\Loggable\Fixture\Document\Reference;
 use Gedmo\Tests\Loggable\Fixture\Document\RelatedArticle;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
@@ -59,6 +61,16 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
 
         $art0->setAuthor($author);
 
+        $ref0 = new Reference();
+        $ref0->setReference('https://www.wikipedia.org/');
+        $ref0->setTitle('wikipedia');
+
+        $ref1 = new Reference();
+        $ref1->setReference('https://github.com/Atlantic18/DoctrineExtensions');
+        $ref1->setTitle('DoctrineExtensions');
+
+        $art0->setReferences(new ArrayCollection([$ref0, $ref1]));
+
         $this->dm->persist($art0);
         $this->dm->flush();
 
@@ -70,15 +82,24 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('jules', $log->getUsername());
         static::assertSame(1, $log->getVersion());
         $data = $log->getData();
-        static::assertCount(2, $data);
+        static::assertCount(3, $data);
         static::assertArrayHasKey('title', $data);
         static::assertSame('Title', $data['title']);
         static::assertArrayHasKey('author', $data);
         static::assertSame(['name' => 'John Doe', 'email' => 'john@doe.com'], $data['author']);
+        static::assertArrayHasKey('references', $data);
+        static::assertSame(
+            [
+                ['reference' => 'https://www.wikipedia.org/', 'title' => 'wikipedia'],
+                ['reference' => 'https://github.com/Atlantic18/DoctrineExtensions', 'title' => 'DoctrineExtensions'],
+            ],
+            $data['references']
+        );
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);
         $article->setTitle('New');
+        $article->getReferences()[0]->setTitle('www.wikipedia.org');
         $this->dm->persist($article);
         $this->dm->flush();
         $this->dm->clear();
@@ -128,11 +149,57 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('update', $latest->getAction());
     }
 
+    public function testVersionControlWithEmbedMany(): void
+    {
+        $this->populate();
+        $commentLogRepo = $this->dm->getRepository(self::COMMENT_LOG);
+        $commentRepo = $this->dm->getRepository(self::COMMENT);
+        static::assertInstanceOf(LogEntryRepository::class, $commentLogRepo);
+
+        $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
+        static::assertSame('m-v5', $comment->getMessage());
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());
+        static::assertSame('Jane Doe', $comment->getAuthor()->getName());
+        static::assertSame('jane@doe.com', $comment->getAuthor()->getEmail());
+        static::assertCount(0, $comment->getArticle()->getReferences());
+
+        // test revert
+        $commentLogRepo->revert($comment, 3);
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('m-v2', $comment->getMessage());
+        static::assertSame('a1-t-v1', $comment->getArticle()->getTitle());
+        static::assertSame('John Doe', $comment->getAuthor()->getName());
+        static::assertSame('john@doe.com', $comment->getAuthor()->getEmail());
+        static::assertCount(2, $comment->getArticle()->getReferences());
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // test revert
+        $commentLogRepo->revert($comment, 2);
+        static::assertSame('r1-t-v2', $comment->getArticle()->getReferences()[0]->getTitle());
+
+        // test get log entries
+        $logEntries = $commentLogRepo->getLogEntries($comment);
+        static::assertCount(6, $logEntries);
+        $latest = array_shift($logEntries);
+        static::assertSame('update', $latest->getAction());
+    }
+
     private function populate(): void
     {
+        $ref0 = new Reference();
+        $ref0->setReference('r1-r-v1');
+        $ref0->setTitle('r1-t-v1');
+
+        $ref1 = new Reference();
+        $ref1->setReference('r2-r-v1');
+        $ref1->setTitle('r2-t-v1');
+
         $article = new RelatedArticle();
         $article->setTitle('a1-t-v1');
         $article->setContent('a1-c-v1');
+        $article->setReferences(new ArrayCollection([$ref0, $ref1]));
 
         $author = new Author();
         $author->setName('John Doe');
@@ -143,6 +210,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         $comment->setAuthor($author);
         $comment->setMessage('m-v1');
         $comment->setSubject('s-v1');
+        $article->getReferences()[0]->setTitle('r1-t-v2');
 
         $this->dm->persist($article);
         $this->dm->persist($comment);
