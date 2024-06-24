@@ -3,5 +3,5 @@ bin
 vendor
 composer.lock
 phpstan.neon
-tests/.phpunit.result.cache
+.phpunit.result.cache
 tests/phpunit.xml
