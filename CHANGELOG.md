@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.16.0]
 ### Deprecated
 - Support for `doctrine/annotations` has been deprecated and will be removed in 4.0. 
 
