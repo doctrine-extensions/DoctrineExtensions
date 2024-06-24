@@ -21,7 +21,7 @@ a release.
 
 ## [3.16.0]
 ### Added
-- Support for `doctrine/orm` 3.0
+- Support for `doctrine/orm` 3
 - Blameable: Added UUID in allowed types list for Blameable fields in Annotation
 - Blameable: Allow ascii_string to validTypes (issue #2726)
 - Sluggable: Allow ascii_string to validTypes
