@@ -68,6 +68,7 @@ can be easily implemented using Mapping extension to handle the additional metad
 
 | Extensions Version | Compatible Doctrine ORM & Common Library |
 | --- | --- |
+| 3.16 | 3.0+ |
 | 2.4 | 2.5+ |
 | 2.3 | 2.2 - 2.4 |
 
