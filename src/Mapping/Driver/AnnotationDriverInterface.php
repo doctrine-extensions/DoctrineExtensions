@@ -9,33 +9,14 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Doctrine\Common\Annotations\Reader;
-use Gedmo\Mapping\Driver;
-
 /**
  * Annotation driver interface, provides method
  * to set custom annotation reader.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.16, will be removed in version 4.0.
  */
-interface AnnotationDriverInterface extends Driver
+interface AnnotationDriverInterface extends AttributeDriverInterface
 {
-    /**
-     * Set the annotation reader instance
-     *
-     * When originally implemented, `Doctrine\Common\Annotations\Reader` was not available,
-     * therefore this method may accept any object implementing these methods from the interface:
-     *
-     *     getClassAnnotations([reflectionClass])
-     *     getClassAnnotation([reflectionClass], [name])
-     *     getPropertyAnnotations([reflectionProperty])
-     *     getPropertyAnnotation([reflectionProperty], [name])
-     *
-     * @param Reader|AttributeReader|object $reader
-     *
-     * @return void
-     *
-     * @note Providing any object is deprecated, as of 4.0 a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` will be required
-     */
-    public function setAnnotationReader($reader);
 }

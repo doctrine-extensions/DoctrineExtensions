@@ -21,14 +21,14 @@ parameters:
 			path: src/AbstractTrackingListener.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/Blameable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/Blameable/Mapping/Driver/Annotation.php
+			path: src/Blameable/Mapping/Driver/Attribute.php
+
+		-
+			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Blameable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: src/Blameable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -46,14 +46,9 @@ parameters:
 			path: src/DoctrineExtensions.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/IpTraceable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/IpTraceable/Mapping/Driver/Annotation.php
+			path: src/IpTraceable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -223,7 +218,7 @@ parameters:
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/References/Mapping/Driver/Annotation.php
+			path: src/References/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
@@ -333,7 +328,7 @@ parameters:
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/Sluggable/Mapping/Driver/Annotation.php
+			path: src/Sluggable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
@@ -413,7 +408,7 @@ parameters:
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/Sortable/Mapping/Driver/Annotation.php
+			path: src/Sortable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -451,14 +446,14 @@ parameters:
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/Timestampable/Mapping/Driver/Annotation.php
-
-		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/Timestampable/Mapping/Driver/Annotation.php
+			path: src/Timestampable/Mapping/Driver/Attribute.php
+
+		-
+			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Timestampable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: src/Timestampable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -513,7 +508,7 @@ parameters:
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/Translatable/Mapping/Driver/Annotation.php
+			path: src/Translatable/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Access to offset 'association' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
@@ -628,7 +623,7 @@ parameters:
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: src/Tree/Mapping/Driver/Annotation.php
+			path: src/Tree/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
@@ -803,7 +798,7 @@ parameters:
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
-			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Annotation.php
+			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Attribute.php
 
 		-
 			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"

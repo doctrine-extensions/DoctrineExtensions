@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Deprecated
+- Support for `doctrine/annotations` has been deprecated and will be removed in 4.0. 
+
 ### Fixed
 - Tree: Cascade remove not being triggered on entity children at `MaterializedPath::removeNode()`.
 

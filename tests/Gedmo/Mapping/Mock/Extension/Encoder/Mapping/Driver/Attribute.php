@@ -11,8 +11,56 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AttributeDriverInterface;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Encode;
 
-class Attribute extends Annotation implements AttributeDriverInterface
+class Attribute extends AbstractAnnotationDriver
 {
+    public function readExtendedMetadata($meta, array &$config)
+    {
+        $class = $meta->getReflectionClass();
+
+        // check only property annotations
+        foreach ($class->getProperties() as $property) {
+            // skip inherited properties
+            if ($meta->isMappedSuperclass && !$property->isPrivate()
+                || $meta->isInheritedField($property->name)
+                || isset($meta->associationMappings[$property->name]['inherited'])
+            ) {
+                continue;
+            }
+
+            // now lets check if property has our annotation
+            if ($encode = $this->reader->getPropertyAnnotation($property, Encode::class)) {
+                \assert($encode instanceof Encode);
+
+                $field = $property->getName();
+
+                // check if field is mapped
+                if (!$meta->hasField($field)) {
+                    throw new \Exception('Field is not mapped as object property');
+                }
+
+                // allow encoding only strings
+                if (!in_array($encode->type, ['sha1', 'md5'], true)) {
+                    throw new \Exception('Invalid encoding type supplied');
+                }
+
+                // validate encoding type
+                $mapping = $meta->getFieldMapping($field);
+
+                if ('string' !== $mapping['type']) {
+                    throw new \Exception('Only strings can be encoded');
+                }
+
+                // store the metadata
+                $config['encode'][$field] = [
+                    'type' => $encode->type,
+                    'secret' => $encode->secret,
+                ];
+            }
+        }
+
+        return $config;
+    }
 }
