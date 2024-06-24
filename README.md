@@ -66,10 +66,9 @@ can be easily implemented using Mapping extension to handle the additional metad
 
 ### Version Compatibility
 
-| Extensions Version | Compatible Doctrine ORM & Common Library |
-| --- | --- |
-| 2.4 | 2.5+ |
-| 2.3 | 2.2 - 2.4 |
+* DBAL: `^3.2`
+* ORM: `^2.14` or `^3.0`
+* MongoDB ODM: `^2.3`
 
 If you are setting up the Entity Manager without a framework, see the [example](/example/em.php) to prevent issues like #1310
 
