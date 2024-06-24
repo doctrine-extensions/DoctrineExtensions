@@ -8,7 +8,7 @@
     convertWarningsToExceptions="true"
     processIsolation="false"
     stopOnFailure="false"
-    bootstrap="./bootstrap.php"
+    bootstrap="./tests/bootstrap.php"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
     <coverage>
@@ -18,52 +18,52 @@
     </coverage>
     <testsuites>
         <testsuite name="Translatable Extension">
-            <directory suffix="Test.php">./Gedmo/Translatable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Translatable/</directory>
         </testsuite>
         <testsuite name="Sluggable Extension">
-            <directory suffix="Test.php">./Gedmo/Sluggable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Sluggable/</directory>
         </testsuite>
         <testsuite name="Sortable Extension">
-            <directory suffix="Test.php">./Gedmo/Sortable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Sortable/</directory>
         </testsuite>
         <testsuite name="Tree Extension">
-            <directory suffix="Test.php">./Gedmo/Tree/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Tree/</directory>
         </testsuite>
         <testsuite name="Timestampable Extension">
-            <directory suffix="Test.php">./Gedmo/Timestampable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Timestampable/</directory>
         </testsuite>
         <testsuite name="Blameable Extension">
-            <directory suffix="Test.php">./Gedmo/Blameable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Blameable/</directory>
         </testsuite>
         <testsuite name="IpTraceable Extension">
-            <directory suffix="Test.php">./Gedmo/IpTraceable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/IpTraceable/</directory>
         </testsuite>
         <testsuite name="Mapping Extension">
-            <directory suffix="Test.php">./Gedmo/Mapping/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Mapping/</directory>
         </testsuite>
         <testsuite name="Loggable Extension">
-            <directory suffix="Test.php">./Gedmo/Loggable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Loggable/</directory>
         </testsuite>
         <testsuite name="Sortable Extension">
-            <directory suffix="Test.php">./Gedmo/Sortable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Sortable/</directory>
         </testsuite>
         <testsuite name="Object wrappers">
-            <directory suffix="Test.php">./Gedmo/Wrapper/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Wrapper/</directory>
         </testsuite>
         <testsuite name="Translator extension">
-            <directory suffix="Test.php">./Gedmo/Translator/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Translator/</directory>
         </testsuite>
         <testsuite name="SoftDeleteable Extension">
-            <directory suffix="Test.php">./Gedmo/SoftDeleteable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/SoftDeleteable/</directory>
         </testsuite>
         <testsuite name="Uploadable Extension">
-            <directory suffix="Test.php">./Gedmo/Uploadable/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/Uploadable/</directory>
         </testsuite>
         <testsuite name="ReferenceIntegrity Extension">
-            <directory suffix="Test.php">./Gedmo/ReferenceIntegrity/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/ReferenceIntegrity/</directory>
         </testsuite>
         <testsuite name="References Extension">
-            <directory suffix="Test.php">./Gedmo/References/</directory>
+            <directory suffix="Test.php">./tests/Gedmo/References/</directory>
         </testsuite>
     </testsuites>
     <php>
