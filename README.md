@@ -61,7 +61,7 @@ flushed in a behavioral way.
 - [**References**](/doc/references.md) - supports linking Entities in Documents and vice versa
 - [**ReferenceIntegrity**](/doc/reference_integrity.md) - constrains ODM MongoDB Document references
 
-All extensions support **Attribute**, **Annotation** and **XML** mapping. Additional mapping drivers
+All extensions support **Attribute**, **XML** and **Annotation** (deprecated) mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
 
 ### Version Compatibility
