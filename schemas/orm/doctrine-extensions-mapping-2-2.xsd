@@ -27,6 +27,7 @@
   <xs:element name="tree-closure" type="gedmo:tree-closure"/>
   <xs:element name="tree-path" type="gedmo:tree-path"/>
   <xs:element name="loggable" type="gedmo:loggable"/>
+  <xs:element name="revisionable" type="gedmo:revisionable"/>
   <xs:element name="soft-deleteable" type="gedmo:soft-deleteable"/>
   <xs:element name="uploadable" type="gedmo:uploadable"/>
   <xs:element name="reference" type="gedmo:reference"/>
@@ -90,6 +91,10 @@
 
   <xs:complexType name="loggable">
     <xs:attribute name="log-entry-class" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="revisionable">
+    <xs:attribute name="revision-class" type="xs:string" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="slug">
