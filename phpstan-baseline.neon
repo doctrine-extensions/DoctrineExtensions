@@ -286,19 +286,44 @@ parameters:
 			path: src/References/ReferencesListener.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:extractIdentifier\\(\\)\\.$#"
+			message: "#^Method Gedmo\\\\Revisionable\\\\Document\\\\Revision\\:\\:createRevision\\(\\) should return Gedmo\\\\Revisionable\\\\Document\\\\Revision\\<T of object\\> but returns Gedmo\\\\Revisionable\\\\Document\\\\Revision\\<object\\>\\.$#"
+			count: 1
+			path: src/Revisionable/Document/Revision.php
+
+		-
+			message: "#^Unable to resolve the template type T in call to method Doctrine\\\\ORM\\\\EntityManagerInterface\\:\\:getReference\\(\\)$#"
+			count: 1
+			path: src/Revisionable/Entity/Repository/RevisionRepository.php
+
+		-
+			message: "#^Method Gedmo\\\\Revisionable\\\\Entity\\\\Revision\\:\\:createRevision\\(\\) should return Gedmo\\\\Revisionable\\\\Entity\\\\Revision\\<T of object\\> but returns Gedmo\\\\Revisionable\\\\Entity\\\\Revision\\<object\\>\\.$#"
+			count: 1
+			path: src/Revisionable/Entity/Revision.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			count: 1
+			path: src/Revisionable/Mapping/Driver/Xml.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Revisionable\\\\RevisionInterface\\<T of object\\>\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			count: 1
+			path: src/Revisionable/RevisionableListener.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 4
+			path: src/Revisionable/RevisionableListener.php
+
+		-
+			message: "#^Method Gedmo\\\\Revisionable\\\\RevisionableListener\\:\\:getRevisionClass\\(\\) should return class\\-string\\<Gedmo\\\\Revisionable\\\\RevisionInterface\\<T of object\\>\\> but returns class\\-string\\<Gedmo\\\\Revisionable\\\\RevisionInterface\\<object\\>\\>\\.$#"
+			count: 1
+			path: src/Revisionable/RevisionableListener.php
+
+		-
+			message: "#^Method Gedmo\\\\Tool\\\\WrapperInterface\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\>\\:\\:getIdentifier\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
 			count: 2
-			path: src/References/ReferencesListener.php
-
-		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getIdentifier\\(\\)\\.$#"
-			count: 1
-			path: src/References/ReferencesListener.php
-
-		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getSingleReference\\(\\)\\.$#"
-			count: 1
-			path: src/References/ReferencesListener.php
+			path: src/Revisionable/RevisionableListener.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
@@ -401,11 +426,6 @@ parameters:
 			path: src/SoftDeleteable/Query/TreeWalker/SoftDeleteableWalker.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getDateValue\\(\\)\\.$#"
-			count: 1
-			path: src/SoftDeleteable/SoftDeleteableListener.php
-
-		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
 			count: 1
 			path: src/Sortable/Mapping/Driver/Attribute.php
@@ -466,23 +486,8 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
-			message: "#^Parameter \\#2 \\$em of class Gedmo\\\\Tool\\\\Wrapper\\\\EntityWrapper constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, Doctrine\\\\Persistence\\\\ObjectManager given\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
 			message: "#^Access to an undefined property ProxyManager\\\\Proxy\\\\GhostObjectInterface\\:\\:\\$identifier\\.$#"
 			count: 1
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 2
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
 		-
@@ -864,6 +869,26 @@ parameters:
 			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
 			count: 1
 			path: tests/Gedmo/Mapping/Xml/TranslatableMappingTest.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Document\\\\CommentRevision\\:\\:createRevision\\(\\) should return Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Document\\\\CommentRevision\\<T of Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Document\\\\Comment\\> but returns Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Document\\\\CommentRevision\\<Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Document\\\\Comment\\>\\.$#"
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Document/CommentRevision.php
+
+		-
+			message: "#^Method Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\CommentRevision\\:\\:createRevision\\(\\) should return Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\CommentRevision\\<T of Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\Comment\\> but returns Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\CommentRevision\\<Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\Comment\\>\\.$#"
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Entity/CommentRevision.php
+
+		-
+			message: "#^Parameter \\#1 \\$entity of method Gedmo\\\\Revisionable\\\\Entity\\\\Repository\\\\RevisionRepository\\<Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\CommentRevision\\>\\:\\:getRevisions\\(\\) expects Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\CommentRevision, Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\Comment given\\.$#"
+			count: 1
+			path: tests/Gedmo/Revisionable/RevisionableEntityTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$entity of method Gedmo\\\\Revisionable\\\\Entity\\\\Repository\\\\RevisionRepository\\<Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\CommentRevision\\>\\:\\:revert\\(\\) expects Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\CommentRevision, Gedmo\\\\Tests\\\\Revisionable\\\\Fixture\\\\Entity\\\\Comment given\\.$#"
+			count: 1
+			path: tests/Gedmo/Revisionable/RevisionableEntityTest.php
 
 		-
 			message: "#^Method Gedmo\\\\Tests\\\\Sluggable\\\\Fixture\\\\Doctrine\\\\FakeFilter\\:\\:addFilterConstraint\\(\\) has parameter \\$targetTableAlias with no type specified\\.$#"

@@ -18,6 +18,7 @@ use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
+/** @extends MappedEventSubscriber<array, EventAdapterInterface> */
 class EncoderListener extends MappedEventSubscriber
 {
     public function getSubscribedEvents(): array

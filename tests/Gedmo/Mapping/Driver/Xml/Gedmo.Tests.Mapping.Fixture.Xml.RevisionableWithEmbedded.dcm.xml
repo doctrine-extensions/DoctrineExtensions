@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\RevisionableWithEmbedded" table="revisionable_with_embedded">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <embedded name="embedded" class="Gedmo\Tests\Mapping\Fixture\Xml\Embedded">
+            <gedmo:versioned/>
+        </embedded>
+        <field name="title" type="string" length="64">
+            <gedmo:versioned/>
+        </field>
+        <gedmo:revisionable revision-class="Gedmo\Revisionable\Entity\Revision"/>
+    </entity>
+</doctrine-mapping>

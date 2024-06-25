@@ -9,7 +9,7 @@
     processIsolation="false"
     stopOnFailure="false"
     bootstrap="./tests/bootstrap.php"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
 >
     <coverage>
         <include>
@@ -43,6 +43,9 @@
         </testsuite>
         <testsuite name="Loggable Extension">
             <directory suffix="Test.php">./tests/Gedmo/Loggable/</directory>
+        </testsuite>
+        <testsuite name="Revisionable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Revisionable/</directory>
         </testsuite>
         <testsuite name="Sortable Extension">
             <directory suffix="Test.php">./tests/Gedmo/Sortable/</directory>

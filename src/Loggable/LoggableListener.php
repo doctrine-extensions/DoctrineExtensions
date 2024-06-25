@@ -35,11 +35,9 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  *   versioned?: string[],
  * }
  *
- * @phpstan-method LoggableConfiguration getConfiguration(ObjectManager $objectManager, $class)
+ * @template T of Loggable|object
  *
- * @method LoggableAdapter getEventAdapter(EventArgs $args)
- *
- * @phpstan-template T of Loggable|object
+ * @phpstan-extends MappedEventSubscriber<LoggableConfiguration, LoggableAdapter>
  */
 class LoggableListener extends MappedEventSubscriber
 {

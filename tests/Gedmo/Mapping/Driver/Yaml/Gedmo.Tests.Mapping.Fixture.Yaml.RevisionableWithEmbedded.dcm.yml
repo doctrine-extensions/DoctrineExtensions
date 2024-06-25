@@ -1,0 +1,23 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\RevisionableWithEmbedded:
+  type: entity
+  table: revisionable_with_embedded
+  gedmo:
+    revisionable:
+      revisionClass: Gedmo\Revisionable\Entity\Revision
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+      gedmo:
+        - versioned
+  embedded:
+    embedded:
+      class: Gedmo\Tests\Mapping\Fixture\Yaml\Embedded
+      gedmo:
+        - versioned

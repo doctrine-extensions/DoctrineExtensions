@@ -23,12 +23,15 @@ use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs;
 use Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs;
+use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
 
 /**
  * SoftDeleteable listener
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @extends MappedEventSubscriber<array, SoftDeleteableAdapter>
  *
  * @final since gedmo/doctrine-extensions 3.11
  */

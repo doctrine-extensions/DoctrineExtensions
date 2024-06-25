@@ -12,6 +12,7 @@ namespace Gedmo\IpTraceable;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
@@ -19,6 +20,8 @@ use Gedmo\Mapping\Event\AdapterInterface;
  * IPs on creation and update.
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
+ *
+ * @extends AbstractTrackingListener<array, IpTraceableAdapter>
  *
  * @final since gedmo/doctrine-extensions 3.11
  */

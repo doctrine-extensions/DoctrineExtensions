@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\RevisionableCompositeRelation" table="revisionable_with_composite_relation">
+        <id name="one" association-key="true"/>
+        <id name="two" type="integer" column="two"/>
+        <field name="title" type="string" length="64">
+            <gedmo:versioned/>
+        </field>
+        <many-to-one field="one" target-entity="Revisionable"/>
+        <gedmo:revisionable/>
+    </entity>
+</doctrine-mapping>
