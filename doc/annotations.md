@@ -14,6 +14,7 @@ extension, refer to the extension's documentation page.
 - [Loggable Extension](#loggable-extension)
 - [Reference Integrity Extension](#reference-integrity-extension)
 - [References Extension](#references-extension)
+- [Revisionable Extension](#revisionable-extension)
 - [Sluggable Extension](#sluggable-extension)
 - [Soft Deleteable Extension](#soft-deleteable-extension)
 - [Sortable Extension](#sortable-extension)
@@ -492,6 +493,79 @@ class Article
     {
         $this->comments = new ArrayCollection();
     }
+}
+```
+
+### Revisionable Extension
+
+The below annotations are used to configure the [Revisionable extension](./revisionable.md).
+
+#### `@Gedmo\Mapping\Annotation\Revisionable`
+
+The `Revisionable` annotation is a class annotation used to identify objects which can have changes logged,
+all revisionable objects **MUST** have this annotation.
+
+Required Attributes:
+
+- **revisionClass** - A custom model class implementing `Gedmo\Revisionable\RevisionInterface` to use for logging changes;
+  defaults to `Gedmo\Revisionable\Entity\Revision` for Doctrine ORM users or
+  `Gedmo\Revisionable\Document\Revision` for Doctrine MongoDB ODM users
+
+Example:
+
+```php
+<?php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\Revisionable(revisionClass="App\Entity\ArticleRevision")
+ */
+class Article {}
+```
+
+#### `@Gedmo\Mapping\Annotation\Versioned`
+
+The `Versioned` annotation is a property annotation used to identify properties whose changes should be logged.
+This annotation can be set for properties with a single value (i.e. a scalar type or an object such as
+`DateTimeInterface`), but not for collections. Versioned fields can be restored to an earlier version.
+
+Example:
+
+```php
+<?php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\Revisionable
+ */
+class Comment
+{
+    /**
+    * @ORM\Id
+    * @ORM\GeneratedValue
+    * @ORM\Column(type="integer")
+    */
+    public ?int $id = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="comments")
+     * @Gedmo\Versioned
+     */
+    public ?Article $article = null;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Gedmo\Versioned
+     */
+    public ?string $body = null;
 }
 ```
 

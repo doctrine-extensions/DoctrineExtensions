@@ -1,0 +1,20 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\RevisionableCompositeRelation:
+  type: entity
+  table: revisionable_with_composite_relation
+  gedmo:
+    revisionable: true
+  id:
+    one:
+      associationKey: true
+    two:
+      type: integer
+  fields:
+    title:
+      type: string
+      length: 64
+      gedmo:
+        - versioned
+  manyToOne:
+    one:
+      targetEntity: Revisionable

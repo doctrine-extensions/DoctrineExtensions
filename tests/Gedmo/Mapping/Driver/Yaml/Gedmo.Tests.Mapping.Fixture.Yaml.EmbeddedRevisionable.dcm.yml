@@ -1,0 +1,8 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\EmbeddedRevisionable:
+  type: embeddable
+  fields:
+    subtitle:
+      type: string
+      gedmo:
+        - versioned
