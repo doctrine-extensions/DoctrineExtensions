@@ -17,6 +17,9 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
  * @phpstan-template-covariant TClassMetadata of ClassMetadata
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @method mixed convertToDatabaseValue(mixed $value, string $type)
+ * @method mixed convertToPHPValue(mixed $value, string $type)
  */
 interface WrapperInterface
 {
