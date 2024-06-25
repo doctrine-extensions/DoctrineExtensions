@@ -11,13 +11,14 @@ namespace Gedmo\Tool\Wrapper;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Types\Type;
 use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * Wraps document or proxy for more convenient
  * manipulation
  *
- * @phpstan-extends AbstractWrapper<ClassMetadata>
+ * @phpstan-extends AbstractWrapper<ClassMetadata, DocumentManager>
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
@@ -99,6 +100,30 @@ class MongoDocumentWrapper extends AbstractWrapper
     public function isEmbeddedAssociation($field)
     {
         return $this->getMetadata()->isSingleValuedEmbed($field);
+    }
+
+    /**
+     * Converts a given value to its database representation.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function convertToDatabaseValue($value, string $type)
+    {
+        return Type::getType($type)->convertToDatabaseValue($value);
+    }
+
+    /**
+     * Converts a given value to its PHP representation.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function convertToPHPValue($value, string $type)
+    {
+        return Type::getType($type)->convertToPHPValue($value);
     }
 
     /**

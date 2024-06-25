@@ -52,9 +52,7 @@ use Gedmo\Tree\Mapping\Event\TreeAdapter;
  *   level_base?: int,
  * }
  *
- * @phpstan-method TreeConfiguration getConfiguration(ObjectManager $objectManager, $class)
- *
- * @method TreeAdapter getEventAdapter(EventArgs $args)
+ * @phpstan-extends MappedEventSubscriber<TreeConfiguration, TreeAdapter>
  */
 class TreeListener extends MappedEventSubscriber
 {

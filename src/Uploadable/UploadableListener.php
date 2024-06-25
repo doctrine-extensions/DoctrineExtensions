@@ -37,6 +37,7 @@ use Gedmo\Uploadable\Event\UploadablePostFileProcessEventArgs;
 use Gedmo\Uploadable\Event\UploadablePreFileProcessEventArgs;
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
 use Gedmo\Uploadable\FileInfo\FileInfoInterface;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\MimeType\MimeTypeGuesser;
 use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
@@ -46,6 +47,25 @@ use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-type UploadableConfiguration = array{
+ *   filePathField?: string,
+ *   uploadable?: bool,
+ *   fileNameField?: string,
+ *   allowOverwrite?: bool,
+ *   appendNumber?: bool,
+ *   maxSize?: float,
+ *   path?: string,
+ *   pathMethod?: string,
+ *   allowedTypes?: string[],
+ *   disallowedTypes?: string[],
+ *   filenameGenerator?: Validator::FILENAME_GENERATOR_*|class-string<FilenameGeneratorInterface>,
+ *   fileMimeTypeField?: string,
+ *   fileSizeField?: string,
+ *   callback?: string,
+ *  }
+ *
+ * @phpstan-extends MappedEventSubscriber<UploadableConfiguration, AdapterInterface>
  */
 class UploadableListener extends MappedEventSubscriber
 {

@@ -29,6 +29,7 @@ use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactory
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Revisionable\RevisionableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\Timestampable\TimestampableListener;
@@ -155,6 +156,7 @@ abstract class BaseTestCaseOM extends TestCase
             $this->evm->addEventSubscriber(new TreeListener());
             $this->evm->addEventSubscriber(new SluggableListener());
             $this->evm->addEventSubscriber(new LoggableListener());
+            $this->evm->addEventSubscriber(new RevisionableListener());
             $this->evm->addEventSubscriber(new TranslatableListener());
             $this->evm->addEventSubscriber(new TimestampableListener());
         }

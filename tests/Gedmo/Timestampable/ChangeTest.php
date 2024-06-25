@@ -130,6 +130,7 @@ final class EventAdapterORMStub extends BaseAdapterORM implements TimestampableA
     }
 }
 
+/** @extends AbstractTrackingListener<array, TimestampableAdapter> */
 final class TimestampableListenerStub extends AbstractTrackingListener
 {
     /**

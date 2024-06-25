@@ -28,6 +28,11 @@ use Gedmo\Mapping\MappedEventSubscriber;
  * The AbstractTrackingListener provides generic functions for all listeners.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @template TConfig of array
+ * @template TEventAdapter of AdapterInterface
+ *
+ * @extends MappedEventSubscriber<TConfig, TEventAdapter>
  */
 abstract class AbstractTrackingListener extends MappedEventSubscriber
 {

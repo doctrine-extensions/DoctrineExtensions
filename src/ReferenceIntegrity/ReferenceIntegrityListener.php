@@ -16,6 +16,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
+use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\ReferenceIntegrity\Mapping\Validator;
 
@@ -23,6 +24,8 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * The ReferenceIntegrity listener handles the reference integrity on related documents
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
+ *
+ * @extends MappedEventSubscriber<array, AdapterInterface>
  *
  * @final since gedmo/doctrine-extensions 3.11
  */

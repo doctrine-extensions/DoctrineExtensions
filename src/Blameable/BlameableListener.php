@@ -11,6 +11,7 @@ namespace Gedmo\Blameable;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
+use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 use Gedmo\Exception\InvalidArgumentException;
 
 /**
@@ -18,6 +19,8 @@ use Gedmo\Exception\InvalidArgumentException;
  * dates on creation and update.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @extends AbstractTrackingListener<array, BlameableAdapter>
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
