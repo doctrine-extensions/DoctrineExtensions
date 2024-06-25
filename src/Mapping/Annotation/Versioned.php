@@ -13,7 +13,7 @@ use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
- * Versioned annotation for Loggable behavioral extension
+ * Versioned annotation for use with the Loggable and Revisionable extensions
  *
  * @Annotation
  *
