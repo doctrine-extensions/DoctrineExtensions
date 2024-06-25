@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Restructure the SqlWalkerCompat trait to fix optimized autoloading
 
 ## [3.16.0]
 ### Added

@@ -30,7 +30,7 @@ use Doctrine\ORM\Query\SqlWalker;
  *
  * @internal
  */
-trait SqlWalkerCompat
+trait SqlWalkerCompatForOrm2
 {
     /**
      * Gets an executor that can be used to execute the result of this walker.

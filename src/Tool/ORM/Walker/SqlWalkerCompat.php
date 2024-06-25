@@ -12,9 +12,27 @@ namespace Gedmo\Tool\ORM\Walker;
 use Doctrine\ORM\Query\SqlWalker;
 
 if ((new \ReflectionClass(SqlWalker::class))->getMethod('getExecutor')->hasReturnType()) {
-    // ORM 3.x
-    require_once __DIR__.'/orm-3.php';
+    /**
+     * Helper trait to address compatibility issues between ORM 2.x and 3.x.
+     *
+     * @mixin SqlWalker
+     *
+     * @internal
+     */
+    trait SqlWalkerCompat
+    {
+        use SqlWalkerCompatForOrm3;
+    }
 } else {
-    // ORM 2.x
-    require_once __DIR__.'/orm-2.php';
+    /**
+     * Helper trait to address compatibility issues between ORM 2.x and 3.x.
+     *
+     * @mixin SqlWalker
+     *
+     * @internal
+     */
+    trait SqlWalkerCompat
+    {
+        use SqlWalkerCompatForOrm2;
+    }
 }
