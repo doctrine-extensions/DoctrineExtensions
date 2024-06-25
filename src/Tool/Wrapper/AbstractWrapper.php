@@ -24,6 +24,7 @@ use Gedmo\Tool\WrapperInterface;
  * manipulation
  *
  * @phpstan-template TClassMetadata of ClassMetadata
+ * @phpstan-template TObjectManager of ObjectManager
  *
  * @phpstan-implements WrapperInterface<TClassMetadata>
  *
@@ -51,6 +52,8 @@ abstract class AbstractWrapper implements WrapperInterface
      * Object manager instance
      *
      * @var ObjectManager
+     *
+     * @phpstan-var TObjectManager
      */
     protected $om;
 
@@ -93,6 +96,11 @@ abstract class AbstractWrapper implements WrapperInterface
         return $this->object;
     }
 
+    /**
+     * @return ClassMetadata
+     *
+     * @phpstan-return TClassMetadata
+     */
     public function getMetadata()
     {
         return $this->meta;
