@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Mapping Driver: Configure usage separately with Doctrine `.orm.xml` -> `.gedmo.xml` files, also add an alternative option - force the use of AttributeReader and ignore the configuration of the Doctrine chain driver (#2613)
 
 ## [3.16.1]
 ### Fixed
