@@ -29,7 +29,7 @@ flushed in a behavioral way.
     composer require gedmo/doctrine-extensions
 
 * [Symfony](/doc/frameworks/symfony.md)
-* [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
+* [Laravel](/doc/frameworks/laravel.md)
 * [Laminas](/doc/frameworks/laminas.md)
 
 ### Upgrading
