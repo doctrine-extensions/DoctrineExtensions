@@ -1,599 +1,263 @@
-# IpTraceable behavior extension for Doctrine
+# IP Traceable Behavior Extension for Doctrine
 
-**IpTraceable** behavior will automate the update of IP trace
-on your Entities or Documents. It works through annotations or attributes and can update
-fields on creation, update, property subset update, or even on specific property value change.
+The **IP Traceable** behavior automates the update of IP addresses on your Doctrine objects.
 
-This is very similar to the Timestampable behavior.
+## Index
 
-Note that you need to set the IP on the IpTraceableListener (unless you use the
-Symfony bundle which automatically assigns the current request IP).
+- [Getting Started](#getting-started)
+- [Configuring IP Traceable Objects](#configuring-ip-traceable-objects)
+- [Using Traits](#using-traits)
+- [Logging Changes For Specific Actions](#logging-changes-for-specific-actions)
 
-Features:
+## Getting Started
 
-- Automatic predefined ip field update on creation, update, property subset update, and even on record property changes
-- ORM and ODM support using same listener
-- Specific attributes and annotations for properties, and no interface required
-- Can react to specific property or relation changes to specific value
-- Can be nested with other behaviors
-- Attribute, Annotation and XML mapping support for extensions
+The IP traceable behavior can be added to a supported Doctrine object manager by registering its event subscriber
+when creating the manager.
 
-This article will cover the basic installation and functionality of the **IpTraceable** behavior
+```php
+use Gedmo\IpTraceable\IpTraceableListener;
 
-Content:
+$listener = new IpTraceableListener();
 
-- [Including](#including-extension) the extension
-- Entity [example](#entity-mapping)
-- Document [example](#document-mapping)
-- [XML](#xml-mapping) mapping example
-- Advanced usage [examples](#advanced-examples)
-- Using [Traits](#traits)
+// The $om is either an instance of the ORM's entity manager or the MongoDB ODM's document manager
+$om->getEventManager()->addEventSubscriber($listener);
+```
 
-<a name="including-extension"></a>
+Then, once your application has it available, you can set the IP address to be recorded for changes by calling
+the listener's `setIpValue` method.
 
-## Setup and autoloading
+```php
+$listener->setIpValue('127.0.0.1');
+```
 
-Read the [documentation](./annotations.md#em-setup)
-or check the [example code](../example)
-on how to set up and use the extensions.
+## Configuring IP Traceable Objects
 
-<a name="entity-mapping"></a>
+The IP traceable extension can be configured with [annotations](./annotations.md#ip-traceable-extension),
+[attributes](./attributes.md#ip-traceable-extension), or XML configuration (matching the mapping of
+your domain models). The full configuration for annotations and attributes can be reviewed in
+the linked documentation.
 
-## IpTraceable Entity example:
+The below examples show the simplest and default configuration for the extension, setting a field
+when the model is updated.
 
-### IpTraceable annotations:
-- **@Gedmo\Mapping\Annotation\IpTraceable** this annotation tells that this column is ipTraceable
-by default it updates this column on update. If column is not a string field it will trigger an exception.
-
-### IpTraceable attributes:
-- **\#[Gedmo\Mapping\Annotation\IpTraceable]** this attribute tells that this column is ipTraceable
-  by default it updates this column on update. If column is not a string field it will trigger an exception.
-
-Available configuration options:
-
-- **on** - is main option and can be **create, update, change** this tells when it
-should be updated
-- **field** - only valid if **on="change"** is specified, tracks property or a list of properties for changes
-- **value** - only valid if **on="change"** is specified and the tracked field is a single field (not an array), if the tracked field has this **value**
-then it updates the trace
-
-**Note:** the IpTraceable interface is not necessary, except in cases where
-you need to identify the object as being IpTraceable in your application.
-The metadata is loaded only once when the cache is activated.
-
-**Note:** these examples are using annotations and attributes for mapping, you should only use
-one of them, not both.
-
-Column is a string field:
+### Attribute Configuration
 
 ```php
 <?php
-namespace Entity;
+namespace App\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
 #[ORM\Entity]
 class Article
 {
-    /**
-     * @var int|null
-     * @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    public ?int $id = null;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=128)
-     */
-    #[ORM\Column(type: Types::STRING, length: 128)]
-    private $title;
-
-    /**
-     * @var string|null
-     * @ORM\Column(name="body", type="string")
-     */
-    #[ORM\Column(name: 'body', type: Types::STRING)]
-    private $body;
-
-    /**
-     * @var string|null
-     *
-     * @Gedmo\IpTraceable(on="create")
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    #[ORM\Column(type: Types::STRING, length: 45, nullable: true)]
-    #[Gedmo\IpTraceable(on: 'create')]
-    private $createdFromIp;
-
-    /**
-     * @var string|null
-     *
-     * @Gedmo\IpTraceable(on="update")
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    #[ORM\Column(type: Types::STRING, length: 45, nullable: true)]
-    #[Gedmo\IpTraceable(on: 'update')]
-    private $updatedFromIp;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="content_changed_by", type="string", nullable=true, length=45)
-     * @Gedmo\IpTraceable(on="change", field={"title", "body"})
-     */
-    #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Gedmo\IpTraceable(on: 'change', field: ['title', 'body'])]
-    private $contentChangedFromIp;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setBody($body)
-    {
-        $this->body = $body;
-    }
-
-    public function getBody()
-    {
-        return $this->body;
-    }
-
-    public function getCreatedFromIp()
-    {
-        return $this->createdFromIp;
-    }
-
-    public function getUpdatedFromIp()
-    {
-        return $this->updatedFromIp;
-    }
-
-    public function getContentChangedFromIp()
-    {
-        return $this->contentChangedFromIp;
-    }
-}
-```
-
-
-<a name="document-mapping"></a>
-
-## IpTraceable Document example:
-
-```php
-<?php
-namespace Document;
-
-use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\ODM\MongoDB\Types\Type;
-
-/**
- * @ODM\Document(collection="articles")
- */
-#[ODM\Document(collection: 'articles')]
-class Article
-{
-    /** @ODM\Id */
-    #[ODM\Id]
-    private $id;
-
-    /**
-     * @ODM\Field(type="string")
-     */
-    #[ODM\Field(type: Type::STRING)]
-    private $title;
-
-    /**
-     * @var string|null
-     *
-     * @ODM\Field(type="string")
-     * @Gedmo\IpTraceable(on="create")
-     */
-    #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\IpTraceable(on: 'create')]
-    private $createdFromIp;
-
-    /**
-     * @var string|null
-     *
-     * @ODM\Field(type="string")
-     * @Gedmo\IpTraceable
-     */
-    #[ODM\Field(type: Type::STRING)]
+    #[ORM\Column(type: Types::STRING)]
     #[Gedmo\IpTraceable]
-    private $updatedFromIp;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getCreatedFromIp()
-    {
-        return $this->createdFromIp;
-    }
-
-    public function getUpdatedFromIp()
-    {
-        return $this->updatedFromIp;
-    }
+    public ?string $updatedFromIp = null;
 }
 ```
 
-Now on update and creation these annotated fields will be automatically updated
-
-<a name="xml-mapping"></a>
-
-## XML mapping example
+### XML Configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 
-    <entity name="Mapping\Fixture\Xml\IpTraceable" table="ip-traceable">
+    <entity name="App\Model\Article" table="articles">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="createdFromIp" type="string" length="45" nullable="true">
-            <gedmo:ip-traceable on="create"/>
-        </field>
-        <field name="updatedFromIp" type="string" length="45" nullable="true">
+        <field name="updatedFromIp" type="string">
             <gedmo:ip-traceable on="update"/>
         </field>
-        <field name="publishedFromIp" type="string" nullable="true" length="45">
-            <gedmo:ip-traceable on="change" field="status.title" value="Published"/>
-        </field>
-
-        <many-to-one field="status" target-entity="Status">
-            <join-column name="status_id" referenced-column-name="id"/>
-        </many-to-one>
     </entity>
-
 </doctrine-mapping>
 ```
 
-<a name="advanced-examples"></a>
+### Annotation Configuration
 
-## Advanced examples:
-
-### Using dependency of property changes
-
-Add another entity which would represent Article Type:
+> [!NOTE]
+> Support for annotations is deprecated and will be removed in 4.0.
 
 ```php
 <?php
-namespace Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ORM\Entity
- */
-class Type
-{
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
-    private $title;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
-     */
-    private $articles;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-}
-```
-
-Now update the Article Entity to reflect publishedFromIp on Type change:
-
-```php
-<?php
-namespace Entity;
-
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
 class Article
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
-    private $id;
+    /**
+    * @ORM\Id
+    * @ORM\GeneratedValue
+    * @ORM\Column(type="integer")
+    */
+    public ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string")
+     * @Gedmo\IpTraceable
      */
-    private $title;
-
-    /**
-     * @var string $createdFromIp
-     *
-     * @Gedmo\IpTraceable(on="create")
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    private $createdFromIp;
-
-    /**
-     * @var string $updatedFromIp
-     *
-     * @Gedmo\IpTraceable(on="update")
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    private $updatedFromIp;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Type", inversedFromIp="articles")
-     */
-    private $type;
-
-    /**
-     * @var string $publishedFromIp
-     *
-     * @ORM\Column(type="string", nullable=true, length=45)
-     * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
-     */
-    private $publishedFromIp;
-
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getCreatedFromIp()
-    {
-        return $this->createdFromIp;
-    }
-
-    public function getUpdatedFromIp()
-    {
-        return $this->updatedFromIp;
-    }
-
-    public function getPublishedFromIp()
-    {
-        return $this->publishedFromIp;
-    }
+    public ?string $updatedFromIp = null;
 }
 ```
 
-Now a few operations to get it all done:
+### Supported Field Types
+
+The IP traceable extension supports the following field types for the IP address field:
+
+- String (`string`, or when using the ORM and DBAL, `ascii_string`)
+
+## Using Traits
+
+The IP traceable extension provides traits which can be used to quickly add fields, and optionally the mapping configuration,
+for a created by and updated by IP address to be updated for the **create** and **update** actions. These traits are
+provided as a convenience for a common configuration, for other use cases it is suggested you add your own fields and configurations.
+
+- `Gedmo\IpTraceable\Traits\IpTraceable` adds a `$createdFromIp` and `$updatedFromIp` property, with getters and setters
+- `Gedmo\IpTraceable\Traits\IpTraceableDocument` adds a `$createdFromIp` and `$updatedFromIp` property, with getters and setters
+  and mapping annotations and attributes for the MongoDB ODM
+- `Gedmo\IpTraceable\Traits\IpTraceableEntity` adds a `$createdFromIp` and `$updatedFromIp` property, with getters and setters
+  and mapping annotations and attributes for the ORM
+
+## Logging Changes For Specific Actions
+
+In addition to supporting logging the user for general create and update actions, the extension can also be configured to
+log the IP address who made a change for specific fields or values.
+
+### Single Field Changed To Specific Value
+
+For example, we want to record the IP address who published an article on a news site. To do this, we add a field to our object
+and configure it using the **change** action, specifying the field and value we want it to match.
 
 ```php
 <?php
-$article = new Article;
-$article->setTitle('My Article');
+namespace App\Entity;
 
-$em->persist($article);
-$em->flush();
-// article: $createdFromIp, $updatedFromIp were set
-
-$type = new Type;
-$type->setTitle('Published');
-
-$article = $em->getRepository('Entity\Article')->findByTitle('My Article');
-$article->setType($type);
-
-$em->persist($article);
-$em->persist($type);
-$em->flush();
-// article: $publishedFromIp, $updatedFromIp were set
-
-$article->getPublishedFromIp(); // the IP that published this article
-```
-
-Easy like that, any suggestions on improvements are very welcome
-
-
-<a name="traits"></a>
-
-## Traits
-
-You can use the IpTraceable traits to quickly add **createdFromIp** and **updatedFromIp** fields to your objects
-when using annotation or attribute mapping.
-
-There is also a trait without annotation or attribute mappings for easy integration.
-
-**Note:** You are not required to use the traits provided by extensions.
-
-```php
-<?php
-namespace IpTraceable\Fixture;
-
-use Gedmo\IpTraceable\Traits\IpTraceableEntity;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
-class UsingTrait
+#[ORM\Entity]
+class Article
 {
-    /**
-     * Hook ip-traceable behavior
-     * updates createdFromIp, updatedFromIp fields
-     */
-    use IpTraceableEntity;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    public bool $published = false;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * Field to track the IP address who last made any change to this article. 
      */
-    private $id;
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\IpTraceable]
+    public ?string $updatedFromIp = null;
 
     /**
-     * @ORM\Column(length=128)
+     * Field to track the IP address who published this article. 
      */
-    private $title;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\IpTraceable(on: 'change', field: 'published', value: true)]
+    public ?string $publishedFromIp = null;
 }
 ```
 
-The Traits are very simplistic - if you use different field names it is recommended to simply create your
-own Traits specific to your project. The ones provided by this bundle can be used as example.
-
-
-## Example of implementation in Symfony
-
-In your Symfony application, declare an event subscriber that automatically sets the IP address value on IpTraceableListener.
-
-### Example event subscriber class
+The change action can also be configured to watch for changes on related objects using a dot notation path. In this example,
+we log the IP address who updated the article and placed it into an archived category.
 
 ```php
 <?php
+namespace App\Entity;
 
-namespace Acme\DemoBundle\EventListener;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpFoundation\Request;
-
-use Gedmo\IpTraceable\IpTraceableListener;
-
-/**
- * IpTraceSubscriber
- */
-class IpTraceSubscriber implements EventSubscriberInterface
+#[ORM\Entity]
+class Article
 {
-    /**
-     * @var IpTraceableListener
-     */
-    private $ipTraceableListener;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
 
-    public function __construct(IpTraceableListener $ipTraceableListener)
-    {
-        $this->ipTraceableListener = $ipTraceableListener;
-    }
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    public ?Category $category = null;
 
     /**
-     * Set the IP address during the `kernel.request` event
+     * Field to track the IP address who last made any change to this article. 
      */
-    public function onKernelRequest(RequestEvent $event)
-    {
-        // Generally, the listener should only be updated during the main request
-        if (!$event->isMainRequest()) {
-            return;
-        }
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\IpTraceable]
+    public ?string $updatedFromIp = null;
 
-        // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method
-        // $event->getRequest()->setTrustedProxies(array('127.0.0.1'));
-
-        $ip = $event->getRequest()->getClientIp();
-
-        if (null !== $ip) {
-            $this->ipTraceableListener->setIpValue($ip);
-        }
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::REQUEST => 'onKernelRequest',
-        );
-    }
+    /**
+     * Field to track the IP address who archived this article. 
+     */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\IpTraceable(on: 'change', field: 'category.archived', value: true)]
+    public ?string $archivedFromIp = null;
 }
-
 ```
 
-### Configuration for services.xml
+### One of Many Fields Changed
 
-```xml
-<?xml version="1.0" ?>
+The extension can also update a traceable field when using the **change** action by specifying a list of fields to watch.
+This also supports the dotted path notation, allowing you to watch changes on the model itself as well as related data.
 
-<container xmlns="http://symfony.com/schema/dic/services"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+```php
+<?php
+namespace App\Entity;
 
-    <parameters>
-        <parameter key="acme_doctrine_extensions.event_listener.ip_trace.class">Acme\DemoBundle\EventListener\IpTraceListener</parameter>
-    </parameters>
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-    <services>
+#[ORM\Entity]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
 
-        <!-- If your application is using PHP 8 and attributes, you can provide this attribute reader to the listener instead of an annotation reader -->
-        <service id="gedmo_doctrine_extensions.mapping.driver.attribute" class="Gedmo\Mapping\Driver\AttributeReader" public="false" />
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    public ?Category $category = null;
 
-        <service id="gedmo_doctrine_extensions.listener.ip_traceable" class="Gedmo\IpTraceable\IpTraceableListener" public="false">
-            <tag name="doctrine.event_subscriber" connection="default" />
-            <call method="setAnnotationReader">
-                <!-- Uncomment the below argument if using attributes, and comment the argument for the annotation reader -->
-                <!-- <argument type="service" id="gedmo_doctrine_extensions.mapping.driver.attribute" /> -->
-                <!-- The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0 -->
-                <argument type="service" id="annotation_reader" />
-            </call>
-        </service>
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    public ?string $metaDescription = null;
 
-        <service id="acme_doctrine_extensions.event_listener.ip_trace" class="%acme_doctrine_extensions.event_listener.ip_trace.class%" public="false">
-            <argument type="service" id="gedmo_doctrine_extensions.listener.ip_traceable" />
-            <tag name="kernel.event_subscriber" />
-        </service>
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    public ?string $metaKeywords = null;
 
-    </services>
-</container>
+    /**
+     * Field to track the IP address who last made any change to this article. 
+     */
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\IpTraceable]
+    public ?string $updatedFromIp = null;
 
+    /**
+     * Field to track the IP address who last modified this article's SEO metadata. 
+     */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\IpTraceable(on: 'change', field: ['metaDescription', 'metaKeywords', 'category.metaDescription', 'category.metaKeywords'])]
+    public ?string $seoMetadataChangedFromIp = null;
+}
 ```
