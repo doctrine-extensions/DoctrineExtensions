@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Prevent depected ArrayAccess on FieldMapping in Timestampable ORM with `doctrine/orm` 3
 
 ## [3.16.1]
 ### Fixed
