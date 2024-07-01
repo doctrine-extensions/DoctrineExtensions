@@ -236,7 +236,7 @@ When using the [Loggable](../loggable.md), [Translatable](../translatable.md), o
 need to register the mappings for these extensions to your object managers.
 
 > [!NOTE]
-> These extensions only provide mappings through annotations or attributes; if using annotations, you will need to ensure the deprecated [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library is installed and configured.
+> These extensions only provide mappings through annotations or attributes, with support for annotations being deprecated. If using annotations, you will need to ensure the [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library is installed and configured.
 
 ### MongoDB ODM Mapping
 
