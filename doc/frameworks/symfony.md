@@ -20,13 +20,13 @@ the next step will be to ensure you've installed this library and the Doctrine l
 
 For Doctrine MongoDB ODM users, this Composer command will install all required dependencies:
 
-```sh
+```shell
 composer require doctrine/mongodb-odm doctrine/mongodb-odm-bundle gedmo/doctrine-extensions
 ```
 
 For Doctrine ORM users, this Composer command will install all required dependencies:
 
-```sh
+```shell
 composer require doctrine/dbal doctrine/doctrine-bundle doctrine/orm gedmo/doctrine-extensions
 ```
 
@@ -272,7 +272,7 @@ doctrine_mongodb:
 
 To verify your configuration, you can use the `doctrine:mongodb:mapping:info` command to make sure the entities are registered.
 
-```sh
+```shell
 $ bin/console doctrine:mongodb:mapping:info
  Found X documents mapped in document manager default:
  [OK]   Gedmo\Loggable\Document\LogEntry
@@ -313,7 +313,7 @@ doctrine:
 
 To verify your configuration, you can use the `doctrine:mapping:info` command to make sure the entities are registered.
 
-```sh
+```shell
 $ bin/console doctrine:mapping:info
  Found X mapped entities:
  [OK]   Gedmo\Loggable\Entity\LogEntry
@@ -332,7 +332,7 @@ When using the [Soft Deleteable](../softdeleteable.md) extension, a filter is av
 soft-deleted objects are included in query results.
 
 > [!NOTE]
-> The Symfony bundles default filters to not being enabled, these examples will enable the filters by default.
+> The default configuration in the Symfony bundles does not enable the filters. These examples show how to globally enable them.
 
 #### MongoDB ODM Filter Configuration
 

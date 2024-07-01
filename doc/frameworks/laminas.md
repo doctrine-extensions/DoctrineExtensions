@@ -20,13 +20,13 @@ the next step will be to ensure you've installed this library and the Doctrine l
 
 For Doctrine MongoDB ODM users, this Composer command will install all required dependencies:
 
-```sh
+```shell
 composer require doctrine/doctrine-module doctrine/doctrine-mongo-odm-module doctrine/mongodb-odm gedmo/doctrine-extensions
 ```
 
 For Doctrine ORM users, this Composer command will install all required dependencies:
 
-```sh
+```shell
 composer require doctrine/dbal doctrine/doctrine-module doctrine/doctrine-orm-module doctrine/orm gedmo/doctrine-extensions
 ```
 
@@ -324,11 +324,12 @@ When using the [Soft Deleteable](../softdeleteable.md) extension, a filter is av
 soft-deleted objects are included in query results.
 
 > [!NOTE]
-> The Laminas modules default filters to not being enabled, you will need to enable them separately.
+> The default configuration in the Laminas modules does not enable the filters. To use these filters, you will need to enable them separately.
 
 #### MongoDB ODM Filter Configuration
 
-The below example shows a configuration adding the filter to the default document manager.
+The below example shows a configuration adding the filter to the default document manager. To enable the filter,
+you can follow the [Filters documentation guide](https://www.doctrine-project.org/projects/doctrine-mongodb-odm/en/latest/reference/filters.html#disabling-enabling-filters-and-setting-parameters).
 
 ```php
 <?php
@@ -350,7 +351,8 @@ return [
 
 #### ORM Filter Configuration
 
-The below example shows a configuration adding the filter to the default entity manager.
+The below example shows a configuration adding the filter to the default entity manager. To enable the filter,
+you can follow the [Filters documentation guide](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/filters.html#disabling-enabling-filters-and-setting-parameters).
 
 ```php
 <?php
