@@ -26,7 +26,7 @@ final class AttributeReader
      */
     public function getClassAnnotations(\ReflectionClass $class): array
     {
-        return $this->convertToAttributeInstances($class->getAttributes());
+        return $this->convertToAttributeInstances($this->getClassAndTraitsAttributes($class));
     }
 
     /**
@@ -92,6 +92,24 @@ final class AttributeReader
         }
 
         return $instances;
+    }
+
+    /**
+     * Get attributes from a class including those from traits.
+     *
+     * @phpstan-param \ReflectionClass<object> $class
+     *
+     * @return \ReflectionAttribute<object>[]
+     */
+    private function getClassAndTraitsAttributes(\ReflectionClass $class): array
+    {
+        $traitAttributes = array_reduce(
+            $class->getTraits(),
+            static fn (array $carry, \ReflectionClass $trait) => array_merge($trait->getAttributes(), $carry),
+            []
+        );
+
+        return array_merge($class->getAttributes(), $traitAttributes);
     }
 
     private function isRepeatable(string $attributeClassName): bool
