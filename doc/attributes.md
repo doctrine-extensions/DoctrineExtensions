@@ -474,7 +474,8 @@ Optional Parameters:
 
 - **suffix** - An optional suffix for the generated slug
 
-- **handlers** - Unused with attributes
+- **handlers** - Deprecated to be removed in 4.0, this parameter is unused with attributes in favor of
+                 the `SlugHandler` attribute
 
 Basic Example:
 
@@ -552,8 +553,8 @@ class Article
 
 #### `#[Gedmo\Mapping\Annotation\SlugHandlerOption]`
 
-The `SlugHandlerOption` attribute is not supported when using attributes for configuration. Instead, the options
-can be configured directly in the `SlugHandler` attribute's **options** parameter.
+> [!WARNING]
+> The `SlugHandlerOption` attribute is deprecated and will be removed in 4.0. Using this attribute is not supported, and instead, the options can be configured directly in the `SlugHandler` attribute's **options** parameter.
 
 ### Soft Deleteable Extension
 
