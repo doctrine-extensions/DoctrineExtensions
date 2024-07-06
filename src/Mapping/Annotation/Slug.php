@@ -44,14 +44,20 @@ final class Slug implements GedmoAnnotation
     public string $separator = '-';
     public string $prefix = '';
     public string $suffix = '';
-    /** @var SlugHandler[] */
+
+    /**
+     * @var SlugHandler[]
+     *
+     * @deprecated since gedmo/doctrine-extensions 3.18
+     */
     public $handlers = [];
+
     public string $dateFormat = 'Y-m-d-H:i';
 
     /**
      * @param array<string, mixed> $data
      * @param string[]             $fields
-     * @param SlugHandler[]        $handlers
+     * @param SlugHandler[]        $handlers @deprecated since since gedmo/doctrine-extensions 3.18
      */
     public function __construct(
         array $data = [],
