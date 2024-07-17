@@ -9,11 +9,11 @@
     processIsolation="false"
     stopOnFailure="false"
     bootstrap="./tests/bootstrap.php"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
 >
     <coverage>
         <include>
-            <directory>../src</directory>
+            <directory>./src</directory>
         </include>
     </coverage>
     <testsuites>
