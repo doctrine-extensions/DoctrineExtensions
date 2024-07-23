@@ -38,7 +38,7 @@ class Xml extends BaseXml
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (in_array($xmlDoctrine->getName(), ['mapped-superclass', 'entity', 'document', 'embeddable'], true)) {
+        if (in_array($xmlDoctrine->getName(), ['mapped-superclass', 'entity', 'document', 'embeddable', 'embedded-document'], true)) {
             if (isset($xml->loggable)) {
                 /**
                  * @var \SimpleXMLElement;
