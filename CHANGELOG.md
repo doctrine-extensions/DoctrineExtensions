@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Loggable: Support embeddable xml mapping
 
 ## [3.16.1]
 ### Fixed
