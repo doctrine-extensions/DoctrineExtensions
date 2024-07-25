@@ -22,8 +22,7 @@ use Symfony\Component\Console\Application;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-/** @var EntityManager $em */
-$em = include __DIR__.'/../em.php';
+include __DIR__.'/../em.php';
 
 $entityManagerProvider = new SingleManagerProvider($em);
 
