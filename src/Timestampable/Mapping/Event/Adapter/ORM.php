@@ -42,7 +42,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        $converter = Type::getType($mapping['type'] ?? Types::DATETIME_MUTABLE);
+        $converter = Type::getType($this->getType($mapping) ?? Types::DATETIME_MUTABLE);
         $platform = $this->getObjectManager()->getConnection()->getDriver()->getDatabasePlatform();
 
         return $converter->convertToPHPValue($this->getRawDateValue($mapping), $platform);
@@ -58,7 +58,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
     private function getRawDateValue($mapping)
     {
         $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
-        $type = $mapping instanceof FieldMapping ? $mapping->type : ($mapping['type'] ?? '');
+        $type = $this->getType($mapping) ?? '';
 
         if ('integer' === $type) {
             return (int) $datetime->format('U');
@@ -69,5 +69,18 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
         }
 
         return \DateTime::createFromImmutable($datetime);
+    }
+
+    /**
+     * Extract the type from the given FieldMapping.
+     * Supports both, doctrine/orm 2 and 3 and can be replaces with $mapping->type after doctrine/orm 2 support was dropped.
+     */
+    private function getType(FieldMapping|array $mapping): string|null
+    {
+        if(! $mapping instanceof FieldMapping) {
+            return $mapping['type'] ?? null;
+        }
+
+        return $mapping->type;
     }
 }
