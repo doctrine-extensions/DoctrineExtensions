@@ -27,9 +27,6 @@ use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\Event\ClockAwareAdapterInterface;
-use Gedmo\ReferenceIntegrity\Mapping\Validator as ReferenceIntegrityValidator;
-use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
-use Gedmo\Uploadable\Mapping\Validator as MappingValidator;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Clock\ClockInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -44,6 +41,9 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  * extended drivers
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @template TConfig of array
+ * @template TEventAdapter of AdapterInterface
  */
 abstract class MappedEventSubscriber implements EventSubscriber
 {
@@ -115,24 +115,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @return array<string, mixed>
      *
-     * @phpstan-return array{
-     *  useObjectClass?: class-string,
-     *  referenceIntegrity?: array<string, array<string, value-of<ReferenceIntegrityValidator::INTEGRITY_ACTIONS>>>,
-     *  filePathField?: string,
-     *  uploadable?: bool,
-     *  fileNameField?: string,
-     *  allowOverwrite?: bool,
-     *  appendNumber?: bool,
-     *  maxSize?: float,
-     *  path?: string,
-     *  pathMethod?: string,
-     *  allowedTypes?: string[],
-     *  disallowedTypes?: string[],
-     *  filenameGenerator?: MappingValidator::FILENAME_GENERATOR_*|class-string<FilenameGeneratorInterface>,
-     *  fileMimeTypeField?: string,
-     *  fileSizeField?: string,
-     *  callback?: string,
-     * }
+     * @phpstan-return TConfig
      */
     public function getConfiguration(ObjectManager $objectManager, $class)
     {
@@ -273,6 +256,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @throws InvalidArgumentException if event is not recognized
      *
      * @return AdapterInterface
+     *
+     * @phpstan-return TEventAdapter
      */
     protected function getEventAdapter(EventArgs $args)
     {

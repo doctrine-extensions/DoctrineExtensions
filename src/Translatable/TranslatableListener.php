@@ -45,9 +45,7 @@ use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
  *   useObjectClass?: class-string,
  * }
  *
- * @phpstan-method TranslatableConfiguration getConfiguration(ObjectManager $objectManager, $class)
- *
- * @method TranslatableAdapter getEventAdapter(EventArgs $args)
+ * @phpstan-extends MappedEventSubscriber<TranslatableConfiguration, TranslatableAdapter>
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
