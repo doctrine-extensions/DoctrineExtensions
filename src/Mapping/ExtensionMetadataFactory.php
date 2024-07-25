@@ -15,6 +15,7 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as EntityClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo as LegacyEntityClassMetadata;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -71,11 +72,17 @@ class ExtensionMetadataFactory
     private ?CacheItemPoolInterface $cacheItemPool = null;
 
     /**
+     * Ignore doctrine driver class and force  use attribute reader for gedmo properties
+     * @var bool
+     */
+    private $forceUseAttributeReader;
+
+    /**
      * @param Reader|AttributeReader|object|null $annotationReader
      *
      * @note Providing any object as the third argument is deprecated, as of 4.0 an {@see AttributeReader} will be required
      */
-    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null)
+    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null, bool $forceUseAttributeReader = false)
     {
         if (null !== $annotationReader) {
             if ($annotationReader instanceof Reader) {
@@ -101,6 +108,7 @@ class ExtensionMetadataFactory
         $this->objectManager = $objectManager;
         $this->annotationReader = $annotationReader;
         $this->extensionNamespace = $extensionNamespace;
+        $this->forceUseAttributeReader = $forceUseAttributeReader;
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
         $this->driver = $this->getDriver($omDriver);
         $this->cacheItemPool = $cacheItemPool;
@@ -205,11 +213,19 @@ class ExtensionMetadataFactory
         $driverName = substr($className, strrpos($className, '\\') + 1);
         if ($omDriver instanceof MappingDriverChain || 'DriverChain' === $driverName) {
             $driver = new Chain();
+            $attributeDriver = $this->forceUseAttributeReader ? new AttributeDriver([], true) : null;
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
+                if (!$nestedOmDriver instanceof AttributeDriver && $attributeDriver) {
+                    $nestedOmDriver = $attributeDriver;
+                }
                 $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
             }
-            if (null !== $omDriver->getDefaultDriver()) {
-                $driver->setDefaultDriver($this->getDriver($omDriver->getDefaultDriver()));
+            if ($attributeDriver || null !== $omDriver->getDefaultDriver()) {
+                $defDriver = $omDriver->getDefaultDriver();
+                if (!$defDriver instanceof AttributeDriver && $attributeDriver) {
+                    $defDriver = $attributeDriver;
+                }
+                $driver->setDefaultDriver($this->getDriver($defDriver));
             }
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
