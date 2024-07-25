@@ -1,7 +1,7 @@
 # Annotations Reference
 
 > [!IMPORTANT]
-> To use annotations, you will need the deprecated [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library. PHP 8 users are encouraged to migrate and use [attributes](./attributes.md) as annotation support is deprecated in all supported Doctrine object managers.
+> Support for annotations is deprecated and will be removed in 4.0. PHP 8 users are encouraged to migrate and use [attributes](./attributes.md) instead of annotations. To use annotations, you will need the [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library.
 
 Below you will a reference for annotations supported in this extensions library.
 There will be introduction on usage with examples. For more detailed usage of each
