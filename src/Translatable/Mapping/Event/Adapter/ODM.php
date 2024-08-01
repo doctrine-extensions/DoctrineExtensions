@@ -139,9 +139,15 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         $data = [];
 
         foreach ($meta->getReflectionProperties() as $fieldName => $reflProp) {
-            if (!$meta->isIdentifier($fieldName)) {
-                $data[$meta->getFieldMapping($fieldName)['name']] = $reflProp->getValue($translation);
+            if ($meta->isIdentifier($fieldName)) {
+                continue;
             }
+            $fieldMappings = $meta->getFieldMapping($fieldName);
+            if (($fieldMappings['notSaved'] ?? false) === true) {
+                continue;
+            }
+
+            $data[$meta->getFieldMapping($fieldName)['name']] = $reflProp->getValue($translation);
         }
 
         $insertResult = $collection->insertOne($data);

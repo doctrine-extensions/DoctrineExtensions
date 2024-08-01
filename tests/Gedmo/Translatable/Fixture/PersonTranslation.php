@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Translatable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 use Gedmo\Translatable\Entity\Repository\TranslationRepository;
@@ -33,4 +34,30 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 #[ORM\UniqueConstraint(name: 'lookup_unique_idx', columns: ['locale', 'object_Class', 'foreign_key', 'field'])]
 class PersonTranslation extends AbstractTranslation
 {
+    /**
+     * @ORM\Column (
+     *     name: 'full_name',
+     *     type: Types::STRING,
+     *     length: 256,
+     *     nullable: true,
+     *     insertable: false,
+     *     updatable: false,
+     *     generated: 'ALWAYS'
+     * )
+     */
+    #[ORM\Column(
+        name: 'full_name',
+        type: Types::STRING,
+        length: 256,
+        nullable: true,
+        insertable: false,
+        updatable: false,
+        generated: 'ALWAYS'
+    )]
+    protected ?string $fullName = null;
+
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
 }
