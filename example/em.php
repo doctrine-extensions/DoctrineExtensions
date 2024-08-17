@@ -28,13 +28,6 @@ use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-/*
- * This file is part of the Doctrine Behavioral Extensions package.
- * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 // this entity manager configuration works with the Doctrine DBAL and ORM.
 // Regarding the AnnotationDriver setup, it most probably will be changed into
 // XML because the annotation driver fails to read other classes in same namespace.
@@ -176,6 +169,8 @@ $config->setMetadataCache($cache);
 $config->setQueryCache($cache);
 $config->setResultCache($cache);
 
-// Finally, we create the entity manager
 $connection = DriverManager::getConnection($connection, $config);
-$em = new EntityManager($connection, $config, $eventManager);
+
+// Finally, we create and return the entity manager
+
+return new EntityManager($connection, $config, $eventManager);
