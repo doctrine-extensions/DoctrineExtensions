@@ -16,12 +16,6 @@ use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 use Gedmo\DoctrineExtensions;
 use Symfony\Component\Console\Application;
 
-/*
- * This file is part of the Doctrine Behavioral Extensions package.
- * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 /** @var EntityManager $em */
 $em = include __DIR__.'/../em.php';
 
