@@ -12,11 +12,14 @@ namespace Gedmo\IpTraceable;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * The IpTraceable listener handles the update of
  * IPs on creation and update.
+ *
+ * @phpstan-extends AbstractTrackingListener<array, IpTraceableAdapter>
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  *

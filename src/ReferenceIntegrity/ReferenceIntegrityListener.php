@@ -16,11 +16,14 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
+use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\ReferenceIntegrity\Mapping\Validator;
 
 /**
  * The ReferenceIntegrity listener handles the reference integrity on related documents
+ *
+ * @phpstan-extends MappedEventSubscriber<array, AdapterInterface>
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  *

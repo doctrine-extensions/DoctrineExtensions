@@ -65,9 +65,7 @@ use Gedmo\Sluggable\Util\Urlizer;
  *   useObjectClass?: class-string,
  * }
  *
- * @phpstan-method SluggableConfiguration getConfiguration(ObjectManager $objectManager, $class)
- *
- * @method SluggableAdapter getEventAdapter(EventArgs $args)
+ * @phpstan-extends MappedEventSubscriber<SluggableConfiguration, SluggableAdapter>
  */
 class SluggableListener extends MappedEventSubscriber
 {

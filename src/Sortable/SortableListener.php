@@ -47,9 +47,7 @@ use ProxyManager\Proxy\GhostObjectInterface;
  *   }>,
  * }
  *
- * @phpstan-method SortableConfiguration getConfiguration(ObjectManager $objectManager, $class)
- *
- * @method SortableAdapter getEventAdapter(EventArgs $args)
+ * @phpstan-extends MappedEventSubscriber<SortableConfiguration, SortableAdapter>
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
