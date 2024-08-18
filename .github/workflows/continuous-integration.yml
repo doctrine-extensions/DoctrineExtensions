@@ -143,3 +143,4 @@ jobs:
         uses: "codecov/codecov-action@v4"
         with:
           directory: reports
+          token: "${{ secrets.CODECOV_TOKEN }}"
