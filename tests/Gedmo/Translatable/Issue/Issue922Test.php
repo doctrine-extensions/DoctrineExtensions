@@ -22,11 +22,6 @@ use Gedmo\Translatable\TranslatableListener;
 
 final class Issue922Test extends BaseTestCaseORM
 {
-    private const POST = Post::class;
-    private const TRANSLATION = Translation::class;
-
-    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -63,7 +58,7 @@ final class Issue922Test extends BaseTestCaseORM
         // clear and test postLoad event values set
         $this->em->clear();
 
-        $p1 = $this->em->find(self::POST, $p1->getId());
+        $p1 = $this->em->find(Post::class, $p1->getId());
         static::assertInstanceOf('DateTime', $p1->getPublishedAt());
         static::assertInstanceOf('DateTime', $p1->getTimestampAt());
         static::assertInstanceOf('DateTime', $p1->getDateAt());
@@ -76,8 +71,8 @@ final class Issue922Test extends BaseTestCaseORM
             ObjectHydrator::class
         );
 
-        $q = $this->em->createQuery('SELECT p FROM '.self::POST.' p');
-        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $q = $this->em->createQuery('SELECT p FROM '.Post::class.' p');
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'de');
 
         $p1 = $q->getSingleResult();
@@ -90,8 +85,8 @@ final class Issue922Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::POST,
-            self::TRANSLATION,
+            Post::class,
+            Translation::class,
         ];
     }
 }

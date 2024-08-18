@@ -19,9 +19,6 @@ use Gedmo\Translatable\TranslatableListener;
 
 class Issue2167Test extends BaseTestCaseORM
 {
-    private const TRANSLATION = Translation::class;
-    private const ENTITY = Article::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -91,8 +88,8 @@ class Issue2167Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TRANSLATION,
-            self::ENTITY,
+            Translation::class,
+            Article::class,
         ];
     }
 
@@ -101,7 +98,7 @@ class Issue2167Test extends BaseTestCaseORM
         $this->em->clear();
         $this->translatableListener->setTranslatableLocale($locale);
 
-        $qb = $this->em->createQueryBuilder()->select('e')->from(self::ENTITY, 'e');
+        $qb = $this->em->createQueryBuilder()->select('e')->from(Article::class, 'e');
 
         return $qb->getQuery()->getSingleResult();
     }

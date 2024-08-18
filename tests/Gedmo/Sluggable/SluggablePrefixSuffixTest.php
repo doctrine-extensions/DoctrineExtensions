@@ -22,11 +22,6 @@ use Gedmo\Tree\TreeListener;
 
 final class SluggablePrefixSuffixTest extends BaseTestCaseORM
 {
-    private const PREFIX = Prefix::class;
-    private const SUFFIX = Suffix::class;
-    private const SUFFIX_TREE = SuffixWithTreeHandler::class;
-    private const PREFIX_TREE = PrefixWithTreeHandler::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -106,10 +101,10 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::SUFFIX,
-            self::PREFIX,
-            self::SUFFIX_TREE,
-            self::PREFIX_TREE,
+            Suffix::class,
+            Prefix::class,
+            SuffixWithTreeHandler::class,
+            PrefixWithTreeHandler::class,
         ];
     }
 }

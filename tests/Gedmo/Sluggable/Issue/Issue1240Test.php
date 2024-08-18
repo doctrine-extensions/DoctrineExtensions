@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue1240Test extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -67,7 +65,7 @@ final class Issue1240Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
+            Article::class,
         ];
     }
 }

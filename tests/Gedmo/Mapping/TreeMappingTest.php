@@ -31,10 +31,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeMappingTest extends ORMMappingTestCase
 {
-    private const TEST_YAML_ENTITY_CLASS = Category::class;
-    private const YAML_CLOSURE_CATEGORY = ClosureCategory::class;
-    private const YAML_MATERIALIZED_PATH_CATEGORY = MaterializedPathCategory::class;
-
     private EntityManager $em;
 
     private TreeListener $listener;
@@ -83,7 +79,7 @@ final class TreeMappingTest extends ORMMappingTestCase
      */
     public function testApcCached(): void
     {
-        $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
+        $this->em->getClassMetadata(ClosureCategory::class);
         $this->em->getClassMetadata(CategoryClosureWithoutMapping::class);
 
         $meta = $this->em->getConfiguration()->getMetadataCache()->getItem(
@@ -96,9 +92,9 @@ final class TreeMappingTest extends ORMMappingTestCase
 
     public function testYamlNestedMapping(): void
     {
-        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
+        $this->em->getClassMetadata(Category::class);
         $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::TEST_YAML_ENTITY_CLASS,
+            Category::class,
             'Gedmo\Tree'
         );
         $config = $this->cache->getItem($cacheId)->get();
@@ -122,8 +118,8 @@ final class TreeMappingTest extends ORMMappingTestCase
     public function testYamlClosureMapping(): void
     {
         // Force metadata class loading.
-        $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
-        $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
+        $this->em->getClassMetadata(ClosureCategory::class);
+        $cacheId = ExtensionMetadataFactory::getCacheId(ClosureCategory::class, 'Gedmo\Tree');
         $config = $this->cache->getItem($cacheId)->get();
 
         static::assertArrayHasKey('parent', $config);
@@ -136,7 +132,7 @@ final class TreeMappingTest extends ORMMappingTestCase
 
     public function testYamlMaterializedPathMapping(): void
     {
-        $meta = $this->em->getClassMetadata(self::YAML_MATERIALIZED_PATH_CATEGORY);
+        $meta = $this->em->getClassMetadata(MaterializedPathCategory::class);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('strategy', $config);

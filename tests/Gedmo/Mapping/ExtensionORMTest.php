@@ -21,8 +21,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 final class ExtensionORMTest extends BaseTestCaseORM
 {
-    private const USER = User::class;
-
     private EncoderListener $encoderListener;
 
     protected function setUp(): void
@@ -38,7 +36,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
 
     public function testExtensionMetadata(): void
     {
-        $config = $this->encoderListener->getConfiguration($this->em, self::USER);
+        $config = $this->encoderListener->getConfiguration($this->em, User::class);
         static::assertArrayHasKey('encode', $config);
         static::assertCount(2, $config['encode']);
 
@@ -73,7 +71,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
         $getEventAdapterMethod->setAccessible(true);
 
         $loadClassMetadataEventArgs = new LoadClassMetadataEventArgs(
-            $this->em->getClassMetadata(self::USER),
+            $this->em->getClassMetadata(User::class),
             $this->em
         );
         $eventAdapter = $getEventAdapterMethod->invoke(
@@ -86,7 +84,7 @@ final class ExtensionORMTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::USER,
+            User::class,
         ];
     }
 }

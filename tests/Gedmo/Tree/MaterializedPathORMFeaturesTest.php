@@ -24,8 +24,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 {
-    private const CATEGORY = MPFeaturesCategory::class;
-
     /**
      * @var array<string, mixed>
      */
@@ -47,7 +45,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 
         $this->getDefaultMockSqliteEntityManager($evm);
 
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(MPFeaturesCategory::class);
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
@@ -95,13 +93,13 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
+            MPFeaturesCategory::class,
         ];
     }
 
     private function createCategory(): MPFeaturesCategory
     {
-        $class = self::CATEGORY;
+        $class = MPFeaturesCategory::class;
 
         return new $class();
     }

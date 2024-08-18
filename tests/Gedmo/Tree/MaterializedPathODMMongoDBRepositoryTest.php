@@ -27,8 +27,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 {
-    private const CATEGORY = Category::class;
-
     /**
      * @var MaterializedPathRepository<Category>
      */
@@ -44,7 +42,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $this->getDefaultDocumentManager($evm);
         $this->populate();
 
-        $this->repo = $this->dm->getRepository(self::CATEGORY);
+        $this->repo = $this->dm->getRepository(Category::class);
     }
 
     public function testGetRootNodes(): void
@@ -307,7 +305,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
 
     private function createCategory(): Category
     {
-        $class = self::CATEGORY;
+        $class = Category::class;
 
         return new $class();
     }

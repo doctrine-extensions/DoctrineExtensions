@@ -31,10 +31,6 @@ final class IpTraceableTest extends BaseTestCaseORM
 {
     private const TEST_IP = '34.234.1.10';
 
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const TYPE = Type::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -98,12 +94,12 @@ final class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
         static::assertSame(self::TEST_IP, $sport->getCreated());
         static::assertSame(self::TEST_IP, $sport->getUpdated());
         static::assertNull($sport->getPublished());
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
         static::assertSame(self::TEST_IP, $sportComment->getModified());
         static::assertNull($sportComment->getClosed());
 
@@ -119,7 +115,7 @@ final class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
         static::assertSame(self::TEST_IP, $sportComment->getClosed());
 
         static::assertSame(self::TEST_IP, $sport->getPublished());
@@ -136,7 +132,7 @@ final class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
         static::assertSame(self::TEST_IP, $sport->getCreated());
         static::assertSame(self::TEST_IP, $sport->getUpdated());
@@ -158,9 +154,9 @@ final class IpTraceableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::TYPE,
+            Article::class,
+            Comment::class,
+            Type::class,
         ];
     }
 }

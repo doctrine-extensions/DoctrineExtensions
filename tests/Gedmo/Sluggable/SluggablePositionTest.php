@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggablePositionTest extends BaseTestCaseORM
 {
-    private const POSITION = Position::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,8 +36,8 @@ final class SluggablePositionTest extends BaseTestCaseORM
 
     public function testPositionedSlugOrder(): void
     {
-        $meta = $this->em->getClassMetadata(self::POSITION);
-        $repo = $this->em->getRepository(self::POSITION);
+        $meta = $this->em->getClassMetadata(Position::class);
+        $repo = $this->em->getRepository(Position::class);
 
         $object = $repo->find(1);
         $slug = $meta->getReflectionProperty('slug')->getValue($object);
@@ -49,13 +47,13 @@ final class SluggablePositionTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::POSITION,
+            Position::class,
         ];
     }
 
     private function populate(): void
     {
-        $meta = $this->em->getClassMetadata(self::POSITION);
+        $meta = $this->em->getClassMetadata(Position::class);
         $object = new Position();
         $meta->getReflectionProperty('title')->setValue($object, 'title');
         $meta->getReflectionProperty('prop')->setValue($object, 'prop');

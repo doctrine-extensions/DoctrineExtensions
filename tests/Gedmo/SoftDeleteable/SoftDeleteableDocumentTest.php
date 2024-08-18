@@ -30,8 +30,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 {
-    private const USER_CLASS = User::class;
-    private const USER__TIME_AWARE_CLASS = UserTimeAware::class;
     private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private SoftDeleteableListener $softDeleteableListener;
@@ -52,7 +50,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
     public function testShouldSoftlyDeleteIfColumnNameDifferFromPropertyName(): void
     {
-        $repo = $this->dm->getRepository(self::USER_CLASS);
+        $repo = $this->dm->getRepository(User::class);
 
         $newUser = new User();
 
@@ -82,9 +80,9 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     {
         $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
         static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
-        $filter->disableForDocument(self::USER_CLASS);
+        $filter->disableForDocument(User::class);
 
-        $repo = $this->dm->getRepository(self::USER_CLASS);
+        $repo = $this->dm->getRepository(User::class);
 
         $newUser = new User();
         $username = 'test_user';
@@ -102,7 +100,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         static::assertNotNull($user->getDeletedAt());
 
-        $filter->enableForDocument(self::USER_CLASS);
+        $filter->enableForDocument(User::class);
 
         $user = $repo->findOneBy(['username' => $username]);
         static::assertNull($user);
@@ -119,9 +117,9 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     {
         $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
         static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
-        $filter->disableForDocument(self::USER__TIME_AWARE_CLASS);
+        $filter->disableForDocument(UserTimeAware::class);
 
-        $repo = $this->dm->getRepository(self::USER__TIME_AWARE_CLASS);
+        $repo = $this->dm->getRepository(UserTimeAware::class);
 
         // Find entity with deletedAt date in future
         $newUser = new User();
@@ -168,7 +166,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
     private function doTestPostSoftDeleteEventIsDispatched(): void
     {
-        $repo = $this->dm->getRepository(self::USER_CLASS);
+        $repo = $this->dm->getRepository(User::class);
 
         $newUser = new User();
         $username = 'test_user';

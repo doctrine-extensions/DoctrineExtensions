@@ -24,9 +24,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-    private const SLUG = RelativeSlug::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -39,7 +36,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
     public function testSlugGeneration(): void
     {
         $this->populate();
-        $repo = $this->dm->getRepository(self::SLUG);
+        $repo = $this->dm->getRepository(RelativeSlug::class);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
         static::assertSame('sport-test/thomas', $thomas->getSlug());
@@ -57,7 +54,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
     public function testUpdateOperations(): void
     {
         $this->populate();
-        $repo = $this->dm->getRepository(self::SLUG);
+        $repo = $this->dm->getRepository(RelativeSlug::class);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
         $thomas->setTitle('Ninja');
@@ -66,7 +63,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 
         static::assertSame('sport-test/ninja', $thomas->getSlug());
 
-        $sport = $this->dm->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
+        $sport = $this->dm->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
         $sport->setTitle('Martial Arts');
 
         $this->dm->persist($sport);
@@ -79,7 +76,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $jen = $repo->findOneBy(['title' => 'Jen']);
         static::assertSame('martial-arts-test/jen', $jen->getSlug());
 
-        $cars = $this->dm->getRepository(self::ARTICLE)->findOneBy(['title' => 'Cars']);
+        $cars = $this->dm->getRepository(Article::class)->findOneBy(['title' => 'Cars']);
         $jen->setArticle($cars);
 
         $this->dm->persist($jen);

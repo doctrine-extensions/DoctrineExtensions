@@ -24,9 +24,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class NestedTreePositionTest extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const ROOT_CATEGORY = RootCategory::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -45,7 +42,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         $sport = new Category();
         $sport->setTitle('Sport');
 
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
 
         $repo->persistAsFirstChild($food);
         $repo->persistAsNextSiblingOf($sport, $food);
@@ -65,7 +62,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         $sport = new RootCategory();
         $sport->setTitle('Sport');
 
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $repo->persistAsFirstChild($food);
         $repo->persistAsNextSiblingOf($sport, $food);
@@ -76,7 +73,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
     public function testTreeChildPositionMove2(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $meat = $repo->findOneBy(['title' => 'Meat']);
@@ -99,7 +96,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertSame(10, $meat->getRight());
 
         // Raw query to show the issue #108 with wrong left value by Doctrine
-        $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c';
+        $dql = 'SELECT c FROM '.RootCategory::class.' c';
         $dql .= ' WHERE c.id = 5'; // 5 == meat
         $meat_array = $this->em->createQuery($dql)->getScalarResult();
 
@@ -111,7 +108,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
     public function testTreeChildPositionMove3(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $milk = $repo->findOneBy(['title' => 'Milk']);
@@ -131,7 +128,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertSame(10, $milk->getRight());
 
         // Raw query to show the issue #108 with wrong left value by Doctrine
-        $dql = 'SELECT c FROM '.self::ROOT_CATEGORY.' c';
+        $dql = 'SELECT c FROM '.RootCategory::class.' c';
         $dql .= ' WHERE c.id = 4 '; // 4 == Milk
         $milk_array = $this->em->createQuery($dql)->getScalarResult();
         static::assertSame(9, $milk_array[0]['c_lft']);
@@ -142,7 +139,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
     public function testPositionedUpdates(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $citrons = $repo->findOneBy(['title' => 'Citrons']);
         $vegitables = $repo->findOneBy(['title' => 'Vegitables']);
@@ -172,7 +169,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
     public function testTreeChildPositionMove(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
@@ -198,7 +195,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
     public function testOnRootCategory(): void
     {
         // need to check if this does not produce errors
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $fruits = new RootCategory();
         $fruits->setTitle('Fruits');
@@ -229,12 +226,12 @@ final class NestedTreePositionTest extends BaseTestCaseORM
             ->persistAsPrevSibling($drinks);
 
         $this->em->flush();
-        $dql = 'SELECT COUNT(c) FROM '.self::ROOT_CATEGORY.' c';
+        $dql = 'SELECT COUNT(c) FROM '.RootCategory::class.' c';
         $dql .= ' WHERE c.lft = 1 AND c.rgt = 2 AND c.parent IS NULL AND c.level = 1';
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
         static::assertSame(6, (int) $count);
 
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
 
         $fruits = new Category();
         $fruits->setTitle('Fruits');
@@ -265,7 +262,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
             ->persistAsPrevSibling($drinks);
 
         $this->em->flush();
-        $dql = 'SELECT COUNT(c) FROM '.self::CATEGORY.' c';
+        $dql = 'SELECT COUNT(c) FROM '.Category::class.' c';
         $dql .= ' WHERE c.parentId IS NULL AND c.level = 0';
         $dql .= ' AND c.lft BETWEEN 1 AND 11';
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
@@ -274,7 +271,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
 
     public function testRootTreePositionedInserts(): void
     {
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         // test child positioned inserts
         $food = new RootCategory();
@@ -337,7 +334,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
 
     public function testRootlessTreeTopLevelInserts(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
 
         // test top level positioned inserts
         $fruits = new Category();
@@ -396,7 +393,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
 
     public function testSimpleTreePositionedInserts(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
 
         // test child positioned inserts
         $food = new Category();
@@ -462,14 +459,14 @@ final class NestedTreePositionTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::ROOT_CATEGORY,
+            Category::class,
+            RootCategory::class,
         ];
     }
 
     private function populate(): void
     {
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $food = new RootCategory();
         $food->setTitle('Food');

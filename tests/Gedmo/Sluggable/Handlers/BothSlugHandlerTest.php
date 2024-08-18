@@ -25,9 +25,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class BothSlugHandlerTest extends BaseTestCaseORM
 {
-    private const OCCUPATION = Occupation::class;
-    private const PERSON = Person::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -42,7 +39,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
     public function testSlugGeneration(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::PERSON);
+        $repo = $this->em->getRepository(Person::class);
 
         $herzult = $repo->findOneBy(['name' => 'Herzult']);
         static::assertSame('web/developer/php/herzult', $herzult->getSlug());
@@ -57,7 +54,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
     public function testSlugUpdates(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::PERSON);
+        $repo = $this->em->getRepository(Person::class);
 
         $gedi = $repo->findOneBy(['name' => 'Gedi']);
         $gedi->setName('Upd Gedi');
@@ -66,7 +63,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
 
         static::assertSame('web/developer/upd-gedi', $gedi->getSlug());
 
-        $artist = $this->em->getRepository(self::OCCUPATION)->findOneBy(['title' => 'Singer']);
+        $artist = $this->em->getRepository(Occupation::class)->findOneBy(['title' => 'Singer']);
         $artist->setTitle('Artist');
 
         $this->em->persist($artist);
@@ -85,8 +82,8 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
     public function test1093(): void
     {
         $this->populate();
-        $personRepo = $this->em->getRepository(self::PERSON);
-        $occupationRepo = $this->em->getRepository(self::OCCUPATION);
+        $personRepo = $this->em->getRepository(Person::class);
+        $occupationRepo = $this->em->getRepository(Occupation::class);
 
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
         static::assertSame('web/developer/php/herzult', $herzult->getSlug());
@@ -111,14 +108,14 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::OCCUPATION,
-            self::PERSON,
+            Occupation::class,
+            Person::class,
         ];
     }
 
     private function populate(): void
     {
-        $repo = $this->em->getRepository(self::OCCUPATION);
+        $repo = $this->em->getRepository(Occupation::class);
 
         $web = new Occupation();
         $web->setTitle('Web');

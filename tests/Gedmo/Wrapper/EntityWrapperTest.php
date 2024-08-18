@@ -26,10 +26,6 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  */
 final class EntityWrapperTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const COMPOSITE = Composite::class;
-    private const COMPOSITE_RELATION = CompositeRelation::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -39,8 +35,8 @@ final class EntityWrapperTest extends BaseTestCaseORM
 
     public function testManaged(): void
     {
-        $test = $this->em->find(self::ARTICLE, ['id' => 1]);
-        static::assertInstanceOf(self::ARTICLE, $test);
+        $test = $this->em->find(Article::class, ['id' => 1]);
+        static::assertInstanceOf(Article::class, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
         static::assertSame(1, $wrapped->getIdentifier());
@@ -54,7 +50,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
     public function testProxy(): void
     {
         $this->em->clear();
-        $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
+        $test = $this->em->getReference(Article::class, ['id' => 1]);
         static::assertInstanceOf(Proxy::class, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -69,8 +65,8 @@ final class EntityWrapperTest extends BaseTestCaseORM
 
     public function testComposite(): void
     {
-        $test = $this->em->getReference(self::COMPOSITE, ['one' => 1, 'two' => 2]);
-        static::assertInstanceOf(self::COMPOSITE, $test);
+        $test = $this->em->getReference(Composite::class, ['one' => 1, 'two' => 2]);
+        static::assertInstanceOf(Composite::class, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
         $id = $wrapped->getIdentifier(false);
@@ -90,9 +86,9 @@ final class EntityWrapperTest extends BaseTestCaseORM
 
     public function testCompositeRelation(): void
     {
-        $art1 = $this->em->getReference(self::ARTICLE, ['id' => 1]);
-        $test = $this->em->getReference(self::COMPOSITE_RELATION, ['article' => $art1->getId(), 'status' => 2]);
-        static::assertInstanceOf(self::COMPOSITE_RELATION, $test);
+        $art1 = $this->em->getReference(Article::class, ['id' => 1]);
+        $test = $this->em->getReference(CompositeRelation::class, ['article' => $art1->getId(), 'status' => 2]);
+        static::assertInstanceOf(CompositeRelation::class, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
         $id = $wrapped->getIdentifier(false);
@@ -110,7 +106,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
 
     public function testDetachedEntity(): void
     {
-        $test = $this->em->find(self::ARTICLE, ['id' => 1]);
+        $test = $this->em->find(Article::class, ['id' => 1]);
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -120,7 +116,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
 
     public function testDetachedProxy(): void
     {
-        $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
+        $test = $this->em->getReference(Article::class, ['id' => 1]);
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -130,7 +126,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
 
     public function testDetachedCompositeRelation(): void
     {
-        $test = $this->em->getReference(self::COMPOSITE_RELATION, ['article' => 1, 'status' => 2]);
+        $test = $this->em->getReference(CompositeRelation::class, ['article' => 1, 'status' => 2]);
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -141,8 +137,8 @@ final class EntityWrapperTest extends BaseTestCaseORM
     public function testCompositeRelationProxy(): void
     {
         $this->em->clear();
-        $art1 = $this->em->getReference(self::ARTICLE, ['id' => 1]);
-        $test = $this->em->getReference(self::COMPOSITE_RELATION, ['article' => $art1->getId(), 'status' => 2]);
+        $art1 = $this->em->getReference(Article::class, ['id' => 1]);
+        $test = $this->em->getReference(CompositeRelation::class, ['article' => $art1->getId(), 'status' => 2]);
         static::assertInstanceOf(Proxy::class, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -164,9 +160,9 @@ final class EntityWrapperTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMPOSITE,
-            self::COMPOSITE_RELATION,
+            Article::class,
+            Composite::class,
+            CompositeRelation::class,
         ];
     }
 

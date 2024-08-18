@@ -26,8 +26,6 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 {
     private const TEST_IP = '34.234.1.10';
 
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -44,7 +42,7 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 
     public function testIpTraceable(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $article = $repo->findOneBy(['title' => 'IpTraceable Article']);
 
         static::assertSame(self::TEST_IP, $article->getCreated());
@@ -77,7 +75,7 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
         static::assertSame(self::TEST_IP, (string) $sport->getCreated());
         static::assertSame(self::TEST_IP, $sport->getUpdated());

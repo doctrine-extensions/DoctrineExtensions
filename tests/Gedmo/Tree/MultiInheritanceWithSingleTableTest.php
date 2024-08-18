@@ -26,11 +26,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 {
-    private const CAR = Car::class;
-    private const BUS = Bus::class;
-    private const VEHICLE = Vehicle::class;
-    private const ENGINE = Engine::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -46,7 +41,7 @@ final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         $this->populate();
         $this->em->clear();
 
-        $carRepo = $this->em->getRepository(self::CAR);
+        $carRepo = $this->em->getRepository(Car::class);
         $audi = $carRepo->findOneBy(['title' => 'Audi-80']);
         static::assertSame(2, $carRepo->childCount($audi));
         static::assertSame(1, $audi->getLeft());
@@ -67,7 +62,7 @@ final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 
     /*public function testHeavyLoad()
     {
-        $carRepo = $this->em->getRepository(self::CAR);
+        $carRepo = $this->em->getRepository(Car::class);
         $parent = null;
         $num = 100;
         for($i = 0; $i < 100; $i++) {
@@ -106,10 +101,10 @@ final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::VEHICLE,
-            self::CAR,
-            self::ENGINE,
-            self::BUS,
+            Vehicle::class,
+            Car::class,
+            Engine::class,
+            Bus::class,
         ];
     }
 

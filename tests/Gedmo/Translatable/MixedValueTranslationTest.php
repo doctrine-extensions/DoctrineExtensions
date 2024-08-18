@@ -26,9 +26,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class MixedValueTranslationTest extends BaseTestCaseORM
 {
-    private const MIXED = MixedValue::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -51,7 +48,7 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
 
     public function testFixtureGeneratedTranslations(): void
     {
-        $repo = $this->em->getRepository(self::MIXED);
+        $repo = $this->em->getRepository(MixedValue::class);
         $mixed = $repo->findOneBy(['id' => 1]);
 
         static::assertInstanceOf(\DateTime::class, $mixed->getDate());
@@ -61,7 +58,7 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
 
     public function testOtherTranslation(): void
     {
-        $repo = $this->em->getRepository(self::MIXED);
+        $repo = $this->em->getRepository(MixedValue::class);
         $mixed = $repo->findOneBy(['id' => 1]);
 
         $this->translatableListener->setTranslatableLocale('de_de');
@@ -75,7 +72,7 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $mixed = $repo->findOneBy(['id' => 1]);
-        $transRepo = $this->em->getRepository(self::TRANSLATION);
+        $transRepo = $this->em->getRepository(Translation::class);
         $translations = $transRepo->findTranslations($mixed);
 
         static::assertCount(1, $translations);
@@ -89,8 +86,8 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::MIXED,
-            self::TRANSLATION,
+            MixedValue::class,
+            Translation::class,
         ];
     }
 

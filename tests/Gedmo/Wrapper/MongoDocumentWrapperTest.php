@@ -23,8 +23,6 @@ use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
  */
 final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-
     private ?string $articleId = null;
 
     protected function setUp(): void
@@ -36,8 +34,8 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 
     public function testManaged(): void
     {
-        $test = $this->dm->find(self::ARTICLE, $this->articleId);
-        static::assertInstanceOf(self::ARTICLE, $test);
+        $test = $this->dm->find(Article::class, $this->articleId);
+        static::assertInstanceOf(Article::class, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         static::assertSame($this->articleId, $wrapped->getIdentifier());
@@ -51,9 +49,9 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     public function testProxy(): void
     {
         $this->dm->clear();
-        $test = $this->dm->getReference(self::ARTICLE, $this->articleId);
+        $test = $this->dm->getReference(Article::class, $this->articleId);
         static::assertStringStartsWith('Proxy', get_class($test));
-        static::assertInstanceOf(self::ARTICLE, $test);
+        static::assertInstanceOf(Article::class, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         $id = $wrapped->getIdentifier(false);
@@ -64,7 +62,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 
     public function testDetachedEntity(): void
     {
-        $test = $this->dm->find(self::ARTICLE, $this->articleId);
+        $test = $this->dm->find(Article::class, $this->articleId);
         $this->dm->clear();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
@@ -74,7 +72,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 
     public function testDetachedProxy(): void
     {
-        $test = $this->dm->getReference(self::ARTICLE, $this->articleId);
+        $test = $this->dm->getReference(Article::class, $this->articleId);
         $this->dm->clear();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 

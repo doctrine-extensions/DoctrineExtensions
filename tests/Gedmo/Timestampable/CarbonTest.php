@@ -27,10 +27,6 @@ use Gedmo\Timestampable\TimestampableListener;
 
 final class CarbonTest extends BaseTestCaseORM
 {
-    private const ARTICLE = ArticleCarbon::class;
-    private const COMMENT = CommentCarbon::class;
-    private const TYPE = Type::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -79,7 +75,7 @@ final class CarbonTest extends BaseTestCaseORM
         $this->em->flush();
 
         /** @var ArticleCarbon $sport */
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
+        $sport = $this->em->getRepository(ArticleCarbon::class)->findOneBy(['title' => 'Sport']);
         static::assertInstanceOf(CarbonImmutable::class, $sport->getUpdated(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
         static::assertInstanceOf(Carbon::class, $sport->getCreated(), 'Type DATE_MUTABLE should become Carbon');
 
@@ -94,7 +90,7 @@ final class CarbonTest extends BaseTestCaseORM
         $sport->setAuthor($author);
 
         /** @var CommentCarbon $sportComment */
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(CommentCarbon::class)->findOneBy(['message' => 'hello']);
         static::assertInstanceOf(\DateTime::class, $sportComment->getModified(), 'Type TIME_MUTABLE should stay DateTime');
 
         static::assertNotNull($sportComment->getModified());
@@ -110,7 +106,7 @@ final class CarbonTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(CommentCarbon::class)->findOneBy(['message' => 'hello']);
         static::assertInstanceOf(CarbonImmutable::class, $sportComment->getClosed(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
         static::assertInstanceOf(CarbonImmutable::class, $sport->getPublished(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
         static::assertInstanceOf(CarbonImmutable::class, $sport->getAuthorChanged(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
@@ -153,9 +149,9 @@ final class CarbonTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::TYPE,
+            ArticleCarbon::class,
+            CommentCarbon::class,
+            Type::class,
         ];
     }
 }

@@ -30,8 +30,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class AttributeChangeTest extends BaseTestCaseORM
 {
-    private const FIXTURE = TitledArticle::class;
-
     /**
      * @var TimestampableListenerStub
      */
@@ -64,7 +62,7 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $test->setState('Closed');
         $this->em->persist($test);
@@ -83,7 +81,7 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $anotherDate = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00');
         $this->listener->eventAdapter->setDateValue($anotherDate);
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $test->setState('Open');
         $this->em->persist($test);
@@ -99,7 +97,7 @@ final class AttributeChangeTest extends BaseTestCaseORM
             $test->getClosed()->format('Y-m-d H:i:s')
         );
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setState('Published');
         $this->em->persist($test);
         $this->em->flush();
@@ -114,7 +112,7 @@ final class AttributeChangeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
+            TitledArticle::class,
         ];
     }
 }

@@ -34,15 +34,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class ClosureTreeTest extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const CLOSURE = CategoryClosure::class;
-    private const PERSON = Person::class;
-    private const USER = User::class;
-    private const PERSON_CLOSURE = PersonClosure::class;
-    private const NEWS = News::class;
-    private const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
-    private const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
-
     /**
      * @var TreeListener
      */
@@ -69,7 +60,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
             $minutes = intval($took / 60); $seconds = $took % 60;
             echo sprintf("%s --> %02d:%02d", $msg, $minutes, $seconds) . PHP_EOL;
         };
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $parent = null;
         $num = 800;
         for($i = 0; $i < 500; $i++) {
@@ -106,10 +97,10 @@ final class ClosureTreeTest extends BaseTestCaseORM
 
     public function testClosureTree(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
 
         $food = $repo->findOneBy(['title' => 'Food']);
-        $dql = 'SELECT c FROM '.self::CLOSURE.' c';
+        $dql = 'SELECT c FROM '.CategoryClosure::class.' c';
         $dql .= ' WHERE c.ancestor = :ancestor';
         $query = $this->em->createQuery($dql);
         $query->setParameter('ancestor', $food);
@@ -168,7 +159,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
 
     public function testUpdateOfParent(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
         $cheese = $repo->findOneBy(['title' => 'Cheese']);
 
@@ -176,7 +167,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $this->em->persist($strawberries);
         $this->em->flush();
 
-        $dql = 'SELECT c FROM '.self::CLOSURE.' c';
+        $dql = 'SELECT c FROM '.CategoryClosure::class.' c';
         $dql .= ' WHERE c.descendant = :descendant';
         $query = $this->em->createQuery($dql);
         $query->setParameter('descendant', $strawberries);
@@ -191,14 +182,14 @@ final class ClosureTreeTest extends BaseTestCaseORM
 
     public function testAnotherUpdateOfParent(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
 
         $strawberries->setParent(null);
         $this->em->persist($strawberries);
         $this->em->flush();
 
-        $dql = 'SELECT c FROM '.self::CLOSURE.' c';
+        $dql = 'SELECT c FROM '.CategoryClosure::class.' c';
         $dql .= ' WHERE c.descendant = :descendant';
         $query = $this->em->createQuery($dql);
         $query->setParameter('descendant', $strawberries);
@@ -210,14 +201,14 @@ final class ClosureTreeTest extends BaseTestCaseORM
 
     public function testBranchRemoval(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $id = $fruits->getId();
         $this->em->remove($fruits);
         $this->em->flush();
 
-        $dql = 'SELECT COUNT(c) FROM '.self::CLOSURE.' c';
+        $dql = 'SELECT COUNT(c) FROM '.CategoryClosure::class.' c';
         $dql .= ' JOIN c.descendant d';
         $dql .= ' JOIN c.ancestor a';
         $dql .= ' WHERE (a.id = :id OR d.id = :id)';
@@ -231,7 +222,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
     public function testSettingParentToChild(): void
     {
         $this->expectException(UnexpectedValueException::class);
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
 
@@ -277,7 +268,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
 
         $closure = $this->em->createQueryBuilder()
                     ->select('c')
-                    ->from(self::CLOSURE, 'c')
+                    ->from(CategoryClosure::class, 'c')
                     ->where('c.ancestor = :ancestor')
                     ->setParameter('ancestor', $politics->getId())
                     ->getQuery()
@@ -362,14 +353,14 @@ final class ClosureTreeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::CLOSURE,
-            self::PERSON,
-            self::PERSON_CLOSURE,
-            self::USER,
-            self::NEWS,
-            self::CATEGORY_WITHOUT_LEVEL,
-            self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
+            Category::class,
+            CategoryClosure::class,
+            Person::class,
+            PersonClosure::class,
+            User::class,
+            News::class,
+            CategoryWithoutLevel::class,
+            CategoryWithoutLevelClosure::class,
         ];
     }
 

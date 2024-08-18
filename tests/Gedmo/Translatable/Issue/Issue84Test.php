@@ -25,9 +25,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue84Test extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -44,7 +41,7 @@ final class Issue84Test extends BaseTestCaseORM
 
     public function testIssue84(): void
     {
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         $article = new Article();
         $article->setTitle('en art');
@@ -53,7 +50,7 @@ final class Issue84Test extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $article = $this->em->getReference(self::ARTICLE, 1);
+        $article = $this->em->getReference(Article::class, 1);
         static::assertInstanceOf(Proxy::class, $article);
 
         $trans = $repo->findTranslations($article);
@@ -63,8 +60,8 @@ final class Issue84Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
+            Article::class,
+            Translation::class,
         ];
     }
 }

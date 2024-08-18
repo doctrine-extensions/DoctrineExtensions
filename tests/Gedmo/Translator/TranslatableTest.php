@@ -24,9 +24,6 @@ use Gedmo\Tests\Translator\Fixture\PersonCustom;
  */
 final class TranslatableTest extends BaseTestCaseORM
 {
-    private const PERSON = Person::class;
-    private const PERSON_CUSTOM_PROXY = PersonCustom::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,7 +50,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         // retrieve record (translations would be fetched later - by demand)
-        $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
+        $person = $this->em->getRepository(Person::class)->findOneBy(['name' => 'Jen']);
 
         static::assertSame('Jen', $person->getName());
         static::assertSame('Женя', $person->translate('ru_RU')->getName());
@@ -61,7 +58,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('multilingual description', $person->getDescription());
 
         // retrieve record with all translations in one query
-        $persons = $this->em->getRepository(self::PERSON)
+        $persons = $this->em->getRepository(Person::class)
             ->createQueryBuilder('p')
             ->select('p, t')
             ->join('p.translations', 't')
@@ -79,7 +76,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
 
         // retrieve record with all translations in one query
-        $persons = $this->em->getRepository(self::PERSON)
+        $persons = $this->em->getRepository(Person::class)
             ->createQueryBuilder('p')
             ->select('p, t')
             ->join('p.translations', 't')
@@ -114,7 +111,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
+        $person = $this->em->getRepository(Person::class)->findOneBy(['name' => 'Jen']);
         static::assertSame('Женя', $person->translate('ru')->getName());
         $parent = $person->getParent();
         static::assertInstanceOf(Proxy::class, $parent);
@@ -135,7 +132,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
+        $personProxy = $this->em->getReference(Person::class, ['id' => 1]);
         static::assertInstanceOf(Proxy::class, $personProxy);
         $name = $personProxy->translate('ru_RU')->getName();
         static::assertSame('Женя', $name);
@@ -155,7 +152,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
+        $personProxy = $this->em->getReference(Person::class, ['id' => 1]);
         static::assertInstanceOf(Proxy::class, $personProxy);
         $name = $personProxy->translate('ru_RU')->getName();
         static::assertSame('Женя', $name);
@@ -195,7 +192,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         // retrieve record (translations would be fetched later - by demand)
-        $person = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)->findOneBy(['name' => 'Jen']);
+        $person = $this->em->getRepository(PersonCustom::class)->findOneBy(['name' => 'Jen']);
 
         static::assertSame('Jen', $person->getName());
         static::assertSame('Женя', $person->translate('ru_RU')->getName());
@@ -203,7 +200,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('multilingual description', $person->getDescription());
 
         // retrieve record with all translations in one query
-        $persons = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)
+        $persons = $this->em->getRepository(PersonCustom::class)
             ->createQueryBuilder('p')
             ->select('p, t')
             ->join('p.translations', 't')
@@ -221,7 +218,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
 
         // retrieve record with all translations in one query
-        $persons = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)
+        $persons = $this->em->getRepository(PersonCustom::class)
             ->createQueryBuilder('p')
             ->select('p, t')
             ->join('p.translations', 't')
@@ -238,8 +235,8 @@ final class TranslatableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::PERSON, self::PERSON.'Translation',
-            self::PERSON_CUSTOM_PROXY, self::PERSON_CUSTOM_PROXY.'Translation',
+            Person::class, Person::class.'Translation',
+            PersonCustom::class, PersonCustom::class.'Translation',
         ];
     }
 }

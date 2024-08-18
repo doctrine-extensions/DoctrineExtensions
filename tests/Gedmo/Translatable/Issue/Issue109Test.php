@@ -28,12 +28,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue109Test extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const TRANSLATION = Translation::class;
-
-    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -58,7 +52,7 @@ final class Issue109Test extends BaseTestCaseORM
         );
         $query = $this->em->createQueryBuilder();
         $query->select('a')
-            ->from(self::ARTICLE, 'a')
+            ->from(Article::class, 'a')
             ->add('where', $query->expr()->not($query->expr()->eq('a.title', ':title')))
             ->setParameter('title', 'NA')
         ;
@@ -67,7 +61,7 @@ final class Issue109Test extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en');
         $this->translatableListener->setTranslationFallback(true);
         $query = $query->getQuery();
-        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
 
         $result = $query->getResult();
         static::assertCount(3, $result);
@@ -107,9 +101,9 @@ final class Issue109Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
+            Article::class,
+            Translation::class,
+            Comment::class,
         ];
     }
 }

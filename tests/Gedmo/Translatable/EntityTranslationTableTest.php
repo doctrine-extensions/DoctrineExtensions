@@ -25,9 +25,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class EntityTranslationTableTest extends BaseTestCaseORM
 {
-    private const PERSON = Person::class;
-    private const TRANSLATION = PersonTranslation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -52,7 +49,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(PersonTranslation::class);
         static::assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
@@ -60,7 +57,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         static::assertCount(0, $translations);
 
         // test second translations
-        $person = $this->em->find(self::PERSON, $person->getId());
+        $person = $this->em->find(Person::class, $person->getId());
         $this->translatableListener->setTranslatableLocale('de_de');
         $person->setName('name in de');
 
@@ -89,7 +86,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         $person = new Person();
         $person->setName('de');
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(PersonTranslation::class);
         $repo
             ->translate($person, 'name', 'de', 'de')
             ->translate($person, 'name', 'en_us', 'en_us')
@@ -98,9 +95,9 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->translatableListener->setTranslatableLocale('en_us');
-        $articles = $this->em->createQuery('SELECT p FROM '.self::PERSON.' p')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT p FROM '.Person::class.' p')->getArrayResult();
         static::assertSame('en_us', $articles[0]['name']);
-        $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
+        $trans = $this->em->createQuery('SELECT t FROM '.PersonTranslation::class.' t')->getArrayResult();
         static::assertCount(2, $trans);
         foreach ($trans as $item) {
             static::assertSame($item['locale'], $item['content']);
@@ -110,8 +107,8 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::PERSON,
-            self::TRANSLATION,
+            Person::class,
+            PersonTranslation::class,
         ];
     }
 }

@@ -22,8 +22,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 final class CarbonTest extends BaseTestCaseORM
 {
-    private const ARTICLE_CLASS = Article::class;
-    private const COMMENT_CLASS = Comment::class;
     private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private SoftDeleteableListener $softDeleteableListener;
@@ -52,8 +50,8 @@ final class CarbonTest extends BaseTestCaseORM
 
     public function testSoftDeleteable(): void
     {
-        $repo = $this->em->getRepository(self::ARTICLE_CLASS);
-        $commentRepo = $this->em->getRepository(self::COMMENT_CLASS);
+        $repo = $this->em->getRepository(Article::class);
+        $commentRepo = $this->em->getRepository(Comment::class);
 
         $comment = new Comment();
         $commentField = 'comment';
@@ -97,8 +95,8 @@ final class CarbonTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE_CLASS,
-            self::COMMENT_CLASS,
+            Article::class,
+            Comment::class,
         ];
     }
 }

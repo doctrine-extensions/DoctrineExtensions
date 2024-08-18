@@ -26,9 +26,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableDocumentTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     private ?string $articleId = null;
@@ -50,10 +47,10 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
     public function testTranslation(): void
     {
         // test inserted translations
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $article = $repo->findOneBy(['title' => 'Title EN']);
 
-        $transRepo = $this->dm->getRepository(self::TRANSLATION);
+        $transRepo = $this->dm->getRepository(Translation::class);
         static::assertInstanceOf(TranslationRepository::class, $transRepo);
 
         $translations = $transRepo->findTranslations($article);
@@ -116,9 +113,9 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
 
     public function testFindObjectByTranslatedField(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $article = $repo->findOneBy(['title' => 'Title EN']);
-        static::assertInstanceOf(self::ARTICLE, $article);
+        static::assertInstanceOf(Article::class, $article);
 
         $this->translatableListener->setTranslatableLocale('de_de');
         $article->setTitle('Title DE');
@@ -128,15 +125,15 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $transRepo = $this->dm->getRepository(self::TRANSLATION);
+        $transRepo = $this->dm->getRepository(Translation::class);
         static::assertInstanceOf(TranslationRepository::class, $transRepo);
 
         $articleFound = $transRepo->findObjectByTranslatedField(
             'title',
             'Title DE',
-            self::ARTICLE
+            Article::class
         );
-        static::assertInstanceOf(self::ARTICLE, $articleFound);
+        static::assertInstanceOf(Article::class, $articleFound);
 
         static::assertSame($article->getId(), $articleFound->getId());
     }

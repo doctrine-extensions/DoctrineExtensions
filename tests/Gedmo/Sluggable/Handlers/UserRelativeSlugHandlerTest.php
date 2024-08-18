@@ -24,9 +24,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class UserRelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    private const USER = User::class;
-    private const COMPANY = Company::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -62,8 +59,8 @@ final class UserRelativeSlugHandlerTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::USER,
-            self::COMPANY,
+            User::class,
+            Company::class,
         ];
     }
 }

@@ -24,8 +24,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-
     private TranslatableListener $translatableListener;
 
     private ?string $id = null;
@@ -46,7 +44,7 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
     public function testShouldCreateTranslations(): void
     {
         $this->populate();
-        $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
+        $article = $this->dm->getRepository(Article::class)->find($this->id);
         $translations = $article->getTranslations();
 
         static::assertCount(2, $translations);
@@ -57,7 +55,7 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
         $this->translatableListener->setTranslatableLocale('lt');
 
-        $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
+        $article = $this->dm->getRepository(Article::class)->find($this->id);
         static::assertSame('lt', $article->getTitle());
     }
 
