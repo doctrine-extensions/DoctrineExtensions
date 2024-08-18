@@ -28,6 +28,11 @@ use Gedmo\Mapping\MappedEventSubscriber;
 /**
  * The AbstractTrackingListener provides generic functions for all listeners.
  *
+ * @phpstan-template TConfig of array
+ * @phpstan-template TEventAdapter of AdapterInterface
+ *
+ * @phpstan-extends MappedEventSubscriber<TConfig, TEventAdapter>
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 abstract class AbstractTrackingListener extends MappedEventSubscriber

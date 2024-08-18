@@ -11,11 +11,14 @@ namespace Gedmo\Blameable;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
+use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 use Gedmo\Exception\InvalidArgumentException;
 
 /**
  * The Blameable listener handles the update of
  * dates on creation and update.
+ *
+ * @phpstan-extends AbstractTrackingListener<array, BlameableAdapter>
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
