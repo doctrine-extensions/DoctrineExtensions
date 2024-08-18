@@ -25,8 +25,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableFltersTest extends BaseTestCaseORM
 {
-    private const TARGET = Article::class;
-
     private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
     private const FAKE_FILTER_NAME = 'fake-filter';
 
@@ -68,7 +66,7 @@ final class SluggableFltersTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            Article::class,
         ];
     }
 }

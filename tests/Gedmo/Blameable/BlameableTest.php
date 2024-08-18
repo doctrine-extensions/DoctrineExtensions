@@ -26,10 +26,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class BlameableTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const TYPE = Type::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -62,12 +58,12 @@ final class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
         static::assertSame('testuser', $sport->getCreated());
         static::assertSame('testuser', $sport->getUpdated());
         static::assertNull($sport->getPublished());
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
         static::assertSame('testuser', $sportComment->getModified());
         static::assertNull($sportComment->getClosed());
 
@@ -83,7 +79,7 @@ final class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
         static::assertSame('testuser', $sportComment->getClosed());
 
         static::assertSame('testuser', $sport->getPublished());
@@ -100,7 +96,7 @@ final class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
         static::assertSame('myuser', $sport->getCreated());
         static::assertSame('myuser', $sport->getUpdated());
@@ -122,9 +118,9 @@ final class BlameableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::TYPE,
+            Article::class,
+            Comment::class,
+            Type::class,
         ];
     }
 }

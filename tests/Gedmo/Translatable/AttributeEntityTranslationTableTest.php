@@ -28,10 +28,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
 {
-    private const PERSON = Person::class;
-    private const TRANSLATION = PersonTranslation::class;
-    private const FILE = File::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -56,7 +52,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(PersonTranslation::class);
         static::assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
@@ -64,7 +60,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         static::assertCount(0, $translations);
 
         // test second translations
-        $person = $this->em->find(self::PERSON, $person->getId());
+        $person = $this->em->find(Person::class, $person->getId());
         $this->translatableListener->setTranslatableLocale('de_de');
         $person->setName('name in de');
 
@@ -92,7 +88,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $file = $this->em->find(self::FILE, $file->getId());
+        $file = $this->em->find(File::class, $file->getId());
 
         $file->locale = 'de';
         $file->setTitle('title in de');
@@ -100,7 +96,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $file = $this->em->find(self::FILE, $file->getId());
+        $file = $this->em->find(File::class, $file->getId());
 
         static::assertSame('title in en', $file->getTitle());
         $file->locale = 'de';
@@ -111,9 +107,9 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::PERSON,
-            self::TRANSLATION,
-            self::FILE,
+            Person::class,
+            PersonTranslation::class,
+            File::class,
         ];
     }
 }

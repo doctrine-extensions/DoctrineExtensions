@@ -25,9 +25,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue100Test extends BaseTestCaseORM
 {
-    public const ARTICLE = Article::class;
-    public const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -46,7 +43,7 @@ final class Issue100Test extends BaseTestCaseORM
 
     public function testShouldWorkWithTranslatableSlug(): void
     {
-        $repository = $this->em->getRepository(self::TRANSLATION);
+        $repository = $this->em->getRepository(Translation::class);
 
         /*
          * First article
@@ -99,8 +96,8 @@ final class Issue100Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
+            Article::class,
+            Translation::class,
         ];
     }
 }

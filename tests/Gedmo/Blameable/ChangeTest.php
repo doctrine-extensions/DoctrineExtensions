@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class ChangeTest extends BaseTestCaseORM
 {
-    private const FIXTURE = TitledArticle::class;
-
     private BlameableListener $listener;
 
     protected function setUp(): void
@@ -49,7 +47,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $this->em->persist($test);
         $this->em->flush();
@@ -59,7 +57,7 @@ final class ChangeTest extends BaseTestCaseORM
 
         $this->listener->setUserValue('otheruser');
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $this->em->persist($test);
         $this->em->flush();
@@ -71,7 +69,7 @@ final class ChangeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
+            TitledArticle::class,
         ];
     }
 }

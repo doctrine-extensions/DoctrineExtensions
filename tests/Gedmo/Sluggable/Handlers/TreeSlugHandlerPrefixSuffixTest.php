@@ -19,8 +19,6 @@ use Gedmo\Tree\TreeListener;
 
 final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
-    private const TARGET = TreeSlugPrefixSuffix::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -57,7 +55,7 @@ final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            TreeSlugPrefixSuffix::class,
         ];
     }
 }

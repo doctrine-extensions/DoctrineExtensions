@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class TraitUsageTest extends BaseTestCaseORM
 {
-    private const TARGET = UsingTrait::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,14 +50,14 @@ final class TraitUsageTest extends BaseTestCaseORM
     public function testTraitMethodthShouldReturnObject(): void
     {
         $sport = new UsingTrait();
-        static::assertInstanceOf(self::TARGET, $sport->setCreatedBy('myuser'));
-        static::assertInstanceOf(self::TARGET, $sport->setUpdatedBy('myuser'));
+        static::assertInstanceOf(UsingTrait::class, $sport->setCreatedBy('myuser'));
+        static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedBy('myuser'));
     }
 
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            UsingTrait::class,
         ];
     }
 }

@@ -27,9 +27,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableManySlugTest extends BaseTestCaseORM
 {
-    private const ARTICLE = TransArticleManySlug::class;
-    private const TRANSLATION = Translation::class;
-
     private ?int $articleId = null;
 
     private TranslatableListener $translatableListener;
@@ -50,16 +47,16 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
 
     public function testSlugAndTranslation(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(TransArticleManySlug::class, $this->articleId);
         static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
         static::assertSame('the-title-my-code', $article->getSlug());
         static::assertSame('the-unique-title', $article->getUniqueSlug());
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         $translations = $repo->findTranslations($article);
         static::assertCount(0, $translations);
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(TransArticleManySlug::class, $this->articleId);
         $article->setTranslatableLocale('de_DE');
         $article->setCode('code in de');
         $article->setTitle('title in de');
@@ -68,7 +65,7 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($article);
         static::assertCount(1, $translations);
         static::assertArrayHasKey('de_DE', $translations);
@@ -107,8 +104,8 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
+            TransArticleManySlug::class,
+            Translation::class,
         ];
     }
 

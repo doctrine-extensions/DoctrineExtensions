@@ -24,8 +24,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 {
-    private const CATEGORY = MPCategoryWithRootAssociation::class;
-
     /**
      * @var array<string, mixed>
      */
@@ -47,7 +45,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 
         $this->getDefaultMockSqliteEntityManager($evm);
 
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(MPCategoryWithRootAssociation::class);
         $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
@@ -119,7 +117,7 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         $this->em->remove($category2);
         $this->em->flush();
 
-        $result = $this->em->createQueryBuilder()->select('c')->from(self::CATEGORY, 'c')->getQuery()->getResult();
+        $result = $this->em->createQueryBuilder()->select('c')->from(MPCategoryWithRootAssociation::class, 'c')->getQuery()->getResult();
 
         $firstResult = $result[0];
 
@@ -132,13 +130,13 @@ final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
+            MPCategoryWithRootAssociation::class,
         ];
     }
 
     private function createCategory(): MPCategoryWithRootAssociation
     {
-        $class = self::CATEGORY;
+        $class = MPCategoryWithRootAssociation::class;
 
         return new $class();
     }

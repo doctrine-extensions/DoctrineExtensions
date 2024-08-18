@@ -24,9 +24,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableIdentifierTest extends BaseTestCaseORM
 {
-    private const FIXTURE = StringIdentifier::class;
-    private const TRANSLATION = Translation::class;
-
     private ?string $testObjectId = null;
 
     private TranslatableListener $translatableListener;
@@ -48,20 +45,20 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
     {
         $object = new StringIdentifier();
         $object->setTitle('title in en');
-        $object->setUid(md5(self::FIXTURE.time()));
+        $object->setUid(md5(StringIdentifier::class.time()));
 
         $this->em->persist($object);
         $this->em->flush();
         $this->em->clear();
         $this->testObjectId = $object->getUid();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $object = $this->em->find(self::FIXTURE, $this->testObjectId);
+        $repo = $this->em->getRepository(Translation::class);
+        $object = $this->em->find(StringIdentifier::class, $this->testObjectId);
 
         $translations = $repo->findTranslations($object);
         static::assertCount(0, $translations);
 
-        $object = $this->em->find(self::FIXTURE, $this->testObjectId);
+        $object = $this->em->find(StringIdentifier::class, $this->testObjectId);
         $object->setTitle('title in de');
         $object->setTranslatableLocale('de_de');
 
@@ -69,13 +66,13 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         // test the entity load by translated title
         $object = $repo->findObjectByTranslatedField(
             'title',
             'title in de',
-            self::FIXTURE
+            StringIdentifier::class
         );
 
         static::assertSame($this->testObjectId, $object->getUid());
@@ -89,7 +86,7 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
 
         // dql test object hydration
         $q = $this->em
-            ->createQuery('SELECT si FROM '.self::FIXTURE.' si WHERE si.uid = :id')
+            ->createQuery('SELECT si FROM '.StringIdentifier::class.' si WHERE si.uid = :id')
             ->setParameter('id', $this->testObjectId)
             ->disableResultCache()
         ;
@@ -109,8 +106,8 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
-            self::TRANSLATION,
+            StringIdentifier::class,
+            Translation::class,
         ];
     }
 }

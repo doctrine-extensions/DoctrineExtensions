@@ -25,8 +25,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 {
-    private const CATEGORY = RootCategory::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -43,7 +41,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
      */
     public function testShouldBeAbleToShiftRootNode(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $food = $repo->findOneBy(['title' => 'Food']);
         $acme = new RootCategory();
@@ -67,7 +65,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     public function testShouldSupportChildrenHierarchyAsArray(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $result = $repo->childrenHierarchy();
         static::assertCount(2, $result);
         static::assertTrue(isset($result[0]['__children'][0]['__children']));
@@ -128,7 +126,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     public function testShouldSupportChildrenHierarchyAsHtml(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $food = $repo->findOneBy(['title' => 'Food']);
         $decorate = true;
         $defaultHtmlTree = $repo->childrenHierarchy($food, false, ['decorate' => $decorate]);
@@ -204,11 +202,11 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     public function testShouldSupportChildrenHierarchyByBuildTreeFunction(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $q = $this->em
             ->createQueryBuilder()
             ->select('node')
-            ->from(self::CATEGORY, 'node')
+            ->from(RootCategory::class, 'node')
             ->orderBy('node.root, node.lft', 'ASC')
             ->where('node.root = 1')
             ->getQuery()
@@ -223,7 +221,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     public function testShouldRemoveRootNodeFromTree(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $this->populateMore();
 
         $food = $repo->findOneBy(['title' => 'Food']);
@@ -255,7 +253,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
      */
     public function testGetPathAsStringWithInvalidStringMethod($stringMethod): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
 
         $this->expectException(InvalidArgumentException::class);
@@ -278,7 +276,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     public function testShouldHandleBasicRepositoryMethods(): void
     {
         /** @var NestedTreeRepository<RootCategory> $repo */
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
 
         $path = $repo->getPath($carrots);
@@ -330,13 +328,13 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     {
         $this->populateMore();
         /** @var NestedTreeRepository<RootCategory> $repo */
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         // verification
 
         static::assertTrue($repo->verify());
 
-        $dql = 'UPDATE '.self::CATEGORY.' node';
+        $dql = 'UPDATE '.RootCategory::class.' node';
         $dql .= ' SET node.lft = 5';
         $dql .= ' WHERE node.id = 4';
         $this->em->createQuery($dql)->getSingleScalarResult();
@@ -517,7 +515,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         // test fast recover
 
-        $dql = 'UPDATE '.self::CATEGORY.' node';
+        $dql = 'UPDATE '.RootCategory::class.' node';
         $dql .= ' SET node.lft = 1';
         $dql .= ' WHERE node.id = 8';
         $this->em->createQuery($dql)->execute();
@@ -538,7 +536,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     public function testShouldRemoveTreeLeafFromTree(): void
     {
         $this->populateMore();
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $onions = $repo->findOneBy(['title' => 'Onions']);
         $id = $onions->getId();
         $repo->removeFromTree($onions);
@@ -551,7 +549,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     public function testGetRootNodesTest(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         // Test getRootNodes without custom ordering
         $roots = $repo->getRootNodes();
@@ -570,7 +568,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     public function testChangeChildrenIndexTest(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
         $childrenIndex = 'myChildren';
         $repo->setChildrenIndex($childrenIndex);
 
@@ -582,13 +580,13 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
+            RootCategory::class,
         ];
     }
 
     private function populateMore(): void
     {
-        $vegies = $this->em->getRepository(self::CATEGORY)
+        $vegies = $this->em->getRepository(RootCategory::class)
             ->findOneBy(['title' => 'Vegitables']);
 
         $cabbages = new RootCategory();

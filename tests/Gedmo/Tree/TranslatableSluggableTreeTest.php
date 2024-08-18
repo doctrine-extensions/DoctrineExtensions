@@ -29,11 +29,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class TranslatableSluggableTreeTest extends BaseTestCaseORM
 {
-    private const CATEGORY = BehavioralCategory::class;
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -53,10 +48,10 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
 
     public function testNestedBehaviors(): void
     {
-        $vegies = $this->em->getRepository(self::CATEGORY)
+        $vegies = $this->em->getRepository(BehavioralCategory::class)
             ->findOneBy(['title' => 'Vegitables']);
 
-        $childCount = $this->em->getRepository(self::CATEGORY)
+        $childCount = $this->em->getRepository(BehavioralCategory::class)
             ->childCount($vegies);
         static::assertSame(2, $childCount);
 
@@ -74,10 +69,10 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('en_US');
 
-        $vegies = $this->em->getRepository(self::CATEGORY)
+        $vegies = $this->em->getRepository(BehavioralCategory::class)
             ->find($vegies->getId());
 
-        $translations = $this->em->getRepository(self::TRANSLATION)
+        $translations = $this->em->getRepository(Translation::class)
             ->findTranslations($vegies);
 
         static::assertCount(1, $translations);
@@ -93,7 +88,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
     public function testTranslations(): void
     {
         $this->populateDeTranslations();
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(BehavioralCategory::class);
         $vegies = $repo->find(4);
 
         static::assertSame('Vegitables', $vegies->getTitle());
@@ -117,17 +112,17 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::COMMENT,
-            self::TRANSLATION,
+            BehavioralCategory::class,
+            Article::class,
+            Comment::class,
+            Translation::class,
         ];
     }
 
     private function populateDeTranslations(): void
     {
         $this->translatableListener->setTranslatableLocale('de_DE');
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(BehavioralCategory::class);
         $food = $repo->findOneBy(['title' => 'Food']);
         $food->setTitle('Lebensmittel');
 

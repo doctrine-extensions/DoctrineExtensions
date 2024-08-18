@@ -23,8 +23,6 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TraitUsageTest extends BaseTestCaseORM
 {
-    private const TARGET = UsingTrait::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -57,7 +55,7 @@ final class TraitUsageTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            UsingTrait::class,
         ];
     }
 }

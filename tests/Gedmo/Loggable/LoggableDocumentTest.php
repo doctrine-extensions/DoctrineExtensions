@@ -18,6 +18,7 @@ use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Loggable\Fixture\Document\Article;
 use Gedmo\Tests\Loggable\Fixture\Document\Author;
 use Gedmo\Tests\Loggable\Fixture\Document\Comment;
+use Gedmo\Tests\Loggable\Fixture\Document\Log\Comment as CommentLog;
 use Gedmo\Tests\Loggable\Fixture\Document\RelatedArticle;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
@@ -29,10 +30,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class LoggableDocumentTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const COMMENT_LOG = Fixture\Document\Log\Comment::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -47,7 +44,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
     public function testLogGeneration(): void
     {
         $logRepo = $this->dm->getRepository(LogEntry::class);
-        $articleRepo = $this->dm->getRepository(self::ARTICLE);
+        $articleRepo = $this->dm->getRepository(Article::class);
         static::assertCount(0, $logRepo->findAll());
 
         $art0 = new Article();
@@ -100,8 +97,8 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
     public function testVersionControl(): void
     {
         $this->populate();
-        $commentLogRepo = $this->dm->getRepository(self::COMMENT_LOG);
-        $commentRepo = $this->dm->getRepository(self::COMMENT);
+        $commentLogRepo = $this->dm->getRepository(CommentLog::class);
+        $commentRepo = $this->dm->getRepository(Comment::class);
         static::assertInstanceOf(LogEntryRepository::class, $commentLogRepo);
 
         $comment = $commentRepo->findOneBy(['message' => 'm-v5']);

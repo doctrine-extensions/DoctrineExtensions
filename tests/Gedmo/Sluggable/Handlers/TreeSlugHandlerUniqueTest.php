@@ -19,8 +19,6 @@ use Gedmo\Tree\TreeListener;
 
 final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 {
-    private const TARGET = TreeSlug::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -75,7 +73,7 @@ final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            TreeSlug::class,
         ];
     }
 }

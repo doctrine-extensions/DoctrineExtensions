@@ -55,18 +55,7 @@ use Gedmo\Uploadable\Mapping\Validator;
  */
 final class UploadableEntityTest extends BaseTestCaseORM
 {
-    private const IMAGE_CLASS = Image::class;
-    private const ARTICLE_CLASS = Article::class;
-    private const FILE_CLASS = File::class;
-    private const FILE_APPEND_NUMBER_CLASS = FileAppendNumber::class;
-    private const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = FileAppendNumberRelative::class;
-    private const FILE_WITHOUT_PATH_CLASS = FileWithoutPath::class;
     private const FILE_WITH_SHA1_NAME_CLASS = FileWithSha1Name::class;
-    private const FILE_WITH_ALPHANUMERIC_NAME_CLASS = FileWithAlphanumericName::class;
-    private const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = FileWithCustomFilenameGenerator::class;
-    private const FILE_WITH_MAX_SIZE_CLASS = FileWithMaxSize::class;
-    private const FILE_WITH_ALLOWED_TYPES_CLASS = FileWithAllowedTypes::class;
-    private const FILE_WITH_DISALLOWED_TYPES_CLASS = FileWithDisallowedTypes::class;
 
     private UploadableListenerStub $listener;
 
@@ -251,7 +240,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     public function testEntityWithUploadableEntities(): void
     {
-        $artRepo = $this->em->getRepository(self::ARTICLE_CLASS);
+        $artRepo = $this->em->getRepository(Article::class);
         $article = new Article();
         $article->setTitle('Test');
 
@@ -759,18 +748,18 @@ final class UploadableEntityTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::IMAGE_CLASS,
-            self::ARTICLE_CLASS,
-            self::FILE_CLASS,
-            self::FILE_WITHOUT_PATH_CLASS,
-            self::FILE_APPEND_NUMBER_CLASS,
-            self::FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS,
-            self::FILE_WITH_ALPHANUMERIC_NAME_CLASS,
+            Image::class,
+            Article::class,
+            File::class,
+            FileWithoutPath::class,
+            FileAppendNumber::class,
+            FileAppendNumberRelative::class,
+            FileWithAlphanumericName::class,
             self::FILE_WITH_SHA1_NAME_CLASS,
-            self::FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS,
-            self::FILE_WITH_MAX_SIZE_CLASS,
-            self::FILE_WITH_ALLOWED_TYPES_CLASS,
-            self::FILE_WITH_DISALLOWED_TYPES_CLASS,
+            FileWithCustomFilenameGenerator::class,
+            FileWithMaxSize::class,
+            FileWithAllowedTypes::class,
+            FileWithDisallowedTypes::class,
         ];
     }
 

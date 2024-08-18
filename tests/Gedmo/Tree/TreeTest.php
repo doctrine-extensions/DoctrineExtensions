@@ -25,9 +25,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeTest extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const CATEGORY_UUID = CategoryUuid::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,7 +37,7 @@ final class TreeTest extends BaseTestCaseORM
 
     public function testTheTree(): void
     {
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(Category::class);
 
         $root = new Category();
         $root->setTitle('Root');
@@ -50,7 +47,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY)->find(1);
+        $root = $this->em->getRepository(Category::class)->find(1);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
 
@@ -65,7 +62,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY)->find(1);
+        $root = $this->em->getRepository(Category::class)->find(1);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
         $level = $meta->getReflectionProperty('level')->getValue($root);
@@ -74,7 +71,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(4, $right);
         static::assertSame(0, $level);
 
-        $child = $this->em->getRepository(self::CATEGORY)->find(2);
+        $child = $this->em->getRepository(Category::class)->find(2);
         $left = $meta->getReflectionProperty('lft')->getValue($child);
         $right = $meta->getReflectionProperty('rgt')->getValue($child);
         $level = $meta->getReflectionProperty('level')->getValue($child);
@@ -91,7 +88,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY)->find(1);
+        $root = $this->em->getRepository(Category::class)->find(1);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
         $level = $meta->getReflectionProperty('level')->getValue($root);
@@ -100,7 +97,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(6, $right);
         static::assertSame(0, $level);
 
-        $child2 = $this->em->getRepository(self::CATEGORY)->find(3);
+        $child2 = $this->em->getRepository(Category::class)->find(3);
         $left = $meta->getReflectionProperty('lft')->getValue($child2);
         $right = $meta->getReflectionProperty('rgt')->getValue($child2);
         $level = $meta->getReflectionProperty('level')->getValue($child2);
@@ -117,7 +114,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $child2 = $this->em->getRepository(self::CATEGORY)->find(3);
+        $child2 = $this->em->getRepository(Category::class)->find(3);
         $left = $meta->getReflectionProperty('lft')->getValue($child2);
         $right = $meta->getReflectionProperty('rgt')->getValue($child2);
         $level = $meta->getReflectionProperty('level')->getValue($child2);
@@ -132,8 +129,8 @@ final class TreeTest extends BaseTestCaseORM
 
         // test updates to nodes, parent changes
 
-        $childsChild = $this->em->getRepository(self::CATEGORY)->find(4);
-        $child = $this->em->getRepository(self::CATEGORY)->find(2);
+        $childsChild = $this->em->getRepository(Category::class)->find(4);
+        $child = $this->em->getRepository(Category::class)->find(2);
         $childsChild->setTitle('childs_child');
         $childsChild->setParent($child);
 
@@ -141,7 +138,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $child = $this->em->getRepository(self::CATEGORY)->find(2);
+        $child = $this->em->getRepository(Category::class)->find(2);
         $left = $meta->getReflectionProperty('lft')->getValue($child);
         $right = $meta->getReflectionProperty('rgt')->getValue($child);
         $level = $meta->getReflectionProperty('level')->getValue($child);
@@ -156,7 +153,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY)->find(1);
+        $root = $this->em->getRepository(Category::class)->find(1);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
 
@@ -183,7 +180,7 @@ final class TreeTest extends BaseTestCaseORM
 
     public function testIssue33(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
 
         $root = new Category();
         $root->setTitle('root');
@@ -215,7 +212,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(Category::class);
         $subNode = $repo->findOneBy(['title' => 'sub-node']);
         $left = $meta->getReflectionProperty('lft')->getValue($subNode);
         $right = $meta->getReflectionProperty('rgt')->getValue($subNode);
@@ -231,7 +228,7 @@ final class TreeTest extends BaseTestCaseORM
 
     public function testIssue273(): void
     {
-        $meta = $this->em->getClassMetadata(self::CATEGORY_UUID);
+        $meta = $this->em->getClassMetadata(CategoryUuid::class);
 
         $root = new CategoryUuid();
         $root->setTitle('Root');
@@ -242,7 +239,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY_UUID)->find($rootId);
+        $root = $this->em->getRepository(CategoryUuid::class)->find($rootId);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
 
@@ -258,7 +255,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY_UUID)->find($rootId);
+        $root = $this->em->getRepository(CategoryUuid::class)->find($rootId);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
         $level = $meta->getReflectionProperty('level')->getValue($root);
@@ -267,7 +264,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(4, $right);
         static::assertSame(0, $level);
 
-        $child = $this->em->getRepository(self::CATEGORY_UUID)->find($childId);
+        $child = $this->em->getRepository(CategoryUuid::class)->find($childId);
         $left = $meta->getReflectionProperty('lft')->getValue($child);
         $right = $meta->getReflectionProperty('rgt')->getValue($child);
         $level = $meta->getReflectionProperty('level')->getValue($child);
@@ -285,7 +282,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY_UUID)->find($rootId);
+        $root = $this->em->getRepository(CategoryUuid::class)->find($rootId);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
         $level = $meta->getReflectionProperty('level')->getValue($root);
@@ -294,7 +291,7 @@ final class TreeTest extends BaseTestCaseORM
         static::assertSame(6, $right);
         static::assertSame(0, $level);
 
-        $child2 = $this->em->getRepository(self::CATEGORY_UUID)->find($child2Id);
+        $child2 = $this->em->getRepository(CategoryUuid::class)->find($child2Id);
         $left = $meta->getReflectionProperty('lft')->getValue($child2);
         $right = $meta->getReflectionProperty('rgt')->getValue($child2);
         $level = $meta->getReflectionProperty('level')->getValue($child2);
@@ -312,7 +309,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $child2 = $this->em->getRepository(self::CATEGORY_UUID)->find($child2Id);
+        $child2 = $this->em->getRepository(CategoryUuid::class)->find($child2Id);
         $left = $meta->getReflectionProperty('lft')->getValue($child2);
         $right = $meta->getReflectionProperty('rgt')->getValue($child2);
         $level = $meta->getReflectionProperty('level')->getValue($child2);
@@ -327,8 +324,8 @@ final class TreeTest extends BaseTestCaseORM
 
         // test updates to nodes, parent changes
 
-        $childsChild = $this->em->getRepository(self::CATEGORY_UUID)->find($childsChildId);
-        $child = $this->em->getRepository(self::CATEGORY_UUID)->find($childId);
+        $childsChild = $this->em->getRepository(CategoryUuid::class)->find($childsChildId);
+        $child = $this->em->getRepository(CategoryUuid::class)->find($childId);
         $childsChild->setTitle('childs_child');
         $childsChild->setParent($child);
 
@@ -336,7 +333,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $child = $this->em->getRepository(self::CATEGORY_UUID)->find($childId);
+        $child = $this->em->getRepository(CategoryUuid::class)->find($childId);
         $left = $meta->getReflectionProperty('lft')->getValue($child);
         $right = $meta->getReflectionProperty('rgt')->getValue($child);
         $level = $meta->getReflectionProperty('level')->getValue($child);
@@ -351,7 +348,7 @@ final class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $root = $this->em->getRepository(self::CATEGORY_UUID)->find($rootId);
+        $root = $this->em->getRepository(CategoryUuid::class)->find($rootId);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
 
@@ -379,8 +376,8 @@ final class TreeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::CATEGORY_UUID,
+            Category::class,
+            CategoryUuid::class,
         ];
     }
 }

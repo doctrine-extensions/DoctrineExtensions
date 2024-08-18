@@ -28,11 +28,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue827Test extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const CATEGORY = Category::class;
-    private const COMMENT = Comment::class;
-    private const POST = Post::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -169,11 +164,11 @@ final class Issue827Test extends BaseTestCaseORM
         $this->em->clear();
 
         $testPost1 = $this->em->find(
-            self::POST,
+            Post::class,
             ['title' => $testPost1->getTitle(), 'slug' => $testPost1->getSlug()]
         );
         $testPost2 = $this->em->find(
-            self::POST,
+            Post::class,
             ['title' => $testPost2->getTitle(), 'slug' => $testPost2->getSlug()]
         );
 
@@ -276,10 +271,10 @@ final class Issue827Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::CATEGORY,
-            self::COMMENT,
-            self::POST,
+            Article::class,
+            Category::class,
+            Comment::class,
+            Post::class,
         ];
     }
 }

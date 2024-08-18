@@ -24,8 +24,6 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 {
-    private const BOOK = Book::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,7 +50,7 @@ final class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $repo = $this->dm->getRepository(self::BOOK);
+        $repo = $this->dm->getRepository(Book::class);
 
         $bookFromRepo = $repo->findOneBy(['title' => 'Cats & Dogs']);
 

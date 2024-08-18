@@ -23,8 +23,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    private const CATEGORY = RootAssociationCategory::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,7 +36,7 @@ final class NestedTreeRootAssociationTest extends BaseTestCaseORM
 
     public function testRootEntity(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootAssociationCategory::class);
 
         // Foods
         $food = $repo->findOneBy(['title' => 'Food']);
@@ -63,7 +61,7 @@ final class NestedTreeRootAssociationTest extends BaseTestCaseORM
 
     public function testRemoveParentForNode(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(RootAssociationCategory::class);
 
         /** @var RootAssociationCategory $food */
         $food = $repo->findOneBy(['title' => 'Food']);
@@ -99,7 +97,7 @@ final class NestedTreeRootAssociationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
+            RootAssociationCategory::class,
         ];
     }
 

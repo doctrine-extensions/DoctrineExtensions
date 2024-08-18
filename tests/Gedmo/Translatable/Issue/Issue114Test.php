@@ -25,10 +25,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue114Test extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const ARTICLE = Article::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -46,7 +42,7 @@ final class Issue114Test extends BaseTestCaseORM
 
     public function testIssue114(): void
     {
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         // Categories
         $category1 = new Category();
@@ -118,9 +114,9 @@ final class Issue114Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::TRANSLATION,
+            Category::class,
+            Article::class,
+            Translation::class,
         ];
     }
 }

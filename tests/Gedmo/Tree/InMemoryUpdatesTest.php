@@ -23,8 +23,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class InMemoryUpdatesTest extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,8 +35,8 @@ final class InMemoryUpdatesTest extends BaseTestCaseORM
 
     public function testInMemoryTreeInserts(): void
     {
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(Category::class);
+        $repo = $this->em->getRepository(Category::class);
 
         $root = new Category();
         $this->em->persist($root);
@@ -85,7 +83,7 @@ final class InMemoryUpdatesTest extends BaseTestCaseORM
 
         /*print "Tree:\n";
         for ($i=1; $i < 5; $i++) {
-            $node = $this->em->getRepository(self::CATEGORY)->find($i);
+            $node = $this->em->getRepository(Category::class)->find($i);
             $left = $meta->getReflectionProperty('lft')->getValue($node);
             $right = $meta->getReflectionProperty('rgt')->getValue($node);
             $level = $meta->getReflectionProperty('level')->getValue($node);
@@ -97,7 +95,7 @@ final class InMemoryUpdatesTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
+            Category::class,
         ];
     }
 }

@@ -24,8 +24,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeSlugHandlerTest extends BaseTestCaseORM
 {
-    private const TARGET = TreeSlug::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,7 +38,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
     public function testSlugGeneration(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TARGET);
+        $repo = $this->em->getRepository(TreeSlug::class);
 
         $food = $repo->findOneBy(['title' => 'Food']);
         static::assertSame('food', $food->getSlug());
@@ -67,7 +65,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
     public function testSlugUpdates(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TARGET);
+        $repo = $this->em->getRepository(TreeSlug::class);
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $fruits->setTitle('Fructis');
@@ -97,7 +95,7 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
     public function testMoreSlugUpdates(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TARGET);
+        $repo = $this->em->getRepository(TreeSlug::class);
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $fruits->setTitle('Fructis');
@@ -133,13 +131,13 @@ final class TreeSlugHandlerTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            TreeSlug::class,
         ];
     }
 
     private function populate(): void
     {
-        $repo = $this->em->getRepository(self::TARGET);
+        $repo = $this->em->getRepository(TreeSlug::class);
 
         $food = new TreeSlug();
         $food->setTitle('Food');

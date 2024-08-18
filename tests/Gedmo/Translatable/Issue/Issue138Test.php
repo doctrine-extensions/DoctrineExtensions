@@ -26,10 +26,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue138Test extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const TRANSLATION = Translation::class;
-    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -49,10 +45,10 @@ final class Issue138Test extends BaseTestCaseORM
     public function testIssue138(): void
     {
         $this->populate();
-        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
+        $dql = 'SELECT a FROM '.Article::class.' a';
         $dql .= " WHERE a.title LIKE '%foo%'";
         $q = $this->em->createQuery($dql);
-        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
 
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
@@ -65,8 +61,8 @@ final class Issue138Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
+            Article::class,
+            Translation::class,
         ];
     }
 

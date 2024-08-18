@@ -22,11 +22,6 @@ use Gedmo\Translatable\TranslatableListener;
 
 final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 {
-    private const FIXTURE = Company::class;
-    private const TRANSLATION = Translation::class;
-
-    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -66,12 +61,12 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
     public function testTranslate(): void
     {
         /** @var EntityRepository<Company> $repo */
-        $repo = $this->em->getRepository(self::FIXTURE);
+        $repo = $this->em->getRepository(Company::class);
 
         /** @var Company $entity */
         $entity = $repo->findOneBy(['id' => 1]);
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         $translations = $repo->findTranslations($entity);
 
@@ -88,7 +83,7 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->em->clear();
 
         $this->translatableListener->setTranslatableLocale('de');
-        $repo = $this->em->getRepository(self::FIXTURE);
+        $repo = $this->em->getRepository(Company::class);
         $entity = $repo->findOneBy(['id' => $entity->getId()]);
 
         static::assertSame('website-de', $entity->getLink()->getWebsite());
@@ -97,10 +92,10 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
     public function testQueryWalker(): void
     {
-        $dql = 'SELECT f FROM '.self::FIXTURE.' f';
+        $dql = 'SELECT f FROM '.Company::class.' f';
 
         $q = $this->em->createQuery($dql);
-        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
 
         $this->translatableListener->setTranslatableLocale('de');
 
@@ -115,8 +110,8 @@ final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
-            self::TRANSLATION,
+            Company::class,
+            Translation::class,
         ];
     }
 }

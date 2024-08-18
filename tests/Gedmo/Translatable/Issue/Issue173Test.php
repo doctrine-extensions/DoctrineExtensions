@@ -30,11 +30,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class Issue173Test extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const ARTICLE = Article::class;
-    private const PRODUCT = Product::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -66,10 +61,10 @@ final class Issue173Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::PRODUCT,
-            self::TRANSLATION,
+            Category::class,
+            Article::class,
+            Product::class,
+            Translation::class,
         ];
     }
 
@@ -83,19 +78,19 @@ final class Issue173Test extends BaseTestCaseORM
         $query3 = $this->em->createQueryBuilder();
         $dql1 = $query2
             ->select('c1')
-            ->from(self::CATEGORY, 'c1')
+            ->from(Category::class, 'c1')
             ->join('c1.products', 'p')
             ->getDQL()
         ;
         $dql2 = $query3
             ->select('c2')
-            ->from(self::CATEGORY, 'c2')
+            ->from(Category::class, 'c2')
             ->join('c2.articles', 'a')
             ->getDQL()
         ;
         $query
             ->select('c')
-            ->from(self::CATEGORY, 'c')
+            ->from(Category::class, 'c')
             ->where($query->expr()->notIn('c.id', $dql1))
             ->andWhere($query->expr()->notIn('c.id', $dql2))
         ;

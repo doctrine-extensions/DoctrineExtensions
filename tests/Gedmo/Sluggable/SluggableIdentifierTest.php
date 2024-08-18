@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableIdentifierTest extends BaseTestCaseORM
 {
-    private const TARGET = Identifier::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -63,7 +61,7 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            Identifier::class,
         ];
     }
 }

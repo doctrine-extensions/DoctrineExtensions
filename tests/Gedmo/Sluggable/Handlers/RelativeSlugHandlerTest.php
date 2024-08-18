@@ -24,9 +24,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class RelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    private const SLUG = ArticleRelativeSlug::class;
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,7 +37,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
     public function testSlugGeneration(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::SLUG);
+        $repo = $this->em->getRepository(ArticleRelativeSlug::class);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
         static::assertSame('sport-test/thomas', $thomas->getSlug());
@@ -58,7 +55,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
     public function testUpdateOperations(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::SLUG);
+        $repo = $this->em->getRepository(ArticleRelativeSlug::class);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
         $thomas->setTitle('Ninja');
@@ -67,7 +64,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
 
         static::assertSame('sport-test/ninja', $thomas->getSlug());
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
         $sport->setTitle('Martial Arts');
 
         $this->em->persist($sport);
@@ -78,7 +75,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         $jen = $repo->findOneBy(['title' => 'Jen']);
         static::assertSame('martial-arts-test/jen', $jen->getSlug());
 
-        $cars = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Cars']);
+        $cars = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Cars']);
         $jen->setArticle($cars);
 
         $this->em->persist($jen);
@@ -90,8 +87,8 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::SLUG,
-            self::ARTICLE,
+            ArticleRelativeSlug::class,
+            Article::class,
         ];
     }
 

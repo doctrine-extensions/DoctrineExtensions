@@ -25,9 +25,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 {
-    private const POST = Post::class;
-    private const CATEGORY = Category::class;
-    private const KID = Kid::class;
     private const KID_DATE1 = '1999-12-31';
     private const KID_DATE2 = '2000-01-01';
 
@@ -46,7 +43,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
      */
     public function testKidInitialPositions(): void
     {
-        $repo = $this->dm->getRepository(self::KID);
+        $repo = $this->dm->getRepository(Kid::class);
 
         for ($i = 0; $i < 2; ++$i) {
             $kids = $repo->findBy(['position' => $i]);
@@ -59,10 +56,10 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
      */
     public function testKidMovePosition(): void
     {
-        $repo = $this->dm->getRepository(self::KID);
+        $repo = $this->dm->getRepository(Kid::class);
 
         $kid = $repo->findOneBy(['lastname' => 'kid2']);
-        static::assertInstanceOf(self::KID, $kid);
+        static::assertInstanceOf(Kid::class, $kid);
 
         $kid->setPosition(0);
         $this->dm->flush();
@@ -81,7 +78,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
      */
     public function testPostsInitialPositions(): void
     {
-        $repo = $this->dm->getRepository(self::POST);
+        $repo = $this->dm->getRepository(Post::class);
 
         for ($i = 0; $i < 3; ++$i) {
             $posts = $repo->findBy(['position' => $i]);
@@ -94,17 +91,17 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
      */
     public function testPostsMovePosition(): void
     {
-        $repo_category = $this->dm->getRepository(self::CATEGORY);
-        $repo_post = $this->dm->getRepository(self::POST);
+        $repo_category = $this->dm->getRepository(Category::class);
+        $repo_post = $this->dm->getRepository(Post::class);
 
         $category = $repo_category->findOneBy(['name' => 'category1']);
-        static::assertInstanceOf(self::CATEGORY, $category);
+        static::assertInstanceOf(Category::class, $category);
 
         $post = $repo_post->findOneBy([
             'position' => 2,
             'category.id' => $category->getId(),
         ]);
-        static::assertInstanceOf(self::POST, $post);
+        static::assertInstanceOf(Post::class, $post);
 
         $post->setPosition(0);
 
@@ -126,17 +123,17 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
      */
     public function testPostsDeletePosition(): void
     {
-        $repo_category = $this->dm->getRepository(self::CATEGORY);
-        $repo_post = $this->dm->getRepository(self::POST);
+        $repo_category = $this->dm->getRepository(Category::class);
+        $repo_post = $this->dm->getRepository(Post::class);
 
         $category = $repo_category->findOneBy(['name' => 'category1']);
-        static::assertInstanceOf(self::CATEGORY, $category);
+        static::assertInstanceOf(Category::class, $category);
 
         $post = $repo_post->findOneBy([
             'position' => 1,
             'category.id' => $category->getId(),
         ]);
-        static::assertInstanceOf(self::POST, $post);
+        static::assertInstanceOf(Post::class, $post);
 
         $this->dm->remove($post);
         $this->dm->flush();

@@ -25,9 +25,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     private ?string $id = null;
@@ -48,9 +45,9 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 
     public function testShouldPersistMultipleTranslations(): void
     {
-        $repo = $this->dm->getRepository(self::TRANSLATION);
+        $repo = $this->dm->getRepository(Translation::class);
         static::assertInstanceOf(TranslationRepository::class, $repo);
-        $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
+        $sport = $this->dm->getRepository(Article::class)->find($this->id);
         $translations = $repo->findTranslations($sport);
 
         static::assertArrayHasKey('de_de', $translations);
@@ -68,9 +65,9 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 
     public function testShouldUpdateTranslation(): void
     {
-        $repo = $this->dm->getRepository(self::TRANSLATION);
+        $repo = $this->dm->getRepository(Translation::class);
         static::assertInstanceOf(TranslationRepository::class, $repo);
-        $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
+        $sport = $this->dm->getRepository(Article::class)->find($this->id);
         $repo
             ->translate($sport, 'title', 'ru_ru', 'sport ru change')
             ->translate($sport, 'content', 'ru_ru', 'content ru change')
@@ -89,9 +86,9 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 
     public function testShouldUpdateMultipleTranslations(): void
     {
-        $repo = $this->dm->getRepository(self::TRANSLATION);
+        $repo = $this->dm->getRepository(Translation::class);
         static::assertInstanceOf(TranslationRepository::class, $repo);
-        $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
+        $sport = $this->dm->getRepository(Article::class)->find($this->id);
         $sport->setTitle('Changed');
         $repo
             ->translate($sport, 'title', 'lt_lt', 'sport lt')
@@ -130,7 +127,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 
     private function populate(): void
     {
-        $repo = $this->dm->getRepository(self::TRANSLATION);
+        $repo = $this->dm->getRepository(Translation::class);
         static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = new Article();
         $sport->setTitle('Sport');

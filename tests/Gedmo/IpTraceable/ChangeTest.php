@@ -24,7 +24,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 final class ChangeTest extends BaseTestCaseORM
 {
     private const TEST_IP = '34.234.1.10';
-    private const FIXTURE = TitledArticle::class;
 
     /**
      * @var IpTraceableListener
@@ -54,7 +53,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $this->em->persist($test);
         $this->em->flush();
@@ -64,7 +63,7 @@ final class ChangeTest extends BaseTestCaseORM
 
         $this->listener->setIpValue('127.0.0.1');
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $this->em->persist($test);
         $this->em->flush();
@@ -76,7 +75,7 @@ final class ChangeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
+            TitledArticle::class,
         ];
     }
 }

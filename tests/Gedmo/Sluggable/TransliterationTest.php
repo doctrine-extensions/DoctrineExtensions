@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class TransliterationTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,7 +36,7 @@ final class TransliterationTest extends BaseTestCaseORM
 
     public function testInsertedNewSlug(): void
     {
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
 
         $lithuanian = $repo->findOneBy(['code' => 'lt']);
         static::assertSame('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
@@ -56,7 +54,7 @@ final class TransliterationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
+            Article::class,
         ];
     }
 

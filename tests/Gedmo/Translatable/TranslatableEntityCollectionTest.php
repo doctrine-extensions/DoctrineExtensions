@@ -25,10 +25,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableEntityCollectionTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -49,7 +45,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('de');
         $this->translatableListener->setDefaultLocale('en');
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $entity = new Article();
         $entity->setTitle('he'); // is translated to de
 
@@ -63,7 +59,7 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $this->em->persist($entity);
         $this->em->flush();
         $this->em->clear();
-        $trans = $repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(4, $trans);
         static::assertSame('my article de', $trans['de']['title']); // overrides "he" which would be used if translate for de not called
         static::assertSame('my article es', $trans['es']['title']);
@@ -74,8 +70,8 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     public function testShouldPersistMultipleTranslations(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $sport = $this->em->getRepository(self::ARTICLE)->find(1);
+        $repo = $this->em->getRepository(Translation::class);
+        $sport = $this->em->getRepository(Article::class)->find(1);
         $translations = $repo->findTranslations($sport);
 
         static::assertCount(2, $translations);
@@ -96,8 +92,8 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     public function testShouldUpdateTranslation(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $sport = $this->em->getRepository(self::ARTICLE)->find(1);
+        $repo = $this->em->getRepository(Translation::class);
+        $sport = $this->em->getRepository(Article::class)->find(1);
         $repo
             ->translate($sport, 'title', 'ru_ru', 'sport ru change')
             ->translate($sport, 'content', 'ru_ru', 'content ru change')
@@ -117,8 +113,8 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     public function testShouldUpdateMultipleTranslations(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $sport = $this->em->getRepository(self::ARTICLE)->find(1);
+        $repo = $this->em->getRepository(Translation::class);
+        $sport = $this->em->getRepository(Article::class)->find(1);
         $repo
             ->translate($sport, 'title', 'lt_lt', 'sport lt')
             ->translate($sport, 'content', 'lt_lt', 'content lt')
@@ -157,15 +153,15 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
+            Article::class,
+            Translation::class,
+            Comment::class,
         ];
     }
 
     private function populate(): void
     {
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setContent('about sport');

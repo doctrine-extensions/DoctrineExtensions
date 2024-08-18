@@ -22,10 +22,6 @@ use Gedmo\Translatable\TranslatableListener;
 
 final class Issue1123Test extends BaseTestCaseORM
 {
-    private const TRANSLATION = Translation::class;
-    private const BASE_ENTITY = BaseEntity::class;
-    private const CHILD_ENTITY = ChildEntity::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -44,7 +40,7 @@ final class Issue1123Test extends BaseTestCaseORM
 
     public function testShouldFindInheritedClassTranslations(): void
     {
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         $title = 'Hello World';
         $deTitle = 'Hallo Welt';
@@ -70,7 +66,7 @@ final class Issue1123Test extends BaseTestCaseORM
         static::assertSame(['childTitle' => $deTitle], $translations['de']);
 
         // find using QueryBuilder
-        $qb = $this->em->createQueryBuilder()->select('e')->from(self::CHILD_ENTITY, 'e');
+        $qb = $this->em->createQueryBuilder()->select('e')->from(ChildEntity::class, 'e');
 
         $query = $qb->getQuery();
         $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
@@ -89,9 +85,9 @@ final class Issue1123Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TRANSLATION,
-            self::BASE_ENTITY,
-            self::CHILD_ENTITY,
+            Translation::class,
+            BaseEntity::class,
+            ChildEntity::class,
         ];
     }
 }

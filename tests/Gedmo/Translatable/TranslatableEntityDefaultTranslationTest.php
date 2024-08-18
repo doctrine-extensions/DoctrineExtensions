@@ -26,9 +26,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const TRANSLATION = Translation::class;
-
     private TranslatableListener $translatableListener;
 
     /**
@@ -48,7 +45,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 
         $this->getDefaultMockSqliteEntityManager($evm);
 
-        $this->repo = $this->em->getRepository(self::TRANSLATION);
+        $this->repo = $this->em->getRepository(Translation::class);
     }
 
     // --- Tests for default translation overruling the translated entity
@@ -113,10 +110,10 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(0, $trans);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
     }
@@ -133,11 +130,11 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(1, $trans);
         static::assertSame('title defaultLocale', $trans['defaultLocale']['title']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
     }
@@ -154,7 +151,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $entity = $this->em->find(self::ARTICLE, 1);
+        $entity = $this->em->find(Article::class, 1);
         $entity->setTranslatableLocale('translatedLocale');
         $this->em->refresh($entity);
 
@@ -165,7 +162,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 
         $qb = $this->em->createQueryBuilder();
         $qb->select('a')
-           ->from(self::ARTICLE, 'a')
+           ->from(Article::class, 'a')
            ->where('a.id = 1');
 
         $fields = $qb->getQuery()->getArrayResult();
@@ -185,7 +182,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $entity = $this->em->find(self::ARTICLE, 1);
+        $entity = $this->em->find(Article::class, 1);
         $entity->setTranslatableLocale('translatedLocale');
         $this->em->refresh($entity);
 
@@ -196,7 +193,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 
         $qb = $this->em->createQueryBuilder();
         $qb->select('a')
-           ->from(self::ARTICLE, 'a')
+           ->from(Article::class, 'a')
            ->where('a.id = 1');
 
         $fields = $qb->getQuery()->getArrayResult();
@@ -220,11 +217,11 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(1, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title translatedLocale', $articles[0]['title']);
     }
@@ -245,11 +242,11 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(1, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title translatedLocale', $articles[0]['title']);
     }
@@ -267,11 +264,11 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(1, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
     }
@@ -289,11 +286,11 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(1, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
     }
@@ -311,12 +308,12 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(2, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
         static::assertSame('title defaultLocale', $trans['defaultLocale']['title']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
     }
@@ -334,12 +331,12 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(2, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
         static::assertSame('title defaultLocale', $trans['defaultLocale']['title']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
     }
@@ -359,12 +356,12 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(1, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
         static::assertSame('content translatedLocale', $trans['translatedLocale']['content']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
         static::assertSame('content defaultLocale', $articles[0]['content']);
@@ -385,12 +382,12 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(1, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
         static::assertSame('content translatedLocale', $trans['translatedLocale']['content']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
         static::assertSame('content defaultLocale', $articles[0]['content']);
@@ -411,14 +408,14 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(2, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
         static::assertSame('title defaultLocale', $trans['defaultLocale']['title']);
         static::assertSame('content translatedLocale', $trans['translatedLocale']['content']);
         static::assertSame('content defaultLocale', $trans['defaultLocale']['content']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
         static::assertSame('content defaultLocale', $articles[0]['content']);
@@ -439,14 +436,14 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $trans = $this->repo->findTranslations($this->em->find(Article::class, $entity->getId()));
         static::assertCount(2, $trans);
         static::assertSame('title translatedLocale', $trans['translatedLocale']['title']);
         static::assertSame('title defaultLocale', $trans['defaultLocale']['title']);
         static::assertSame('content translatedLocale', $trans['translatedLocale']['content']);
         static::assertSame('content defaultLocale', $trans['defaultLocale']['content']);
 
-        $articles = $this->em->createQuery('SELECT a FROM '.self::ARTICLE.' a')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT a FROM '.Article::class.' a')->getArrayResult();
         static::assertCount(1, $articles);
         static::assertSame('title defaultLocale', $articles[0]['title']);
         static::assertSame('content defaultLocale', $articles[0]['content']);
@@ -457,8 +454,8 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
+            Article::class,
+            Translation::class,
         ];
     }
 }

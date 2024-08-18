@@ -25,9 +25,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    private const SUPERCLASS = SupperClassExtension::class;
-    private const TRANSLATION = Translation::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,7 +48,7 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($test);
         static::assertCount(0, $translations);
 
@@ -61,8 +58,8 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TRANSLATION,
-            self::SUPERCLASS,
+            Translation::class,
+            SupperClassExtension::class,
         ];
     }
 }

@@ -25,8 +25,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue104Test extends BaseTestCaseORM
 {
-    private const CAR = Car::class;
-
     public static function setUpBeforeClass(): void
     {
         if (!class_exists(AnnotationDriver::class)) {
@@ -52,7 +50,7 @@ final class Issue104Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CAR,
+            Car::class,
         ];
     }
 }
