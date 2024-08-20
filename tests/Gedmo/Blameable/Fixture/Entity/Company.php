@@ -37,15 +37,13 @@ class Company implements Blameable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string", length=128)
      */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var UuidV6|null
+     * @var UuidV6|string|null
      *
      * @Gedmo\Blameable(on="create")
      *

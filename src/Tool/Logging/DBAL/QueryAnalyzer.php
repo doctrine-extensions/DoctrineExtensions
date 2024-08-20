@@ -46,7 +46,7 @@ class QueryAnalyzer implements SQLLogger
      *
      * @var string[]
      */
-    private $queries = [];
+    private array $queries = [];
 
     /**
      * Query execution times indexed
@@ -54,7 +54,7 @@ class QueryAnalyzer implements SQLLogger
      *
      * @var float[]
      */
-    private $queryExecutionTimes = [];
+    private array $queryExecutionTimes = [];
 
     /**
      * Initialize log listener with database

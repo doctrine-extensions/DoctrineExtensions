@@ -97,10 +97,8 @@ class TranslationWalker extends SqlWalker
 
     /**
      * DBAL database connection
-     *
-     * @var Connection
      */
-    private $conn;
+    private Connection $conn;
 
     /**
      * List of aliases to replace with translation

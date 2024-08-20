@@ -76,7 +76,7 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @var array<int, string>
      */
-    private $pendingFileRemovals = [];
+    private array $pendingFileRemovals = [];
 
     /**
      * Array of FileInfoInterface objects. The index is the hash of the entity owner
@@ -86,7 +86,7 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @phpstan-var array<int, array{entity: object, fileInfo: FileInfoInterface}>
      */
-    private $fileInfoObjects = [];
+    private array $fileInfoObjects = [];
 
     public function __construct(?MimeTypeGuesserInterface $mimeTypeGuesser = null)
     {

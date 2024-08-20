@@ -75,7 +75,7 @@ class Nested implements Strategy
      *
      * @var array<string, int>
      */
-    private $treeEdges = [];
+    private array $treeEdges = [];
 
     /**
      * Stores a list of node position strategies
