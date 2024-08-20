@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityRepository;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Translatable\Entity\Repository\TranslationRepository;
@@ -33,7 +34,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
     /**
      * @var TranslationRepository
      */
-    private $repo;
+    private EntityRepository $repo;
 
     protected function setUp(): void
     {

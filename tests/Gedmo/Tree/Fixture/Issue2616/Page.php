@@ -41,12 +41,10 @@ class Page
     private $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private $title;
+    private ?string $title = null;
 
     public function getId(): ?int
     {

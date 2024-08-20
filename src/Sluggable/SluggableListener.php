@@ -74,10 +74,8 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * The power exponent to jump
      * the slug unique number by tens.
-     *
-     * @var int
      */
-    private $exponent = 0;
+    private int $exponent = 0;
 
     /**
      * Transliteration callback for slugs

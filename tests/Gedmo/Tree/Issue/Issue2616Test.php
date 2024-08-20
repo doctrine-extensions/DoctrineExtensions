@@ -17,10 +17,7 @@ use Gedmo\Tree\TreeListener;
 
 class Issue2616Test extends BaseTestCaseORM
 {
-    /**
-     * @var TreeListener
-     */
-    private $listener;
+    private TreeListener $listener;
 
     protected function setUp(): void
     {

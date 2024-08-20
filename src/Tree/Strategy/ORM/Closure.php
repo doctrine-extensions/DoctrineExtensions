@@ -64,7 +64,7 @@ class Closure implements Strategy
      *
      * @phpstan-var array<int, array{node: object|Node, oldParent: mixed}>
      */
-    private $pendingNodeUpdates = [];
+    private array $pendingNodeUpdates = [];
 
     /**
      * List of pending Nodes, which needs their "level"

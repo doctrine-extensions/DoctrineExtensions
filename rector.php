@@ -21,10 +21,12 @@ return RectorConfig::configure()
     ])
     ->withPhpVersion(PhpVersion::PHP_74)
     ->withPhpSets()
+    ->withConfiguredRule(TypedPropertyFromAssignsRector::class, [])
     ->withSkip([
         TypedPropertyFromAssignsRector::class => [
             __DIR__.'/src/Mapping/MappedEventSubscriber.php', // Rector is trying to set a type on the $annotationReader property which requires a union type, not supported on PHP 7.4
-            __DIR__.'/tests/Gedmo/Wrapper/Fixture/Entity/CompositeRelation.php', // @todo: remove this when https://github.com/doctrine/orm/issues/8255 is solved
+            __DIR__.'/tests/Gedmo/Blameable/Fixture/Entity/Company.php', // @todo: Remove this when fixing the configuration for the `Company::$created` property
+            __DIR__.'/tests/Gedmo/Wrapper/Fixture/Entity/CompositeRelation.php', // @todo: Remove this when https://github.com/doctrine/orm/issues/8255 is solved
         ],
     ])
     ->withImportNames(true, true, false)

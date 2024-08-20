@@ -81,10 +81,7 @@ class SoftDeleteableWalker extends SqlWalker
      */
     protected $meta;
 
-    /**
-     * @var QuoteStrategy
-     */
-    private $quoteStrategy;
+    private QuoteStrategy $quoteStrategy;
 
     public function __construct($query, $parserResult, array $queryComponents)
     {

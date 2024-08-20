@@ -36,19 +36,15 @@ class Article implements Sluggable, Translatable
     private $id;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      *
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
     #[Gedmo\Translatable]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @Gedmo\Slug(separator="-", updatable=true, fields={"title"}, unique=true, uniqueOverTranslations=true)
      *
@@ -57,17 +53,15 @@ class Article implements Sluggable, Translatable
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title'], updatable: true, unique: true, uniqueOverTranslations: true, separator: '-')]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
      */
     #[Gedmo\Locale]
-    private $locale;
+    private ?string $locale = null;
 
     public function getId(): ?int
     {

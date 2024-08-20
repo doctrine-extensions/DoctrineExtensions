@@ -70,20 +70,15 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     private UploadableListenerStub $listener;
 
-    /** @var string */
-    private $testFile;
+    private string $testFile;
 
-    /** @var string */
-    private $testFile2;
+    private string $testFile2;
 
-    /** @var string */
-    private $testFile3;
+    private string $testFile3;
 
-    /** @var string */
-    private $testFileWithoutExt;
+    private string $testFileWithoutExt;
 
-    /** @var string */
-    private $testFileWithSpaces;
+    private string $testFileWithSpaces;
 
     private string $destinationTestDir;
 
