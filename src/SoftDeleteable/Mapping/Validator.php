@@ -9,6 +9,9 @@
 
 namespace Gedmo\SoftDeleteable\Mapping;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 
@@ -44,7 +47,7 @@ class Validator
      *
      * @return void
      */
-    public static function validateField(ClassMetadata $meta, $field)
+    public static function validateField(ClassMetadata $meta, $field): void
     {
         if ($meta->isMappedSuperclass) {
             return;
@@ -52,8 +55,18 @@ class Validator
 
         $fieldMapping = $meta->getFieldMapping($field);
 
-        if (!in_array($fieldMapping['type'], self::$validTypes, true)) {
+        if((InstalledVersions::satisfies(new VersionParser, 'doctrine/orm', '^3.0') ||
+            InstalledVersions::satisfies(new VersionParser, 'doctrine/orm', '^4.0')) &&
+            $fieldMapping instanceof FieldMapping
+        ) {
+            $type = $fieldMapping->type;
+        } else {
+            $type = $fieldMapping['type'];
+        }
+
+        if (!in_array($type, self::$validTypes, true)) {
             throw new InvalidMappingException(sprintf('Field "%s" (type "%s") must be of one of the following types: "%s" in entity %s', $field, $fieldMapping['type'], implode(', ', self::$validTypes), $meta->getName()));
         }
+
     }
 }
