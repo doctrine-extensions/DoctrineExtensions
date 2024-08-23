@@ -9,8 +9,6 @@
 
 namespace Gedmo\SoftDeleteable\Mapping;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
@@ -55,10 +53,7 @@ class Validator
 
         $fieldMapping = $meta->getFieldMapping($field);
 
-        if((InstalledVersions::satisfies(new VersionParser, 'doctrine/orm', '^3.0') ||
-            InstalledVersions::satisfies(new VersionParser, 'doctrine/orm', '^4.0')) &&
-            $fieldMapping instanceof FieldMapping
-        ) {
+        if($fieldMapping instanceof FieldMapping) {
             $type = $fieldMapping->type;
         } else {
             $type = $fieldMapping['type'];
