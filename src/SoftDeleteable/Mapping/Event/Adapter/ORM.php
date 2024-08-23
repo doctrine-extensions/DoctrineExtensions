@@ -42,7 +42,11 @@ final class ORM extends BaseAdapterORM implements SoftDeleteableAdapter, ClockAw
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        $converter = Type::getType($mapping['type'] ?? Types::DATETIME_MUTABLE);
+        if ($mapping instanceof FieldMapping) {
+            $converter = Type::getType($mapping->type);
+        } else {
+            $converter = Type::getType($mapping['type'] ?? Types::DATETIME_MUTABLE);
+        }
         $platform = $this->getObjectManager()->getConnection()->getDriver()->getDatabasePlatform();
 
         return $converter->convertToPHPValue($this->getRawDateValue($mapping), $platform);
