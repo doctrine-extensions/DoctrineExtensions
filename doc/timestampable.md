@@ -1,674 +1,273 @@
-# Timestampable behavior extension for Doctrine
+# Timestampable Behavior Extension for Doctrine
 
-**Timestampable** behavior will automate the update of date fields
-on your Entities or Documents. It works through annotations and can update
-fields on creation, update, property subset update, or even on specific property value change.
+The **Timestampable** behavior automates the update of timestamps on your Doctrine objects.
 
-Features:
+## Index
 
-- Automatic predefined date field update on creation, update, property subset update, and even on record property changes
-- ORM and ODM support using same listener
-- Specific annotations for properties, and no interface required
-- Can react to specific property or relation changes to specific value
-- Can be nested with other behaviors
-- Attribute, Annotation and Xml mapping support for extensions
+- [Getting Started](#getting-started)
+- [Configuring Timestampable Objects](#configuring-timestampable-objects)
+- [Using Traits](#using-traits)
+- [Logging Changes For Specific Actions](#logging-changes-for-specific-actions)
 
-This article will cover the basic installation and functionality of **Timestampable** behavior
+## Getting Started
 
-Content:
+The timestampable behavior can be added to a supported Doctrine object manager by registering its event subscriber
+when creating the manager.
 
-- [Including](#including-extension) the extension
-- Entity [example](#entity-mapping)
-- Document [example](#document-mapping)
-- [Xml](#xml-mapping) mapping example
-- Advanced usage [examples](#advanced-examples)
-- Using [Traits](#traits)
+```php
+use Gedmo\Timestampable\TimestampableListener;
 
-<a name="including-extension"></a>
+$listener = new TimestampableListener();
 
-## Setup and autoloading
+// The $om is either an instance of the ORM's entity manager or the MongoDB ODM's document manager
+$om->getEventManager()->addEventSubscriber($listener);
+```
 
-Read the [documentation](./annotations.md#em-setup)
-or check the [example code](../example)
-on how to setup and use the extensions in most optimized way.
+### Using a Clock
 
-<a name="entity-mapping"></a>
+The timestampable extension supports using a [PSR-20 Clock](https://www.php-fig.org/psr/psr-20/) as the provider for its
+timestamps, falling back to creating a new `DateTime` instance when not available.
 
-## Timestampable Entity example:
+To use a clock in the timestampable extension, you can provide one by calling the listener's `setClock` method.
 
-### Timestampable annotations:
-- **@Gedmo\Mapping\Annotation\Timestampable** this annotation tells that this column is timestampable.
-By default it updates this column on update. If column is not date, datetime or time
-type it will trigger an exception.
+```php
+$listener->setClock($clock);
+```
 
-### Timestampable attributes:
-- **#[Gedmo\Mapping\Annotation\Timestampable]** this attribute tells that this column is timestampable.
-  By default it updates this column on update. If column is not date, datetime or time
-  type it will trigger an exception.
+## Configuring Timestampable Objects
 
-Available configuration options:
+The Itimestampable extension can be configured with [annotations](./annotations.md#timestampable-extension),
+[attributes](./attributes.md#timestampable-extension), or XML configuration (matching the mapping of
+your domain models). The full configuration for annotations and attributes can be reviewed in
+the linked documentation.
 
-- **on** - is main option and can be **create, update, change** this tells when it
-should be updated
-- **field** - only valid if **on="change"** is specified, tracks property or a list of properties for changes
-- **value** - only valid if **on="change"** is specified and the tracked field is a single field (not an array), if the tracked field has this **value**
+The below examples show the simplest and default configuration for the extension, setting a field
+when the model is updated.
 
-**Note:** that Timestampable interface is not necessary, except in cases where
-you need to identify entity as being Timestampable. The metadata is loaded only once then
-cache is activated
-
-### Annotations
+### Attribute Configuration
 
 ```php
 <?php
-namespace Entity;
+namespace App\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
-class Article
-{
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
-    private $title;
-
-    /**
-     * @ORM\Column(name="body", type="string")
-     */
-    private $body;
-
-    /**
-     * @var \DateTime $created
-     *
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime $updated
-     *
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
-    private $updated;
-
-    /**
-     * @var \DateTime $contentChanged
-     *
-     * @ORM\Column(name="content_changed", type="datetime", nullable=true)
-     * @Gedmo\Timestampable(on="change", field={"title", "body"})
-     */
-    private $contentChanged;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setBody($body)
-    {
-        $this->body = $body;
-    }
-
-    public function getBody()
-    {
-        return $this->body;
-    }
-
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    public function getContentChanged()
-    {
-        return $this->contentChanged;
-    }
-}
-```
-
-### Attributes
-
-```php
 #[ORM\Entity]
 class Article
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    public ?int $id = null;
 
-    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
-    private $title;
-
-    #[ORM\Column(name: 'body', type: Types::STRING)]
-    private $body;
-
-    /**
-     * @var \DateTime
-     */
-    #[Gedmo\Timestampable(on: 'create')]
-    #[ORM\Column(name: 'created', type: Types::DATE_MUTABLE)]
-    private $created;
-
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable]
-    private $updated;
-
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
-    private $contentChanged;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setBody($body)
-    {
-        $this->body = $body;
-    }
-
-    public function getBody()
-    {
-        return $this->body;
-    }
-
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    public function getContentChanged()
-    {
-        return $this->contentChanged;
-    }
+    public ?\DateTimeImmutable $updatedAt = null;
 }
 ```
 
-<a name="document-mapping"></a>
-
-## Timestampable Document example:
-
-**Note:** this example is using annotations and attributes for mapping, you should use
-one of them, not both.
-
-```php
-<?php
-namespace Document;
-
-use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-
-/**
- * @ODM\Document(collection="articles")
- */
-class Article
-{
-    /** @ODM\Id */
-    private $id;
-
-    /**
-     * @ODM\Field(type="string")
-     */
-    private $title;
-
-    /**
-     * @ODM\Field(type="string")
-     */
-    private $body;
-
-    /**
-     * @var date $created
-     *
-     * @ODM\Date
-     * @Gedmo\Timestampable(on="create")
-     */
-     #[Gedmo\Timestampable(on: 'create')]
-    private $created;
-
-    /**
-     * @var date $updated
-     *
-     * @ODM\Date
-     * @Gedmo\Timestampable
-     */
-     #[Gedmo\Timestampable]
-    private $updated;
-
-    /**
-     * @var \DateTime $contentChanged
-     *
-     * @ODM\Date
-     * @Gedmo\Timestampable(on="change", field={"title", "body"})
-     */
-     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
-    private $contentChanged;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setBody($body)
-    {
-        $this->body = $body;
-    }
-
-    public function getBody()
-    {
-        return $this->body;
-    }
-
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    public function getContentChanged()
-    {
-        return $this->contentChanged;
-    }
-}
-```
-
-Now on update and creation these annotated fields will be automatically updated
-
-<a name="xml-mapping"></a>
-
-## Xml mapping example
+### XML Configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 
-    <entity name="Mapping\Fixture\Xml\Timestampable" table="timestampables">
+    <entity name="App\Model\Article" table="articles">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="created" type="datetime">
-            <gedmo:timestampable on="create"/>
-        </field>
-        <field name="updated" type="datetime">
+        <field name="updatedAt" type="string">
             <gedmo:timestampable on="update"/>
         </field>
-        <field name="published" type="datetime" nullable="true">
-            <gedmo:timestampable on="change" field="status.title" value="Published"/>
-        </field>
-
-        <many-to-one field="status" target-entity="Status">
-            <join-column name="status_id" referenced-column-name="id"/>
-        </many-to-one>
     </entity>
-
 </doctrine-mapping>
 ```
 
-<a name="advanced-examples"></a>
+### Annotation Configuration
 
-## Advanced examples:
-
-### Using dependency of property changes
-
-Add another entity which would represent Article Type:
+> [!NOTE]
+> Support for annotations is deprecated and will be removed in 4.0.
 
 ```php
 <?php
-namespace Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ORM\Entity
- */
-class Type
-{
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
-    private $title;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
-     */
-    private $articles;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-}
-```
-
-Now update the Article Entity to reflect published date on Type change:
-
-```php
-<?php
-namespace Entity;
-
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
 class Article
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
-    private $id;
+    /**
+    * @ORM\Id
+    * @ORM\GeneratedValue
+    * @ORM\Column(type="integer")
+    */
+    public ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="datetime_immutable")
+     * @Gedmo\Timestampable
      */
-    private $title;
-
-    /**
-     * @var \DateTime $created
-     *
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime $updated
-     *
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
-    private $updated;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
-     */
-    private $type;
-
-    /**
-     * @var \DateTime $published
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
-     *
-     * or for example
-     * @Gedmo\Timestampable(on="change", field="type.title", value={"Published", "Closed"})
-     */
-    private $published;
-
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    public function getPublished()
-    {
-        return $this->published;
-    }
+    public ?\DateTimeImmutable $updatedAt = null;
 }
 ```
 
-Now few operations to get it all done:
+### Supported Field Types
+
+The timestampable extension supports the following field types for the timestamp field:
+
+- Date (`date` and `date_immutable`)
+- Time (`time` and `time_immutable`)
+- Date/Time (`datetime` and `datetime_immutable`)
+- Date/Time with timezone (`datetimetz` and `datetimetz_immutable`)
+- Timestamp (`timestamp`)
+- Variable Date/Time (`vardatetime`) (Supported by the ORM and DBAL only)
+- Integer (`integer` only)
+
+## Using Traits
+
+The timestampable extension provides traits which can be used to quickly add fields, and optionally the mapping configuration,
+for a created at and updated at timestamp to be updated for the **create** and **update** actions. These traits are
+provided as a convenience for a common configuration, for other use cases it is suggested you add your own fields and configurations.
+
+- `Gedmo\Timestampable\Traits\Timestampable` adds a `$createdAt` and `$updatedAt` property, with getters and setters
+- `Gedmo\Timestampable\Traits\TimestampableDocument` adds a `$createdAt` and `$updatedAt` property, with getters and setters
+  and mapping annotations and attributes for the MongoDB ODM
+- `Gedmo\Timestampable\Traits\TimestampableEntity` adds a `$createdAt` and `$updatedAt` property, with getters and setters
+  and mapping annotations and attributes for the ORM
+
+## Logging Changes For Specific Actions
+
+In addition to supporting logging the timestamp for general create and update actions, the extension can also be configured to
+log the timestamp for a change for specific fields or values.
+
+### Single Field Changed To Specific Value
+
+For example, we want to record the timestamp of when an article is published on a news site. To do this, we add a field to our object
+and configure it using the **change** action, specifying the field and value we want it to match.
 
 ```php
 <?php
-$article = new Article;
-$article->setTitle('My Article');
+namespace App\Entity;
 
-$em->persist($article);
-$em->flush();
-// article: $created, $updated were set
-
-$type = new Type;
-$type->setTitle('Published');
-
-$article = $em->getRepository('Entity\Article')->findByTitle('My Article');
-$article->setType($type);
-
-$em->persist($article);
-$em->persist($type);
-$em->flush();
-// article: $published, $updated were set
-
-$article->getPublished()->format('Y-m-d'); // the date article type changed to published
-```
-
-Easy like that, any suggestions on improvements are very welcome
-
-### Creating a UTC DateTime type that stores your datetimes in UTC
-
-First, we define our custom data type (note the type name is datetime and the type extends DateTimeType which simply overrides the default Doctrine type):
-
-```php
-<?php
-
-namespace Acme\DoctrineExtensions\DBAL\Types;
-
-use Doctrine\DBAL\Types\DateTimeType;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\ConversionException;
-
-class UTCDateTimeType extends DateTimeType
-{
-    static private $utc = null;
-
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        if (is_null(self::$utc)) {
-            self::$utc = new \DateTimeZone('UTC');
-        }
-
-        $value->setTimeZone(self::$utc);
-
-        return $value->format($platform->getDateTimeFormatString());
-    }
-
-    public function convertToPHPValue($value, AbstractPlatform $platform)
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        if (is_null(self::$utc)) {
-            self::$utc = new \DateTimeZone('UTC');
-        }
-
-        $val = \DateTime::createFromFormat($platform->getDateTimeFormatString(), $value, self::$utc);
-
-        if (!$val) {
-            throw ConversionException::conversionFailed($value, $this->getName());
-        }
-
-        return $val;
-    }
-}
-```
-
-Now in Symfony, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
-
-```yaml
-doctrine:
-    dbal:
-        types:
-            datetime: Acme\DoctrineExtensions\DBAL\Types\UTCDateTimeType
-```
-
-And our Entity properties look as expected:
-
-```php
-<?php
-/**
- * @var \DateTime $dateCreated
- *
- * @ORM\Column(name="date_created", type="datetime")
- * @Gedmo\Timestampable(on="create")
- */
-private $dateCreated;
-
-/**
- * @var \DateTime $dateLastModified
- *
- * @Gedmo\Timestampable(on="update")
- * @ORM\Column(name="date_last_modified", type="datetime")
- */
-private $dateLastModified;
-```
-
-Now, in our view (suppose we are using Symfony and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
-
-```twig
-{{ myEntity.dateCreated | date("d/m/Y g:i a", app.user.timezone) }}
-```
-
-Or if the user does not have a timezone, we could expand that to use a system/app/PHP default timezone.
-
-[doctrine_custom_datetime_type]: http://www.doctrine-project.org/docs/orm/2.0/en/cookbook/working-with-datetime.html#handling-different-timezones-with-the-datetime-type "Handling different Timezones with the DateTime Type"
-
-This example is based off [Handling different Timezones with the DateTime Type][doctrine_custom_datetime_type] - however that example may be outdated because it contains some obviously invalid PHP from the TimeZone class.
-
-<a name="traits"></a>
-
-## Traits
-
-You can use timestampable traits for quick **createdAt** **updatedAt** timestamp definitions
-when using annotation mapping.
-There is also a trait without annotations for easy integration purposes.
-
-**Note:** this feature is only available since php **5.4.0**. And you are not required
-to use the Traits provided by extensions.
-
-```php
-<?php
-namespace Timestampable\Fixture;
-
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity
- */
-class UsingTrait
+#[ORM\Entity]
+class Article
 {
-    /**
-     * Hook timestampable behavior
-     * updates createdAt, updatedAt fields
-     */
-    use TimestampableEntity;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    public bool $published = false;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * Field to track the timestamp for the last change made to this article. 
      */
-    private $id;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable]
+    public ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * @ORM\Column(length=128)
+     * Field to track the timestamp for when this article was published. 
      */
-    private $title;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'published', value: true)]
+    public ?\DateTimeImmutable $updatedAt = null;
 }
 ```
 
-Traits are very simple and if you use different field names I recommend to simply create your
-own ones based per project. These ones are standing as an example.
+The change action can also be configured to watch for changes on related objects using a dot notation path. In this example,
+we log the timestamp for when the article was moved into an archived category.
+
+```php
+<?php
+namespace App\Entity;
+
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+#[ORM\Entity]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    public ?Category $category = null;
+
+    /**
+     * Field to track the timestamp for the last change made to this article. 
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable]
+    public ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * Field to track the timestamp for when this article was archived. 
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'category.archived', value: true)]
+    public ?\DateTimeImmutable $updatedAt = null;
+}
+```
+
+### One of Many Fields Changed
+
+The extension can also update a timestampable field when using the **change** action by specifying a list of fields to watch.
+This also supports the dotted path notation, allowing you to watch changes on the model itself as well as related data.
+
+```php
+<?php
+namespace App\Entity;
+
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+#[ORM\Entity]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    public ?Category $category = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    public ?string $metaDescription = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    public ?string $metaKeywords = null;
+
+    /**
+     * Field to track the timestamp for the last change made to this article. 
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable]
+    public ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * Field to track the timestamp for when this article's SEO metadata was last updated. 
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: ['metaDescription', 'metaKeywords', 'category.metaDescription', 'category.metaKeywords'])]
+    public ?\DateTimeImmutable $seoMetadataChangedAt = null;
+}
+```
