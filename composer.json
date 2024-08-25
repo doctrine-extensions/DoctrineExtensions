@@ -54,7 +54,7 @@
     "require-dev": {
         "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/cache": "^1.11 || ^2.0",
-        "doctrine/dbal": "^3.2",
+        "doctrine/dbal": "^3.7 || ^4.0",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/mongodb-odm": "^2.3",
         "doctrine/orm": "^2.14.0 || ^3.0",
@@ -73,7 +73,7 @@
     },
     "conflict": {
         "doctrine/annotations": "<1.13 || >=3.0",
-        "doctrine/dbal": "<3.2 || >=4.0",
+        "doctrine/dbal": "<3.7 || >=5.0",
         "doctrine/mongodb-odm": "<2.3 || >=3.0",
         "doctrine/orm": "<2.14.0 || 2.16.0 || 2.16.1 || >=4.0"
     },

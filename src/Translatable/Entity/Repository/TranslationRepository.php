@@ -9,7 +9,6 @@
 
 namespace Gedmo\Translatable\Entity\Repository;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -99,8 +98,7 @@ class TranslationRepository extends EntityRepository
                 $listener->setTranslationInDefaultLocale(spl_object_id($entity), $field, $trans);
                 $needsPersist = $listener->getPersistDefaultLocaleTranslation();
             }
-            $type = Type::getType($meta->getTypeOfField($field));
-            $transformed = $type->convertToDatabaseValue($value, $this->getEntityManager()->getConnection()->getDatabasePlatform());
+            $transformed = $this->getEntityManager()->getConnection()->convertToDatabaseValue($value, $meta->getTypeOfField($field));
             $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
             if ($needsPersist) {
                 if ($this->getEntityManager()->getUnitOfWork()->isInIdentityMap($entity)) {

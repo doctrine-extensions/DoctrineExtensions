@@ -20,9 +20,11 @@ parameters:
         - '#^Result of static method Gedmo\\Uploadable\\Mapping\\Validator::validateConfiguration\(\) \(void\) is used\.$#'
         - '#^Result of method Gedmo\\Mapping\\Driver::readExtendedMetadata\(\) \(void\) is used\.$#'
     excludePaths:
+        # Deprecated and unused class, interface does not exist as of 4.0
+        - src/Tool/Logging/DBAL/QueryAnalyzer.php
         # Generates non-ignorable errors like " Parameter #1 $method (string) of method Gedmo\Tree\Entity\Repository\NestedTreeRepository::__call() is not contravariant with parameter #1 $method (mixed) of method Doctrine\ORM\EntityRepository::__call()."
         - src/Tool/ORM/Repository/EntityRepositoryCompat.php
-        # Compat file for ORM 2, causes analysis errors with ORM 3
-        - src/Tool/ORM/Walker/orm-2.php
         # Uses a tracking policy that was removed in ORM 3, PHPStan crashes on this file
         - tests/Gedmo/Sortable/Fixture/NotifyNode.php
+        # Generates non-ignorable errors regarding covariance due to the internal compat layer
+        - tests/Gedmo/Translatable/Fixture/Type/Custom.php

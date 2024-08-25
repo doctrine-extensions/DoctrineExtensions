@@ -52,11 +52,11 @@ class FileWithDisallowedTypes
     private ?string $filePath = null;
 
     /**
-     * @ORM\Column(name="size", type="decimal", nullable=true)
+     * @ORM\Column(name="size", type="decimal", precision=10, scale=2, nullable=true)
      *
      * @Gedmo\UploadableFileSize
      */
-    #[ORM\Column(name: 'size', type: Types::DECIMAL, nullable: true)]
+    #[ORM\Column(name: 'size', type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     #[Gedmo\UploadableFileSize]
     private ?string $fileSize = null;
 
