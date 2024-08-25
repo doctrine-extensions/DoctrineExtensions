@@ -32,11 +32,12 @@ require dirname(__DIR__).'/vendor/autoload.php';
 
 if (class_exists(AnnotationReader::class)) {
     $_ENV['annotation_reader'] = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
+    AnnotationReader::addGlobalIgnoredName('note');
+
+    // With ORM 3 and `doctrine/annotations` installed together, have the annotations library ignore the ORM's mapping namespace
+    if (!class_exists(AnnotationDriver::class)) {
+        AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
+    }
 }
 
 Type::addType('uuid', UuidType::class);
-
-// With ORM 3 and `doctrine/annotations` installed together, have the annotations library ignore the ORM's mapping namespace
-if (!class_exists(AnnotationDriver::class) && class_exists(AnnotationReader::class)) {
-    AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
-}

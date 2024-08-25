@@ -20,8 +20,6 @@ use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * This test is for Uploadable behavior with typed properties
- *
- * @requires PHP >= 7.4
  */
 final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
 {

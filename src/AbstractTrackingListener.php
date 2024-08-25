@@ -13,6 +13,7 @@ use Doctrine\Common\EventArgs;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Types\Type as TypeODM;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
@@ -267,9 +268,13 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                     } else {
                         $values[$i] = $value;
                     }
-                } elseif (Type::hasType($type)) {
-                    $values[$i] = Type::getType($type)
-                        ->convertToPHPValue($value, $om->getConnection()->getDatabasePlatform());
+                } elseif ($om instanceof EntityManagerInterface) {
+                    if (Type::hasType($type)) {
+                        $values[$i] = $om->getConnection()
+                            ->convertToPHPValue($value, $type);
+                    } else {
+                        $values[$i] = $value;
+                    }
                 }
             }
         }

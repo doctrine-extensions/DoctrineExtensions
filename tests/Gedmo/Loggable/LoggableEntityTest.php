@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Loggable;
 
+use Doctrine\DBAL\Types\ArrayType;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
 use Gedmo\Tests\Loggable\Fixture\Entity\Address;
@@ -36,6 +37,13 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     private const COMPOSITE_RELATION = CompositeRelation::class;
     private const RELATED_ARTICLE = RelatedArticle::class;
     private const COMMENT_LOG = Fixture\Entity\Log\Comment::class;
+
+    public static function setUpBeforeClass(): void
+    {
+        if (!class_exists(ArrayType::class)) {
+            static::markTestSkipped('The loggable extension is not compatible with doctrine/dbal:>=4.0');
+        }
+    }
 
     public function testShouldHandleClonedEntity(): void
     {

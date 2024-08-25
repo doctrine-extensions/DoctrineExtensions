@@ -9,7 +9,7 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\AssociationMapping;
@@ -524,7 +524,7 @@ class Closure implements Strategy
             }
 
             // Avoid type conversion performance penalty
-            $type = 'integer' === $mapping['type'] ? Connection::PARAM_INT_ARRAY : Connection::PARAM_STR_ARRAY;
+            $type = 'integer' === $mapping['type'] ? ArrayParameterType::INTEGER : ArrayParameterType::STRING;
 
             // We calculate levels for all nodes
             $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS levelNum ';

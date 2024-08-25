@@ -211,12 +211,12 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $em = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $em);
         $meta = $wrapped->getMetadata();
-        $type = Type::getType($meta->getTypeOfField($field));
+
         if (false === $value) {
             $value = $wrapped->getPropertyValue($field);
         }
 
-        return $type->convertToDatabaseValue($value, $em->getConnection()->getDatabasePlatform());
+        return $em->getConnection()->convertToDatabaseValue($value, $meta->getTypeOfField($field));
     }
 
     public function setTranslationValue($object, $field, $value)
@@ -224,13 +224,12 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $em = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $em);
         $meta = $wrapped->getMetadata();
-        $type = Type::getType($meta->getTypeOfField($field));
-        $value = $type->convertToPHPValue($value, $em->getConnection()->getDatabasePlatform());
+        $value = $em->getConnection()->convertToPHPValue($value, $meta->getTypeOfField($field));
         $wrapped->setPropertyValue($field, $value);
     }
 
     /**
-     * Transforms foreing key of translation to appropriate PHP value
+     * Transforms foreign key of translation to appropriate PHP value
      * to prevent database level cast
      *
      * @param mixed  $key       foreign key value
@@ -245,7 +244,8 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $em = $this->getObjectManager();
         $meta = $em->getClassMetadata($className);
         $type = Type::getType($meta->getTypeOfField('foreignKey'));
-        switch ($type->getName()) {
+
+        switch (Type::lookupName($type)) {
             case Types::BIGINT:
             case Types::INTEGER:
             case Types::SMALLINT:
