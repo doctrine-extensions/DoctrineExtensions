@@ -11,6 +11,7 @@ namespace Gedmo\Mapping\Driver;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Deprecations\Deprecation;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
@@ -131,7 +132,9 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes, true);
+        $type = $mapping instanceof FieldMapping ? $mapping->type : $mapping['type'];
+
+        return in_array($type, $this->validTypes, true);
     }
 
     /**
