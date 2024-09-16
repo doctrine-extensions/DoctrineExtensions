@@ -577,10 +577,10 @@ class Nested implements Strategy
     /**
      * Shift tree left and right values by delta
      *
-     * @param string     $class
-     * @param int        $first
-     * @param int        $delta
-     * @param int|string $root
+     * @param string                 $class
+     * @param int                    $first
+     * @param int                    $delta
+     * @param int|string|object|null $root
      *
      * @phpstan-param class-string $class
      *
@@ -589,11 +589,11 @@ class Nested implements Strategy
     public function shiftRL(EntityManagerInterface $em, $class, $first, $delta, $root = null)
     {
         $meta = $em->getClassMetadata($class);
+        $identifierField = $meta->getSingleIdentifierFieldName();
         $config = $this->listener->getConfiguration($em, $class);
 
-        if (isset($config['root']) && $root) {
-            $rootIdentifierField = $meta->getSingleIdentifierFieldName();
-            $rootId = AbstractWrapper::wrap($root, $em)->getIdentifier();
+        if (isset($config['root']) && is_object($root)) {
+            $root = AbstractWrapper::wrap($root, $em)->getIdentifier();
         }
 
         $sign = ($delta >= 0) ? ' + ' : ' - ';
@@ -605,7 +605,7 @@ class Nested implements Strategy
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
             $id = $meta->getIdentifier();
-            $qb->setParameter('rid', $rootId, $meta->getTypeOfField($rootIdentifierField));
+            $qb->setParameter('rid', $root, $meta->getTypeOfField($identifierField));
         }
         $qb->getQuery()->getSingleScalarResult();
 
@@ -615,7 +615,7 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.'.$config['right'], $first));
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId, $meta->getTypeOfField($rootIdentifierField));
+            $qb->setParameter('rid', $root, $meta->getTypeOfField($identifierField));
         }
 
         $qb->getQuery()->getSingleScalarResult();

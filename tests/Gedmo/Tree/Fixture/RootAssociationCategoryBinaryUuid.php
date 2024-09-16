@@ -53,7 +53,7 @@ class RootAssociationCategoryBinaryUuid
     private ?string $title = null;
 
     /**
-     * @var int|null
+     * @var int
      *
      * @Gedmo\TreeLeft
      *
@@ -64,7 +64,7 @@ class RootAssociationCategoryBinaryUuid
     private int $lft;
 
     /**
-     * @var int|null
+     * @var int
      *
      * @Gedmo\TreeRight
      *
@@ -100,10 +100,10 @@ class RootAssociationCategoryBinaryUuid
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'tree_root', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeRoot]
-    private ?RootAssociationCategoryBinaryUuid$root;
+    private ?RootAssociationCategoryBinaryUuid $root = null;
 
     /**
-     * @var int|null
+     * @var int
      *
      * @Gedmo\TreeLevel
      *
