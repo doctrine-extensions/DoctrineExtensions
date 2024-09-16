@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Tree: Support of Symfony UIDs at binary format
 
 ## [3.16.1]
 ### Fixed
