@@ -62,6 +62,10 @@ class Attribute extends AbstractAnnotationDriver
 
                 $config['hardDelete'] = $annot->hardDelete;
             }
+
+            if (isset($annot->deletedValue)) {
+                $config['deletedValue'] = $annot->deletedValue;
+            }
         }
 
         $this->validateFullMetadata($meta, $config);
