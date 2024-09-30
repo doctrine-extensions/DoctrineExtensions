@@ -70,6 +70,14 @@ class Yaml extends File implements Driver
                     }
                     $config['hardDelete'] = $classMapping['soft_deleteable']['hard_delete'];
                 }
+
+                $config['deletedValue'] = null;
+                if (isset($classMapping['soft_deleteable']['deleted_value'])) {
+                    if (!is_string($classMapping['soft_deleteable']['deleted_value'])) {
+                        throw new InvalidMappingException('deletedValue must be string. ' . gettype($classMapping['soft_deleteable']['deleted_value']) . ' provided.');
+                    }
+                    $config['deletedValue'] = $classMapping['soft_deleteable']['deleted_value'];
+                }
             }
         }
 

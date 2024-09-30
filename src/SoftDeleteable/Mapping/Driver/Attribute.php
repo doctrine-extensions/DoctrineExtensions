@@ -64,6 +64,10 @@ class Attribute extends AbstractAnnotationDriver
             }
 
             if (isset($annot->deletedValue)) {
+                if (!is_string($annot->deletedValue)) {
+                    throw new InvalidMappingException('deletedValue must be string. '.gettype($annot->deletedValue).' provided.');
+                }
+
                 $config['deletedValue'] = $annot->deletedValue;
             }
         }

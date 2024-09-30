@@ -58,6 +58,11 @@ class Xml extends BaseXml
                 if ($this->_isAttributeSet($xml->{'soft-deleteable'}, 'hard-delete')) {
                     $config['hardDelete'] = $this->_getBooleanAttribute($xml->{'soft-deleteable'}, 'hard-delete');
                 }
+
+                $config['deletedValue'] = null;
+                if ($this->_isAttributeSet($xml->{'soft-deleteable'}, 'deleted-value')) {
+                    $config['deletedValue'] = $this->_getAttribute($xml->{'soft-deleteable'}, 'deleted-value');
+                }
             }
         }
 
