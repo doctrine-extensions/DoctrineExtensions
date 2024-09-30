@@ -70,7 +70,7 @@ class SoftDeleteableFilter extends SQLFilter
 
         $column = $quoteStrategy->getColumnName($config['fieldName'], $targetEntity, $platform);
 
-        $addCondSql = $targetTableAlias.'.'.$column.' '.(isset($config['deletedValue']) ? '= ' . $config['deletedValue'] : 'IS NULL');
+        $addCondSql = $targetTableAlias.'.'.$column.' '.(isset($config['deletedValue']) ? '!= ' . $config['deletedValue'] : 'IS NULL');
         if (isset($config['timeAware']) && $config['timeAware']) {
             $addCondSql = "({$addCondSql} OR {$targetTableAlias}.{$column} > {$platform->getCurrentTimestampSQL()})";
         }
