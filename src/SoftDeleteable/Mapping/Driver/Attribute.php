@@ -63,12 +63,12 @@ class Attribute extends AbstractAnnotationDriver
                 $config['hardDelete'] = $annot->hardDelete;
             }
 
-            if (isset($annot->deletedValue)) {
-                if (!is_string($annot->deletedValue)) {
-                    throw new InvalidMappingException('deletedValue must be string. '.gettype($annot->deletedValue).' provided.');
+            if (isset($annot->nonDeletedColumnValue)) {
+                if (!is_string($annot->nonDeletedColumnValue)) {
+                    throw new InvalidMappingException('nonDeletedColumnValue must be string. '.gettype($annot->nonDeletedColumnValue).' provided.');
                 }
 
-                $config['deletedValue'] = $annot->deletedValue;
+                $config['nonDeletedColumnValue'] = $annot->nonDeletedColumnValue;
             }
         }
 
