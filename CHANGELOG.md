@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Mapping Driver: Added option `forceUseAttributeReader`, force the use of AttributeReader for Gedmo attributes ( ignore default XML driver for all  namespaces) (#2613)
 
 ## [3.16.1]
 ### Fixed
@@ -71,7 +73,7 @@ a release.
 - Dropped support for doctrine/dbal < 3.2
 
 ### Deprecated
-- Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
+- Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`)
 - Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead.
 
 ## [3.13.0] - 2023-09-06
