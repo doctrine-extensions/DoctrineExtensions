@@ -19,6 +19,13 @@ a release.
 
 ## [Unreleased]
 
+## [3.17.0]
+### Added
+- Support for `doctrine/dbal` >= 4.0
+
+### Changed
+- Extend `Throwable` from `Gedmo\Exception` interface
+
 ## [3.16.1]
 ### Fixed
 - Restructure the SqlWalkerCompat trait to fix optimized autoloading
