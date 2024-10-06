@@ -517,12 +517,12 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Join\\:\\:\\$aliasIdentificationVariable\\.$#"
-			count: 2
+			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Node\\:\\:\\$aliasIdentificationVariable\\.$#"
-			count: 2
+			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
