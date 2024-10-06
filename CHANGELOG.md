@@ -50,6 +50,9 @@ a release.
 - Make doctrine/annotations an optional dependency.
 - Remove `@internal` annotation from `Gedmo\Mapping\Driver\AttributeReader`.
 
+## Changed
+- Allow string[] as `$sortByField` and `$direction` parameter in  `\Gedmo\Tree\Entity\Repository\NestedTreeRepository::reorder` and `\Gedmo\Tree\Entity\Repository\NestedTreeRepository::reorderAll`
+
 ### Deprecated
 - Do not add type-hinted parameters `Gedmo\SoftDeleteable\Event\PreSoftDeleteEventArgs` and
   `Gedmo\SoftDeleteable\Event\PostSoftDeleteEventArgs` classes to `preSoftDelete` and `postSoftDelete` events.
