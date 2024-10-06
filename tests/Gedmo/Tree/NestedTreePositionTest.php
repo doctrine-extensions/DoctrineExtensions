@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Tree;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tests\Tree\Fixture\RootAssociationCategoryBinaryUuid;
 use Gedmo\Tests\Tree\Fixture\RootCategory;
 use Gedmo\Tree\TreeListener;
 
@@ -26,6 +27,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
 {
     private const CATEGORY = Category::class;
     private const ROOT_CATEGORY = RootCategory::class;
+    private const ROOT_CATEGORY_BINARY_UUID = RootAssociationCategoryBinaryUuid::class;
 
     protected function setUp(): void
     {
@@ -318,6 +320,72 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         $cookies->setTitle('Cookies');
 
         $drinks = new RootCategory();
+        $drinks->setTitle('Drinks');
+
+        $repo
+            ->persistAsNextSiblingOf($cookies, $milk)
+            ->persistAsPrevSiblingOf($drinks, $milk);
+
+        $this->em->flush();
+
+        static::assertSame(6, $drinks->getLeft());
+        static::assertSame(7, $drinks->getRight());
+
+        static::assertSame(10, $cookies->getLeft());
+        static::assertSame(11, $cookies->getRight());
+
+        static::assertTrue($repo->verify());
+    }
+
+    /**
+     * This test is the same as above (testRootTreePositionedInserts), apart testing behavior of binary column for UUID
+     */
+    public function testRootBinaryUuidTreePositionedInserts(): void
+    {
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY_BINARY_UUID);
+
+        // test child positioned inserts
+        $food = new RootAssociationCategoryBinaryUuid();
+        $food->setTitle('Food');
+
+        $fruits = new RootAssociationCategoryBinaryUuid();
+        $fruits->setTitle('Fruits');
+
+        $vegitables = new RootAssociationCategoryBinaryUuid();
+        $vegitables->setTitle('Vegitables');
+
+        $milk = new RootAssociationCategoryBinaryUuid();
+        $milk->setTitle('Milk');
+
+        $meat = new RootAssociationCategoryBinaryUuid();
+        $meat->setTitle('Meat');
+
+        $repo
+            ->persistAsFirstChild($food)
+            ->persistAsFirstChildOf($fruits, $food)
+            ->persistAsFirstChildOf($vegitables, $food)
+            ->persistAsLastChildOf($milk, $food)
+            ->persistAsLastChildOf($meat, $food);
+
+        $this->em->flush();
+
+        static::assertSame(4, $fruits->getLeft());
+        static::assertSame(5, $fruits->getRight());
+
+        static::assertSame(2, $vegitables->getLeft());
+        static::assertSame(3, $vegitables->getRight());
+
+        static::assertSame(6, $milk->getLeft());
+        static::assertSame(7, $milk->getRight());
+
+        static::assertSame(8, $meat->getLeft());
+        static::assertSame(9, $meat->getRight());
+
+        // test sibling positioned inserts
+        $cookies = new RootAssociationCategoryBinaryUuid();
+        $cookies->setTitle('Cookies');
+
+        $drinks = new RootAssociationCategoryBinaryUuid();
         $drinks->setTitle('Drinks');
 
         $repo
