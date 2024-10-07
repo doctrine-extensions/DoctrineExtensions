@@ -85,7 +85,7 @@ abstract class AbstractLogEntry implements LogEntryInterface
      *
      * @ORM\Column(type="array", nullable=true)
      *
-     * @note The attribute uses the "array" name directly instead of the constant since it was removed in DBAL 4.0.
+     * NOTE: The attribute uses the "array" name directly instead of the constant since it was removed in DBAL 4.0.
      */
     #[ORM\Column(type: 'array', nullable: true)]
     protected $data;
