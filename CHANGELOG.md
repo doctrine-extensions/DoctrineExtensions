@@ -19,9 +19,13 @@ a release.
 
 ## [Unreleased]
 
+## [3.17.1] - 2024-10-07
+### Fixed
+- Removed invalid `@note` annotation from `AbstractLogEntry::$data`, which was causing issues in projects using annotation parsers
+
 ## [3.17.0] - 2024-10-06
 ### Added
-- Support for `doctrine/dbal` >= 4.0
+- Support for `doctrine/dbal` >= 4.0 with all extensions, except Loggable
 
 ### Changed
 - Extend `Throwable` from `Gedmo\Exception` interface
