@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Loggable: Support embeddable xml mapping
 
 ## [3.17.1] - 2024-10-07
 ### Fixed
