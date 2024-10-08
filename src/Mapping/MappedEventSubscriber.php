@@ -44,6 +44,9 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  * @phpstan-template TEventAdapter of AdapterInterface
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @template TConfig of array
+ * @template TEventAdapter of AdapterInterface
  */
 abstract class MappedEventSubscriber implements EventSubscriber
 {

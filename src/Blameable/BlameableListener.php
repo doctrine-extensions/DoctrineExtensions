@@ -22,6 +22,8 @@ use Gedmo\Exception\InvalidArgumentException;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
+ * @extends AbstractTrackingListener<array, BlameableAdapter>
+ *
  * @final since gedmo/doctrine-extensions 3.11
  */
 class BlameableListener extends AbstractTrackingListener

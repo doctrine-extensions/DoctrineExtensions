@@ -23,6 +23,8 @@ use Gedmo\Mapping\Event\AdapterInterface;
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  *
+ * @extends AbstractTrackingListener<array, IpTraceableAdapter>
+ *
  * @final since gedmo/doctrine-extensions 3.11
  */
 class IpTraceableListener extends AbstractTrackingListener
