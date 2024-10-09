@@ -15,6 +15,7 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as DocumentClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as EntityClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo as LegacyEntityClassMetadata;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -71,11 +72,23 @@ class ExtensionMetadataFactory
     private ?CacheItemPoolInterface $cacheItemPool = null;
 
     /**
+     * Ignore doctrine driver class and force  use attribute reader for gedmo properties
+     * @var bool
+     */
+    private $forceUseAttributeReader;
+
+    /**
+     * Search mapping in .gedmo.xml and does not use doctrine *.orm.xml or *.dcm.xml file
+     * @var bool
+     */
+    private $separateXmlMapping;
+
+    /**
      * @param Reader|AttributeReader|object|null $annotationReader
      *
      * @note Providing any object as the third argument is deprecated, as of 4.0 an {@see AttributeReader} will be required
      */
-    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null)
+    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null, bool $forceUseAttributeReader = false, bool $separateXmlMapping = false)
     {
         if (null !== $annotationReader) {
             if ($annotationReader instanceof Reader) {
@@ -101,6 +114,9 @@ class ExtensionMetadataFactory
         $this->objectManager = $objectManager;
         $this->annotationReader = $annotationReader;
         $this->extensionNamespace = $extensionNamespace;
+        $this->forceUseAttributeReader = $forceUseAttributeReader;
+        $this->separateXmlMapping = $separateXmlMapping;
+
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
         $this->driver = $this->getDriver($omDriver);
         $this->cacheItemPool = $cacheItemPool;
@@ -184,6 +200,10 @@ class ExtensionMetadataFactory
         return str_replace('\\', '_', $className).'_$'.strtoupper(str_replace('\\', '_', $extensionNamespace)).'_CLASSMETADATA';
     }
 
+    private function getFileExtension($fileExtension)
+    {
+        return $this->separateXmlMapping ? str_replace(['.orm.','.dcm.'], '.gedmo.', $fileExtension) : $fileExtension;
+    }
     /**
      * Get the extended driver instance which will
      * read the metadata required by extension
@@ -205,11 +225,12 @@ class ExtensionMetadataFactory
         $driverName = substr($className, strrpos($className, '\\') + 1);
         if ($omDriver instanceof MappingDriverChain || 'DriverChain' === $driverName) {
             $driver = new Chain();
+            $attributeDriver = $this->forceUseAttributeReader ? new AttributeDriver([]) : null;
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
-                $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
+                $driver->addDriver($this->getDriver($attributeDriver ?? $nestedOmDriver), $namespace);
             }
             if (null !== $omDriver->getDefaultDriver()) {
-                $driver->setDefaultDriver($this->getDriver($omDriver->getDefaultDriver()));
+                $driver->setDefaultDriver($this->getDriver($attributeDriver ?? $omDriver->getDefaultDriver()));
             }
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
@@ -243,12 +264,14 @@ class ExtensionMetadataFactory
             $driver->setOriginalDriver($omDriver);
             if ($driver instanceof FileDriver) {
                 if ($omDriver instanceof MappingDriver) {
-                    $driver->setLocator($omDriver->getLocator());
+                    $locator = clone $omDriver->getLocator();
+                    $locator->setFileExtension($this->getFileExtension( $locator->getFileExtension()));
+                    $driver->setLocator($locator);
                 // BC for Doctrine 2.2
                 } elseif ($isSimplified) {
-                    $driver->setLocator(new SymfonyFileLocator($omDriver->getNamespacePrefixes(), $omDriver->getFileExtension()));
+                    $driver->setLocator(new SymfonyFileLocator($omDriver->getNamespacePrefixes(), $this->getFileExtension( $omDriver->getFileExtension())));
                 } else {
-                    $driver->setLocator(new DefaultFileLocator($omDriver->getPaths(), $omDriver->getFileExtension()));
+                    $driver->setLocator(new DefaultFileLocator($omDriver->getPaths(), $this->getFileExtension( $omDriver->getFileExtension())));
                 }
             }
 
