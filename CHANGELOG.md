@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Fix regression with `doctrine/dbal` >= 4.0 that caused MariaDB to improperly attempt LONGTEXT casting in `TranslationWalker` (issue #2887)
 
 ## [3.17.1] - 2024-10-07
 ### Fixed
