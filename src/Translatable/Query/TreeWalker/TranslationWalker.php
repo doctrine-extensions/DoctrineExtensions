@@ -309,9 +309,9 @@ class TranslationWalker extends SqlWalker
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
                 if ((($this->platform instanceof AbstractMySQLPlatform)
-                    && in_array(($fieldMapping->type ?? $fieldMapping['type']), ['decimal'], true))
+                    && in_array($fieldMapping->type ?? $fieldMapping['type'], ['decimal'], true))
                     || (!($this->platform instanceof AbstractMySQLPlatform)
-                    && !in_array(($fieldMapping->type ?? $fieldMapping['type']), ['datetime', 'datetimetz', 'date', 'time'], true))) {
+                    && !in_array($fieldMapping->type ?? $fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
                     $type = Type::getType($fieldMapping->type ?? $fieldMapping['type']);
 
                     // In ORM 2.x, $fieldMapping is an array. In ORM 3.x, it's a data object. Always cast to an array for compatibility across versions.

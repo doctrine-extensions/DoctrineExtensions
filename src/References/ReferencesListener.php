@@ -95,13 +95,13 @@ class ReferencesListener extends MappedEventSubscriber
                 $property = $meta->reflClass->getProperty($mapping->field ?? $mapping['field']);
                 $property->setAccessible(true);
                 if (isset($mapping['identifier'])) {
-                    $referencedObjectId = $meta->getFieldValue($object, ($mapping->identifier ?? $mapping['identifier']));
+                    $referencedObjectId = $meta->getFieldValue($object, $mapping->identifier ?? $mapping['identifier']);
                     if (null !== $referencedObjectId) {
                         $property->setValue(
                             $object,
                             $ea->getSingleReference(
                                 $this->getManager($mapping->type ?? $mapping['type']),
-                                ($mapping->class ?? $mapping['class']),
+                                $mapping->class ?? $mapping['class'],
                                 $referencedObjectId
                             )
                         );
@@ -120,8 +120,8 @@ class ReferencesListener extends MappedEventSubscriber
                     $class = ($mapping->class ?? $mapping['class']);
                     $refMeta = $manager->getClassMetadata($class);
                     $refConfig = $this->getConfiguration($manager, $refMeta->getName());
-                    if (isset($refConfig['referenceOne'][($mapping->mappedBy ?? $mapping['mappedBy'])])) {
-                        $refMapping = $refConfig['referenceOne'][($mapping->mappedBy ?? $mapping['mappedBy'])];
+                    if (isset($refConfig['referenceOne'][$mapping->mappedBy ?? $mapping['mappedBy']])) {
+                        $refMapping = $refConfig['referenceOne'][$mapping->mappedBy ?? $mapping['mappedBy']];
                         $identifier = $refMapping['identifier'];
                         $property->setValue(
                             $object,
@@ -281,7 +281,7 @@ class ReferencesListener extends MappedEventSubscriber
 
                         $meta->setFieldValue(
                             $object,
-                            ($mapping->identifier ?? $mapping['identifier']),
+                            $mapping->identifier ?? $mapping['identifier'],
                             $identifier
                         );
                     }

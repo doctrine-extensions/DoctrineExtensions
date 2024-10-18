@@ -441,7 +441,7 @@ class SluggableListener extends MappedEventSubscriber
 
                 // cut slug if exceeded in length
                 if (isset($mapping['length']) && strlen($slug) > ($mapping->length ?? $mapping['length'])) {
-                    $slug = substr($slug, 0, ($mapping->length ?? $mapping['length']));
+                    $slug = substr($slug, 0, $mapping->length ?? $mapping['length']);
                 }
 
                 if (isset($mapping['nullable']) && ($mapping->nullable ?? $mapping['nullable']) && 0 === strlen($slug)) {

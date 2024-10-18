@@ -524,8 +524,8 @@ class Closure implements Strategy
             }
 
             // Avoid type conversion performance penalty
-            $type = 'integer' === ($mapping->type ?? $mapping['type']) 
-                ? ArrayParameterType::INTEGER 
+            $type = 'integer' === ($mapping->type ?? $mapping['type'])
+                ? ArrayParameterType::INTEGER
                 : ArrayParameterType::STRING;
 
             // We calculate levels for all nodes

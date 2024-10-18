@@ -91,7 +91,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         $subMeta = $om->getClassMetadata($fieldMapping->targetDocument ?? $fieldMapping['targetDocument']);
 
                         if (!$subMeta->hasField($fieldMapping->mappedBy ?? $fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', ($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']), ($fieldMapping->targetDocument ?? $fieldMapping['targetDocument'])));
+                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'], $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
                         }
 
                         $refReflProp = $subMeta->getReflectionProperty($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']);
@@ -117,11 +117,11 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         $subMeta = $om->getClassMetadata($fieldMapping->targetDocument ?? $fieldMapping['targetDocument']);
 
                         if (!$subMeta->hasField($fieldMapping->mappedBy ?? $fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', ($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']), ($fieldMapping->targetDocument ?? $fieldMapping['targetDocument'])));
+                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'], $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
                         }
 
                         if (!$subMeta->isCollectionValuedReference($fieldMapping->mappedBy ?? $fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf('Reference integrity [%s] mapped property in entity - %s should be a Reference Many', ($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']), ($fieldMapping->targetDocument ?? $fieldMapping['targetDocument'])));
+                            throw new InvalidMappingException(sprintf('Reference integrity [%s] mapped property in entity - %s should be a Reference Many', $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'], $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
                         }
 
                         $refReflProp = $subMeta->getReflectionProperty($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']);
@@ -143,10 +143,10 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         break;
                     case Validator::RESTRICT:
                         if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
-                            throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' collection is restricted", ($fieldMapping->targetDocument ?? $fieldMapping['targetDocument'])));
+                            throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' collection is restricted", $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
                         }
                         if ($meta->isSingleValuedReference($property) && null !== $refDoc) {
-                            throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' document is restricted", ($fieldMapping->targetDocument ?? $fieldMapping['targetDocument'])));
+                            throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' document is restricted", $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
                         }
 
                         break;
