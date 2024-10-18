@@ -55,13 +55,13 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             if (($ubase || 0 === $ubase) && !$mapping) {
                 $qb->andWhere('rec.'.$config['unique_base'].' = :unique_base');
                 $qb->setParameter(':unique_base', $ubase);
-            } elseif ($ubase && $mapping && in_array($mapping['type'], [EntityClassMetadata::ONE_TO_ONE, EntityClassMetadata::MANY_TO_ONE], true)) {
+            } elseif ($ubase && $mapping && in_array($mapping->type ?? $mapping['type'], [EntityClassMetadata::ONE_TO_ONE, EntityClassMetadata::MANY_TO_ONE], true)) {
                 $mappedAlias = 'mapped_'.$config['unique_base'];
                 $wrappedUbase = AbstractWrapper::wrap($ubase, $em);
                 $metadata = $wrappedUbase->getMetadata();
                 assert($metadata instanceof EntityClassMetadata || $metadata instanceof LegacyEntityClassMetadata);
                 $qb->innerJoin('rec.'.$config['unique_base'], $mappedAlias);
-                foreach (array_keys($mapping['targetToSourceKeyColumns']) as $i => $mappedKey) {
+                foreach (array_keys($mapping->targetToSourceKeyColumns ?? $mapping['targetToSourceKeyColumns']) as $i => $mappedKey) {
                     $mappedProp = $metadata->getFieldName($mappedKey);
                     $qb->andWhere($qb->expr()->eq($mappedAlias.'.'.$mappedProp, ':assoc'.$i));
                     $qb->setParameter(':assoc'.$i, $wrappedUbase->getPropertyValue($mappedProp));

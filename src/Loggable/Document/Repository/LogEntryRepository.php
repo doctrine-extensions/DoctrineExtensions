@@ -130,17 +130,17 @@ class LogEntryRepository extends DocumentRepository
             // Fill the embedded document
             if ($wrapped->isEmbeddedAssociation($field)) {
                 if (!empty($value)) {
-                    assert(class_exists($mapping['targetDocument']));
+                    assert(class_exists($mapping->targetDocument ?? $mapping['targetDocument']));
 
-                    $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
+                    $embeddedMetadata = $this->dm->getClassMetadata($mapping->targetDocument ?? $mapping['targetDocument']);
                     $document = $embeddedMetadata->newInstance();
                     $this->fillDocument($document, $value);
                     $value = $document;
                 }
             } elseif ($objectMeta->isSingleValuedAssociation($field)) {
-                assert(class_exists($mapping['targetDocument']));
+                assert(class_exists($mapping->targetDocument ?? $mapping['targetDocument']));
 
-                $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
+                $value = $value ? $this->dm->getReference($mapping->targetDocument ?? $mapping['targetDocument'], $value) : null;
             }
             $wrapped->setPropertyValue($field, $value);
             unset($fields[$field]);

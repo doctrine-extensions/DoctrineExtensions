@@ -44,7 +44,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
 
         return $this->getObjectManager()->getConnection()->convertToPHPValue(
             $this->getRawDateValue($mapping),
-            $mapping instanceof FieldMapping ? $mapping->type : ($mapping['type'] ?? Types::DATETIME_MUTABLE)
+            $mapping instanceof FieldMapping ? $mapping->type : ($mapping->type ?? $mapping['type'] ?? Types::DATETIME_MUTABLE)
         );
     }
 
@@ -58,7 +58,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
     private function getRawDateValue($mapping)
     {
         $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
-        $type = $mapping instanceof FieldMapping ? $mapping->type : ($mapping['type'] ?? '');
+        $type = $mapping instanceof FieldMapping ? $mapping->type : ($mapping->type ?? $mapping['type'] ?? '');
 
         if ('integer' === $type) {
             return (int) $datetime->format('U');

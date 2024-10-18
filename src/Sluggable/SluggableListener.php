@@ -440,11 +440,11 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // cut slug if exceeded in length
-                if (isset($mapping['length']) && strlen($slug) > $mapping['length']) {
-                    $slug = substr($slug, 0, $mapping['length']);
+                if (isset($mapping['length']) && strlen($slug) > ($mapping->length ?? $mapping['length'])) {
+                    $slug = substr($slug, 0, ($mapping->length ?? $mapping['length']));
                 }
 
-                if (isset($mapping['nullable']) && $mapping['nullable'] && 0 === strlen($slug)) {
+                if (isset($mapping['nullable']) && ($mapping->nullable ?? $mapping['nullable']) && 0 === strlen($slug)) {
                     $slug = null;
                 }
 
@@ -546,11 +546,11 @@ class SluggableListener extends MappedEventSubscriber
             }
 
             $mapping = $meta->getFieldMapping($config['slug']);
-            if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {
+            if (isset($mapping['length']) && strlen($generatedSlug) > ($mapping->length ?? $mapping['length'])) {
                 $generatedSlug = substr(
                     $generatedSlug,
                     0,
-                    $mapping['length'] - (strlen($uniqueSuffix) + strlen($config['separator']))
+                    ($mapping->length ?? $mapping['length']) - (strlen($uniqueSuffix) + strlen($config['separator']))
                 );
                 $this->exponent = strlen($uniqueSuffix) - 1;
                 if (substr($generatedSlug, -strlen($config['separator'])) == $config['separator']) {

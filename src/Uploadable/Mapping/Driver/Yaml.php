@@ -40,7 +40,7 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['gedmo'])) {
-            $classMapping = $mapping['gedmo'];
+            $classMapping = ($mapping->gedmo ?? $mapping['gedmo']);
 
             if (isset($classMapping['uploadable'])) {
                 $uploadable = $classMapping['uploadable'];
@@ -65,7 +65,7 @@ class Yaml extends File implements Driver
                 $config['disallowedTypes'] = $uploadable['disallowedTypes'] ?? '';
 
                 if (isset($mapping['fields'])) {
-                    foreach ($mapping['fields'] as $field => $info) {
+                    foreach (($mapping->fields ?? $mapping['fields']) as $field => $info) {
                         if (isset($info['gedmo']) && array_key_exists(0, $info['gedmo'])) {
                             if ('uploadableFileMimeType' === $info['gedmo'][0]) {
                                 $config['fileMimeTypeField'] = $field;

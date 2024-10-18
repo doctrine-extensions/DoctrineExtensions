@@ -52,7 +52,7 @@ class Yaml extends File implements Driver
         $validator = new Validator();
 
         if (isset($mapping['gedmo'])) {
-            $classMapping = $mapping['gedmo'];
+            $classMapping = ($mapping->gedmo ?? $mapping['gedmo']);
             if (isset($classMapping['tree']['type'])) {
                 $strategy = $classMapping['tree']['type'];
                 if (!in_array($strategy, $this->strategies, true)) {
@@ -76,7 +76,7 @@ class Yaml extends File implements Driver
         }
 
         if (isset($mapping['id'])) {
-            foreach ($mapping['id'] as $field => $fieldMapping) {
+            foreach (($mapping->id ?? $mapping['id']) as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('treePathSource', $fieldMapping['gedmo'], true)) {
                         if (!$validator->isValidFieldForPathSource($meta, $field)) {
@@ -89,7 +89,7 @@ class Yaml extends File implements Driver
         }
 
         if (isset($mapping['fields'])) {
-            foreach ($mapping['fields'] as $field => $fieldMapping) {
+            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('treeLeft', $fieldMapping['gedmo'], true)) {
                         if (!$validator->isValidField($meta, $field)) {
@@ -182,7 +182,7 @@ class Yaml extends File implements Driver
         }
 
         if (isset($mapping['manyToOne'])) {
-            foreach ($mapping['manyToOne'] as $field => $relationMapping) {
+            foreach (($mapping->manyToOne ?? $mapping['manyToOne']) as $field => $relationMapping) {
                 if (isset($relationMapping['gedmo'])) {
                     if (in_array('treeParent', $relationMapping['gedmo'], true)) {
                         if (!$this->getRelatedClassName($meta, $relationMapping['targetEntity'])) {

@@ -40,7 +40,7 @@ final class ODM extends BaseAdapterODM implements TimestampableAdapter, ClockAwa
     {
         $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
         $mapping = $meta->getFieldMapping($field);
-        $type = $mapping['type'] ?? null;
+        $type = $mapping->type ?? $mapping['type'] ?? null;
 
         if ('timestamp' === $type) {
             return (int) $datetime->format('U');

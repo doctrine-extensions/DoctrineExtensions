@@ -49,7 +49,7 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
-            foreach ($mapping['fields'] as $field => $fieldMapping) {
+            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['ipTraceable'])) {
                     $mappingProperty = $fieldMapping['gedmo']['ipTraceable'];
                     if (!$this->isValidField($meta, $field)) {
@@ -80,7 +80,7 @@ class Yaml extends File implements Driver
         }
 
         if (isset($mapping['manyToOne'])) {
-            foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
+            foreach (($mapping->manyToOne ?? $mapping['manyToOne']) as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['ipTraceable'])) {
                     $mappingProperty = $fieldMapping['gedmo']['ipTraceable'];
                     if (!$meta->isSingleValuedAssociation($field)) {
@@ -130,6 +130,6 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], self::VALID_TYPES, true);
     }
 }

@@ -59,7 +59,7 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
-            foreach ($mapping['fields'] as $field => $fieldMapping) {
+            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['timestampable'])) {
                     $mappingProperty = $fieldMapping['gedmo']['timestampable'];
                     if (!$this->isValidField($meta, $field)) {
@@ -109,6 +109,6 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], self::VALID_TYPES, true);
     }
 }

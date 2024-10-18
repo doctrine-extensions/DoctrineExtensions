@@ -42,8 +42,8 @@ class Yaml extends File implements Driver
     {
         $mapping = $this->_getMapping($meta->getName());
 
-        if (isset($mapping['gedmo'], $mapping['gedmo']['reference'])) {
-            foreach ($mapping['gedmo']['reference'] as $field => $fieldMapping) {
+        if (isset($mapping['gedmo'], ($mapping->gedmo ?? $mapping['gedmo'])['reference'])) {
+            foreach (($mapping->gedmo ?? $mapping['gedmo'])['reference'] as $field => $fieldMapping) {
                 $reference = $fieldMapping['reference'];
 
                 if (!in_array($reference, array_keys($this->validReferences), true)) {

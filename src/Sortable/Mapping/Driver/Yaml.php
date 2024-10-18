@@ -52,7 +52,7 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
-            foreach ($mapping['fields'] as $field => $fieldMapping) {
+            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('sortablePosition', $fieldMapping['gedmo'], true)) {
                         if (!$this->isValidField($meta, $field)) {
@@ -62,13 +62,13 @@ class Yaml extends File implements Driver
                     }
                 }
             }
-            $config = $this->readSortableGroups($mapping['fields'], $config);
+            $config = $this->readSortableGroups($mapping->fields ?? $mapping['fields'], $config);
         }
         if (isset($mapping['manyToOne'])) {
-            $config = $this->readSortableGroups($mapping['manyToOne'], $config);
+            $config = $this->readSortableGroups($mapping->manyToOne ?? $mapping['manyToOne'], $config);
         }
         if (isset($mapping['manyToMany'])) {
-            $config = $this->readSortableGroups($mapping['manyToMany'], $config);
+            $config = $this->readSortableGroups($mapping->manyToMany ?? $mapping['manyToMany'], $config);
         }
 
         if (!$meta->isMappedSuperclass && $config) {
@@ -97,7 +97,7 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], self::VALID_TYPES, true);
     }
 
     /**

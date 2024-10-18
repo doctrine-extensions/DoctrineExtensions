@@ -39,7 +39,7 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['gedmo'])) {
-            $classMapping = $mapping['gedmo'];
+            $classMapping = ($mapping->gedmo ?? $mapping['gedmo']);
             if (isset($classMapping['translation']['entity'])) {
                 $translationEntity = $classMapping['translation']['entity'];
                 if (!$cl = $this->getRelatedClassName($meta, $translationEntity)) {
@@ -55,13 +55,13 @@ class Yaml extends File implements Driver
         }
 
         if (isset($mapping['fields'])) {
-            foreach ($mapping['fields'] as $field => $fieldMapping) {
+            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
                 $config = $this->buildFieldConfiguration($field, $fieldMapping, $config);
             }
         }
 
         if (isset($mapping['attributeOverride'])) {
-            foreach ($mapping['attributeOverride'] as $field => $overrideMapping) {
+            foreach (($mapping->attributeOverride ?? $mapping['attributeOverride']) as $field => $overrideMapping) {
                 $config = $this->buildFieldConfiguration($field, $overrideMapping, $config);
             }
         }

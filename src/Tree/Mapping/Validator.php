@@ -97,7 +97,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], self::VALID_TYPES, true);
     }
 
     /**
@@ -112,7 +112,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathTypes, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], $this->validPathTypes, true);
     }
 
     /**
@@ -127,7 +127,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathSourceTypes, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], $this->validPathSourceTypes, true);
     }
 
     /**
@@ -142,7 +142,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathHashTypes, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], $this->validPathHashTypes, true);
     }
 
     /**
@@ -157,7 +157,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && ('date' === $mapping['type'] || 'datetime' === $mapping['type'] || 'timestamp' === $mapping['type']);
+        return $mapping && ('date' === ($mapping->type ?? $mapping['type']) || 'datetime' === ($mapping->type ?? $mapping['type']) || 'timestamp' === ($mapping->type ?? $mapping['type']));
     }
 
     /**
@@ -172,7 +172,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validRootTypes, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], $this->validRootTypes, true);
     }
 
     /**
