@@ -297,7 +297,7 @@ class TranslationWalker extends SqlWalker
 
                     $mappingFK = $transMeta->getFieldMapping('foreignKey');
                     $mappingPK = $meta->getFieldMapping($identifier);
-                    $fkColName = $this->getCastedForeignKey($compTblAlias.'.'.$idColName, $mappingFK['type'], $mappingPK['type']);
+                    $fkColName = $this->getCastedForeignKey($compTblAlias.'.'.$idColName, $mappingFK->type ?? $mappingFK['type'], $mappingPK->type ?? $mappingPK['type']);
                     $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('foreignKey', $transMeta, $this->platform)
                         .' = '.$fkColName;
                 }

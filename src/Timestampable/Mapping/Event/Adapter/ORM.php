@@ -44,7 +44,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
 
         return $this->getObjectManager()->getConnection()->convertToPHPValue(
             $this->getRawDateValue($mapping),
-            $mapping instanceof FieldMapping ? $mapping->type : ($mapping->type ?? $mapping['type'] ?? Types::DATETIME_MUTABLE)
+            $mapping instanceof FieldMapping ? $mapping->type : $mapping['type'] ?? Types::DATETIME_MUTABLE
         );
     }
 
