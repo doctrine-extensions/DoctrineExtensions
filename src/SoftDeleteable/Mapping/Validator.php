@@ -52,8 +52,8 @@ class Validator
 
         $fieldMapping = $meta->getFieldMapping($field);
 
-        if (!in_array($fieldMapping['type'], self::$validTypes, true)) {
-            throw new InvalidMappingException(sprintf('Field "%s" (type "%s") must be of one of the following types: "%s" in entity %s', $field, $fieldMapping['type'], implode(', ', self::$validTypes), $meta->getName()));
+        if (!in_array(($fieldMapping->type ?? $fieldMapping['type']), self::$validTypes, true)) {
+            throw new InvalidMappingException(sprintf('Field "%s" (type "%s") must be of one of the following types: "%s" in entity %s', $field, ($fieldMapping->type ?? $fieldMapping['type']), implode(', ', self::$validTypes), $meta->getName()));
         }
     }
 }

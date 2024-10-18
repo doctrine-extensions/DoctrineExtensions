@@ -89,11 +89,11 @@ class Yaml extends File implements Driver
     private function buildFieldConfiguration(string $field, array $fieldMapping, array $config): array
     {
         if (isset($fieldMapping['gedmo'])) {
-            if (in_array('translatable', $fieldMapping['gedmo'], true) || isset($fieldMapping['gedmo']['translatable'])) {
+            if (in_array('translatable', ($fieldMapping->gedmo ?? $fieldMapping['gedmo']), true) || isset($fieldMapping['gedmo']['translatable'])) {
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
                 if (isset($fieldMapping['gedmo']['translatable']['fallback'])) {
-                    $config['fallback'][$field] = $fieldMapping['gedmo']['translatable']['fallback'];
+                    $config['fallback'][$field] = ($fieldMapping->gedmo ?? $fieldMapping['gedmo'])['translatable']['fallback'];
                 }
             }
         }

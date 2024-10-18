@@ -98,7 +98,7 @@ class Yaml extends File implements Driver
     {
         if (isset($fieldMapping['gedmo'])) {
             if (isset($fieldMapping['gedmo']['slug'])) {
-                $slug = $fieldMapping['gedmo']['slug'];
+                $slug = ($fieldMapping->gedmo ?? $fieldMapping['gedmo'])['slug'];
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->getName()}");
                 }

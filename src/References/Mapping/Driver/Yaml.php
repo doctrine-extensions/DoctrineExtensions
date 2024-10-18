@@ -44,7 +44,7 @@ class Yaml extends File implements Driver
 
         if (isset($mapping['gedmo'], ($mapping->gedmo ?? $mapping['gedmo'])['reference'])) {
             foreach (($mapping->gedmo ?? $mapping['gedmo'])['reference'] as $field => $fieldMapping) {
-                $reference = $fieldMapping['reference'];
+                $reference = ($fieldMapping->reference ?? $fieldMapping['reference']);
 
                 if (!in_array($reference, array_keys($this->validReferences), true)) {
                     throw new InvalidMappingException($reference.' is not a valid reference, valid references are: '.implode(', ', array_keys($this->validReferences)));
@@ -52,20 +52,20 @@ class Yaml extends File implements Driver
 
                 $config[$reference][$field] = [
                     'field' => $field,
-                    'type' => $fieldMapping['type'],
-                    'class' => $fieldMapping['class'],
+                    'type' => $fieldMapping->type ?? $fieldMapping['type'],
+                    'class' => $fieldMapping->class ?? $fieldMapping['class'],
                 ];
 
                 if (array_key_exists('mappedBy', $fieldMapping)) {
-                    $config[$reference][$field]['mappedBy'] = $fieldMapping['mappedBy'];
+                    $config[$reference][$field]['mappedBy'] = ($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']);
                 }
 
                 if (array_key_exists('identifier', $fieldMapping)) {
-                    $config[$reference][$field]['identifier'] = $fieldMapping['identifier'];
+                    $config[$reference][$field]['identifier'] = ($fieldMapping->identifier ?? $fieldMapping['identifier']);
                 }
 
                 if (array_key_exists('inversedBy', $fieldMapping)) {
-                    $config[$reference][$field]['inversedBy'] = $fieldMapping['inversedBy'];
+                    $config[$reference][$field]['inversedBy'] = ($fieldMapping->inversedBy ?? $fieldMapping['inversedBy']);
                 }
             }
         }

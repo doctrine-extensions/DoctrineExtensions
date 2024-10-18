@@ -51,12 +51,12 @@ class Yaml extends File implements Driver
                         throw new InvalidMappingException(sprintf("'mappedBy' should be set on '%s' in '%s'", $property, $meta->getName()));
                     }
 
-                    if (!in_array($fieldMapping['gedmo']['referenceIntegrity'], $validator->getIntegrityActions(), true)) {
+                    if (!in_array(($fieldMapping->gedmo ?? $fieldMapping['gedmo'])['referenceIntegrity'], $validator->getIntegrityActions(), true)) {
                         throw new InvalidMappingException(sprintf('Field - [%s] does not have a valid integrity option, [%s] in class - %s', $property, implode(', ', $validator->getIntegrityActions()), $meta->getName()));
                     }
 
                     $config['referenceIntegrity'][$property][($mapping->fields ?? $mapping['fields'])[$property]['mappedBy']] =
-                        $fieldMapping['gedmo']['referenceIntegrity'];
+                        ($fieldMapping->gedmo ?? $fieldMapping['gedmo'])['referenceIntegrity'];
                 }
             }
         }
