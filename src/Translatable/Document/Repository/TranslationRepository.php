@@ -95,7 +95,7 @@ class TranslationRepository extends DocumentRepository
                 $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
             }
             $mapping = $meta->getFieldMapping($field);
-            $type = $this->getType($mapping->type ?? $mapping['type']);
+            $type = $this->getType($mapping['type']);
             $transformed = $type->convertToDatabaseValue($value);
             $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
             if ($this->dm->getUnitOfWork()->isInIdentityMap($document)) {
