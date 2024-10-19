@@ -53,9 +53,9 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
-            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
+            foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['blameable'])) {
-                    $mappingProperty = $fieldMapping->gedmo->blameable ?? $fieldMapping['gedmo']['blameable'];
+                    $mappingProperty = $fieldMapping['gedmo']['blameable'];
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a reference in class - {$meta->getName()}");
                     }
@@ -84,9 +84,9 @@ class Yaml extends File implements Driver
         }
 
         if (isset($mapping['manyToOne'])) {
-            foreach (($mapping->manyToOne ?? $mapping['manyToOne']) as $field => $fieldMapping) {
+            foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['blameable'])) {
-                    $mappingProperty = $fieldMapping->gedmo->blameable ?? $fieldMapping['gedmo']['blameable'];
+                    $mappingProperty = $fieldMapping['gedmo']['blameable'];
                     if (!$meta->isSingleValuedAssociation($field)) {
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->getName()}");
                     }

@@ -54,13 +54,13 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
-            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
+            foreach ($mapping['fields'] as $field => $fieldMapping) {
                 $config = $this->buildFieldConfiguration($field, $fieldMapping, $meta, $config);
             }
         }
 
         if (isset($mapping['attributeOverride'])) {
-            foreach (($mapping->attributeOverride ?? $mapping['attributeOverride']) as $field => $overrideMapping) {
+            foreach ($mapping['attributeOverride'] as $field => $overrideMapping) {
                 $config = $this->buildFieldConfiguration($field, $overrideMapping, $meta, $config);
             }
         }
@@ -98,7 +98,7 @@ class Yaml extends File implements Driver
     {
         if (isset($fieldMapping['gedmo'])) {
             if (isset($fieldMapping['gedmo']['slug'])) {
-                $slug = ($fieldMapping->gedmo ?? $fieldMapping['gedmo'])['slug'];
+                $slug = $fieldMapping['gedmo']['slug'];
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->getName()}");
                 }

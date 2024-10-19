@@ -41,7 +41,7 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['gedmo'])) {
-            $classMapping = ($mapping->gedmo ?? $mapping['gedmo']);
+            $classMapping = $mapping['gedmo'];
             if (isset($classMapping['soft_deleteable'])) {
                 $config['softDeleteable'] = true;
 
