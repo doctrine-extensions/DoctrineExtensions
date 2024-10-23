@@ -59,9 +59,9 @@ class Yaml extends File implements Driver
         $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
-            foreach (($mapping->fields ?? $mapping['fields']) as $field => $fieldMapping) {
+            foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['timestampable'])) {
-                    $mappingProperty = ($fieldMapping->gedmo ?? $fieldMapping['gedmo'])['timestampable'];
+                    $mappingProperty = $fieldMapping['gedmo']['timestampable'];
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->getName()}");
                     }

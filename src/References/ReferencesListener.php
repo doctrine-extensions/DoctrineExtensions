@@ -92,16 +92,16 @@ class ReferencesListener extends MappedEventSubscriber
 
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
-                $property = $meta->reflClass->getProperty($mapping->field ?? $mapping['field']);
+                $property = $meta->reflClass->getProperty($mapping['field']);
                 $property->setAccessible(true);
                 if (isset($mapping['identifier'])) {
-                    $referencedObjectId = $meta->getFieldValue($object, $mapping->identifier ?? $mapping['identifier']);
+                    $referencedObjectId = $meta->getFieldValue($object, $mapping['identifier']);
                     if (null !== $referencedObjectId) {
                         $property->setValue(
                             $object,
                             $ea->getSingleReference(
-                                $this->getManager($mapping->type ?? $mapping['type']),
-                                $mapping->class ?? $mapping['class'],
+                                $this->getManager($mapping['type']),
+                                $mapping['class'],
                                 $referencedObjectId
                             )
                         );
@@ -112,16 +112,16 @@ class ReferencesListener extends MappedEventSubscriber
 
         if (isset($config['referenceMany'])) {
             foreach ($config['referenceMany'] as $mapping) {
-                $property = $meta->reflClass->getProperty($mapping->field ?? $mapping['field']);
+                $property = $meta->reflClass->getProperty($mapping['field']);
                 $property->setAccessible(true);
                 if (isset($mapping['mappedBy'])) {
                     $id = $ea->extractIdentifier($om, $object);
-                    $manager = $this->getManager($mapping->type ?? $mapping['type']);
-                    $class = ($mapping->class ?? $mapping['class']);
+                    $manager = $this->getManager($mapping['type']);
+                    $class = $mapping['class'];
                     $refMeta = $manager->getClassMetadata($class);
                     $refConfig = $this->getConfiguration($manager, $refMeta->getName());
-                    if (isset($refConfig['referenceOne'][$mapping->mappedBy ?? $mapping['mappedBy']])) {
-                        $refMapping = $refConfig['referenceOne'][$mapping->mappedBy ?? $mapping['mappedBy']];
+                    if (isset($refConfig['referenceOne'][$mapping['mappedBy']])) {
+                        $refMapping = $refConfig['referenceOne'][$mapping['mappedBy']];
                         $identifier = $refMapping['identifier'];
                         $property->setValue(
                             $object,
@@ -220,18 +220,18 @@ class ReferencesListener extends MappedEventSubscriber
 
         if (isset($config['referenceManyEmbed'])) {
             foreach ($config['referenceManyEmbed'] as $mapping) {
-                $property = $meta->reflClass->getProperty($mapping->field ?? $mapping['field']);
+                $property = $meta->reflClass->getProperty($mapping['field']);
                 $property->setAccessible(true);
 
                 $id = $ea->extractIdentifier($om, $object);
                 $manager = $this->getManager('document');
 
-                $class = ($mapping->class ?? $mapping['class']);
+                $class = $mapping['class'];
                 $refMeta = $manager->getClassMetadata($class);
                 // Trigger the loading of the configuration to validate the mapping
                 $this->getConfiguration($manager, $refMeta->getName());
 
-                $identifier = ($mapping->identifier ?? $mapping['identifier']);
+                $identifier = $mapping['identifier'];
                 $property->setValue(
                     $object,
                     new LazyCollection(
@@ -271,17 +271,17 @@ class ReferencesListener extends MappedEventSubscriber
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
                 if (isset($mapping['identifier'])) {
-                    $property = $meta->reflClass->getProperty($mapping->field ?? $mapping['field']);
+                    $property = $meta->reflClass->getProperty($mapping['field']);
                     $property->setAccessible(true);
                     $referencedObject = $property->getValue($object);
 
                     if (is_object($referencedObject)) {
-                        $manager = $this->getManager($mapping->type ?? $mapping['type']);
+                        $manager = $this->getManager($mapping['type']);
                         $identifier = $ea->getIdentifier($manager, $referencedObject);
 
                         $meta->setFieldValue(
                             $object,
-                            $mapping->identifier ?? $mapping['identifier'],
+                            $mapping['identifier'],
                             $identifier
                         );
                     }
