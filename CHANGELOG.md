@@ -19,7 +19,7 @@ a release.
 
 ## [Unreleased]
 ### Deprecated
-- Annotation-specific mapping parameters for the sluggable extension (#2837)
+- Sluggable: Annotation-specific mapping parameters (#2837)
 
 ### Fixed
 - Fix regression with `doctrine/dbal` >= 4.0 that caused MariaDB to improperly attempt LONGTEXT casting in `TranslationWalker` (issue #2887)
