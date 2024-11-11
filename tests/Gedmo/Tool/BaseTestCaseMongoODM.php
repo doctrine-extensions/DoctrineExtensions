@@ -18,6 +18,7 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Revisionable\RevisionableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -160,6 +161,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new LoggableListener());
+        $evm->addEventSubscriber(new RevisionableListener());
         $evm->addEventSubscriber(new TranslatableListener());
         $evm->addEventSubscriber(new TimestampableListener());
         $evm->addEventSubscriber(new SoftDeleteableListener());
