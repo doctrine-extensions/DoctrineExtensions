@@ -21,6 +21,9 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @NamedArgumentConstructor
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.18, will be removed in version 4.0. Configure the options as
+ *             an associative array on the {@see SlugHandler} attribute instead.
  */
 final class SlugHandlerOption implements GedmoAnnotation
 {
