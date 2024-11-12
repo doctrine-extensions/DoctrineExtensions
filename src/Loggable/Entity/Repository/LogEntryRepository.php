@@ -165,7 +165,7 @@ class LogEntryRepository extends EntityRepository
         }
 
         $mapping = $objectMeta->getAssociationMapping($field);
-        $value = $value ? $this->getEntityManager()->getReference($mapping['targetEntity'], $value) : null;
+        $value = $value ? $this->getEntityManager()->getReference($mapping->targetEntity ?? $mapping['targetEntity'], $value) : null;
     }
 
     /**

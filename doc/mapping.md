@@ -149,7 +149,7 @@ class Annotation implements Driver
                 }
                 // validate encoding type
                 $mapping = $meta->getFieldMapping($field);
-                if ($mapping['type'] != 'string') {
+                if (($mapping->type ?? $mapping['type']) != 'string') {
                     throw new \Exception("Only strings can be encoded");
                 }
                 // store the metadata
