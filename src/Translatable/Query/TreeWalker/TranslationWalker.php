@@ -32,8 +32,10 @@ use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\AST\WhereClause;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
-use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\Exec\SingleSelectSqlFinalizer;
+use Doctrine\ORM\Query\Exec\SqlFinalizer;
 use Gedmo\Exception\RuntimeException;
+use Gedmo\Tool\ORM\Walker\CompatSqlOutputWalker;
 use Gedmo\Tool\ORM\Walker\SqlWalkerCompat;
 use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
@@ -54,7 +56,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class TranslationWalker extends SqlWalker
+class TranslationWalker extends CompatSqlOutputWalker
 {
     use SqlWalkerCompat;
 
@@ -139,6 +141,21 @@ class TranslationWalker extends SqlWalker
         $this->prepareTranslatedComponents();
 
         return new SingleSelectExecutor($statement, $this);
+    }
+
+    /**
+     * @param DeleteStatement|UpdateStatement|SelectStatement $AST
+     */
+    protected function doGetFinalizerWithCompat($AST): SqlFinalizer
+    {
+        // If it's not a Select, the TreeWalker ought to skip it, and just return the parent.
+        // @see https://github.com/doctrine-extensions/DoctrineExtensions/issues/2013
+        if (!$AST instanceof SelectStatement) {
+            return parent::getFinalizer($AST);
+        }
+        $this->prepareTranslatedComponents();
+
+        return new SingleSelectSqlFinalizer($this->walkSelectStatement($AST));
     }
 
     protected function doWalkSelectStatementWithCompat(SelectStatement $selectStatement): string
