@@ -27,7 +27,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue449Test extends BaseTestCaseORM
 {
-    private const TARGET = Article::class;
     private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private SoftDeleteableListener $softDeleteableListener;
@@ -80,7 +79,7 @@ final class Issue449Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            Article::class,
         ];
     }
 }

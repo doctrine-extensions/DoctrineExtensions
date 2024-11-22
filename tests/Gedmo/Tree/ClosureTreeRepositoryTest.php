@@ -32,11 +32,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const CLOSURE = CategoryClosure::class;
-    private const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
-    private const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
-
     /**
      * @var TreeListener
      */
@@ -58,7 +53,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $food = $repo->findOneBy(['title' => 'Food']);
 
         // Count all
@@ -84,7 +79,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $path = $repo->getPath($fruits);
@@ -105,7 +100,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         // direct children of node, sorted by title ascending order. NOT including the root node
@@ -195,7 +190,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $repo->removeFromTree($fruits);
@@ -226,23 +221,23 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $this->buildTreeTests(self::CATEGORY);
+        $this->buildTreeTests(Category::class);
     }
 
     public function testBuildTreeWithoutLevelProperty(): void
     {
-        $this->populate(self::CATEGORY_WITHOUT_LEVEL);
+        $this->populate(CategoryWithoutLevel::class);
 
-        $this->buildTreeTests(self::CATEGORY_WITHOUT_LEVEL);
+        $this->buildTreeTests(CategoryWithoutLevel::class);
     }
 
     public function testHavingLevelPropertyAvoidsSubqueryInSelectInGetNodesHierarchy(): void
     {
         $this->populate();
 
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $roots = $repo->getRootNodes();
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(Category::class);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
         $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
@@ -251,11 +246,11 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     public function testNotHavingLevelPropertyUsesASubqueryInSelectInGetNodesHierarchy(): void
     {
-        $this->populate(self::CATEGORY_WITHOUT_LEVEL);
+        $this->populate(CategoryWithoutLevel::class);
 
-        $repo = $this->em->getRepository(self::CATEGORY_WITHOUT_LEVEL);
+        $repo = $this->em->getRepository(CategoryWithoutLevel::class);
         $roots = $repo->getRootNodes();
-        $meta = $this->em->getClassMetadata(self::CATEGORY_WITHOUT_LEVEL);
+        $meta = $this->em->getClassMetadata(CategoryWithoutLevel::class);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
         $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
@@ -264,10 +259,10 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     public function testChangeChildrenIndex(): void
     {
-        $this->populate(self::CATEGORY);
+        $this->populate(Category::class);
 
         $childrenIndex = 'myChildren';
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $repo->setChildrenIndex($childrenIndex);
 
         $tree = $repo->childrenHierarchy();
@@ -496,14 +491,14 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::CLOSURE,
-            self::CATEGORY_WITHOUT_LEVEL,
-            self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
+            Category::class,
+            CategoryClosure::class,
+            CategoryWithoutLevel::class,
+            CategoryWithoutLevelClosure::class,
         ];
     }
 
-    private function populate(string $class = self::CATEGORY): void
+    private function populate(string $class = Category::class): void
     {
         $food = new $class();
         $food->setTitle('Food');

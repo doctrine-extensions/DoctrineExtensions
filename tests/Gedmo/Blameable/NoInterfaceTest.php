@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class NoInterfaceTest extends BaseTestCaseORM
 {
-    private const FIXTURE = WithoutInterface::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -46,7 +44,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
+        $test = $this->em->getRepository(WithoutInterface::class)->findOneBy(['title' => 'Test']);
         static::assertSame('testuser', $test->getCreated());
         static::assertSame('testuser', $test->getUpdated());
     }
@@ -54,7 +52,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
+            WithoutInterface::class,
         ];
     }
 }

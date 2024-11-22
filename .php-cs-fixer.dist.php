@@ -83,6 +83,11 @@ return (new PhpCsFixer\Config())
         'static_lambda' => true,
         'strict_param' => true,
         'ternary_to_null_coalescing' => true,
+        'trailing_comma_in_multiline' => [
+            'elements' => [
+                'arrays',
+            ],
+        ],
         // @todo: Change the following rule to `true` in the next major release.
         'void_return' => false,
     ])

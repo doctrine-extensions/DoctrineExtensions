@@ -27,10 +27,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class PersonalTranslationTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const TRANSLATION = PersonalArticleTranslation::class;
-    private const TREE_WALKER_TRANSLATION = TranslationWalker::class;
-
     private TranslatableListener $translatableListener;
 
     protected function setUp(): void
@@ -49,7 +45,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $this->populate();
-        $article = $this->em->find(self::ARTICLE, ['id' => 1]);
+        $article = $this->em->find(Article::class, ['id' => 1]);
         $translations = $article->getTranslations();
         static::assertCount(3, $translations);
     }
@@ -57,7 +53,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     public function testShouldCreateTranslations(): void
     {
         $this->populate();
-        $article = $this->em->find(self::ARTICLE, ['id' => 1]);
+        $article = $this->em->find(Article::class, ['id' => 1]);
         $translations = $article->getTranslations();
         static::assertCount(2, $translations);
     }
@@ -69,7 +65,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
 
         $this->queryLogger->reset();
 
-        $article = $this->em->find(self::ARTICLE, ['id' => 1]);
+        $article = $this->em->find(Article::class, ['id' => 1]);
 
         static::assertCount(2, $this->queryLogger->queries);
 
@@ -96,12 +92,14 @@ final class PersonalTranslationTest extends BaseTestCaseORM
 
     public function testShouldCascadeDeletionsByForeignKeyConstraints(): void
     {
-        if ('sqlite' === $this->em->getConnection()->getDatabasePlatform()->getName()) {
-            static::markTestSkipped('Foreign key constraints does not map in sqlite.');
+        // Uses normalized comparison due to case differences between versions
+        if ('doctrine\dbal\platforms\sqliteplatform' === strtolower(get_class($this->em->getConnection()->getDatabasePlatform()))) {
+            static::markTestSkipped('Foreign key constraints do not map in SQLite.');
         }
+
         $this->populate();
-        $this->em->createQuery('DELETE FROM '.self::ARTICLE.' a')->getSingleScalarResult();
-        $trans = $this->em->getRepository(self::TRANSLATION)->findAll();
+        $this->em->createQuery('DELETE FROM '.Article::class.' a')->getSingleScalarResult();
+        $trans = $this->em->getRepository(PersonalArticleTranslation::class)->findAll();
 
         static::assertCount(0, $trans);
     }
@@ -123,7 +121,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
+        $trans = $this->em->createQuery('SELECT t FROM '.PersonalArticleTranslation::class.' t')->getArrayResult();
         static::assertCount(1, $trans);
         static::assertSame('override', $trans[0]['content']);
     }
@@ -159,9 +157,9 @@ final class PersonalTranslationTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->translatableListener->setTranslatableLocale('en');
-        $articles = $this->em->createQuery('SELECT t FROM '.self::ARTICLE.' t')->getArrayResult();
+        $articles = $this->em->createQuery('SELECT t FROM '.Article::class.' t')->getArrayResult();
         static::assertSame('en', $articles[0]['title']);
-        $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
+        $trans = $this->em->createQuery('SELECT t FROM '.PersonalArticleTranslation::class.' t')->getArrayResult();
         static::assertCount(2, $trans);
         foreach ($trans as $item) {
             static::assertSame($item['locale'], $item['content']);
@@ -223,10 +221,10 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     public function testShouldBeAbleToUseTranslationQueryHint(): void
     {
         $this->populate();
-        $dql = 'SELECT a.title FROM '.self::ARTICLE.' a';
+        $dql = 'SELECT a.title FROM '.Article::class.' a';
         $query = $this
             ->em->createQuery($dql)
-            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION)
+            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class)
             ->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'lt')
         ;
 
@@ -250,8 +248,8 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
+            Article::class,
+            PersonalArticleTranslation::class,
         ];
     }
 

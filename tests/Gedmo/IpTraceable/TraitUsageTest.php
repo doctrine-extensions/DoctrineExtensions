@@ -24,7 +24,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 final class TraitUsageTest extends BaseTestCaseORM
 {
     private const TEST_IP = '34.234.1.10';
-    private const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {
@@ -60,7 +59,7 @@ final class TraitUsageTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            UsingTrait::class,
         ];
     }
 }

@@ -17,7 +17,6 @@ use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
-use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -35,11 +34,9 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  *   versioned?: string[],
  * }
  *
- * @phpstan-method LoggableConfiguration getConfiguration(ObjectManager $objectManager, $class)
- *
- * @method LoggableAdapter getEventAdapter(EventArgs $args)
- *
  * @phpstan-template T of Loggable|object
+ *
+ * @phpstan-extends MappedEventSubscriber<LoggableConfiguration, LoggableAdapter>
  */
 class LoggableListener extends MappedEventSubscriber
 {

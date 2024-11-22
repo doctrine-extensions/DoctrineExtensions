@@ -27,8 +27,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class Issue116Test extends BaseTestCaseORM
 {
-    private const TARGET = Country::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -69,7 +67,7 @@ final class Issue116Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            Country::class,
         ];
     }
 }

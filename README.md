@@ -66,7 +66,7 @@ can be easily implemented using Mapping extension to handle the additional metad
 
 ### Version Compatibility
 
-* DBAL: `^3.2`
+* DBAL: `^3.2` (for all the extensions) or `^4.0` (for all the extensions, except **Loggable**)
 * ORM: `^2.14` or `^3.0`
 * MongoDB ODM: `^2.3`
 

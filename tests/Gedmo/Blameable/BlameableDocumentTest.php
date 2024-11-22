@@ -27,8 +27,6 @@ final class BlameableDocumentTest extends BaseTestCaseMongoODM
 {
     private const TEST_USERNAME = 'testuser';
 
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,7 +48,7 @@ final class BlameableDocumentTest extends BaseTestCaseMongoODM
 
     public function testBlameable(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
         static::assertSame(self::TEST_USERNAME, $article->getCreated());
@@ -81,7 +79,7 @@ final class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($sport);
         $this->dm->flush();
 
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
         static::assertSame(self::TEST_USERNAME, $sport->getCreated());
         static::assertSame(self::TEST_USERNAME, $sport->getUpdated());

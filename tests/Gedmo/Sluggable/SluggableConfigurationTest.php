@@ -24,8 +24,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SluggableConfigurationTest extends BaseTestCaseORM
 {
-    private const ARTICLE = ConfigurationArticle::class;
-
     private ?int $articleId = null;
 
     protected function setUp(): void
@@ -41,7 +39,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
 
     public function testInsertedNewSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(ConfigurationArticle::class, $this->articleId);
 
         static::assertInstanceOf(Sluggable::class, $article);
         static::assertSame('the-title-my-code', $article->getSlug());
@@ -78,7 +76,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
 
     public function testNonUpdatableSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(ConfigurationArticle::class, $this->articleId);
         $article->setTitle('the title updated');
         $this->em->persist($article);
         $this->em->flush();
@@ -90,7 +88,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
+            ConfigurationArticle::class,
         ];
     }
 

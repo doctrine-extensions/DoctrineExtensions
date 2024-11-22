@@ -56,11 +56,11 @@ class Uploadable
     /**
      * @var float
      *
-     * @ORM\Column(name="size", type="decimal")
+     * @ORM\Column(name="size", type="decimal", precision=10, scale=2)
      *
      * @Gedmo\UploadableFileSize
      */
-    #[ORM\Column(name: 'size', type: Types::DECIMAL)]
+    #[ORM\Column(name: 'size', type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Gedmo\UploadableFileSize]
     private $size;
 

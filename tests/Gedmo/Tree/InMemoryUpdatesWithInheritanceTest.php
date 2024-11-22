@@ -25,10 +25,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
-    private const PERSON = Person::class;
-    private const MAN = Man::class;
-    private const WOMAN = Woman::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -90,9 +86,9 @@ final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::PERSON,
-            self::MAN,
-            self::WOMAN,
+            Person::class,
+            Man::class,
+            Woman::class,
         ];
     }
 }

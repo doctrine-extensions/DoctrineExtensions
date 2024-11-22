@@ -20,13 +20,9 @@ use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * This test is for Uploadable behavior with typed properties
- *
- * @requires PHP >= 7.4
  */
 final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
 {
-    private const IMAGE_WITH_TYPED_PROPERTIES_CLASS = ImageWithTypedProperties::class;
-
     private UploadableListenerStub $listener;
 
     private string $destinationTestDir;
@@ -95,7 +91,7 @@ final class UploadableEntitySizeTypeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::IMAGE_WITH_TYPED_PROPERTIES_CLASS,
+            ImageWithTypedProperties::class,
         ];
     }
 

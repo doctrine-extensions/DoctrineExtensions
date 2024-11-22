@@ -11,11 +11,6 @@ parameters:
 			path: src/AbstractTrackingListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getConnection\\(\\)\\.$#"
-			count: 1
-			path: src/AbstractTrackingListener.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 3
 			path: src/AbstractTrackingListener.php
@@ -286,21 +281,6 @@ parameters:
 			path: src/References/ReferencesListener.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:extractIdentifier\\(\\)\\.$#"
-			count: 2
-			path: src/References/ReferencesListener.php
-
-		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getIdentifier\\(\\)\\.$#"
-			count: 1
-			path: src/References/ReferencesListener.php
-
-		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getSingleReference\\(\\)\\.$#"
-			count: 1
-			path: src/References/ReferencesListener.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
 			count: 2
 			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
@@ -399,11 +379,6 @@ parameters:
 			message: "#^Method Gedmo\\\\SoftDeleteable\\\\Query\\\\TreeWalker\\\\SoftDeleteableWalker\\:\\:__construct\\(\\) has parameter \\$query with no type specified\\.$#"
 			count: 1
 			path: src/SoftDeleteable/Query/TreeWalker/SoftDeleteableWalker.php
-
-		-
-			message: "#^Call to an undefined method Gedmo\\\\Mapping\\\\Event\\\\AdapterInterface\\:\\:getDateValue\\(\\)\\.$#"
-			count: 1
-			path: src/SoftDeleteable/SoftDeleteableListener.php
 
 		-
 			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
@@ -542,12 +517,12 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Join\\:\\:\\$aliasIdentificationVariable\\.$#"
-			count: 2
+			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
 			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Node\\:\\:\\$aliasIdentificationVariable\\.$#"
-			count: 2
+			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-

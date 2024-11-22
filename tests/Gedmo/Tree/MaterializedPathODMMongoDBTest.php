@@ -26,8 +26,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 {
-    private const CATEGORY = Category::class;
-
     /**
      * @var array<string, mixed>
      */
@@ -49,7 +47,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 
         $this->getDefaultDocumentManager($evm);
 
-        $meta = $this->dm->getClassMetadata(self::CATEGORY);
+        $meta = $this->dm->getClassMetadata(Category::class);
         $this->config = $this->listener->getConfiguration($this->dm, $meta->getName());
     }
 
@@ -111,7 +109,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->remove($category2);
         $this->dm->flush();
 
-        $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->getIterator();
+        $result = $this->dm->createQueryBuilder()->find(Category::class)->getQuery()->getIterator();
 
         static::assertInstanceOf(Iterator::class, $result);
 
@@ -136,7 +134,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 
     private function createCategory(): Category
     {
-        $class = self::CATEGORY;
+        $class = Category::class;
 
         return new $class();
     }

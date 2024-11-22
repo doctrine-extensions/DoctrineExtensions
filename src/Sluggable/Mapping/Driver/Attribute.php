@@ -38,6 +38,8 @@ class Attribute extends AbstractAnnotationDriver
 
     /**
      * Mapping object configuring an option for a slug handler.
+     *
+     * @deprecated since gedmo/doctrine-extensions 3.18, will be removed in version 4.0.
      */
     public const HANDLER_OPTION = SlugHandlerOption::class;
 

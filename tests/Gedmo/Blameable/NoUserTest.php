@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class NoUserTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -47,7 +45,7 @@ final class NoUserTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport no user']);
         static::assertEmpty($sport->getCreated());
         static::assertEmpty($sport->getUpdated());

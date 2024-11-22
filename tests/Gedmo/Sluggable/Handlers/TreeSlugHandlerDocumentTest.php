@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    private const SLUG = TreeSlug::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,7 +35,7 @@ final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
     public function testSlugGeneration(): void
     {
         $this->populate();
-        $repo = $this->dm->getRepository(self::SLUG);
+        $repo = $this->dm->getRepository(TreeSlug::class);
 
         $food = $repo->findOneBy(['title' => 'Food']);
         static::assertSame('food', $food->getSlug());
@@ -55,7 +53,7 @@ final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
     public function testSlugUpdates(): void
     {
         $this->populate();
-        $repo = $this->dm->getRepository(self::SLUG);
+        $repo = $this->dm->getRepository(TreeSlug::class);
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $fruits->setTitle('Fructis');

@@ -27,9 +27,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeObjectHydratorTest extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const ROOT_CATEGORY = RootCategory::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -49,7 +46,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
 
         $this->queryLogger->reset();
 
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $result = $repo->createQueryBuilder('node')
             ->orderBy('node.lft', 'ASC')
@@ -99,7 +96,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         $this->queryLogger->reset();
 
         /** @var NestedTreeRepository<RootCategory> $repo */
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
@@ -132,7 +129,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         $this->queryLogger->reset();
 
         /** @var NestedTreeRepository<RootCategory> $repo */
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $food = $repo->findOneBy(['title' => 'Food']);
 
@@ -172,14 +169,14 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::ROOT_CATEGORY,
+            Category::class,
+            RootCategory::class,
         ];
     }
 
     private function populate(): void
     {
-        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        $repo = $this->em->getRepository(RootCategory::class);
 
         $food = new RootCategory();
         $food->setTitle('Food');

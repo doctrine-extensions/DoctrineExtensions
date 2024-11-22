@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Loggable;
 
+use Doctrine\DBAL\Types\ArrayType;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
 use Gedmo\Tests\Loggable\Fixture\Entity\Address;
@@ -20,6 +21,7 @@ use Gedmo\Tests\Loggable\Fixture\Entity\Composite;
 use Gedmo\Tests\Loggable\Fixture\Entity\CompositeRelation;
 use Gedmo\Tests\Loggable\Fixture\Entity\Geo;
 use Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation;
+use Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment as CommentLog;
 use Gedmo\Tests\Loggable\Fixture\Entity\RelatedArticle;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
@@ -30,12 +32,12 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 abstract class LoggableEntityTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const COMPOSITE = Composite::class;
-    private const COMPOSITE_RELATION = CompositeRelation::class;
-    private const RELATED_ARTICLE = RelatedArticle::class;
-    private const COMMENT_LOG = Fixture\Entity\Log\Comment::class;
+    public static function setUpBeforeClass(): void
+    {
+        if (!class_exists(ArrayType::class)) {
+            static::markTestSkipped('The loggable extension is not compatible with doctrine/dbal:>=4.0');
+        }
+    }
 
     public function testShouldHandleClonedEntity(): void
     {
@@ -61,7 +63,7 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     public function testLoggable(): void
     {
         $logRepo = $this->em->getRepository(LogEntry::class);
-        $articleRepo = $this->em->getRepository(self::ARTICLE);
+        $articleRepo = $this->em->getRepository(Article::class);
         static::assertCount(0, $logRepo->findAll());
 
         $art0 = new Article();
@@ -108,8 +110,8 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     {
         $this->populate();
         /** @var LogEntryRepository<Comment> $commentLogRepo */
-        $commentLogRepo = $this->em->getRepository(self::COMMENT_LOG);
-        $commentRepo = $this->em->getRepository(self::COMMENT);
+        $commentLogRepo = $this->em->getRepository(CommentLog::class);
+        $commentRepo = $this->em->getRepository(Comment::class);
 
         $comment = $commentRepo->find(1);
         static::assertInstanceOf(Comment::class, $comment);
@@ -150,7 +152,7 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     public function testComposite(): void
     {
         $logRepo = $this->em->getRepository(LogEntry::class);
-        $compositeRepo = $this->em->getRepository(self::COMPOSITE);
+        $compositeRepo = $this->em->getRepository(Composite::class);
         static::assertCount(0, $logRepo->findAll());
 
         $compositeIds = [1, 2];
@@ -200,7 +202,7 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     public function testCompositeRelation(): void
     {
         $logRepo = $this->em->getRepository(LogEntry::class);
-        $compositeRepo = $this->em->getRepository(self::COMPOSITE_RELATION);
+        $compositeRepo = $this->em->getRepository(CompositeRelation::class);
         static::assertCount(0, $logRepo->findAll());
 
         $art0 = new Article();
@@ -254,12 +256,12 @@ abstract class LoggableEntityTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::COMMENT_LOG,
-            self::RELATED_ARTICLE,
-            self::COMPOSITE,
-            self::COMPOSITE_RELATION,
+            Article::class,
+            Comment::class,
+            CommentLog::class,
+            RelatedArticle::class,
+            Composite::class,
+            CompositeRelation::class,
             LogEntry::class,
             Address::class,
             Geo::class,

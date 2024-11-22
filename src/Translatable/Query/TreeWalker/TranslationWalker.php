@@ -10,8 +10,8 @@
 namespace Gedmo\Translatable\Query\TreeWalker;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -90,10 +90,8 @@ class TranslationWalker extends SqlWalker
 
     /**
      * DBAL database platform
-     *
-     * @var AbstractPlatform
      */
-    private $platform;
+    private AbstractPlatform $platform;
 
     /**
      * DBAL database connection
@@ -310,9 +308,9 @@ class TranslationWalker extends SqlWalker
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if ((($this->platform instanceof MySQLPlatform)
+                if ((($this->platform instanceof AbstractMySQLPlatform)
                     && in_array($fieldMapping['type'], ['decimal'], true))
-                    || (!($this->platform instanceof MySQLPlatform)
+                    || (!($this->platform instanceof AbstractMySQLPlatform)
                     && !in_array($fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
                     $type = Type::getType($fieldMapping['type']);
 

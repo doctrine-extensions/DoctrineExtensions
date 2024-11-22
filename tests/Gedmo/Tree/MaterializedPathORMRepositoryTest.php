@@ -28,9 +28,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
-    private const CATEGORY = MPCategory::class;
-    private const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
-
     /** @var MaterializedPathRepository<MPCategory> */
     private MaterializedPathRepository $repo;
 
@@ -47,11 +44,11 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
         $this->getDefaultMockSqliteEntityManager($evm);
 
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(MPCategory::class);
         $this->listener->getConfiguration($this->em, $meta->getName());
         $this->populate();
 
-        $this->repo = $this->em->getRepository(self::CATEGORY);
+        $this->repo = $this->em->getRepository(MPCategory::class);
     }
 
     public function testGetRootNodes(): void
@@ -146,9 +143,9 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
     public function testGetChildrenForEntityWithTrimmedSeparators(): void
     {
-        $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
+        $this->populate(MPCategoryWithTrimmedSeparator::class);
 
-        $repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
+        $repo = $this->em->getRepository(MPCategoryWithTrimmedSeparator::class);
         $root = $repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, NOT including it
@@ -362,8 +359,8 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::CATEGORY_WITH_TRIMMED_SEPARATOR,
+            MPCategory::class,
+            MPCategoryWithTrimmedSeparator::class,
         ];
     }
 
@@ -373,7 +370,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     private function createCategory(?string $class = null): object
     {
         if (!$class) {
-            $class = self::CATEGORY;
+            $class = MPCategory::class;
         }
 
         return new $class();

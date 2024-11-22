@@ -29,11 +29,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableSlugTest extends BaseTestCaseORM
 {
-    private const ARTICLE = TranslatableArticle::class;
-    private const COMMENT = Comment::class;
-    private const PAGE = Page::class;
-    private const TRANSLATION = Translation::class;
-
     private ?int $articleId = null;
 
     private TranslatableListener $translatableListener;
@@ -54,15 +49,15 @@ final class TranslatableSlugTest extends BaseTestCaseORM
 
     public function testSlugAndTranslation(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(TranslatableArticle::class, $this->articleId);
         static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
         static::assertSame('the-title-my-code', $article->getSlug());
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         $translations = $repo->findTranslations($article);
         static::assertCount(0, $translations);
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(TranslatableArticle::class, $this->articleId);
         $article->setTranslatableLocale('de_DE');
         $article->setCode('code in de');
         $article->setTitle('title in de');
@@ -71,7 +66,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($article);
         static::assertCount(1, $translations);
         static::assertArrayHasKey('de_DE', $translations);
@@ -95,7 +90,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         $a0Page = new Page();
         $a0Page->setContent('bi vv');
 
-        $article0 = $this->em->find(self::ARTICLE, $this->articleId);
+        $article0 = $this->em->find(TranslatableArticle::class, $this->articleId);
         $article0->setCode('cell');
         $article0->setTitle('xx gg');
         $a0Page->addArticle($article0);
@@ -140,10 +135,10 @@ final class TranslatableSlugTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::PAGE,
-            self::TRANSLATION,
+            TranslatableArticle::class,
+            Comment::class,
+            Page::class,
+            Translation::class,
         ];
     }
 

@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class SluggableDocumentTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,7 +36,7 @@ final class SluggableDocumentTest extends BaseTestCaseMongoODM
     public function testSlugGeneration(): void
     {
         // test insert
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $article = $repo->findOneBy(['title' => 'My Title']);
 
         static::assertSame('my-title-the-code', $article->getSlug());

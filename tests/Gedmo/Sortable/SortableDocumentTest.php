@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 final class SortableDocumentTest extends BaseTestCaseMongoODM
 {
-    private const ARTICLE = Article::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,7 +35,7 @@ final class SortableDocumentTest extends BaseTestCaseMongoODM
 
     public function testInitialPositions(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         for ($i = 0; $i <= 4; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
             static::assertSame('article'.$i, $article->getTitle());
@@ -46,7 +44,7 @@ final class SortableDocumentTest extends BaseTestCaseMongoODM
 
     public function testMovePositions(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
 
         $article = $repo->findOneBy(['position' => 4]);
         $article->setPosition(0);
@@ -60,7 +58,7 @@ final class SortableDocumentTest extends BaseTestCaseMongoODM
 
     public function testMoveLastPositions(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
 
         $article = $repo->findOneBy(['position' => 0]);
         $article->setPosition(-1);
@@ -76,7 +74,7 @@ final class SortableDocumentTest extends BaseTestCaseMongoODM
 
     public function testDeletePositions(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
 
         $article = $repo->findOneBy(['position' => 0]);
         $this->dm->remove($article);

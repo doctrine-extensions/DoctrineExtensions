@@ -28,10 +28,6 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 final class TimestampableTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-    private const TYPE = Type::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -120,7 +116,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
         static::assertNotNull($sc = $sport->getCreated());
         static::assertNotNull($su = $sport->getUpdated());
         static::assertNull($sport->getContentChanged());
@@ -131,7 +127,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $author->setName('New author');
         $sport->setAuthor($author);
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
         static::assertNotNull($sportComment->getModified());
         static::assertNull($sportComment->getClosed());
 
@@ -145,7 +141,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
         static::assertNotNull($scc = $sportComment->getClosed());
         static::assertNotNull($sp = $sport->getPublished());
         static::assertNotNull($sa = $sport->getAuthorChanged());
@@ -191,7 +187,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
         static::assertSame(
             '2000-01-01',
@@ -233,7 +229,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $type = $this->em->getReference(self::TYPE, $type->getId());
+        $type = $this->em->getReference(Type::class, $type->getId());
         static::assertInstanceOf(Proxy::class, $type);
 
         $art = new Article();
@@ -264,7 +260,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($timespampable);
         $this->em->flush();
 
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
         $found = $repo->findOneBy(['body' => 'My article body.']);
 
         static::assertNull($found->getReachedRelevantLevel());
@@ -291,9 +287,9 @@ final class TimestampableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::TYPE,
+            Article::class,
+            Comment::class,
+            Type::class,
         ];
     }
 }

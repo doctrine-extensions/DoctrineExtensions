@@ -7,7 +7,7 @@
         <field name="mimeType" column="mime" type="string">
             <gedmo:uploadable-file-mime-type/>
         </field>
-        <field name="size" column="size" type="decimal">
+        <field name="size" column="size" type="decimal" precision="10" scale="2">
             <gedmo:uploadable-file-size/>
         </field>
         <field name="path" column="path" type="string">

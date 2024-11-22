@@ -30,15 +30,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class SortableGroupTest extends BaseTestCaseORM
 {
-    private const CAR = Car::class;
-    private const BUS = Bus::class;
-    private const VEHICLE = Vehicle::class;
-    private const ENGINE = Engine::class;
-    private const RESERVATION = Reservation::class;
-    private const ITEM = Item::class;
-    private const CATEGORY = Category::class;
-    private const ITEM_WITH_DATE_COLUMN = ItemWithDateColumn::class;
-
     private const SEATS = 3;
 
     private const TRAVEL_DATE_FORMAT = 'Y-m-d H:i';
@@ -58,7 +49,7 @@ final class SortableGroupTest extends BaseTestCaseORM
     public function testShouldBeAbleToRemove(): void
     {
         $this->populate();
-        $carRepo = $this->em->getRepository(self::CAR);
+        $carRepo = $this->em->getRepository(Car::class);
 
         $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
         static::assertSame(0, $audi80->getSortByEngine());
@@ -66,7 +57,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
         static::assertSame(1, $audi80s->getSortByEngine());
 
-        $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
+        $icarus = $this->em->getRepository(Bus::class)->findOneBy(['title' => 'Icarus']);
         static::assertSame(2, $icarus->getSortByEngine());
 
         $this->em->remove($audi80);
@@ -75,7 +66,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
         static::assertSame(0, $audi80s->getSortByEngine());
 
-        $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
+        $icarus = $this->em->getRepository(Bus::class)->findOneBy(['title' => 'Icarus']);
         static::assertSame(1, $icarus->getSortByEngine());
     }
 
@@ -85,7 +76,7 @@ final class SortableGroupTest extends BaseTestCaseORM
     public function testShouldBeAbleToChangeGroup(): void
     {
         $this->populate();
-        $carRepo = $this->em->getRepository(self::CAR);
+        $carRepo = $this->em->getRepository(Car::class);
 
         // position 0
         $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
@@ -96,7 +87,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         static::assertSame(1, $audi80s->getSortByEngine());
 
         // position 2
-        $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
+        $icarus = $this->em->getRepository(Bus::class)->findOneBy(['title' => 'Icarus']);
         static::assertSame(2, $icarus->getSortByEngine());
 
         // theres only 1 v6 so this should be position:0
@@ -104,7 +95,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         static::assertSame(0, $audiJet->getSortByEngine());
 
         // change engines
-        $v6engine = $this->em->getRepository(self::ENGINE)->findOneBy(['type' => 'V6']);
+        $v6engine = $this->em->getRepository(Engine::class)->findOneBy(['type' => 'V6']);
 
         $audi80s->setEngine($v6engine);
 
@@ -126,7 +117,7 @@ final class SortableGroupTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $repo = $this->em->getRepository(self::RESERVATION);
+        $repo = $this->em->getRepository(Reservation::class);
         $today = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TODAY);
         $tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
 
@@ -191,8 +182,8 @@ final class SortableGroupTest extends BaseTestCaseORM
     {
         $this->populate();
 
-        $repo = $this->em->getRepository(self::ITEM);
-        $repoCategory = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Item::class);
+        $repoCategory = $this->em->getRepository(Category::class);
 
         $vehicle = $repoCategory->findOneBy(['name' => 'Vehicle']);
 
@@ -252,7 +243,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         }
         $this->em->flush();
 
-        $repo = $this->em->getRepository(self::ITEM_WITH_DATE_COLUMN);
+        $repo = $this->em->getRepository(ItemWithDateColumn::class);
 
         /** @var ItemWithDateColumn $testItem */
         $testItem = $repo->findOneBy(['id' => 5]);
@@ -272,14 +263,14 @@ final class SortableGroupTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::VEHICLE,
-            self::CAR,
-            self::ENGINE,
-            self::BUS,
-            self::RESERVATION,
-            self::ITEM,
-            self::CATEGORY,
-            self::ITEM_WITH_DATE_COLUMN,
+            Vehicle::class,
+            Car::class,
+            Engine::class,
+            Bus::class,
+            Reservation::class,
+            Item::class,
+            Category::class,
+            ItemWithDateColumn::class,
         ];
     }
 

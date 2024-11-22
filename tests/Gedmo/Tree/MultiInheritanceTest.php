@@ -24,11 +24,6 @@ use Gedmo\Translatable\Entity\Translation;
  */
 final class MultiInheritanceTest extends BaseTestCaseORM
 {
-    private const NODE = Node::class;
-    private const BASE_NODE = BaseNode::class;
-    private const ANODE = ANode::class;
-    private const TRANSLATION = Translation::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -39,8 +34,8 @@ final class MultiInheritanceTest extends BaseTestCaseORM
 
     public function testInheritance(): void
     {
-        $meta = $this->em->getClassMetadata(self::NODE);
-        $repo = $this->em->getRepository(self::NODE);
+        $meta = $this->em->getClassMetadata(Node::class);
+        $repo = $this->em->getRepository(Node::class);
 
         $food = $repo->findOneBy(['identifier' => 'food']);
         $left = $meta->getReflectionProperty('lft')->getValue($food);
@@ -49,7 +44,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         static::assertNotNull($food->getCreated());
         static::assertNotNull($food->getUpdated());
 
-        $translationRepo = $this->em->getRepository(self::TRANSLATION);
+        $translationRepo = $this->em->getRepository(Translation::class);
         $translations = $translationRepo->findTranslations($food);
 
         static::assertCount(0, $translations);
@@ -63,7 +58,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
      */
     public function testCaseGithubIssue7(): void
     {
-        $repo = $this->em->getRepository(self::NODE);
+        $repo = $this->em->getRepository(Node::class);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
         $count = $repo->childCount($vegies, true/* direct */);
@@ -73,7 +68,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         static::assertCount(3, $children);
 
         // node repository will not find it
-        $baseNodeRepo = $this->em->getRepository(self::BASE_NODE);
+        $baseNodeRepo = $this->em->getRepository(BaseNode::class);
         $cabbage = $baseNodeRepo->findOneBy(['identifier' => 'cabbage']);
         $path = $baseNodeRepo->getPath($cabbage);
         static::assertCount(3, $path);
@@ -82,10 +77,10 @@ final class MultiInheritanceTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::NODE,
-            self::ANODE,
-            self::TRANSLATION,
-            self::BASE_NODE,
+            Node::class,
+            ANode::class,
+            Translation::class,
+            BaseNode::class,
         ];
     }
 

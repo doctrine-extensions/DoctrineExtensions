@@ -24,7 +24,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 final class NoInterfaceTest extends BaseTestCaseORM
 {
     private const TEST_IP = '34.234.1.10';
-    private const FIXTURE = WithoutInterface::class;
 
     protected function setUp(): void
     {
@@ -47,7 +46,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
+        $test = $this->em->getRepository(WithoutInterface::class)->findOneBy(['title' => 'Test']);
         static::assertSame(self::TEST_IP, $test->getCreated());
         static::assertSame(self::TEST_IP, $test->getUpdated());
     }
@@ -55,7 +54,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
+            WithoutInterface::class,
         ];
     }
 }

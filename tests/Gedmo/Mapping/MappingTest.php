@@ -33,9 +33,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class MappingTest extends TestCase
 {
-    private const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
-    private const TEST_ENTITY_TRANSLATION = Translation::class;
-
     private EntityManager $em;
 
     private TimestampableListener $timestampable;
@@ -68,8 +65,8 @@ final class MappingTest extends TestCase
         $schemaTool = new SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
-            $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY),
-            $this->em->getClassMetadata(self::TEST_ENTITY_TRANSLATION),
+            $this->em->getClassMetadata(BehavioralCategory::class),
+            $this->em->getClassMetadata(Translation::class),
         ]);
     }
 
@@ -82,7 +79,7 @@ final class MappingTest extends TestCase
         // assertion checks if configuration is read correctly without cache driver
         $conf = $this->timestampable->getConfiguration(
             $this->em,
-            self::TEST_ENTITY_CATEGORY
+            BehavioralCategory::class
         );
         static::assertCount(0, $conf);
     }

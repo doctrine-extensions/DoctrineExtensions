@@ -25,10 +25,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class ConcurrencyTest extends BaseTestCaseORM
 {
-    private const CATEGORY = Category::class;
-    private const ARTICLE = Article::class;
-    private const COMMENT = Comment::class;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -42,7 +38,7 @@ final class ConcurrencyTest extends BaseTestCaseORM
 
     public function testConcurrentEntitiesInOneFlush(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         $sport = $repo->findOneBy(['title' => 'Root2']);
         $sport->setTitle('Sport');
 
@@ -80,7 +76,7 @@ final class ConcurrencyTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(Category::class);
         $sport = $repo->findOneBy(['title' => 'Sport']);
         $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
@@ -98,9 +94,9 @@ final class ConcurrencyTest extends BaseTestCaseORM
 
     public function testConcurrentTree(): void
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo = $this->em->getRepository(Category::class);
         // Force metadata class loading.
-        $this->em->getClassMetadata(self::CATEGORY);
+        $this->em->getClassMetadata(Category::class);
 
         $root = $repo->findOneBy(['title' => 'Root']);
 
@@ -126,9 +122,9 @@ final class ConcurrencyTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::COMMENT,
+            Category::class,
+            Article::class,
+            Comment::class,
         ];
     }
 

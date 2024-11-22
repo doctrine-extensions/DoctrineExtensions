@@ -28,11 +28,6 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-    private const SPORT = Sport::class;
-    private const COMMENT = Comment::class;
-    private const TRANSLATION = Translation::class;
-
     private ?int $articleId = null;
 
     private TranslatableListener $translatableListener;
@@ -54,7 +49,7 @@ final class TranslatableTest extends BaseTestCaseORM
     {
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
 
         $entity = new Article();
         $entity->setTranslatableLocale('de');
@@ -79,7 +74,7 @@ final class TranslatableTest extends BaseTestCaseORM
 
         $this->em->clear();
         $entity = $repo->findOneBy(['id' => $entity->getId()]);
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         $translations = $repo->findTranslations($entity);
         static::assertArrayHasKey('de', $translations);
@@ -98,7 +93,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         $translations = $repo->findTranslations($article);
         static::assertCount(1, $translations);
@@ -108,10 +103,10 @@ final class TranslatableTest extends BaseTestCaseORM
     public function testShouldGenerateTranslations(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         static::assertInstanceOf(TranslationRepository::class, $repo);
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         static::assertInstanceOf(Translatable::class, $article);
 
         $translations = $repo->findTranslations($article);
@@ -125,7 +120,7 @@ final class TranslatableTest extends BaseTestCaseORM
             static::assertCount(0, $translations);
         }
         // test default locale
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         $article->setTranslatableLocale('de_de');
         $article->setContent('content in de');
         $article->setTitle('title in de');
@@ -136,7 +131,7 @@ final class TranslatableTest extends BaseTestCaseORM
 
         $qb = $this->em->createQueryBuilder();
         $qb->select('art')
-            ->from(self::ARTICLE, 'art')
+            ->from(Article::class, 'art')
             ->where('art.id = :id')
             ->setParameter('id', $article->getId());
         $q = $qb->getQuery();
@@ -145,7 +140,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('title in en', $result[0]['title']);
         static::assertSame('content in en', $result[0]['content']);
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($article);
         static::assertCount(1, $translations);
         static::assertArrayHasKey('de_de', $translations);
@@ -157,7 +152,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('title in de', $translations['de_de']['title']);
 
         // test second translations
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         $article->setTranslatableLocale('de_de');
         $article->setContent('content in de');
         $article->setTitle('title in de');
@@ -174,7 +169,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($article);
         static::assertCount(1, $translations);
         static::assertArrayHasKey('de_de', $translations);
@@ -203,7 +198,7 @@ final class TranslatableTest extends BaseTestCaseORM
             static::assertSame($expected, $translations['de_de']['message']);
         }
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         static::assertSame('title in en', $article->getTitle());
         static::assertSame('content in en', $article->getContent());
 
@@ -215,7 +210,7 @@ final class TranslatableTest extends BaseTestCaseORM
             static::assertSame("message{$number} in en", $comment->getMessage());
         }
         // test deletion
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         $this->em->remove($article);
         $this->em->flush();
 
@@ -229,7 +224,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(false);
         $this->translatableListener->setTranslatableLocale('ru_RU');
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
         static::assertFalse((bool) $article->getTitle());
         static::assertFalse((bool) $article->getContent());
 
@@ -239,7 +234,7 @@ final class TranslatableTest extends BaseTestCaseORM
         }
         $this->em->clear();
         $this->translatableListener->setTranslationFallback(true);
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(Article::class, $this->articleId);
 
         static::assertSame('title in en', $article->getTitle());
         static::assertSame('content in en', $article->getContent());
@@ -261,7 +256,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->persist($judo);
         $this->em->flush();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($judo);
         static::assertCount(1, $translations);
 
@@ -291,7 +286,7 @@ final class TranslatableTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('ua_UA');
         $this->translatableListener->setTranslationFallback(true);
-        $article = $this->em->find(self::ARTICLE, $article->getId());
+        $article = $this->em->find(Article::class, $article->getId());
 
         static::assertSame('Euro2012', $article->getTitle());
         static::assertSame('Shevchenko', $article->getAuthor());
@@ -299,7 +294,7 @@ final class TranslatableTest extends BaseTestCaseORM
 
         $this->em->clear();
         $this->translatableListener->setTranslationFallback(false);
-        $article = $this->em->find(self::ARTICLE, $article->getId());
+        $article = $this->em->find(Article::class, $article->getId());
         static::assertEmpty($article->getTitle());
         static::assertSame('Shevchenko', $article->getAuthor());
         static::assertEmpty($article->getViews());
@@ -308,10 +303,10 @@ final class TranslatableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
-            self::SPORT,
+            Article::class,
+            Translation::class,
+            Comment::class,
+            Sport::class,
         ];
     }
 

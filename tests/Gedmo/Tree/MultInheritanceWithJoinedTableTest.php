@@ -28,11 +28,6 @@ use Gedmo\Tree\TreeListener;
  */
 final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
-    private const USER = User::class;
-    private const GROUP = UserGroup::class;
-    private const ROLE = Role::class;
-    private const USERLDAP = UserLDAP::class;
-
     private TreeListener $tree;
 
     protected function setUp(): void
@@ -49,7 +44,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 
     public function testShouldHandleMultilevelInheritance(): void
     {
-        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
+        $admins = $this->em->getRepository(UserGroup::class)->findOneBy(['name' => 'Admins']);
         $adminRight = $admins->getRight();
         $userLdap = new UserLDAP('testname');
         $userLdap->init();
@@ -58,13 +53,13 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
+        $admins = $this->em->getRepository(UserGroup::class)->findOneBy(['name' => 'Admins']);
         static::assertNotSame($adminRight, $admins->getRight());
     }
 
     public function testShouldBeAbleToPopulateTree(): void
     {
-        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
+        $admins = $this->em->getRepository(UserGroup::class)->findOneBy(['name' => 'Admins']);
         $user3 = new User('user3@test.com', 'secret');
         $user3->init();
         $user3->setParent($admins);
@@ -75,37 +70,37 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 
         // run tree consistence checks
 
-        $everyBody = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Everybody']);
+        $everyBody = $this->em->getRepository(UserGroup::class)->findOneBy(['name' => 'Everybody']);
         static::assertSame(1, $everyBody->getLeft());
         static::assertSame(14, $everyBody->getRight());
         static::assertSame(0, $everyBody->getLevel());
 
-        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
+        $admins = $this->em->getRepository(UserGroup::class)->findOneBy(['name' => 'Admins']);
         static::assertSame(2, $admins->getLeft());
         static::assertSame(7, $admins->getRight());
         static::assertSame(1, $admins->getLevel());
 
-        $visitors = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Visitors']);
+        $visitors = $this->em->getRepository(UserGroup::class)->findOneBy(['name' => 'Visitors']);
         static::assertSame(8, $visitors->getLeft());
         static::assertSame(13, $visitors->getRight());
         static::assertSame(1, $visitors->getLevel());
 
-        $user0 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user0@test.com']);
+        $user0 = $this->em->getRepository(User::class)->findOneBy(['email' => 'user0@test.com']);
         static::assertSame(3, $user0->getLeft());
         static::assertSame(4, $user0->getRight());
         static::assertSame(2, $user0->getLevel());
 
-        $user1 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user1@test.com']);
+        $user1 = $this->em->getRepository(User::class)->findOneBy(['email' => 'user1@test.com']);
         static::assertSame(9, $user1->getLeft());
         static::assertSame(10, $user1->getRight());
         static::assertSame(2, $user1->getLevel());
 
-        $user2 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user2@test.com']);
+        $user2 = $this->em->getRepository(User::class)->findOneBy(['email' => 'user2@test.com']);
         static::assertSame(11, $user2->getLeft());
         static::assertSame(12, $user2->getRight());
         static::assertSame(2, $user2->getLevel());
 
-        $user3 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user3@test.com']);
+        $user3 = $this->em->getRepository(User::class)->findOneBy(['email' => 'user3@test.com']);
         static::assertSame(5, $user3->getLeft());
         static::assertSame(6, $user3->getRight());
         static::assertSame(2, $user3->getLevel());
@@ -114,10 +109,10 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::USER,
-            self::GROUP,
-            self::ROLE,
-            self::USERLDAP,
+            User::class,
+            UserGroup::class,
+            Role::class,
+            UserLDAP::class,
         ];
     }
 

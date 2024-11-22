@@ -9,7 +9,6 @@
 
 namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\FieldMapping;
@@ -42,10 +41,11 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        $converter = Type::getType($mapping['type'] ?? Types::DATETIME_MUTABLE);
-        $platform = $this->getObjectManager()->getConnection()->getDriver()->getDatabasePlatform();
 
-        return $converter->convertToPHPValue($this->getRawDateValue($mapping), $platform);
+        return $this->getObjectManager()->getConnection()->convertToPHPValue(
+            $this->getRawDateValue($mapping),
+            $mapping instanceof FieldMapping ? $mapping->type : ($mapping['type'] ?? Types::DATETIME_MUTABLE)
+        );
     }
 
     /**

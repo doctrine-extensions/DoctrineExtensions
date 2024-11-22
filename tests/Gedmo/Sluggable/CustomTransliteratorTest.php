@@ -23,8 +23,6 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class CustomTransliteratorTest extends BaseTestCaseORM
 {
-    private const ARTICLE = Article::class;
-
     public function testStandardTransliteratorFailsOnChineseCharacters(): void
     {
         $evm = new EventManager();
@@ -33,7 +31,7 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
 
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
 
         $chinese = $repo->findOneBy(['code' => 'zh']);
         static::assertSame('bei-jing-zh', $chinese->getSlug());
@@ -49,7 +47,7 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
 
-        $repo = $this->em->getRepository(self::ARTICLE);
+        $repo = $this->em->getRepository(Article::class);
 
         $chinese = $repo->findOneBy(['code' => 'zh']);
         static::assertSame('bei-jing', $chinese->getSlug());
@@ -58,7 +56,7 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
+            Article::class,
         ];
     }
 
