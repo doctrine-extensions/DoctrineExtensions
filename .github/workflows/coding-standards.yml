@@ -19,7 +19,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
-          php-version: "8.3"
+          php-version: "8.4"
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"
@@ -28,6 +28,8 @@ jobs:
 
       - name: "Run PHP-CS-Fixer"
         run: "vendor/bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
 
   rector:
     name: "Rector"
