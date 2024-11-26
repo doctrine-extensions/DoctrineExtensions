@@ -60,6 +60,7 @@ class Validator
         'string',
         'int',
         'float',
+        'uuid',
     ];
 
     /**
