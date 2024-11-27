@@ -131,7 +131,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::childrenHierarchy
+     * @see RepositoryUtilsInterface::childrenHierarchy
      */
     public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
@@ -139,7 +139,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::buildTree
+     * @see RepositoryUtilsInterface::buildTree
      */
     public function buildTree(array $nodes, array $options = [])
     {
@@ -147,7 +147,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::buildTreeArray
+     * @see RepositoryUtilsInterface::buildTreeArray
      */
     public function buildTreeArray(array $nodes)
     {
@@ -155,7 +155,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::setChildrenIndex
+     * @see RepositoryUtilsInterface::setChildrenIndex
      */
     public function setChildrenIndex($childrenIndex)
     {
@@ -163,7 +163,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::getChildrenIndex
+     * @see RepositoryUtilsInterface::getChildrenIndex
      */
     public function getChildrenIndex()
     {

@@ -5,7 +5,7 @@ services:
       target: php
       dockerfile: ./.docker/php/Dockerfile
       args:
-        PHP_VERSION: ${PHP_VERSION:-8.3-cli}
+        PHP_VERSION: ${PHP_VERSION:-8.4-cli}
     volumes:
       - .:/var/www
     working_dir: /var/www
