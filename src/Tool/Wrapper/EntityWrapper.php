@@ -18,7 +18,7 @@ use Doctrine\Persistence\Proxy as PersistenceProxy;
  * Wraps entity or proxy for more convenient
  * manipulation
  *
- * @phpstan-extends AbstractWrapper<ClassMetadata>
+ * @phpstan-extends AbstractWrapper<ClassMetadata, EntityManagerInterface>
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
@@ -112,6 +112,30 @@ class EntityWrapper extends AbstractWrapper
     public function isEmbeddedAssociation($field)
     {
         return false;
+    }
+
+    /**
+     * Converts a given value to its database representation.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function convertToDatabaseValue($value, string $type)
+    {
+        return $this->om->getConnection()->convertToDatabaseValue($value, $type);
+    }
+
+    /**
+     * Converts a given value to its PHP representation.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function convertToPHPValue($value, string $type)
+    {
+        return $this->om->getConnection()->convertToPHPValue($value, $type);
     }
 
     /**
