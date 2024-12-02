@@ -18,12 +18,14 @@ use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
+use Doctrine\ORM\Query\Exec\PreparedExecutorFinalizer;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
-use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\Exec\SqlFinalizer;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\Tool\ORM\Walker\CompatSqlOutputWalker;
 use Gedmo\Tool\ORM\Walker\SqlWalkerCompat;
 
 /**
@@ -36,7 +38,7 @@ use Gedmo\Tool\ORM\Walker\SqlWalkerCompat;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class SoftDeleteableWalker extends SqlWalker
+class SoftDeleteableWalker extends CompatSqlOutputWalker
 {
     use SqlWalkerCompat;
 
@@ -104,16 +106,36 @@ class SoftDeleteableWalker extends SqlWalker
     {
         switch (true) {
             case $statement instanceof DeleteStatement:
-                assert(class_exists($statement->deleteClause->abstractSchemaName));
-
-                $primaryClass = $this->getEntityManager()->getClassMetadata($statement->deleteClause->abstractSchemaName);
-
-                return $primaryClass->isInheritanceTypeJoined()
-                    ? new MultiTableDeleteExecutor($statement, $this, $this->meta, $this->getConnection()->getDatabasePlatform(), $this->configuration)
-                    : new SingleTableDeleteUpdateExecutor($statement, $this);
+                return $this->createDeleteStatementExecutor($statement);
             default:
                 throw new UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
         }
+    }
+
+    /**
+     * @param DeleteStatement|UpdateStatement|SelectStatement $AST
+     *
+     * @throws UnexpectedValueException when an unsupported AST statement is given
+     */
+    protected function doGetFinalizerWithCompat($AST): SqlFinalizer
+    {
+        switch (true) {
+            case $AST instanceof DeleteStatement:
+                return new PreparedExecutorFinalizer($this->createDeleteStatementExecutor($AST));
+            default:
+                throw new UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
+        }
+    }
+
+    protected function createDeleteStatementExecutor(DeleteStatement $AST): AbstractSqlExecutor
+    {
+        assert(class_exists($AST->deleteClause->abstractSchemaName));
+
+        $primaryClass = $this->getEntityManager()->getClassMetadata($AST->deleteClause->abstractSchemaName);
+
+        return $primaryClass->isInheritanceTypeJoined()
+            ? new MultiTableDeleteExecutor($AST, $this, $this->meta, $this->getConnection()->getDatabasePlatform(), $this->configuration)
+            : new SingleTableDeleteUpdateExecutor($AST, $this);
     }
 
     /**
