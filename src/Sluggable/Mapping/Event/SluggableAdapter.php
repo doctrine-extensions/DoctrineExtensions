@@ -26,9 +26,9 @@ interface SluggableAdapter extends AdapterInterface
     /**
      * Loads the similar slugs for a managed object.
      *
-     * @param object        $object
-     * @param ClassMetadata $meta
-     * @param string        $slug
+     * @param object                $object
+     * @param ClassMetadata<object> $meta
+     * @param string                $slug
      *
      * @phpstan-param SlugConfiguration $config
      *

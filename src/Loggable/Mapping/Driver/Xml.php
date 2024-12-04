@@ -41,7 +41,7 @@ class Xml extends BaseXml
         if (in_array($xmlDoctrine->getName(), ['mapped-superclass', 'entity', 'document'], true)) {
             if (isset($xml->loggable)) {
                 /**
-                 * @var \SimpleXMLElement;
+                 * @var \SimpleXMLElement
                  */
                 $data = $xml->loggable;
                 $config['loggable'] = true;
@@ -75,7 +75,7 @@ class Xml extends BaseXml
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if ($meta instanceof ClassMetadataODM && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+            if ($meta instanceof ClassMetadataODM && count($meta->getIdentifier()) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {
@@ -89,7 +89,8 @@ class Xml extends BaseXml
     /**
      * Searches mappings on element for versioned fields
      *
-     * @param array<string, mixed> $config
+     * @param array<string, mixed>  $config
+     * @param ClassMetadata<object> $meta
      *
      * @return array<string, mixed>
      */

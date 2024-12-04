@@ -89,8 +89,8 @@ class Validator
     /**
      * Checks if $field type is valid
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -104,8 +104,8 @@ class Validator
     /**
      * Checks if $field type is valid for Path field
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -119,8 +119,8 @@ class Validator
     /**
      * Checks if $field type is valid for PathSource field
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -134,8 +134,8 @@ class Validator
     /**
      * Checks if $field type is valid for PathHash field
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -149,8 +149,8 @@ class Validator
     /**
      * Checks if $field type is valid for LockTime field
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -164,8 +164,8 @@ class Validator
     /**
      * Checks if $field type is valid for Root field
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -179,8 +179,8 @@ class Validator
     /**
      * Validates metadata for nested type tree
      *
-     * @param ClassMetadata        $meta
-     * @param array<string, mixed> $config
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
      *
      * @throws InvalidMappingException
      *
@@ -206,8 +206,8 @@ class Validator
     /**
      * Validates metadata for closure type tree
      *
-     * @param ClassMetadata        $meta
-     * @param array<string, mixed> $config
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
      *
      * @throws InvalidMappingException
      *
@@ -230,8 +230,8 @@ class Validator
     /**
      * Validates metadata for materialized path type tree
      *
-     * @param ClassMetadata        $meta
-     * @param array<string, mixed> $config
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
      *
      * @throws InvalidMappingException
      *

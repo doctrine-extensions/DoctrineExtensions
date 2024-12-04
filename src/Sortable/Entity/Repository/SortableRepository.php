@@ -22,7 +22,9 @@ use Gedmo\Sortable\SortableListener;
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  *
- * @phpstan-extends EntityRepository<object>
+ * @template T of object
+ *
+ * @template-extends EntityRepository<T>
  */
 class SortableRepository extends EntityRepository
 {
@@ -39,10 +41,13 @@ class SortableRepository extends EntityRepository
     protected $config;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata<T>
      */
     protected $meta;
 
+    /**
+     * @param ClassMetadata<T> $class
+     */
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);

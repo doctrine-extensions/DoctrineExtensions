@@ -125,7 +125,7 @@ class Yaml extends File
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if ($meta instanceof ClassMetadata && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+            if ($meta instanceof ClassMetadata && count($meta->getIdentifier()) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {

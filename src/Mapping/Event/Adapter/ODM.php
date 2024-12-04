@@ -62,7 +62,7 @@ class ODM implements AdapterInterface
     }
 
     /**
-     * @param ClassMetadata $meta
+     * @param ClassMetadata<object> $meta
      */
     public function getRootObjectClass($meta)
     {
@@ -114,11 +114,17 @@ class ODM implements AdapterInterface
         return $uow->getDocumentChangeSet($object);
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public function getSingleIdentifierFieldName($meta)
     {
         return $meta->getIdentifier()[0];
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);

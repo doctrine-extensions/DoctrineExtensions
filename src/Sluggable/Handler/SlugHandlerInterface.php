@@ -34,10 +34,12 @@ interface SlugHandlerInterface
      * Hook on slug handlers before the decision is made whether
      * the slug needs to be recalculated.
      *
-     * @param SlugConfiguration $config
-     * @param object            $object
-     * @param string            $slug
-     * @param bool              $needToChangeSlug
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param string               $slug
+     * @param bool                 $needToChangeSlug
+     *
+     * @phpstan-param SlugConfiguration $config
      *
      * @return void
      */
@@ -46,9 +48,11 @@ interface SlugHandlerInterface
     /**
      * Hook on slug handlers called after the slug is built.
      *
-     * @param SlugConfiguration $config
-     * @param object            $object
-     * @param string            $slug
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param string               $slug
+     *
+     * @phpstan-param SlugConfiguration $config
      *
      * @return void
      */
@@ -57,9 +61,11 @@ interface SlugHandlerInterface
     /**
      * Hook for slug handlers called after the slug is completed.
      *
-     * @param SlugConfiguration $config
-     * @param object            $object
-     * @param string            $slug
+     * @param array<string, mixed> $config
+     * @param object               $object
+     * @param string               $slug
+     *
+     * @phpstan-param SlugConfiguration $config
      *
      * @return void
      */
@@ -73,7 +79,8 @@ interface SlugHandlerInterface
     /**
      * Validates the options for the handler.
      *
-     * @param array<string, mixed> $options
+     * @param array<string, mixed>  $options
+     * @param ClassMetadata<object> $meta
      *
      * @throws InvalidMappingException if the configuration is invalid
      *

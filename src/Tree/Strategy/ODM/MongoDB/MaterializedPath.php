@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Strategy\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -26,7 +27,8 @@ use MongoDB\BSON\UTCDateTime;
 class MaterializedPath extends AbstractMaterializedPath
 {
     /**
-     * @param DocumentManager $om
+     * @param DocumentManager       $om
+     * @param ClassMetadata<object> $meta
      */
     public function removeNode($om, $meta, $config, $node)
     {
@@ -46,7 +48,8 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * @param DocumentManager $om
+     * @param DocumentManager       $om
+     * @param ClassMetadata<object> $meta
      */
     public function getChildren($om, $meta, $config, $originalPath)
     {

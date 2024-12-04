@@ -182,7 +182,6 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         static::assertSame($samsungTV->getMetadatas()->first()->getCategory()->getName(), $tvMetadata->getCategory()->getName());
 
         $tvs = $tvCategory->getProducts();
-        static::assertNotNull($tvs);
         static::assertContainsOnlyInstancesOf(Product::class, $tvs);
     }
 }

@@ -90,6 +90,9 @@ class RelativeSlugHandler implements SlugHandlerInterface
         $this->sluggable->setTransliterator([$this, 'transliterate']);
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!$meta->isSingleValuedAssociation($options['relationField'])) {

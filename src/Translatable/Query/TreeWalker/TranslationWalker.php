@@ -84,7 +84,7 @@ class TranslationWalker extends SqlWalker
      *
      * @var array<string, array<string, mixed>>
      *
-     * @phpstan-var array<string, array{metadata: ClassMetadata}>
+     * @phpstan-var array<string, array{metadata: ClassMetadata<object>}>
      */
     private array $translatedComponents = [];
 
@@ -272,7 +272,7 @@ class TranslationWalker extends SqlWalker
         $joinStrategy = $q->getHint(TranslatableListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
-            /** @var ClassMetadata $meta */
+            /** @var ClassMetadata<object> $meta */
             $meta = $comp['metadata'];
             $config = $this->listener->getConfiguration($em, $meta->getName());
             $transClass = $this->listener->getTranslationClass($ea, $meta->getName());
@@ -349,9 +349,9 @@ class TranslationWalker extends SqlWalker
     /**
      * Search for translated components in the select clause
      *
-     * @param array<string, array<string, ClassMetadata>> $queryComponents
+     * @param array<string, array<string, ClassMetadata<object>>> $queryComponents
      *
-     * @phpstan-param array<string, array{metadata: ClassMetadata}> $queryComponents
+     * @phpstan-param array<string, array{metadata: ClassMetadata<object>}> $queryComponents
      */
     private function extractTranslatedComponents(array $queryComponents): void
     {

@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Tests\Timestampable\Fixture\TitledArticle;
@@ -122,6 +123,9 @@ final class EventAdapterORMStub extends BaseAdapterORM implements TimestampableA
         $this->dateTime = $dateTime;
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public function getDateValue($meta, $field): ?\DateTime
     {
         return $this->dateTime;
@@ -146,7 +150,8 @@ final class TimestampableListenerStub extends AbstractTrackingListener
     }
 
     /**
-     * @param EventAdapterORMStub $eventAdapter
+     * @param ClassMetadata<object> $meta
+     * @param EventAdapterORMStub   $eventAdapter
      */
     protected function getFieldValue($meta, $field, $eventAdapter)
     {

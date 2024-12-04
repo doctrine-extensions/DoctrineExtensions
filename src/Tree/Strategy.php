@@ -45,8 +45,8 @@ interface Strategy
     /**
      * Operations after metadata is loaded
      *
-     * @param ObjectManager $om
-     * @param ClassMetadata $meta
+     * @param ObjectManager         $om
+     * @param ClassMetadata<object> $meta
      *
      * @return void
      */

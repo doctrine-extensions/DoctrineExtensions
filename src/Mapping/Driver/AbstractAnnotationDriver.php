@@ -99,11 +99,9 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
     }
 
     /**
-     * @param ClassMetadata $meta
+     * @param ClassMetadata<object> $meta
      *
-     * @return \ReflectionClass
-     *
-     * @phpstan-return \ReflectionClass<object>
+     * @return \ReflectionClass<object>
      */
     public function getMetaReflectionClass($meta)
     {
@@ -111,7 +109,8 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
      *
      * @return void
      */
@@ -122,8 +121,8 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
     /**
      * Checks if $field type is valid
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -137,8 +136,8 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
     /**
      * Try to find out related class name out of mapping
      *
-     * @param ClassMetadata $metadata the mapped class metadata
-     * @param string        $name     the related object class name
+     * @param ClassMetadata<object> $metadata the mapped class metadata
+     * @param string                $name     the related object class name
      *
      * @return string related class name or empty string if does not exist
      *

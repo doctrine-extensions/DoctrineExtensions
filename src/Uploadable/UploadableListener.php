@@ -86,7 +86,7 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Default FileInfoInterface class
      *
-     * @phpstan-var class-string<FileInfoInterface>
+     * @var class-string<FileInfoInterface>
      */
     private string $defaultFileInfoClass = FileInfoArray::class;
 
@@ -599,7 +599,7 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns file info default class
      *
-     * @return string
+     * @return class-string<FileInfoInterface>
      */
     public function getDefaultFileInfoClass()
     {
@@ -609,10 +609,8 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Adds a FileInfoInterface object for the given entity
      *
-     * @param object                        $entity
-     * @param array|FileInfoInterface|mixed $fileInfo
-     *
-     * @phpstan-assert FileInfoInterface|array $fileInfo
+     * @param object                                 $entity
+     * @param array<string, mixed>|FileInfoInterface $fileInfo
      *
      * @throws \RuntimeException
      *
@@ -668,8 +666,9 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param array<string, mixed> $config
-     * @param object               $object Entity
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
+     * @param object                $object Entity
      *
      * @throws UploadableNoPathDefinedException
      *
@@ -700,9 +699,9 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param ClassMetadata        $meta
-     * @param array<string, mixed> $config
-     * @param object               $object Entity
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
+     * @param object                $object Entity
      *
      * @return void
      */
@@ -734,8 +733,9 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns value of the entity's property
      *
-     * @param string $propertyName
-     * @param object $object
+     * @param ClassMetadata<object> $meta
+     * @param string                $propertyName
+     * @param object                $object
      *
      * @return mixed
      */
@@ -749,8 +749,9 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the path of the entity's file
      *
-     * @param array<string, mixed> $config
-     * @param object               $object
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
+     * @param object                $object
      *
      * @return string
      */
@@ -762,8 +763,9 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the name of the entity's file
      *
-     * @param array<string, mixed> $config
-     * @param object               $object
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
+     * @param object                $object
      *
      * @return string
      */
@@ -778,11 +780,12 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param object $object
-     * @param object $uow
-     * @param string $field
-     * @param mixed  $value
-     * @param bool   $notifyPropertyChanged
+     * @param object                $object
+     * @param object                $uow
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
+     * @param mixed                 $value
+     * @param bool                  $notifyPropertyChanged
      *
      * @return void
      */

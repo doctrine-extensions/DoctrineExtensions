@@ -13,7 +13,6 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
-use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * The IpTraceable listener handles the update of
@@ -35,9 +34,9 @@ class IpTraceableListener extends AbstractTrackingListener
     /**
      * Get the ipValue value to set on a ip field
      *
-     * @param ClassMetadata    $meta
-     * @param string           $field
-     * @param AdapterInterface $eventAdapter
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
+     * @param IpTraceableAdapter    $eventAdapter
      *
      * @return string|null
      */
