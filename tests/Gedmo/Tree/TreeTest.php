@@ -15,7 +15,6 @@ use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Category;
 use Gedmo\Tests\Tree\Fixture\CategoryUuid;
-use Gedmo\Tree\Node;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -41,7 +40,6 @@ final class TreeTest extends BaseTestCaseORM
 
         $root = new Category();
         $root->setTitle('Root');
-        static::assertInstanceOf(Node::class, $root);
 
         $this->em->persist($root);
         $this->em->flush();
@@ -232,7 +230,6 @@ final class TreeTest extends BaseTestCaseORM
 
         $root = new CategoryUuid();
         $root->setTitle('Root');
-        static::assertInstanceOf(Node::class, $root);
 
         $this->em->persist($root);
         $rootId = $root->getId();

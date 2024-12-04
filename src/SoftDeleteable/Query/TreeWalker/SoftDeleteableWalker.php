@@ -77,7 +77,7 @@ class SoftDeleteableWalker extends SqlWalker
     protected $deletedAtField;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata<object>
      */
     protected $meta;
 

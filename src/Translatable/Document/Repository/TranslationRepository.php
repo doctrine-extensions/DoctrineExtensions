@@ -28,7 +28,9 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @phpstan-extends DocumentRepository<object>
+ * @template T of object
+ *
+ * @template-extends DocumentRepository<T>
  */
 class TranslationRepository extends DocumentRepository
 {
@@ -38,6 +40,9 @@ class TranslationRepository extends DocumentRepository
      */
     private ?TranslatableListener $listener = null;
 
+    /**
+     * @param ClassMetadata<T> $class
+     */
     public function __construct(DocumentManager $dm, UnitOfWork $uow, ClassMetadata $class)
     {
         if ($class->getReflectionClass()->isSubclassOf(AbstractPersonalTranslation::class)) {

@@ -10,6 +10,7 @@
 namespace Gedmo\Loggable\Mapping\Driver;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as ClassMetadataODM;
+use Doctrine\ORM\Mapping\ClassMetadata as ClassMetadataORM;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\Loggable;
@@ -38,7 +39,7 @@ class Attribute extends AbstractAnnotationDriver
 
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if ($config && $meta instanceof ClassMetadataODM && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+        if ($config && $meta instanceof ClassMetadataODM && count($meta->getIdentifier()) > 1) {
             throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
         }
 
@@ -94,7 +95,7 @@ class Attribute extends AbstractAnnotationDriver
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if ($meta instanceof ClassMetadataODM && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+            if ($meta instanceof ClassMetadataODM && count($meta->getIdentifier()) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
 
@@ -107,7 +108,8 @@ class Attribute extends AbstractAnnotationDriver
     }
 
     /**
-     * @param string $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -117,7 +119,8 @@ class Attribute extends AbstractAnnotationDriver
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
      *
      * @return bool
      */
@@ -129,9 +132,10 @@ class Attribute extends AbstractAnnotationDriver
     /**
      * Searches properties of embedded objects for versioned fields
      *
-     * @param array<string, mixed> $config
+     * @param array<string, mixed>     $config
+     * @param ClassMetadataORM<object> $meta
      */
-    private function inspectEmbeddedForVersioned(string $field, array &$config, \Doctrine\ORM\Mapping\ClassMetadata $meta): void
+    private function inspectEmbeddedForVersioned(string $field, array &$config, ClassMetadataORM $meta): void
     {
         $class = new \ReflectionClass($meta->embeddedClasses[$field]['class']);
 

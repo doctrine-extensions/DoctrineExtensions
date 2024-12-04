@@ -22,8 +22,8 @@ interface SoftDeleteableAdapter extends AdapterInterface
     /**
      * Get the date value.
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return int|\DateTimeInterface
      */

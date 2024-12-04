@@ -18,15 +18,9 @@ class TranslatableModel
     #[Gedmo\Translatable]
     private ?string $title = null;
 
-    /**
-     * @var string|null
-     */
     #[Gedmo\Translatable(fallback: true)]
-    private $titleFallbackTrue;
+    private ?string $titleFallbackTrue = null;
 
-    /**
-     * @var string|null
-     */
     #[Gedmo\Translatable(fallback: false)]
-    private $titleFallbackFalse;
+    private ?string $titleFallbackFalse = null;
 }

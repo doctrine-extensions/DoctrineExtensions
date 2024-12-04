@@ -11,9 +11,7 @@ namespace Gedmo\Tool\Wrapper;
 
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as OdmClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata as OrmClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\UnsupportedObjectManagerException;
@@ -23,9 +21,11 @@ use Gedmo\Tool\WrapperInterface;
  * Wraps entity or proxy for more convenient
  * manipulation
  *
- * @phpstan-template TClassMetadata of ClassMetadata
+ * @template TClassMetadata of ClassMetadata<TObject>
+ * @template TObject        of object
+ * @template TObjectManager of ObjectManager
  *
- * @phpstan-implements WrapperInterface<TClassMetadata>
+ * @template-implements WrapperInterface<TClassMetadata, TObject, TObjectManager>
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
@@ -34,34 +34,36 @@ abstract class AbstractWrapper implements WrapperInterface
     /**
      * Object metadata
      *
-     * @var ClassMetadata&(OrmClassMetadata|OdmClassMetadata)
-     *
-     * @phpstan-var TClassMetadata
+     * @var TClassMetadata
      */
     protected $meta;
 
     /**
      * Wrapped object
      *
-     * @var object
+     * @var TObject
      */
     protected $object;
 
     /**
      * Object manager instance
      *
-     * @var ObjectManager
+     * @var TObjectManager
      */
     protected $om;
 
     /**
      * Wrap object factory method
      *
-     * @param object $object
+     * @param TObject        $object
+     * @param TObjectManager $om
+     *
+     * @psalm-param object        $object
+     * @psalm-param ObjectManager $om
      *
      * @throws UnsupportedObjectManagerException
      *
-     * @return WrapperInterface<ClassMetadata>
+     * @return WrapperInterface<TClassMetadata, TObject, TObjectManager>
      */
     public static function wrap($object, ObjectManager $om)
     {
@@ -88,11 +90,17 @@ abstract class AbstractWrapper implements WrapperInterface
         );
     }
 
+    /**
+     * @return TObject
+     */
     public function getObject()
     {
         return $this->object;
     }
 
+    /**
+     * @return TClassMetadata
+     */
     public function getMetadata()
     {
         return $this->meta;

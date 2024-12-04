@@ -62,7 +62,7 @@ class ORM implements AdapterInterface
     }
 
     /**
-     * @param ClassMetadata $meta
+     * @param ClassMetadata<object> $meta
      */
     public function getRootObjectClass($meta)
     {
@@ -149,13 +149,16 @@ class ORM implements AdapterInterface
     }
 
     /**
-     * @param ClassMetadata $meta
+     * @param ClassMetadata<object> $meta
      */
     public function getSingleIdentifierFieldName($meta)
     {
         return $meta->getSingleIdentifierFieldName();
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleEntityChangeSet($meta, $object);

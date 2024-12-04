@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Blameable;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Blameable\Blameable;
 use Gedmo\Blameable\BlameableListener;
 use Gedmo\Tests\Blameable\Fixture\Entity\Company;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -42,8 +41,6 @@ final class BlameableUuidTest extends BaseTestCaseORM
     {
         $company = new Company();
         $company->setName('ACME');
-
-        static::assertInstanceOf(Blameable::class, $company);
 
         $this->em->persist($company);
         $this->em->flush();

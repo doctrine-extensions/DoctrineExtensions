@@ -228,7 +228,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Scans the objects for extended annotations
      * event subscribers must subscribe to loadClassMetadata event
      *
-     * @param ClassMetadata $metadata
+     * @param ClassMetadata<object> $metadata
      *
      * @return void
      */

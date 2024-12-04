@@ -67,8 +67,8 @@ class Xml extends BaseXml
     /**
      * Checks if $field type is valid as Sluggable field
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -80,7 +80,8 @@ class Xml extends BaseXml
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
      *
      * @return array<string, mixed>
      */

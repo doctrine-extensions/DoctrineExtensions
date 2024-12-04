@@ -34,7 +34,7 @@ final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter, ClockAw
     }
 
     /**
-     * @param ClassMetadata $meta
+     * @param ClassMetadata<object> $meta
      */
     public function getDateValue($meta, $field)
     {

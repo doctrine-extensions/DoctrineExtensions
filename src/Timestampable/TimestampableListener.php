@@ -26,9 +26,9 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 class TimestampableListener extends AbstractTrackingListener
 {
     /**
-     * @param ClassMetadata        $meta
-     * @param string               $field
-     * @param TimestampableAdapter $eventAdapter
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
+     * @param TimestampableAdapter  $eventAdapter
      *
      * @return mixed
      */

@@ -25,29 +25,25 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @phpstan-template T of Loggable|object
+ * @template T of Loggable|object
  *
- * @phpstan-extends EntityRepository<AbstractLogEntry<T>>
+ * @template-extends EntityRepository<AbstractLogEntry<T>>
  */
 class LogEntryRepository extends EntityRepository
 {
     /**
      * Currently used loggable listener
      *
-     * @phpstan-var LoggableListener<T>|null
+     * @var LoggableListener<T>|null
      */
     private ?LoggableListener $listener = null;
 
     /**
      * Loads all log entries for the given entity
      *
-     * @param object $entity
+     * @param T $entity
      *
-     * @return AbstractLogEntry[]
-     *
-     * @phpstan-param T $entity
-     *
-     * @phpstan-return array<array-key, AbstractLogEntry<T>>
+     * @return array<array-key, AbstractLogEntry<T>>
      */
     public function getLogEntries($entity)
     {
@@ -57,11 +53,9 @@ class LogEntryRepository extends EntityRepository
     /**
      * Get the query for loading of log entries
      *
-     * @param object $entity
+     * @param T $entity
      *
      * @return Query
-     *
-     * @phpstan-param T $entity
      */
     public function getLogEntriesQuery($entity)
     {
@@ -89,14 +83,12 @@ class LogEntryRepository extends EntityRepository
      * After this operation you will need to
      * persist and flush the $entity.
      *
-     * @param object $entity
-     * @param int    $version
+     * @param T   $entity
+     * @param int $version
      *
      * @throws UnexpectedValueException
      *
      * @return void
-     *
-     * @phpstan-param T $entity
      */
     public function revert($entity, $version = 1)
     {
@@ -151,12 +143,11 @@ class LogEntryRepository extends EntityRepository
     }
 
     /**
-     * @param string $field
-     * @param mixed  $value
+     * @param ClassMetadata<T> $objectMeta
+     * @param string           $field
+     * @param mixed            $value
      *
      * @return void
-     *
-     * @phpstan-param ClassMetadata<T> $objectMeta
      */
     protected function mapValue(ClassMetadata $objectMeta, $field, &$value)
     {
@@ -173,7 +164,7 @@ class LogEntryRepository extends EntityRepository
      *
      * @throws RuntimeException if listener is not found
      *
-     * @phpstan-return LoggableListener<T>
+     * @return LoggableListener<T>
      */
     private function getLoggableListener(): LoggableListener
     {
