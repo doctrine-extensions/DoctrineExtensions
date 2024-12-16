@@ -11,7 +11,6 @@ namespace Gedmo\Sortable;
 
 use Doctrine\Common\Comparable;
 use Doctrine\Common\EventArgs;
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
@@ -20,6 +19,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
+use Gedmo\Tool\ClassUtils;
 use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
