@@ -43,7 +43,6 @@
         "php": "^7.4 || ^8.0",
         "behat/transliterator": "^1.2",
         "doctrine/collections": "^1.2 || ^2.0",
-        "doctrine/common": "^2.13 || ^3.0",
         "doctrine/deprecations": "^1.0",
         "doctrine/event-manager": "^1.2 || ^2.0",
         "doctrine/persistence": "^2.2 || ^3.0",
@@ -54,6 +53,7 @@
     "require-dev": {
         "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/cache": "^1.11 || ^2.0",
+        "doctrine/common": "^2.13 || ^3.0",
         "doctrine/dbal": "^3.7 || ^4.0",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/mongodb-odm": "^2.3",
@@ -73,6 +73,7 @@
     },
     "conflict": {
         "doctrine/annotations": "<1.13 || >=3.0",
+        "doctrine/common": "<2.13 || >=4.0",
         "doctrine/dbal": "<3.7 || >=5.0",
         "doctrine/mongodb-odm": "<2.3 || >=3.0",
         "doctrine/orm": "<2.14.0 || 2.16.0 || 2.16.1 || >=4.0"
