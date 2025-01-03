@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### New
+- Add return types to createdAt and updatedAt
 ### Deprecated
 - Sluggable: Annotation-specific mapping parameters (#2837)
 

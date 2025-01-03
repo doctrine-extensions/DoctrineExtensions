@@ -21,19 +21,19 @@ trait Timestampable
     /**
      * @var \DateTime|null
      */
-    protected $createdAt;
+    protected ?\DateTime $createdAt;
 
     /**
      * @var \DateTime|null
      */
-    protected $updatedAt;
+    protected ?\DateTime $updatedAt;
 
     /**
      * Sets createdAt.
      *
      * @return $this
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -45,7 +45,7 @@ trait Timestampable
      *
      * @return \DateTime|null
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -55,7 +55,7 @@ trait Timestampable
      *
      * @return $this
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
@@ -67,7 +67,7 @@ trait Timestampable
      *
      * @return \DateTime|null
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
