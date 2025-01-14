@@ -329,9 +329,9 @@ class TranslatableListener extends MappedEventSubscriber
      * Gets the locale to use for translation. Loads object
      * defined locale first.
      *
-     * @param object        $object
-     * @param ClassMetadata $meta
-     * @param object        $om
+     * @param object                $object
+     * @param ClassMetadata<object> $meta
+     * @param object                $om
      *
      * @throws RuntimeException if language or locale property is not found in entity
      *

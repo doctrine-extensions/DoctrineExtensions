@@ -34,8 +34,9 @@ class BlameableListener extends AbstractTrackingListener
     /**
      * Get the user value to set on a blameable field
      *
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
+     * @param BlameableAdapter      $eventAdapter
      *
      * @return mixed
      */

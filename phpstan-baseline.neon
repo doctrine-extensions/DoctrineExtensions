@@ -1,922 +1,1256 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
-			count: 1
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
+			count: 4
 			path: src/AbstractTrackingListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 3
 			path: src/AbstractTrackingListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 3
-			path: src/AbstractTrackingListener.php
-
-		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Blameable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Blameable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
+			message: '#^Property Gedmo\\Mapping\\Annotation\\Blameable\:\:\$field \(array\<string\>\|string\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
 			count: 1
 			path: src/Blameable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Blameable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Blameable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 2
 			path: src/DoctrineExtensions.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/IpTraceable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Unable to resolve the template type T in call to method Doctrine\\\\ORM\\\\EntityManagerInterface\\:\\:getReference\\(\\)$#"
+			message: '#^Method Gedmo\\Loggable\\Entity\\Repository\\LogEntryRepository\:\:getLogEntriesQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Loggable/Entity/Repository/LogEntryRepository.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\<T of object\\>\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Unable to resolve the template type T in call to method Doctrine\\ORM\\EntityManagerInterface\:\:getReference\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Loggable/Entity/Repository/LogEntryRepository.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Loggable\\LogEntryInterface\<T of object\>\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<Gedmo\\\\Loggable\\\\LogEntryInterface\\<T of object\\>\\>\\:\\:newInstance\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Loggable\\LogEntryInterface\<T of object\>\>\:\:newInstance\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 4
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Method Gedmo\\\\Tool\\\\WrapperInterface\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\>\\:\\:getIdentifier\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			message: '#^Method Gedmo\\Tool\\WrapperInterface\<Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>,object,Doctrine\\Persistence\\ObjectManager\>\:\:getIdentifier\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
 			count: 2
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
+			message: '#^Access to an undefined property Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:\$associationMappings\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/Loggable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/Driver/AbstractAnnotationDriver.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getDocument\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Common\\EventArgs\:\:getDocument\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getDocumentManager\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Common\\EventArgs\:\:getDocumentManager\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getEntity\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Common\\EventArgs\:\:getEntity\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Common\\\\EventArgs\\:\\:getEntityManager\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Common\\EventArgs\:\:getEntityManager\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Method Gedmo\\\\Mapping\\\\Event\\\\Adapter\\\\ORM\\:\\:createLifecycleEventArgsInstance\\(\\) has invalid return type Doctrine\\\\ORM\\\\Event\\\\LifecycleEventArgs\\.$#"
+			message: '#^Method Gedmo\\Mapping\\Event\\Adapter\\ORM\:\:createLifecycleEventArgsInstance\(\) has invalid return type Doctrine\\ORM\\Event\\LifecycleEventArgs\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Access to property \\$isMappedSuperclass on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Access to property \$isMappedSuperclass on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Access to property \\$parentClasses on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Access to property \$parentClasses on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Access to property \\$reflClass on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Access to property \$reflClass on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver\\:\\:getDefaultDriver\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver\:\:getDefaultDriver\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver\\:\\:getDrivers\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver\:\:getDrivers\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver\\:\\:getLocator\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver\:\:getLocator\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getConfiguration\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getConfiguration\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Call to method getName\\(\\) on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Call to method getName\(\) on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 4
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Call to method isInheritanceTypeNone\\(\\) on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Call to method isInheritanceTypeNone\(\) on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo not found\\.$#"
+			message: '#^Class Doctrine\\ORM\\Mapping\\ClassMetadataInfo not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Parameter \\$meta of method Gedmo\\\\Mapping\\\\ExtensionMetadataFactory\\:\\:getExtensionMetadata\\(\\) has invalid type Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Parameter \$meta of method Gedmo\\Mapping\\ExtensionMetadataFactory\:\:getExtensionMetadata\(\) has invalid type Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
-			message: "#^Call to method getName\\(\\) on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Call to method getName\(\) on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
-			message: "#^Class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo not found\\.$#"
+			message: '#^Class Doctrine\\ORM\\Mapping\\ClassMetadataInfo not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Mapping/MappedEventSubscriber.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 3
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isCollectionValuedReference\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:isCollectionValuedReference\(\)\.$#'
+			identifier: method.notFound
 			count: 4
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isSingleValuedReference\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:isSingleValuedReference\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/References/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isInheritanceTypeNone\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:isInheritanceTypeNone\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getReference\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getReference\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:isInheritanceTypeNone\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:isInheritanceTypeNone\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Call to method getClassMetadata\\(\\) on an unknown class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager\\.$#"
+			message: '#^Call to method getClassMetadata\(\) on an unknown class Doctrine\\ODM\\PHPCR\\DocumentManager\.$#'
+			identifier: class.notFound
 			count: 2
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Call to method getReference\\(\\) on an unknown class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager\\.$#"
+			message: '#^Call to method getReference\(\) on an unknown class Doctrine\\ODM\\PHPCR\\DocumentManager\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager not found\\.$#"
+			message: '#^Class Doctrine\\ODM\\PHPCR\\DocumentManager not found\.$#'
+			identifier: class.notFound
 			count: 2
 			path: src/References/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:\\$reflClass\\.$#"
+			message: '#^PHPDoc tag @phpstan\-assert for \$dm contains unknown class Doctrine\\ODM\\PHPCR\\DocumentManager\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/References/Mapping/Event/Adapter/ORM.php
+
+		-
+			message: '#^Access to an undefined property Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:\$reflClass\.$#'
+			identifier: property.notFound
 			count: 4
 			path: src/References/ReferencesListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldValue\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/ReferencesListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:setFieldValue\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/References/ReferencesListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Sluggable/Handler/RelativeSlugHandler.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Sluggable/Handler/TreeSlugHandler.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 3
 			path: src/Sluggable/Handler/TreeSlugHandler.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Sluggable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			message: '#^Access to an undefined property Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:\$isMappedSuperclass\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/Sluggable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Sluggable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			message: '#^Access to an undefined property Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:\$isMappedSuperclass\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/Sluggable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Sluggable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Call to method getFieldName\\(\\) on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Call to method getFieldName\(\) on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Sluggable/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo not found\\.$#"
+			message: '#^Class Doctrine\\ORM\\Mapping\\ClassMetadataInfo not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Sluggable/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Sluggable/SluggableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 7
 			path: src/Sluggable/SluggableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Sluggable/SluggableListener.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			message: '#^Access to an undefined property Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:\$isMappedSuperclass\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/SoftDeleteable/Mapping/Validator.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/SoftDeleteable/Mapping/Validator.php
 
 		-
-			message: "#^Access to an undefined property Gedmo\\\\SoftDeleteable\\\\Query\\\\TreeWalker\\\\Exec\\\\MultiTableDeleteExecutor\\:\\:\\$_sqlStatements\\.$#"
+			message: '#^Access to an undefined property Gedmo\\SoftDeleteable\\Query\\TreeWalker\\Exec\\MultiTableDeleteExecutor\:\:\$_sqlStatements\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/SoftDeleteable/Query/TreeWalker/Exec/MultiTableDeleteExecutor.php
 
 		-
-			message: "#^Method Gedmo\\\\SoftDeleteable\\\\Query\\\\TreeWalker\\\\SoftDeleteableWalker\\:\\:__construct\\(\\) has parameter \\$parserResult with no type specified\\.$#"
+			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\SoftDeleteable\\Query\\TreeWalker\\Exec\\MultiTableDeleteExecutor\) and ''sqlStatements'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/SoftDeleteable/Query/TreeWalker/Exec/MultiTableDeleteExecutor.php
+
+		-
+			message: '#^Method Gedmo\\SoftDeleteable\\Query\\TreeWalker\\SoftDeleteableWalker\:\:__construct\(\) has parameter \$parserResult with no type specified\.$#'
+			identifier: missingType.parameter
 			count: 1
 			path: src/SoftDeleteable/Query/TreeWalker/SoftDeleteableWalker.php
 
 		-
-			message: "#^Method Gedmo\\\\SoftDeleteable\\\\Query\\\\TreeWalker\\\\SoftDeleteableWalker\\:\\:__construct\\(\\) has parameter \\$query with no type specified\\.$#"
+			message: '#^Method Gedmo\\SoftDeleteable\\Query\\TreeWalker\\SoftDeleteableWalker\:\:__construct\(\) has parameter \$query with no type specified\.$#'
+			identifier: missingType.parameter
 			count: 1
 			path: src/SoftDeleteable/Query/TreeWalker/SoftDeleteableWalker.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Method Gedmo\\Sortable\\Entity\\Repository\\SortableRepository\:\:getBySortableGroupsQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Sortable/Entity/Repository/SortableRepository.php
+
+		-
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Sortable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Sortable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Sortable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
-			count: 5
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
+			count: 9
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 4
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 4
-			path: src/Sortable/SortableListener.php
-
-		-
-			message: "#^Call to an undefined method Gedmo\\\\Sortable\\\\Mapping\\\\Event\\\\SortableAdapter\\:\\:getMaxPosition\\(\\)\\.$#"
+			message: '#^Call to an undefined method Gedmo\\Sortable\\Mapping\\Event\\SortableAdapter\:\:getMaxPosition\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Sortable\\\\Mapping\\\\Event\\\\SortableAdapter\\:\\:updatePositions\\(\\)\\.$#"
+			message: '#^Call to an undefined method Gedmo\\Sortable\\Mapping\\Event\\SortableAdapter\:\:updatePositions\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Sortable/SortableListener.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Property Gedmo\\\\Mapping\\\\Annotation\\\\Timestampable\\:\\:\\$field \\(array\\<string\\>\\|string\\) in isset\\(\\) is not nullable\\.$#"
+			message: '#^Property Gedmo\\Mapping\\Annotation\\Timestampable\:\:\$field \(array\<string\>\|string\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Xml.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
-			message: "#^Call to an undefined static method Doctrine\\\\ORM\\\\Query\\\\SqlWalker\\:\\:getFinalizer\\(\\)\\.$#"
+			message: '#^Call to an undefined static method Doctrine\\ORM\\Query\\SqlWalker\:\:getFinalizer\(\)\.$#'
+			identifier: staticMethod.notFound
 			count: 2
 			path: src/Tool/ORM/Walker/CompatSqlOutputWalker.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
-			message: "#^Parameter \\#2 \\$em of class Gedmo\\\\Tool\\\\Wrapper\\\\EntityWrapper constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, Doctrine\\\\Persistence\\\\ObjectManager given\\.$#"
-			count: 1
-			path: src/Tool/Wrapper/EntityWrapper.php
-
-		-
-			message: "#^Access to an undefined property ProxyManager\\\\Proxy\\\\GhostObjectInterface\\:\\:\\$identifier\\.$#"
+			message: '#^Access to an undefined property ProxyManager\\Proxy\\GhostObjectInterface&TObject of object\:\:\$identifier\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
-			count: 2
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
-			message: "#^Call to function property_exists\\(\\) with \\$this\\(Gedmo\\\\Translatable\\\\Hydrator\\\\ORM\\\\ObjectHydrator\\) and '_em' will always evaluate to false\\.$#"
+			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator\) and ''_em'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: src/Translatable/Hydrator/ORM/ObjectHydrator.php
 
 		-
-			message: "#^Method Gedmo\\\\Translatable\\\\Hydrator\\\\ORM\\\\ObjectHydrator\\:\\:hydrateAllData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator\:\:hydrateAllData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Translatable/Hydrator/ORM/ObjectHydrator.php
 
 		-
-			message: "#^Call to function property_exists\\(\\) with \\$this\\(Gedmo\\\\Translatable\\\\Hydrator\\\\ORM\\\\SimpleObjectHydrator\\) and '_em' will always evaluate to false\\.$#"
+			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator\) and ''_em'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: src/Translatable/Hydrator/ORM/SimpleObjectHydrator.php
 
 		-
-			message: "#^Method Gedmo\\\\Translatable\\\\Hydrator\\\\ORM\\\\SimpleObjectHydrator\\:\\:hydrateAllData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator\:\:hydrateAllData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Translatable/Hydrator/ORM/SimpleObjectHydrator.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Translatable/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Access to offset 'association' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
+			message: '#^Access to offset ''association'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\FieldMapping\.$#'
+			identifier: class.notFound
 			count: 2
 			path: src/Translatable/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Access to offset 'fieldName' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
+			message: '#^Access to offset ''fieldName'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\FieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Translatable/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Access to offset 'mappedBy' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
+			message: '#^Access to offset ''mappedBy'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\FieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Translatable/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Access to offset 'targetDocument' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\FieldMapping\\.$#"
+			message: '#^Access to offset ''targetDocument'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\FieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Translatable/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: "#^Call to method getAssociationMappings\\(\\) on an unknown class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo\\.$#"
+			message: '#^Call to method getAssociationMappings\(\) on an unknown class Doctrine\\ORM\\Mapping\\ClassMetadataInfo\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Translatable/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Class Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadataInfo not found\\.$#"
+			message: '#^Class Doctrine\\ORM\\Mapping\\ClassMetadataInfo not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Translatable/Mapping/Event/Adapter/ORM.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Join\\:\\:\\$aliasIdentificationVariable\\.$#"
+			message: '#^Access to an undefined property Doctrine\\ORM\\Query\\AST\\Join\:\:\$aliasIdentificationVariable\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\ORM\\\\Query\\\\AST\\\\Node\\:\\:\\$aliasIdentificationVariable\\.$#"
+			message: '#^Access to an undefined property Doctrine\\ORM\\Query\\AST\\Node\:\:\$aliasIdentificationVariable\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
-			message: "#^Method Gedmo\\\\Translatable\\\\Query\\\\TreeWalker\\\\TranslationWalker\\:\\:__construct\\(\\) has parameter \\$parserResult with no type specified\\.$#"
+			message: '#^Method Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker\:\:__construct\(\) has parameter \$parserResult with no type specified\.$#'
+			identifier: missingType.parameter
 			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
-			message: "#^Method Gedmo\\\\Translatable\\\\Query\\\\TreeWalker\\\\TranslationWalker\\:\\:__construct\\(\\) has parameter \\$query with no type specified\\.$#"
+			message: '#^Method Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker\:\:__construct\(\) has parameter \$query with no type specified\.$#'
+			identifier: missingType.parameter
 			count: 1
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Translatable/TranslatableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:newInstance\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:newInstance\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Translatable/TranslatableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 4
 			path: src/Translatable/TranslatableListener.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\AbstractTreeRepository\:\:getChildrenQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/AbstractTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\AbstractTreeRepository\:\:getNodesHierarchyQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/AbstractTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\AbstractTreeRepository\:\:getRootNodesQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/AbstractTreeRepository.php
+
+		-
+			message: '#^Call to an undefined method Gedmo\\Tree\\Strategy\:\:updateNode\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$association of method Gedmo\\\\Tree\\\\Entity\\\\Repository\\\\ClosureTreeRepository\\<T of object\\>\\:\\:getJoinColumnFieldName\\(\\) expects array\\<string, mixed\\>, Doctrine\\\\ORM\\\\Mapping\\\\AssociationMapping given\\.$#"
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\ClosureTreeRepository\:\:childrenQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\ClosureTreeRepository\:\:getChildrenQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\ClosureTreeRepository\:\:getNodesHierarchyQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\ClosureTreeRepository\:\:getPathQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\ClosureTreeRepository\:\:getRootNodesQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
+
+		-
+			message: '#^Parameter \#1 \$association of method Gedmo\\Tree\\Entity\\Repository\\ClosureTreeRepository\<T of object\>\:\:getJoinColumnFieldName\(\) expects array\<string, mixed\>, Doctrine\\ORM\\Mapping\\AssociationMapping given\.$#'
+			identifier: argument.type
 			count: 2
 			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:max\\(\\)\\.$#"
+			message: '#^Strict comparison using \!\=\= between array\{\} and non\-empty\-array will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Tree/Entity/Repository/ClosureTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\MaterializedPathRepository\:\:getChildrenQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/MaterializedPathRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\MaterializedPathRepository\:\:getNodesHierarchyQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/MaterializedPathRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\MaterializedPathRepository\:\:getPathQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/MaterializedPathRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\MaterializedPathRepository\:\:getRootNodesQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/MaterializedPathRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\MaterializedPathRepository\:\:getTreeQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/MaterializedPathRepository.php
+
+		-
+			message: '#^Call to an undefined method Gedmo\\Tree\\Strategy\:\:max\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:setNodePosition\\(\\)\\.$#"
+			message: '#^Call to an undefined method Gedmo\\Tree\\Strategy\:\:setNodePosition\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:shiftRL\\(\\)\\.$#"
+			message: '#^Call to an undefined method Gedmo\\Tree\\Strategy\:\:shiftRL\(\)\.$#'
+			identifier: method.notFound
 			count: 3
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:shiftRangeRL\\(\\)\\.$#"
+			message: '#^Call to an undefined method Gedmo\\Tree\\Strategy\:\:shiftRangeRL\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
-			message: "#^Call to an undefined method Gedmo\\\\Tree\\\\Strategy\\:\\:updateNode\\(\\)\\.$#"
+			message: '#^Call to an undefined method Gedmo\\Tree\\Strategy\:\:updateNode\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Tree/Entity/Repository/NestedTreeRepository.php
 
 		-
-			message: "#^Call to function property_exists\\(\\) with \\$this\\(Gedmo\\\\Tree\\\\Hydrator\\\\ORM\\\\TreeObjectHydrator\\) and '_em' will always evaluate to false\\.$#"
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\NestedTreeRepository\:\:childrenQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\NestedTreeRepository\:\:getChildrenQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\NestedTreeRepository\:\:getLeafsQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\NestedTreeRepository\:\:getNextSiblingsQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\NestedTreeRepository\:\:getNodesHierarchyQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\NestedTreeRepository\:\:getPrevSiblingsQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: '#^Method Gedmo\\Tree\\Entity\\Repository\\NestedTreeRepository\:\:getRootNodesQuery\(\) return type with generic class Doctrine\\ORM\\Query does not specify its types\: TKey, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Tree/Entity/Repository/NestedTreeRepository.php
+
+		-
+			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\Tree\\Hydrator\\ORM\\TreeObjectHydrator\) and ''_em'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: src/Tree/Hydrator/ORM/TreeObjectHydrator.php
 
 		-
-			message: "#^Method Gedmo\\\\Tree\\\\Hydrator\\\\ORM\\\\TreeObjectHydrator\\:\\:hydrateAllData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method Gedmo\\Tree\\Hydrator\\ORM\\TreeObjectHydrator\:\:hydrateAllData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Tree/Hydrator/ORM/TreeObjectHydrator.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Tree/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 6
 			path: src/Tree/Mapping/Validator.php
 
 		-
-			message: "#^Method Gedmo\\\\Tree\\\\RepositoryUtils\\:\\:buildTreeArray\\(\\) should return array\\<int, array\\<string, mixed\\>\\> but returns array\\<int\\<0, max\\>, ArrayAccess\\>\\.$#"
+			message: '#^Method Gedmo\\Tree\\RepositoryUtils\:\:buildTreeArray\(\) should return array\<int, array\<string, mixed\>\> but returns array\<int\<0, max\>, ArrayAccess\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Tree/RepositoryUtils.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getIdentifierValue\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getIdentifierValue\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 10
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getSingleIdentifierFieldName\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getSingleIdentifierFieldName\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getReference\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getReference\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\ORM\\\\EntityRepository\\<object\\>\\:\\:children\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\ORM\\EntityRepository\<object\>\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/Strategy/ORM/Closure.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Tree/TreeListener.php
 
 		-
-			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			message: '#^Method Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:__construct\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
-			message: "#^Method Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:getExtensionConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:getExtensionConfiguration\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
-			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config is never read, only written\\.$#"
+			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
-			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
+			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$config type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
-			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration is never written, only read\\.$#"
+			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$extensionConfiguration is never written, only read\.$#'
+			identifier: property.onlyRead
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
-			message: "#^Property Gedmo\\\\Uploadable\\\\Event\\\\UploadableBaseEventArgs\\:\\:\\$extensionConfiguration type has no value type specified in iterable type array\\.$#"
+			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$extensionConfiguration type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Uploadable/Event/UploadableBaseEventArgs.php
 
 		-
-			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$isMappedSuperclass\\.$#"
+			message: '#^Method Gedmo\\Uploadable\\FileInfo\\FileInfoArray\:\:getName\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Uploadable/FileInfo/FileInfoArray.php
+
+		-
+			message: '#^Method Gedmo\\Uploadable\\FileInfo\\FileInfoArray\:\:getSize\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Uploadable/FileInfo/FileInfoArray.php
+
+		-
+			message: '#^Method Gedmo\\Uploadable\\FileInfo\\FileInfoArray\:\:getTmpName\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Uploadable/FileInfo/FileInfoArray.php
+
+		-
+			message: '#^Method Gedmo\\Uploadable\\FileInfo\\FileInfoArray\:\:getType\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Uploadable/FileInfo/FileInfoArray.php
+
+		-
+			message: '#^Access to an undefined property Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:\$isMappedSuperclass\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/Uploadable/Mapping/Validator.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getFieldMapping\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldMapping\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Uploadable/Mapping/Validator.php
 
 		-
-			message: "#^Negated boolean expression is always false\\.$#"
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
 			count: 1
 			path: src/Uploadable/MimeType/MimeTypeGuesser.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Uploadable/UploadableListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 3
 			path: src/Uploadable/UploadableListener.php
 
 		-
-			message: "#^Class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 2
 			path: tests/Gedmo/DoctrineExtensionsTest.php
 
 		-
-			message: "#^Class Gedmo\\\\Tests\\\\Translatable\\\\Fixture\\\\CategoryTranslation not found\\.$#"
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$title \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$titleFallbackFalse \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$titleFallbackTrue \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
+
+		-
+			message: '#^Class Gedmo\\Tests\\Translatable\\Fixture\\CategoryTranslation not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Fixture/Category.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 2
 			path: tests/Gedmo/Mapping/MappingEventSubscriberTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$driverImpl of method Doctrine\\\\ORM\\\\Configuration\\:\\:setMetadataDriverImpl\\(\\) expects Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver, Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver given\\.$#"
+			message: '#^Parameter \#1 \$driverImpl of method Doctrine\\ORM\\Configuration\:\:setMetadataDriverImpl\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
+			identifier: argument.type
 			count: 2
 			path: tests/Gedmo/Mapping/MappingEventSubscriberTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/MappingTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$driverImpl of method Doctrine\\\\ORM\\\\Configuration\\:\\:setMetadataDriverImpl\\(\\) expects Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver, Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver given\\.$#"
+			message: '#^Parameter \#1 \$driverImpl of method Doctrine\\ORM\\Configuration\:\:setMetadataDriverImpl\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/MappingTest.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<T of object\\>\\:\\:mapField\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<T of object\>\:\:mapField\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: tests/Gedmo/Mapping/MetadataFactory/CustomDriverTest.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<T of object\\>\\:\\:setIdGeneratorType\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<T of object\>\:\:setIdGeneratorType\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/MetadataFactory/CustomDriverTest.php
 
 		-
-			message: "#^Class Doctrine\\\\ORM\\\\Id\\\\IdentityGenerator does not have a constructor and must be instantiated without any parameters\\.$#"
+			message: '#^Class Doctrine\\ORM\\Id\\IdentityGenerator does not have a constructor and must be instantiated without any parameters\.$#'
+			identifier: new.noConstructor
 			count: 1
 			path: tests/Gedmo/Mapping/MetadataFactory/ForcedMetadataTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/MetadataFactory/ForcedMetadataTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$driverImpl of method Doctrine\\\\ORM\\\\Configuration\\:\\:setMetadataDriverImpl\\(\\) expects Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver, Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver given\\.$#"
+			message: '#^Parameter \#1 \$driverImpl of method Doctrine\\ORM\\Configuration\:\:setMetadataDriverImpl\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/MetadataFactory/ForcedMetadataTest.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\<object\\>\\:\\:getReflectionProperty\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
 
 		-
-			message: "#^Access to offset 'inherited' on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\AssociationFieldMapping\\.$#"
+			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Attribute.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 2
 			path: tests/Gedmo/Mapping/MultiManagerMappingTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$nestedDriver of method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriverChain\\:\\:addDriver\\(\\) expects Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver, Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver given\\.$#"
+			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/ORMMappingTestCase.php
 
 		-
-			message: "#^Parameter \\#1 \\$nestedDriver of method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriverChain\\:\\:addDriver\\(\\) expects Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver, Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\YamlDriver given\\.$#"
+			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\YamlDriver given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/ORMMappingTestCase.php
 
 		-
-			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$dm is never written, only read\\.$#"
+			message: '#^Property Gedmo\\Tests\\Mapping\\ReferenceIntegrityMappingTest\:\:\$dm is never written, only read\.$#'
+			identifier: property.onlyRead
 			count: 1
 			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
 
 		-
-			message: "#^Property Gedmo\\\\Tests\\\\Mapping\\\\ReferenceIntegrityMappingTest\\:\\:\\$referenceIntegrity is never written, only read\\.$#"
+			message: '#^Property Gedmo\\Tests\\Mapping\\ReferenceIntegrityMappingTest\:\:\$referenceIntegrity is never written, only read\.$#'
+			identifier: property.onlyRead
 			count: 1
 			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/TreeMappingTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\YamlDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\YamlDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/TreeMappingTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$nestedDriver of method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriverChain\\:\\:addDriver\\(\\) expects Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver, Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\YamlDriver given\\.$#"
+			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\YamlDriver given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/TreeMappingTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Xml/ClosureTreeMappingTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Xml/MaterializedPathTreeMappingTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Xml/ReferencesMappingTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Xml/TranslatableMappingTest.php
 
 		-
-			message: "#^Method Gedmo\\\\Tests\\\\Sluggable\\\\Fixture\\\\Doctrine\\\\FakeFilter\\:\\:addFilterConstraint\\(\\) has parameter \\$targetTableAlias with no type specified\\.$#"
+			message: '#^Method Gedmo\\Tests\\Sluggable\\Fixture\\Doctrine\\FakeFilter\:\:addFilterConstraint\(\) has parameter \$targetTableAlias with no type specified\.$#'
+			identifier: missingType.parameter
 			count: 1
 			path: tests/Gedmo/Sluggable/Fixture/Doctrine/FakeFilter.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\YamlDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\YamlDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Sluggable/Issue/Issue116Test.php
 
 		-
-			message: "#^Parameter \\#1 \\$nestedDriver of method Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriverChain\\:\\:addDriver\\(\\) expects Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver, Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\YamlDriver given\\.$#"
+			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\YamlDriver given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Sluggable/Issue/Issue116Test.php
 
 		-
-			message: "#^Parameter \\$args of method Gedmo\\\\Tests\\\\SoftDeleteable\\\\Fixture\\\\Listener\\\\WithLifecycleEventArgsFromORMTypeListener\\:\\:postSoftDelete\\(\\) has invalid type Doctrine\\\\ORM\\\\Event\\\\LifecycleEventArgs\\.$#"
+			message: '#^Parameter \$args of method Gedmo\\Tests\\SoftDeleteable\\Fixture\\Listener\\WithLifecycleEventArgsFromORMTypeListener\:\:postSoftDelete\(\) has invalid type Doctrine\\ORM\\Event\\LifecycleEventArgs\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/SoftDeleteable/Fixture/Listener/WithLifecycleEventArgsFromORMTypeListener.php
 
 		-
-			message: "#^Parameter \\$args of method Gedmo\\\\Tests\\\\SoftDeleteable\\\\Fixture\\\\Listener\\\\WithLifecycleEventArgsFromORMTypeListener\\:\\:preSoftDelete\\(\\) has invalid type Doctrine\\\\ORM\\\\Event\\\\LifecycleEventArgs\\.$#"
+			message: '#^Parameter \$args of method Gedmo\\Tests\\SoftDeleteable\\Fixture\\Listener\\WithLifecycleEventArgsFromORMTypeListener\:\:preSoftDelete\(\) has invalid type Doctrine\\ORM\\Event\\LifecycleEventArgs\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/SoftDeleteable/Fixture/Listener/WithLifecycleEventArgsFromORMTypeListener.php
 
 		-
-			message: "#^Method Gedmo\\\\Tests\\\\Timestampable\\\\Fixture\\\\ArticleCarbon\\:\\:getCreated\\(\\) should return Carbon\\\\Carbon\\|null but returns DateTime\\|null\\.$#"
+			message: '#^Method Gedmo\\Tests\\Timestampable\\Fixture\\ArticleCarbon\:\:getCreated\(\) should return Carbon\\Carbon\|null but returns DateTime\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
 
 		-
-			message: "#^Call to function method_exists\\(\\) with Doctrine\\\\ORM\\\\EntityManager\\|null and 'merge' will always evaluate to false\\.$#"
+			message: '#^Call to function method_exists\(\) with Doctrine\\ORM\\EntityManager\|null and ''merge'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 2
 			path: tests/Gedmo/Timestampable/TimestampableTest.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Tool/BaseTestCaseOM.php
 
 		-
-			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseOM\\:\\:getORMDriver\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
+			message: '#^Method Gedmo\\Tests\\Tool\\BaseTestCaseOM\:\:getORMDriver\(\) should return Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver but returns Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver\.$#'
+			identifier: return.type
 			count: 1
 			path: tests/Gedmo/Tool/BaseTestCaseOM.php
 
 		-
-			message: "#^Instantiated class Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver not found\\.$#"
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Tool/BaseTestCaseORM.php
 
 		-
-			message: "#^Method Gedmo\\\\Tests\\\\Tool\\\\BaseTestCaseORM\\:\\:getMetadataDriverImplementation\\(\\) should return Doctrine\\\\Persistence\\\\Mapping\\\\Driver\\\\MappingDriver but returns Doctrine\\\\ORM\\\\Mapping\\\\Driver\\\\AnnotationDriver\\.$#"
+			message: '#^Method Gedmo\\Tests\\Tool\\BaseTestCaseORM\:\:getMetadataDriverImplementation\(\) should return Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver but returns Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver\.$#'
+			identifier: return.type
 			count: 1
 			path: tests/Gedmo/Tool/BaseTestCaseORM.php
 
 		-
-			message: "#^Property Gedmo\\\\Tests\\\\Tree\\\\MaterializedPathODMMongoDBRepositoryTest\\:\\:\\$repo \\(Gedmo\\\\Tree\\\\Document\\\\MongoDB\\\\Repository\\\\MaterializedPathRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\) does not accept Doctrine\\\\ORM\\\\EntityRepository\\<Gedmo\\\\Tests\\\\Tree\\\\Fixture\\\\Document\\\\Category\\>\\.$#"
+			message: '#^Property Gedmo\\Tests\\Tree\\MaterializedPathODMMongoDBRepositoryTest\:\:\$repo \(Gedmo\\Tree\\Document\\MongoDB\\Repository\\MaterializedPathRepository\<Gedmo\\Tests\\Tree\\Fixture\\Document\\Category\>\) does not accept Doctrine\\ORM\\EntityRepository\<Gedmo\\Tests\\Tree\\Fixture\\Document\\Category\>\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBRepositoryTest.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBTreeLockingTest.php
-
-		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertIsArray\\(\\) with true will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Gedmo/Tree/NestedTreeRootRepositoryTest.php
-
-		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertIsArray\\(\\) with true will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Gedmo/Tree/RepositoryTest.php
 

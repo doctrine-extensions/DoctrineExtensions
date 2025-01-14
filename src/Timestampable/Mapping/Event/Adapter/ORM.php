@@ -36,7 +36,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter, ClockAwa
     }
 
     /**
-     * @param ClassMetadata $meta
+     * @param ClassMetadata<object> $meta
      */
     public function getDateValue($meta, $field)
     {

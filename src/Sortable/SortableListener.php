@@ -345,9 +345,11 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Computes node positions and updates the sort field in memory and in the db
      *
-     * @param array<string, mixed> $config
-     * @param ClassMetadata        $meta
-     * @param object               $object
+     * @param array<string, mixed>  $config
+     * @param ClassMetadata<object> $meta
+     * @param object                $object
+     *
+     * @phpstan-param SortableConfiguration $config
      *
      * @return void
      */
@@ -411,9 +413,11 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Computes node positions and updates the sort field in memory and in the db
      *
-     * @param array<string, mixed> $config
-     * @param ClassMetadata        $meta
-     * @param object               $object
+     * @param array<string, mixed>  $config
+     * @param ClassMetadata<object> $meta
+     * @param object                $object
+     *
+     * @phpstan-param SortableConfiguration $config
      *
      * @return void
      */
@@ -543,9 +547,11 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Computes node positions and updates the sort field in memory and in the db
      *
-     * @param array<string, mixed> $config
-     * @param ClassMetadata        $meta
-     * @param object               $object
+     * @param array<string, mixed>  $config
+     * @param ClassMetadata<object> $meta
+     * @param object                $object
+     *
+     * @phpstan-param SortableConfiguration $config
      *
      * @return void
      */
@@ -597,6 +603,8 @@ class SortableListener extends MappedEventSubscriber
      * @param array<string, mixed> $groups
      * @param array<string, mixed> $config
      *
+     * @phpstan-param SortableConfiguration $config
+     *
      * @return string
      */
     protected function getHash($groups, array $config)
@@ -615,10 +623,12 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param ClassMetadata        $meta
-     * @param array<string, mixed> $config
-     * @param object               $object
-     * @param array<string, mixed> $groups
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
+     * @param object                $object
+     * @param array<string, mixed>  $groups
+     *
+     * @phpstan-param SortableConfiguration $config
      *
      * @return int
      */
@@ -701,9 +711,11 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param ClassMetadata                        $meta
+     * @param ClassMetadata<object>                $meta
      * @param array<string, array<string, string>> $config
      * @param object                               $object
+     *
+     * @phpstan-param SortableConfiguration $config
      *
      * @return array<string, mixed>
      */

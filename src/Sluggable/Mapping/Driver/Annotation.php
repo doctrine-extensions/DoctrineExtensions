@@ -29,6 +29,8 @@ use Gedmo\Sluggable\Handler\SlugHandlerInterface;
 class Annotation extends Attribute implements AnnotationDriverInterface
 {
     /**
+     * @param ClassMetadata<object> $meta
+     *
      * @return array<class-string<SlugHandlerInterface>, SlugHandler[]>
      */
     protected function getSlugHandlers(\ReflectionProperty $property, Slug $slug, ClassMetadata $meta): array

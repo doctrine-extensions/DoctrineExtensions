@@ -14,9 +14,8 @@ namespace Gedmo\Tests\IpTraceable;
 use Doctrine\Common\EventManager;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidArgumentException;
-use Gedmo\IpTraceable\IpTraceable;
 use Gedmo\IpTraceable\IpTraceableListener;
-use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
 use Gedmo\Tests\IpTraceable\Fixture\Article;
 use Gedmo\Tests\IpTraceable\Fixture\Comment;
 use Gedmo\Tests\IpTraceable\Fixture\Type;
@@ -60,7 +59,7 @@ final class IpTraceableTest extends BaseTestCaseORM
         static::assertSame('123.218.45.39', $listener->getFieldValue(
             static::createStub(ClassMetadata::class),
             'ip',
-            static::createStub(AdapterInterface::class)
+            static::createStub(IpTraceableAdapter::class)
         ));
     }
 
@@ -71,7 +70,7 @@ final class IpTraceableTest extends BaseTestCaseORM
         static::assertSame('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getFieldValue(
             static::createStub(ClassMetadata::class),
             'ip',
-            static::createStub(AdapterInterface::class)
+            static::createStub(IpTraceableAdapter::class)
         ));
     }
 
@@ -80,14 +79,10 @@ final class IpTraceableTest extends BaseTestCaseORM
         $sport = new Article();
         $sport->setTitle('Sport');
 
-        static::assertInstanceOf(IpTraceable::class, $sport);
-
         $sportComment = new Comment();
         $sportComment->setMessage('hello');
         $sportComment->setArticle($sport);
         $sportComment->setStatus(0);
-
-        static::assertInstanceOf(IpTraceable::class, $sportComment);
 
         $this->em->persist($sport);
         $this->em->persist($sportComment);

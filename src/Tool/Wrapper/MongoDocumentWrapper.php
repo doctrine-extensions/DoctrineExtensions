@@ -17,7 +17,9 @@ use ProxyManager\Proxy\GhostObjectInterface;
  * Wraps document or proxy for more convenient
  * manipulation
  *
- * @phpstan-extends AbstractWrapper<ClassMetadata>
+ * @template TObject of object
+ *
+ * @template-extends AbstractWrapper<ClassMetadata<TObject>, TObject, DocumentManager>
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
@@ -38,7 +40,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     /**
      * Wrap document
      *
-     * @param object $document
+     * @param TObject $document
      */
     public function __construct($document, DocumentManager $dm)
     {

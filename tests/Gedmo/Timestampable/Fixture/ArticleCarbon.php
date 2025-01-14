@@ -27,8 +27,6 @@ use Gedmo\Timestampable\Timestampable;
 class ArticleCarbon implements Timestampable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -36,7 +34,7 @@ class ArticleCarbon implements Timestampable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
@@ -56,7 +54,7 @@ class ArticleCarbon implements Timestampable
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Timestampable\Fixture\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Timestampable\Fixture\Author")
@@ -109,15 +107,13 @@ class ArticleCarbon implements Timestampable
     private $contentChanged;
 
     /**
-     * @var CarbonImmutable|null
-     *
      * @ORM\Column(name="author_changed", type="datetime", nullable=true)
      *
      * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
      */
     #[ORM\Column(name: 'author_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['author.name', 'author.email'])]
-    private $authorChanged;
+    private ?CarbonImmutable $authorChanged = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
@@ -134,15 +130,13 @@ class ArticleCarbon implements Timestampable
     /**
      * We use the value "10" as string here in order to check the behavior of `AbstractTrackingListener`
      *
-     * @var \DateTimeInterface|null
-     *
      * @ORM\Column(name="reached_relevant_level", type="datetime", nullable=true)
      *
      * @Gedmo\Timestampable(on="change", field="level", value="10")
      */
     #[ORM\Column(name: 'reached_relevant_level', type: Types::DATE_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'level', value: '10')]
-    private $reachedRelevantLevel;
+    private ?\DateTimeInterface $reachedRelevantLevel = null;
 
     public function __construct()
     {

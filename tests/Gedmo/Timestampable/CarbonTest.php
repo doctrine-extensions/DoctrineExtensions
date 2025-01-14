@@ -76,11 +76,9 @@ final class CarbonTest extends BaseTestCaseORM
 
         /** @var ArticleCarbon $sport */
         $sport = $this->em->getRepository(ArticleCarbon::class)->findOneBy(['title' => 'Sport']);
-        static::assertInstanceOf(CarbonImmutable::class, $sport->getUpdated(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
-        static::assertInstanceOf(Carbon::class, $sport->getCreated(), 'Type DATE_MUTABLE should become Carbon');
+        static::assertInstanceOf(CarbonImmutable::class, $su = $sport->getUpdated(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(Carbon::class, $sc = $sport->getCreated(), 'Type DATE_MUTABLE should become Carbon');
 
-        static::assertNotNull($sc = $sport->getCreated());
-        static::assertNotNull($su = $sport->getUpdated());
         static::assertNull($sport->getContentChanged());
         static::assertNull($sport->getPublished());
         static::assertNull($sport->getAuthorChanged());
@@ -107,13 +105,9 @@ final class CarbonTest extends BaseTestCaseORM
         $this->em->flush();
 
         $sportComment = $this->em->getRepository(CommentCarbon::class)->findOneBy(['message' => 'hello']);
-        static::assertInstanceOf(CarbonImmutable::class, $sportComment->getClosed(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
-        static::assertInstanceOf(CarbonImmutable::class, $sport->getPublished(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
-        static::assertInstanceOf(CarbonImmutable::class, $sport->getAuthorChanged(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
-
-        static::assertNotNull($scc = $sportComment->getClosed());
-        static::assertNotNull($sp = $sport->getPublished());
-        static::assertNotNull($sa = $sport->getAuthorChanged());
+        static::assertInstanceOf(CarbonImmutable::class, $scc = $sportComment->getClosed(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(CarbonImmutable::class, $sp = $sport->getPublished(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(CarbonImmutable::class, $sa = $sport->getAuthorChanged(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
 
         $sport->setTitle('Updated');
         $this->em->persist($sport);

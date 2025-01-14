@@ -79,7 +79,7 @@ class SoftDeleteableWalker extends CompatSqlOutputWalker
     protected $deletedAtField;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata<object>
      */
     protected $meta;
 

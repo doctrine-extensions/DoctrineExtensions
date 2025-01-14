@@ -28,14 +28,16 @@ interface Driver
      *
      * @todo In the next major release stop receiving by reference the `$config` parameter and use `array` as return type declaration
      *
-     * @param ClassMetadata        $meta
+     * @param ClassMetadata<T>     $meta
      * @param array<string, mixed> $config
      *
      * @throws InvalidMappingException if the mapping configuration is invalid
      *
      * @return void
      *
-     * @phpstan-param ClassMetadata&(OdmClassMetadata|OrmClassMetadata) $meta
+     * @template T of object
+     *
+     * @phpstan-param ClassMetadata<T>&(OdmClassMetadata<T>|OrmClassMetadata<T>) $meta
      */
     public function readExtendedMetadata($meta, array &$config);
 

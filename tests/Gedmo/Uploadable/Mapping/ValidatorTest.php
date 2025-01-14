@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 final class ValidatorTest extends TestCase
 {
     /**
-     * @var ClassMetadata&MockObject
+     * @var ClassMetadata<object>&MockObject
      */
     protected $meta;
 

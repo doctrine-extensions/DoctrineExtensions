@@ -109,7 +109,7 @@ class ExtensionMetadataFactory
     /**
      * Reads extension metadata
      *
-     * @param ClassMetadata&(DocumentClassMetadata|EntityClassMetadata|LegacyEntityClassMetadata) $meta
+     * @param ClassMetadata<object>&(DocumentClassMetadata<object>|EntityClassMetadata<object>|LegacyEntityClassMetadata<object>) $meta
      *
      * @return array<string, mixed> the metadata configuration
      */

@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 
@@ -25,10 +26,10 @@ class MaterializedPath extends AbstractMaterializedPath
 {
     /**
      * @param EntityManagerInterface $om
+     * @param ClassMetadata<object>  $meta
      */
     public function removeNode($om, $meta, $config, $node)
     {
-        $uow = $om->getUnitOfWork();
         $wrapped = AbstractWrapper::wrap($node, $om);
 
         $path = addcslashes($wrapped->getPropertyValue($config['path']), '%');
@@ -59,6 +60,7 @@ class MaterializedPath extends AbstractMaterializedPath
 
     /**
      * @param EntityManagerInterface $om
+     * @param ClassMetadata<object>  $meta
      */
     public function getChildren($om, $meta, $config, $path)
     {

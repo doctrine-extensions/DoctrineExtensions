@@ -124,7 +124,7 @@ class Nested implements Strategy
 
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
-        /** @var ClassMetadata $meta */
+        /** @var ClassMetadata<object> $meta */
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->getName());
 
@@ -279,7 +279,7 @@ class Nested implements Strategy
     {
         $wrapped = AbstractWrapper::wrap($node, $em);
 
-        /** @var ClassMetadata $meta */
+        /** @var ClassMetadata<object> $meta */
         $meta = $wrapped->getMetadata();
         $config = $this->listener->getConfiguration($em, $meta->getName());
 

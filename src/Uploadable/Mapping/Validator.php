@@ -95,7 +95,8 @@ class Validator
     public static $validateWritableDirectory = true;
 
     /**
-     * @param string $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return void
      */
@@ -105,7 +106,8 @@ class Validator
     }
 
     /**
-     * @param string $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return void
      */
@@ -115,7 +117,8 @@ class Validator
     }
 
     /**
-     * @param string $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return void
      */
@@ -125,7 +128,8 @@ class Validator
     }
 
     /**
-     * @param string $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return void
      */
@@ -135,10 +139,10 @@ class Validator
     }
 
     /**
-     * @param ClassMetadata $meta
-     * @param string        $field
-     * @param string        $uploadableField
-     * @param string[]      $validFieldTypes
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
+     * @param string                $uploadableField
+     * @param string[]              $validFieldTypes
      *
      * @return void
      */
@@ -182,9 +186,10 @@ class Validator
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param ClassMetadata<object> $meta
+     * @param array<string, mixed>  $config
      *
-     * @return void
+     * @return array<string, mixed>
      *
      * @todo Stop receiving by reference the `$config` parameter and use `array` as return type declaration
      */
