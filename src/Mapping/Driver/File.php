@@ -140,8 +140,8 @@ abstract class File implements Driver
     /**
      * Try to find out related class name out of mapping
      *
-     * @param ClassMetadata $metadata the mapped class metadata
-     * @param string        $name     the related object class name
+     * @param ClassMetadata<object> $metadata the mapped class metadata
+     * @param string                $name     the related object class name
      *
      * @return string related class name or empty string if does not exist
      *

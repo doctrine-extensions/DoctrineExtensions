@@ -40,7 +40,8 @@ class Validator
     ];
 
     /**
-     * @param mixed $field
+     * @param ClassMetadata<object> $meta
+     * @param mixed                 $field
      *
      * @return void
      */

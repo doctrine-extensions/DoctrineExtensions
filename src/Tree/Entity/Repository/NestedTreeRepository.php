@@ -1353,6 +1353,8 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Removes single node without touching children
      *
+     * @param EntityWrapper<object> $wrapped
+     *
      * @internal
      */
     private function removeSingle(EntityWrapper $wrapped): void

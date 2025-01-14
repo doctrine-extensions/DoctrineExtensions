@@ -9,6 +9,7 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
@@ -26,11 +27,17 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
         return LogEntry::class;
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public function isPostInsertGenerator($meta)
     {
         return false;
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public function getNewVersion($meta, $object)
     {
         $dm = $this->getObjectManager();

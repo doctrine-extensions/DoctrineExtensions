@@ -59,6 +59,9 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     {
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!isset($options['relationClass']) || !strlen($options['relationClass'])) {

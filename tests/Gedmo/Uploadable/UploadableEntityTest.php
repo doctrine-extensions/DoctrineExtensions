@@ -569,6 +569,8 @@ final class UploadableEntityTest extends BaseTestCaseORM
     public function testAddEntityFileInfoIfFileInfoIsNotValidThrowException(): void
     {
         $this->expectException('RuntimeException');
+
+        /** @phpstan-ignore-next-line argument.type */
         $this->listener->addEntityFileInfo(new Image(), 'invalidFileInfo');
     }
 
@@ -712,7 +714,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     // Data Providers
 
     /**
-     * @return array<int, array<int, mixed>>
+     * @return list<array{mixed}>
      */
     public static function invalidFileInfoClassesProvider(): array
     {
@@ -727,9 +729,9 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
-     * @return array<int, array<int, string>>
+     * @return list<int, array{int, string}>
      *
-     * @phpstan-return array<int, array<int, class-string<UploadableException>>>
+     * @phpstan-return list<array{int, class-string<UploadableException>}>
      */
     public static function uploadExceptionsProvider(): array
     {

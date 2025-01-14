@@ -44,14 +44,10 @@ final class BlameableTest extends BaseTestCaseORM
         $sport = new Article();
         $sport->setTitle('Sport');
 
-        static::assertInstanceOf(Blameable::class, $sport);
-
         $sportComment = new Comment();
         $sportComment->setMessage('hello');
         $sportComment->setArticle($sport);
         $sportComment->setStatus(0);
-
-        static::assertInstanceOf(Blameable::class, $sportComment);
 
         $this->em->persist($sport);
         $this->em->persist($sportComment);

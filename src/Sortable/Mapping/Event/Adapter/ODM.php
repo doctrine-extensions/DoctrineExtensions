@@ -12,6 +12,7 @@ namespace Gedmo\Sortable\Mapping\Event\Adapter;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
+use Gedmo\Sortable\SortableListener;
 use Gedmo\Tool\ClassUtils;
 
 /**
@@ -19,13 +20,18 @@ use Gedmo\Tool\ClassUtils;
  * for sortable behavior
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
+ *
+ * @phpstan-import-type SortableConfiguration from SortableListener
+ * @phpstan-import-type SortableRelocation from SortableListener
  */
 final class ODM extends BaseAdapterODM implements SortableAdapter
 {
     /**
      * @param array<string, mixed>    $config
-     * @param ClassMetadata           $meta
+     * @param ClassMetadata<object>   $meta
      * @param iterable<string, mixed> $groups
+     *
+     * @phpstan-param SortableConfiguration $config
      *
      * @return int
      */
@@ -55,6 +61,9 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
      * @param array<string, mixed> $relocation
      * @param array<string, mixed> $delta
      * @param array<string, mixed> $config
+     *
+     * @phpstan-param SortableRelocation    $relocation
+     * @phpstan-param SortableConfiguration $config
      *
      * @return void
      */

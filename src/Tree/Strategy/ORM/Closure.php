@@ -87,7 +87,8 @@ class Closure implements Strategy
     }
 
     /**
-     * @param EntityManagerInterface $em
+     * @param EntityManagerInterface   $em
+     * @param ORMClassMetadata<object> $meta
      */
     public function processMetadataLoad($em, $meta)
     {
@@ -563,7 +564,7 @@ class Closure implements Strategy
     }
 
     /**
-     * @param ORMClassMetadata $closureMetadata
+     * @param ORMClassMetadata<object> $closureMetadata
      */
     private function hasClosureTableUniqueConstraint(ClassMetadata $closureMetadata): bool
     {
@@ -581,7 +582,7 @@ class Closure implements Strategy
     }
 
     /**
-     * @param ORMClassMetadata $closureMetadata
+     * @param ORMClassMetadata<object> $closureMetadata
      */
     private function hasClosureTableDepthIndex(ClassMetadata $closureMetadata): bool
     {

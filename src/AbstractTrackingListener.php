@@ -28,10 +28,10 @@ use Gedmo\Mapping\MappedEventSubscriber;
 /**
  * The AbstractTrackingListener provides generic functions for all listeners.
  *
- * @phpstan-template TConfig of array
- * @phpstan-template TEventAdapter of AdapterInterface
+ * @template TConfig of array
+ * @template TEventAdapter of AdapterInterface
  *
- * @phpstan-extends MappedEventSubscriber<TConfig, TEventAdapter>
+ * @template-extends MappedEventSubscriber<TConfig, TEventAdapter>
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
@@ -207,9 +207,9 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     /**
      * Get the value for an updated field.
      *
-     * @param ClassMetadata    $meta
-     * @param string           $field
-     * @param AdapterInterface $eventAdapter
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
+     * @param TEventAdapter         $eventAdapter
      *
      * @return mixed
      */
@@ -218,10 +218,10 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     /**
      * Updates a field.
      *
-     * @param object           $object
-     * @param AdapterInterface $eventAdapter
-     * @param ClassMetadata    $meta
-     * @param string           $field
+     * @param object                $object
+     * @param TEventAdapter         $eventAdapter
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return void
      */

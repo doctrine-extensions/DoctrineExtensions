@@ -115,6 +115,9 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
         }
     }
 
+    /**
+     * @param ClassMetadata<object> $meta
+     */
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!$meta->isSingleValuedAssociation($options['parentRelationField'])) {

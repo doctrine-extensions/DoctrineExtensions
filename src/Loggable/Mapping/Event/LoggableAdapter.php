@@ -31,7 +31,7 @@ interface LoggableAdapter extends AdapterInterface
     /**
      * Checks whether an identifier should be generated post insert.
      *
-     * @param ClassMetadata $meta
+     * @param ClassMetadata<object> $meta
      *
      * @return bool
      */
@@ -40,8 +40,8 @@ interface LoggableAdapter extends AdapterInterface
     /**
      * Get the new version number for an object.
      *
-     * @param ClassMetadata $meta
-     * @param object        $object
+     * @param ClassMetadata<object> $meta
+     * @param object                $object
      *
      * @return int
      */
