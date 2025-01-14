@@ -23,9 +23,6 @@ use Psr\Clock\ClockInterface;
  */
 final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter, ClockAwareAdapterInterface
 {
-    /**
-     * @var ClockInterface|null
-     */
     private ?ClockInterface $clock = null;
 
     public function setClock(ClockInterface $clock): void

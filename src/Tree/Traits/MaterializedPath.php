@@ -47,8 +47,6 @@ trait MaterializedPath
     protected $hash;
 
     /**
-     * @param self $parent
-     *
      * @return self
      */
     public function setParent(?self $parent = null)
