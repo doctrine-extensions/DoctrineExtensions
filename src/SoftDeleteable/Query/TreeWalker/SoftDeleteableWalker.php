@@ -117,6 +117,8 @@ class SoftDeleteableWalker extends CompatSqlOutputWalker
      * @param DeleteStatement|UpdateStatement|SelectStatement $AST
      *
      * @throws UnexpectedValueException when an unsupported AST statement is given
+     *
+     * @phpstan-assert DeleteStatement $AST
      */
     protected function doGetFinalizerWithCompat($AST): SqlFinalizer
     {
