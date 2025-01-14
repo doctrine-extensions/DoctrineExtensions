@@ -46,7 +46,7 @@ return (new PhpCsFixer\Config())
         'error_suppression' => true,
         'global_namespace_import' => ['import_classes' => false, 'import_constants' => false, 'import_functions' => false],
         'header_comment' => ['header' => $header],
-        'is_null' => false,
+        'is_null' => true,
         'list_syntax' => ['syntax' => 'short'],
         'modernize_types_casting' => true,
         'no_homoglyph_names' => true,
