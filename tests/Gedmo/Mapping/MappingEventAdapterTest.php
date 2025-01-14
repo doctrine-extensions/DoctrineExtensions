@@ -24,7 +24,7 @@ final class MappingEventAdapterTest extends TestCase
     public function testCustomizedAdapter(): void
     {
         $subscriber = new EventSubscriberCustomMock();
-        $args = new PrePersistEventArgs(new \stdClass(), $this->createStub(EntityManagerInterface::class));
+        $args = new PrePersistEventArgs(new \stdClass(), static::createStub(EntityManagerInterface::class));
 
         $adapter = $subscriber->getAdapter($args);
         static::assertInstanceOf(CustomizedORMAdapter::class, $adapter);
@@ -32,7 +32,7 @@ final class MappingEventAdapterTest extends TestCase
 
     public function testCorrectAdapter(): void
     {
-        $emMock = $this->createStub(EntityManagerInterface::class);
+        $emMock = static::createStub(EntityManagerInterface::class);
         $subscriber = new EventSubscriberMock();
         $args = new PrePersistEventArgs(new \stdClass(), $emMock);
 
@@ -44,7 +44,7 @@ final class MappingEventAdapterTest extends TestCase
 
     public function testAdapterBehavior(): void
     {
-        $emMock = $this->createStub(EntityManagerInterface::class);
+        $emMock = static::createStub(EntityManagerInterface::class);
         $entity = new \stdClass();
 
         $args = new PrePersistEventArgs($entity, $emMock);
