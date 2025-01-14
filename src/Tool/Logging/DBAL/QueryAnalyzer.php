@@ -31,10 +31,8 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Start time of currently executed query
-     *
-     * @var float
      */
-    private $queryStartTime;
+    private ?float $queryStartTime = null;
 
     /**
      * Total execution time of all queries

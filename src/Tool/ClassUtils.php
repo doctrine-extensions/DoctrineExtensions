@@ -28,7 +28,9 @@ final class ClassUtils
      * If doctrine/common is not installed, this method behaves like {@see get_class()}.
      *
      * @param TObject $object
+     *
      * @return class-string<TObject>
+     *
      * @template TObject of object
      */
     public static function getClass(object $object): string
