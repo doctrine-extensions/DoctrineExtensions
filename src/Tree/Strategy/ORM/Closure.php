@@ -524,7 +524,9 @@ class Closure implements Strategy
             }
 
             // Avoid type conversion performance penalty
-            $type = 'integer' === $mapping['type'] ? ArrayParameterType::INTEGER : ArrayParameterType::STRING;
+            $type = 'integer' === ($mapping->type ?? $mapping['type'])
+                ? ArrayParameterType::INTEGER
+                : ArrayParameterType::STRING;
 
             // We calculate levels for all nodes
             $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS levelNum ';

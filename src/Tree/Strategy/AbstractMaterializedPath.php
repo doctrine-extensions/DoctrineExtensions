@@ -225,7 +225,7 @@ abstract class AbstractMaterializedPath implements Strategy
         // default behavior: if PathSource field is a string, we append the ID to the path
         // path_append_id is true: always append id
         // path_append_id is false: never append id
-        if (true === $config['path_append_id'] || ('string' === $fieldMapping['type'] && false !== $config['path_append_id'])) {
+        if (true === $config['path_append_id'] || ('string' === ($fieldMapping->type ?? $fieldMapping['type']) && false !== $config['path_append_id'])) {
             if (method_exists($meta, 'getIdentifierValue')) {
                 $identifier = $meta->getIdentifierValue($node);
             } else {

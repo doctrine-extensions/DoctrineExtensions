@@ -105,6 +105,6 @@ class Xml extends BaseXml
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], self::VALID_TYPES, true);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], self::VALID_TYPES, true);
     }
 }

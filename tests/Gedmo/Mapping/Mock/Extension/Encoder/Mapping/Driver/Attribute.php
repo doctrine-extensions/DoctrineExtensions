@@ -49,7 +49,7 @@ class Attribute extends AbstractAnnotationDriver
                 // validate encoding type
                 $mapping = $meta->getFieldMapping($field);
 
-                if ('string' !== $mapping['type']) {
+                if ('string' !== ($mapping->type ?? $mapping['type'])) {
                     throw new \Exception('Only strings can be encoded');
                 }
 
