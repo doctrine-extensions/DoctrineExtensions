@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### New
+- Timestampable: Add types to createdAt and updatedAt
 ### Deprecated
 - Sluggable: Annotation-specific mapping parameters (#2837)
 
