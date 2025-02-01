@@ -126,15 +126,12 @@ class ReferencesListener extends MappedEventSubscriber
                         $property->setValue(
                             $object,
                             new LazyCollection(
-                                static function () use ($id, &$manager, $class, $identifier) {
-                                    $results = $manager
-                                        ->getRepository($class)
+                                static fn () => new ArrayCollection(
+                                    $manager->getRepository($class)
                                         ->findBy([
                                             $identifier => $id,
-                                        ]);
-
-                                    return new ArrayCollection(is_array($results) ? $results : $results->toArray());
-                                }
+                                        ])
+                                )
                             )
                         );
                     }
@@ -235,15 +232,12 @@ class ReferencesListener extends MappedEventSubscriber
                 $property->setValue(
                     $object,
                     new LazyCollection(
-                        static function () use ($id, &$manager, $class, $identifier) {
-                            $results = $manager
-                                ->getRepository($class)
+                        static fn () => new ArrayCollection(
+                            $manager->getRepository($class)
                                 ->findBy([
                                     $identifier => $id,
-                                ]);
-
-                            return new ArrayCollection(is_array($results) ? $results : $results->toArray());
-                        }
+                                ])
+                        )
                     )
                 );
             }

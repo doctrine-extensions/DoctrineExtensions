@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Support for `doctrine/persistence` ^4.0
+
 ### Deprecated
 - Sluggable: Annotation-specific mapping parameters (#2837)
 
