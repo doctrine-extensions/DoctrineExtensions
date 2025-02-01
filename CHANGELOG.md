@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.18.0] - 2025-02-01
 ### Added
 - Support for `doctrine/persistence` ^4.0
 
