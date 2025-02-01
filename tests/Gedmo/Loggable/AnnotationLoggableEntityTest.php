@@ -26,9 +26,9 @@ final class AnnotationLoggableEntityTest extends LoggableEntityTest
         parent::setUp();
 
         $evm = new EventManager();
-        $loggableListener = new LoggableListener();
-        $loggableListener->setUsername('jules');
-        $evm->addEventSubscriber($loggableListener);
+        $this->listener = new LoggableListener();
+        $this->listener->setUsername('jules');
+        $evm->addEventSubscriber($this->listener);
 
         $this->em = $this->getDefaultMockSqliteEntityManager($evm);
     }

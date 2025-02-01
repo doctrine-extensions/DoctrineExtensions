@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Blameable;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Blameable\Blameable;
 use Gedmo\Blameable\BlameableListener;
 use Gedmo\Tests\Blameable\Fixture\Entity\Article;
 use Gedmo\Tests\Blameable\Fixture\Entity\Comment;
 use Gedmo\Tests\Blameable\Fixture\Entity\Type;
+use Gedmo\Tests\TestActorProvider;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -26,15 +26,17 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 final class BlameableTest extends BaseTestCaseORM
 {
+    private BlameableListener $listener;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $listener = new BlameableListener();
-        $listener->setUserValue('testuser');
+        $this->listener = new BlameableListener();
+        $this->listener->setUserValue('testuser');
 
         $evm = new EventManager();
-        $evm->addEventSubscriber($listener);
+        $evm->addEventSubscriber($this->listener);
 
         $this->getDefaultMockSqliteEntityManager($evm);
     }
@@ -79,6 +81,50 @@ final class BlameableTest extends BaseTestCaseORM
         static::assertSame('testuser', $sportComment->getClosed());
 
         static::assertSame('testuser', $sport->getPublished());
+    }
+
+    public function testBlameableWithActorProvider(): void
+    {
+        $this->listener->setActorProvider(new TestActorProvider('testactor'));
+
+        $sport = new Article();
+        $sport->setTitle('Sport');
+
+        $sportComment = new Comment();
+        $sportComment->setMessage('hello');
+        $sportComment->setArticle($sport);
+        $sportComment->setStatus(0);
+
+        $this->em->persist($sport);
+        $this->em->persist($sportComment);
+        $this->em->flush();
+        $this->em->clear();
+
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
+        static::assertSame('testactor', $sport->getCreated());
+        static::assertSame('testactor', $sport->getUpdated());
+        static::assertNull($sport->getPublished());
+
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
+        static::assertSame('testactor', $sportComment->getModified());
+        static::assertNull($sportComment->getClosed());
+
+        $sportComment->setStatus(1);
+        $published = new Type();
+        $published->setTitle('Published');
+
+        $sport->setTitle('Updated');
+        $sport->setType($published);
+        $this->em->persist($sport);
+        $this->em->persist($published);
+        $this->em->persist($sportComment);
+        $this->em->flush();
+        $this->em->clear();
+
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
+        static::assertSame('testactor', $sportComment->getClosed());
+
+        static::assertSame('testactor', $sport->getPublished());
     }
 
     public function testForcedValues(): void
