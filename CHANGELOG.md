@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Actor provider for use with extensions with user references (#2914)
+
 ### Changed
 - Updated minimum versions for `doctrine/orm` to ^2.20 || ^3.3
 

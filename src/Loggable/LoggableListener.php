@@ -17,8 +17,10 @@ use Doctrine\Persistence\Event\ManagerEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Tool\ActorProviderInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
@@ -55,6 +57,8 @@ class LoggableListener extends MappedEventSubscriber
      */
     public const ACTION_REMOVE = LogEntryInterface::ACTION_REMOVE;
 
+    protected ?ActorProviderInterface $actorProvider = null;
+
     /**
      * Username for identification
      *
@@ -86,7 +90,17 @@ class LoggableListener extends MappedEventSubscriber
     protected $pendingRelatedObjects = [];
 
     /**
+     * Set an actor provider for the user value.
+     */
+    public function setActorProvider(ActorProviderInterface $actorProvider): void
+    {
+        $this->actorProvider = $actorProvider;
+    }
+
+    /**
      * Set username for identification
+     *
+     * If an actor provider is also provided, it will take precedence over this value.
      *
      * @param mixed $username
      *
@@ -230,6 +244,41 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
+     * Retrieve the username to use for the log entry.
+     *
+     * This method will try to fetch a username from the actor provider first, falling back to the {@see $this->username}
+     * property if the provider is not set or does not provide a value.
+     *
+     * @throws UnexpectedValueException if the actor provider provides an unsupported username value
+     */
+    protected function getUsername(): ?string
+    {
+        if ($this->actorProvider instanceof ActorProviderInterface) {
+            $actor = $this->actorProvider->getActor();
+
+            if (is_string($actor) || null === $actor) {
+                return $actor;
+            }
+
+            if (method_exists($actor, 'getUserIdentifier')) {
+                return (string) $actor->getUserIdentifier();
+            }
+
+            if (method_exists($actor, 'getUsername')) {
+                return (string) $actor->getUsername();
+            }
+
+            if (method_exists($actor, '__toString')) {
+                return $actor->__toString();
+            }
+
+            throw new UnexpectedValueException(\sprintf('The loggable extension requires the actor provider to return a string or an object implementing the "getUserIdentifier()", "getUsername()", or "__toString()" methods. "%s" cannot be used as an actor.', get_class($actor)));
+        }
+
+        return $this->username;
+    }
+
+    /**
      * Handle any custom LogEntry functionality that needs to be performed
      * before persisting it
      *
@@ -328,7 +377,7 @@ class LoggableListener extends MappedEventSubscriber
             $logEntry = $logEntryMeta->newInstance();
 
             $logEntry->setAction($action);
-            $logEntry->setUsername($this->username);
+            $logEntry->setUsername($this->getUsername());
             $logEntry->setObjectClass($meta->getName());
             $logEntry->setLoggedAt();
 

@@ -13,6 +13,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tool\ActorProviderInterface;
 
 /**
  * The Blameable listener handles the update of
@@ -26,6 +27,8 @@ use Gedmo\Exception\InvalidArgumentException;
  */
 class BlameableListener extends AbstractTrackingListener
 {
+    protected ?ActorProviderInterface $actorProvider = null;
+
     /**
      * @var mixed
      */
@@ -42,34 +45,46 @@ class BlameableListener extends AbstractTrackingListener
      */
     public function getFieldValue($meta, $field, $eventAdapter)
     {
+        $actor = $this->actorProvider instanceof ActorProviderInterface ? $this->actorProvider->getActor() : $this->user;
+
         if ($meta->hasAssociation($field)) {
-            if (null !== $this->user && !is_object($this->user)) {
+            if (null !== $actor && !is_object($actor)) {
                 throw new InvalidArgumentException('Blame is reference, user must be an object');
             }
 
-            return $this->user;
+            return $actor;
         }
 
         // ok so it's not an association, then it is a string, or an object
-        if (is_object($this->user)) {
-            if (method_exists($this->user, 'getUserIdentifier')) {
-                return (string) $this->user->getUserIdentifier();
+        if (is_object($actor)) {
+            if (method_exists($actor, 'getUserIdentifier')) {
+                return (string) $actor->getUserIdentifier();
             }
-            if (method_exists($this->user, 'getUsername')) {
-                return (string) $this->user->getUsername();
+            if (method_exists($actor, 'getUsername')) {
+                return (string) $actor->getUsername();
             }
-            if (method_exists($this->user, '__toString')) {
-                return $this->user->__toString();
+            if (method_exists($actor, '__toString')) {
+                return $actor->__toString();
             }
 
             throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUserIdentifier, getUsername or __toString');
         }
 
-        return $this->user;
+        return $actor;
     }
 
     /**
-     * Set a user value to return
+     * Set an actor provider for the user value.
+     */
+    public function setActorProvider(ActorProviderInterface $actorProvider): void
+    {
+        $this->actorProvider = $actorProvider;
+    }
+
+    /**
+     * Set a user value to return.
+     *
+     * If an actor provider is also provided, it will take precedence over this value.
      *
      * @param mixed $user
      *

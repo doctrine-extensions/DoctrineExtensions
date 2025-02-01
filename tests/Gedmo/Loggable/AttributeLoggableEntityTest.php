@@ -29,10 +29,10 @@ final class AttributeLoggableEntityTest extends LoggableEntityTest
         parent::setUp();
 
         $evm = new EventManager();
-        $loggableListener = new LoggableListener();
-        $loggableListener->setAnnotationReader(new AttributeReader());
-        $loggableListener->setUsername('jules');
-        $evm->addEventSubscriber($loggableListener);
+        $this->listener = new LoggableListener();
+        $this->listener->setAnnotationReader(new AttributeReader());
+        $this->listener->setUsername('jules');
+        $evm->addEventSubscriber($this->listener);
 
         $this->em = $this->getDefaultMockSqliteEntityManager($evm);
     }

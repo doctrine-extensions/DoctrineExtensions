@@ -24,9 +24,18 @@ $om->getEventManager()->addEventSubscriber($listener);
 ```
 
 Then, once your application has it available (i.e. after validating the authentication for your user during an HTTP request),
-you can set a reference to the user to be blamed for changes by calling the listener's `setUserValue` method.
+you can set a reference to the user to be blamed for changes.
+
+The user reference can be set through either an [actor provider service](./utils/actor-provider.md) or by calling the
+listener's `setUserValue` method with a resolved user.
+
+> [!TIP]
+> When an actor provider is given to the extension, any data set with the `setUserValue` method will be ignored.
 
 ```php
+// The $provider must be an implementation of Gedmo\Tool\ActorProviderInterface
+$listener->setActorProvider($provider);
+
 // The $user can be either an object or a string
 $listener->setUserValue($user);
 ```
