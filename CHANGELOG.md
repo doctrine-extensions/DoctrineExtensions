@@ -18,6 +18,11 @@ a release.
 ---
 
 ## [Unreleased]
+### Changed
+- Updated minimum versions for `doctrine/orm` to ^2.20 || ^3.3
+
+### Fixed
+- Regression with `doctrine/orm` ^2.20 || ^3.3 that caused the translation walker to produce queries with duplicated LIMIT clauses (issue #2917)
 
 ## [3.18.0] - 2025-02-01
 ### Added

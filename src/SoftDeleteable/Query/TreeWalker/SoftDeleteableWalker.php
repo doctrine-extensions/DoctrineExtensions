@@ -21,11 +21,11 @@ use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\PreparedExecutorFinalizer;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
 use Doctrine\ORM\Query\Exec\SqlFinalizer;
+use Doctrine\ORM\Query\SqlOutputWalker;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Gedmo\Tool\ORM\Walker\CompatSqlOutputWalker;
 use Gedmo\Tool\ORM\Walker\SqlWalkerCompat;
 
 /**
@@ -38,7 +38,7 @@ use Gedmo\Tool\ORM\Walker\SqlWalkerCompat;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class SoftDeleteableWalker extends CompatSqlOutputWalker
+class SoftDeleteableWalker extends SqlOutputWalker
 {
     use SqlWalkerCompat;
 

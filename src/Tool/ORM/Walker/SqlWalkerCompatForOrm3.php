@@ -9,7 +9,6 @@
 
 namespace Gedmo\Tool\ORM\Walker;
 
-use Doctrine\ORM\Query\AST;
 use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\FromClause;
@@ -23,6 +22,7 @@ use Doctrine\ORM\Query\AST\SubselectFromClause;
 use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\AST\WhereClause;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
+use Doctrine\ORM\Query\Exec\SqlFinalizer;
 use Doctrine\ORM\Query\SqlWalker;
 
 /**
@@ -42,12 +42,9 @@ trait SqlWalkerCompatForOrm3
         return $this->doGetExecutorWithCompat($statement);
     }
 
-    /**
-     * Walks down a SelectStatement AST node, thereby generating the appropriate SQL.
-     */
-    public function walkSelectStatement(SelectStatement $selectStatement): string
+    public function getFinalizer(DeleteStatement|UpdateStatement|SelectStatement $AST): SqlFinalizer
     {
-        return $this->doWalkSelectStatementWithCompat($selectStatement);
+        return $this->doGetFinalizerWithCompat($AST);
     }
 
     /**
@@ -134,9 +131,12 @@ trait SqlWalkerCompatForOrm3
         return parent::getExecutor($statement);
     }
 
-    protected function doWalkSelectStatementWithCompat(SelectStatement $selectStatement): string
+    /**
+     * @param DeleteStatement|UpdateStatement|SelectStatement $AST
+     */
+    protected function doGetFinalizerWithCompat($AST): SqlFinalizer
     {
-        return parent::walkSelectStatement($selectStatement);
+        return parent::getFinalizer($AST);
     }
 
     protected function doWalkSelectClauseWithCompat(SelectClause $selectClause): string

@@ -9,8 +9,8 @@
 
 namespace Gedmo\Tool\ORM\Walker;
 
-use Doctrine\ORM\Query\AST;
 use Doctrine\ORM\Query\AST\DeleteClause;
+use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\FromClause;
 use Doctrine\ORM\Query\AST\GroupByClause;
 use Doctrine\ORM\Query\AST\HavingClause;
@@ -19,8 +19,10 @@ use Doctrine\ORM\Query\AST\SelectClause;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\AST\SimpleSelectClause;
 use Doctrine\ORM\Query\AST\SubselectFromClause;
+use Doctrine\ORM\Query\AST\UpdateStatement;
 use Doctrine\ORM\Query\AST\WhereClause;
 use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
+use Doctrine\ORM\Query\Exec\SqlFinalizer;
 use Doctrine\ORM\Query\SqlWalker;
 
 /**
@@ -35,7 +37,7 @@ trait SqlWalkerCompatForOrm2
     /**
      * Gets an executor that can be used to execute the result of this walker.
      *
-     * @param SelectStatement|AST\UpdateStatement|AST\DeleteStatement $statement
+     * @param SelectStatement|UpdateStatement|DeleteStatement $statement
      *
      * @return AbstractSqlExecutor
      */
@@ -45,15 +47,11 @@ trait SqlWalkerCompatForOrm2
     }
 
     /**
-     * Walks down a SelectStatement AST node, thereby generating the appropriate SQL.
-     *
-     * @param SelectStatement $selectStatement
-     *
-     * @return string
+     * @param DeleteStatement|UpdateStatement|SelectStatement $AST
      */
-    public function walkSelectStatement($selectStatement)
+    public function getFinalizer($AST): SqlFinalizer
     {
-        return $this->doWalkSelectStatementWithCompat($selectStatement);
+        return $this->doGetFinalizerWithCompat($AST);
     }
 
     /**
@@ -169,16 +167,19 @@ trait SqlWalkerCompatForOrm2
     /**
      * Gets an executor that can be used to execute the result of this walker.
      *
-     * @param SelectStatement|AST\UpdateStatement|AST\DeleteStatement $statement
+     * @param SelectStatement|UpdateStatement|DeleteStatement $statement
      */
     protected function doGetExecutorWithCompat($statement): AbstractSqlExecutor
     {
         return parent::getExecutor($statement);
     }
 
-    protected function doWalkSelectStatementWithCompat(SelectStatement $selectStatement): string
+    /**
+     * @param DeleteStatement|UpdateStatement|SelectStatement $AST
+     */
+    protected function doGetFinalizerWithCompat($AST): SqlFinalizer
     {
-        return parent::walkSelectStatement($selectStatement);
+        return parent::getFinalizer($AST);
     }
 
     protected function doWalkSelectClauseWithCompat(SelectClause $selectClause): string

@@ -125,6 +125,21 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertSame('good', $comments[0]['subject']);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testPaginatedQuery(): void
+    {
+        $this->populateMore();
+
+        $dql = 'SELECT a FROM '.Article::class.' a';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+        $q->setFirstResult(0);
+        $q->setMaxResults(1);
+        $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
+    }
+
     public function testShouldSelectWithTranslationFallbackOnSimpleObjectHydration(): void
     {
         $this->em->getConfiguration()->addCustomHydrationMode(

@@ -34,8 +34,8 @@ use Doctrine\ORM\Query\Exec\AbstractSqlExecutor;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\Exec\SingleSelectSqlFinalizer;
 use Doctrine\ORM\Query\Exec\SqlFinalizer;
+use Doctrine\ORM\Query\SqlOutputWalker;
 use Gedmo\Exception\RuntimeException;
-use Gedmo\Tool\ORM\Walker\CompatSqlOutputWalker;
 use Gedmo\Tool\ORM\Walker\SqlWalkerCompat;
 use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
@@ -56,7 +56,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class TranslationWalker extends CompatSqlOutputWalker
+class TranslationWalker extends SqlOutputWalker
 {
     use SqlWalkerCompat;
 
@@ -155,12 +155,12 @@ class TranslationWalker extends CompatSqlOutputWalker
         }
         $this->prepareTranslatedComponents();
 
-        return new SingleSelectSqlFinalizer($this->walkSelectStatement($AST));
+        return new SingleSelectSqlFinalizer($this->createSqlForFinalizer($AST));
     }
 
-    protected function doWalkSelectStatementWithCompat(SelectStatement $selectStatement): string
+    protected function createSqlForFinalizer(SelectStatement $selectStatement): string
     {
-        $result = parent::walkSelectStatement($selectStatement);
+        $result = parent::createSqlForFinalizer($selectStatement);
         if ([] === $this->translatedComponents) {
             return $result;
         }

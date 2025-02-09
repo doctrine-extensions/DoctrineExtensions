@@ -541,12 +541,6 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
-			message: '#^Call to an undefined static method Doctrine\\ORM\\Query\\SqlWalker\:\:getFinalizer\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 2
-			path: src/Tool/ORM/Walker/CompatSqlOutputWalker.php
-
-		-
 			message: '#^Access to an undefined property ProxyManager\\Proxy\\GhostObjectInterface&TObject of object\:\:\$identifier\.$#'
 			identifier: property.notFound
 			count: 1
