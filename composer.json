@@ -57,7 +57,7 @@
         "doctrine/dbal": "^3.7 || ^4.0",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/mongodb-odm": "^2.3",
-        "doctrine/orm": "^2.14.0 || ^3.0",
+        "doctrine/orm": "^2.20 || ^3.3",
         "friendsofphp/php-cs-fixer": "^3.14.0",
         "nesbot/carbon": "^2.71 || ^3.0",
         "phpstan/phpstan": "^2.1.1",
@@ -76,7 +76,7 @@
         "doctrine/common": "<2.13 || >=4.0",
         "doctrine/dbal": "<3.7 || >=5.0",
         "doctrine/mongodb-odm": "<2.3 || >=3.0",
-        "doctrine/orm": "<2.14.0 || 2.16.0 || 2.16.1 || >=4.0"
+        "doctrine/orm": "<2.20 || >=3.0 <3.3 || >=4.0"
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
