@@ -28,13 +28,12 @@ $finder = PhpCsFixer\Finder::create()
     ]);
 
 return (new PhpCsFixer\Config())
+    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRules([
         '@DoctrineAnnotation' => true,
-        '@PHP71Migration' => true,
-        '@PHP71Migration:risky' => true,
         '@PHP74Migration' => true,
         '@PHP74Migration:risky' => true,
-        '@PHPUnit84Migration:risky' => true,
+        '@PHPUnit91Migration:risky' => true,
         '@PSR2' => true,
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -55,7 +54,7 @@ return (new PhpCsFixer\Config())
         'no_superfluous_phpdoc_tags' => ['allow_mixed' => true],
         'no_unset_on_property' => true,
         'no_useless_else' => true,
-        'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => true],
+        'nullable_type_declaration_for_default_null_value' => true,
         'ordered_class_elements' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_order' => ['order' => ['param', 'throws', 'return']],
