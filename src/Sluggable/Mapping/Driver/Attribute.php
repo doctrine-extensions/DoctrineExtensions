@@ -82,7 +82,7 @@ class Attribute extends AbstractAnnotationDriver
         // Embedded entity
         if (property_exists($meta, 'embeddedClasses') && $meta->embeddedClasses) {
             foreach ($meta->embeddedClasses as $propertyName => $embeddedClassInfo) {
-                $embeddedClass = new \ReflectionClass($embeddedClassInfo['class']);
+                $embeddedClass = new \ReflectionClass($embeddedClassInfo->class);
 
                 foreach ($embeddedClass->getProperties() as $embeddedProperty) {
                     $config = $this->retrieveSlug($meta, $config, $embeddedProperty, $propertyName);
