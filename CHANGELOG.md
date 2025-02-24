@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.19.0] - 2025-02-24
 ### Added
 - Actor provider for use with extensions with user references (#2914)
 
