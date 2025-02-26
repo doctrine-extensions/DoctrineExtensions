@@ -23,10 +23,13 @@ $listener = new IpTraceableListener();
 $om->getEventManager()->addEventSubscriber($listener);
 ```
 
-Then, once your application has it available, you can set the IP address to be recorded for changes by calling
-the listener's `setIpValue` method.
+Then, once your application has it available, you can set the IP address to be recorded. The IP address can be set through
+either an [IP address provider service](./utils/ip-address-provider.md) or by calling the listener's `setIpValue` method.
 
 ```php
+// The $provider must be an implementation of Gedmo\Tool\IpAddressProviderInterface
+$listener->setIpAddressProvider($provider);
+
 $listener->setIpValue('127.0.0.1');
 ```
 
