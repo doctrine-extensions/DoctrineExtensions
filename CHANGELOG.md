@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- IP address provider for use with extensions with IP address references (#2928)
 
 ## [3.19.0] - 2025-02-24
 ### Added
