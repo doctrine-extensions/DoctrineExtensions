@@ -132,9 +132,7 @@ final class EventAdapterORMStub extends BaseAdapterORM implements TimestampableA
     }
 }
 
-/**
- * @phpstan-extends AbstractTrackingListener<array, TimestampableAdapter>
- */
+/** @phpstan-extends AbstractTrackingListener<array, TimestampableAdapter> */
 final class TimestampableListenerStub extends AbstractTrackingListener
 {
     /**
