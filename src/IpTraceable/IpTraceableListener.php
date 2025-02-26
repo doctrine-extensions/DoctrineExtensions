@@ -13,6 +13,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
+use Gedmo\Tool\IpAddressProviderInterface;
 
 /**
  * The IpTraceable listener handles the update of
@@ -26,13 +27,15 @@ use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
  */
 class IpTraceableListener extends AbstractTrackingListener
 {
+    protected ?IpAddressProviderInterface $ipAddressProvider = null;
+
     /**
      * @var string|null
      */
     protected $ip;
 
     /**
-     * Get the ipValue value to set on a ip field
+     * Get the IP address value to set on an IP address field
      *
      * @param ClassMetadata<object> $meta
      * @param string                $field
@@ -42,11 +45,25 @@ class IpTraceableListener extends AbstractTrackingListener
      */
     public function getFieldValue($meta, $field, $eventAdapter)
     {
+        if ($this->ipAddressProvider instanceof IpAddressProviderInterface) {
+            return $this->ipAddressProvider->getAddress();
+        }
+
         return $this->ip;
     }
 
     /**
-     * Set a ip value to return
+     * Set an IP address provider for the IP address value.
+     */
+    public function setIpAddressProvider(IpAddressProviderInterface $ipAddressProvider): void
+    {
+        $this->ipAddressProvider = $ipAddressProvider;
+    }
+
+    /**
+     * Set an IP address value to return.
+     *
+     * If an IP address provider is also provided, it will take precedence over this value.
      *
      * @param string|null $ip
      *
