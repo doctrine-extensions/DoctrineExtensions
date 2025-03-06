@@ -92,4 +92,9 @@ class Article
     {
         $this->comments[] = $comment;
     }
+
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
 }
