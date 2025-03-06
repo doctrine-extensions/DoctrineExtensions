@@ -48,6 +48,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             'prePersist',
             'onFlush',
             'loadClassMetadata',
+            'preRemove',
         ];
     }
 
@@ -198,6 +199,35 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                 foreach ($config['create'] as $field) {
                     if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
                         $this->updateField($object, $ea, $meta, $field);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks for a soft delete event as remove
+     */
+    public function preRemove(EventArgs $args): void
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata($object::class);
+        $config = $this->getConfiguration($om, $meta->getName());
+
+        if ($config) {
+            if (isset($config['remove'])) {
+                foreach ($config['remove'] as $field) {
+                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+                        $oldValue = $meta->getReflectionProperty($field)->getValue($object);
+                        $newValue = $this->getFieldValue($meta, $field, $ea);
+                        $this->updateField($object, $ea, $meta, $field);
+                        $uow->propertyChanged($object, $field, $oldValue, $newValue);
+                        $uow->scheduleExtraUpdate($object, [
+                            $field => [$oldValue, $newValue],
+                        ]);
                     }
                 }
             }
