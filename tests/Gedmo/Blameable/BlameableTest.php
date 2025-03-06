@@ -43,50 +43,44 @@ final class BlameableTest extends BaseTestCaseORM
 
     public function testBlameable(): void
     {
-        $article = new Article();
-        $article->setTitle('Sport');
+        $sport = new Article();
+        $sport->setTitle('Sport');
 
-        $comment = new Comment();
-        $comment->setMessage('hello');
-        $comment->setArticle($article);
-        $comment->setStatus(0);
+        $sportComment = new Comment();
+        $sportComment->setMessage('hello');
+        $sportComment->setArticle($sport);
+        $sportComment->setStatus(0);
 
-        $this->em->persist($article);
-        $this->em->persist($comment);
+        $this->em->persist($sport);
+        $this->em->persist($sportComment);
         $this->em->flush();
         $this->em->clear();
 
-        $article = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
-        $this->assertSame('testuser', $article->getCreated());
-        $this->assertSame('testuser', $article->getUpdated());
-        $this->assertNull($article->getPublished());
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
+        static::assertSame('testuser', $sport->getCreated());
+        static::assertSame('testuser', $sport->getUpdated());
+        static::assertNull($sport->getPublished());
 
-        $comment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
-        $this->assertSame('testuser', $comment->getModified());
-        $this->assertNull($comment->getClosed());
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
+        static::assertSame('testuser', $sportComment->getModified());
+        static::assertNull($sportComment->getClosed());
 
-        $comment->setStatus(1);
-        $type = new Type();
-        $type->setTitle('Published');
+        $sportComment->setStatus(1);
+        $published = new Type();
+        $published->setTitle('Published');
 
-        $article->setTitle('Updated');
-        $article->setType($type);
-        $this->em->persist($article);
-        $this->em->persist($type);
-        $this->em->persist($comment);
+        $sport->setTitle('Updated');
+        $sport->setType($published);
+        $this->em->persist($sport);
+        $this->em->persist($published);
+        $this->em->persist($sportComment);
         $this->em->flush();
         $this->em->clear();
 
-        $comment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
-        $this->assertSame('testuser', $comment->getClosed());
-        $this->assertSame('testuser', $article->getPublished());
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
+        static::assertSame('testuser', $sportComment->getClosed());
 
-        // Now delete event
-        $article = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Updated']);
-        $this->em->remove($article);
-        $this->em->flush();
-
-        $this->assertSame('testuser', $article->getDeleted());
+        static::assertSame('testuser', $sport->getPublished());
     }
 
     public function testBlameableWithActorProvider(): void

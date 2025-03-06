@@ -17,13 +17,18 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 /**
  * @ORM\Entity
  */
 #[ORM\Entity]
+#[Gedmo\SoftDeleteable]
 class Article implements Blameable
 {
+
+    use SoftDeleteableEntity;
+
     /**
      * @var int|null
      *
