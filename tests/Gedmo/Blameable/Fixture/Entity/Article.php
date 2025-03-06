@@ -51,9 +51,9 @@ class Article implements Blameable
     private $comments;
 
     /**
-     * @Gedmo\Blameable(on="create")
-     *
      * @ORM\Column(name="created", type="string")
+     *
+     * @Gedmo\Blameable(on="create")
      */
     #[ORM\Column(name: 'created', type: Types::STRING)]
     #[Gedmo\Blameable(on: 'create')]
@@ -62,11 +62,20 @@ class Article implements Blameable
     /**
      * @ORM\Column(name="updated", type="string")
      *
-     * @Gedmo\Blameable
+     * @Gedmo\Blameable(on="update")
      */
     #[Gedmo\Blameable]
     #[ORM\Column(name: 'updated', type: Types::STRING)]
     private ?string $updated = null;
+
+    /**
+     * @ORM\Column(name="deleted", type="string")
+     *
+     * @Gedmo\Blameable(on="remove")
+     */
+    #[Gedmo\Blameable]
+    #[ORM\Column(name: 'deleted', type: Types::STRING)]
+    private ?string $deleted = null;
 
     /**
      * @ORM\Column(name="published", type="string", nullable=true)
@@ -150,5 +159,15 @@ class Article implements Blameable
     public function setUpdated(?string $updated): void
     {
         $this->updated = $updated;
+    }
+
+    public function getDeleted(): ?string
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?string $deleted): void
+    {
+        $this->deleted = $deleted;
     }
 }
