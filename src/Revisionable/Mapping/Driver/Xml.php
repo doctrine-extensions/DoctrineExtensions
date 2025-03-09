@@ -24,7 +24,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  *
  * @internal
  */
-class Xml extends BaseXml
+final class Xml extends BaseXml
 {
     public function readExtendedMetadata($meta, array &$config)
     {
