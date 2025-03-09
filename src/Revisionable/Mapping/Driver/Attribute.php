@@ -103,7 +103,7 @@ class Attribute extends AbstractAnnotationDriver
         if (!$meta->isMappedSuperclass && $config) {
             // The revisionable flag must be set, except for embedded models, and the versioned config should be a non-empty array
             if (isset($config['versioned']) && (!$this->isEmbed($meta) && !isset($config['revisionable']))) {
-                throw new InvalidMappingException(sprintf("Class '%s' has '%s' annotated fields but is missing the '%s' class annotation.", $meta->getName(), Versioned::class, Revisionable::class));
+                throw new InvalidMappingException(sprintf('Class "%s" has "%s" annotated fields but is missing the "%s" class annotation.', $meta->getName(), Versioned::class, Revisionable::class));
             }
         }
 
