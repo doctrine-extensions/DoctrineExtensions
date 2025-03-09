@@ -4,19 +4,10 @@ The **Blameable** behavior automates the update of user information on your Doct
 
 ## Index
 
-- [Blameable Behavior Extension for Doctrine](#blameable-behavior-extension-for-doctrine)
-  - [Index](#index)
-  - [Getting Started](#getting-started)
-  - [Configuring Blameable Objects](#configuring-blameable-objects)
-    - [Attribute Configuration](#attribute-configuration)
-    - [XML Configuration](#xml-configuration)
-    - [Annotation Configuration](#annotation-configuration)
-    - [Supported Field Types](#supported-field-types)
-    - [Supported Events](#supported-events)
-  - [Using Traits](#using-traits)
-  - [Logging Changes For Specific Actions](#logging-changes-for-specific-actions)
-    - [Single Field Changed To Specific Value](#single-field-changed-to-specific-value)
-    - [One of Many Fields Changed](#one-of-many-fields-changed)
+- [Getting Started](#getting-started)
+- [Configuring Blameable Objects](#configuring-blameable-objects)
+- [Using Traits](#using-traits)
+- [Logging Changes For Specific Actions](#logging-changes-for-specific-actions)
 
 ## Getting Started
 
