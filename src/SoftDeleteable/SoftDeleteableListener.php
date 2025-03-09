@@ -147,8 +147,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
     /**
      * Detach soft-deleted objects from object manager.
      *
-     * @param EventArgs $args
-     *
      * @return void
      */
     public function postFlush(EventArgs $args)
