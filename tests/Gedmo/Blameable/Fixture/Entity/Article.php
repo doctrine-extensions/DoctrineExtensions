@@ -43,12 +43,12 @@ class Article implements Blameable
     private ?string $title = null;
 
     /**
-     * @var Collection<int, Comment>
+     * @var Collection<Comment>
      *
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Blameable\Fixture\Entity\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @Gedmo\Blameable(on="create")
@@ -115,7 +115,7 @@ class Article implements Blameable
     }
 
     /**
-     * @return Collection<int, Comment>
+     * @return Collection<Comment>
      */
     public function getComments(): Collection
     {
