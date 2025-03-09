@@ -93,6 +93,9 @@ class Article
         $this->comments[] = $comment;
     }
 
+    /**
+     * @return Collection<int, Comment>
+     */
     public function getComments(): Collection
     {
         return $this->comments;

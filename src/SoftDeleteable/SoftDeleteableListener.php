@@ -51,7 +51,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
      */
     public const POST_SOFT_DELETE = 'postSoftDelete';
 
-
     /**
      * Objects soft-deleted on flush.
      *
