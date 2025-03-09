@@ -19,6 +19,7 @@ use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
 use Gedmo\Tests\IpTraceable\Fixture\Article;
 use Gedmo\Tests\IpTraceable\Fixture\Comment;
 use Gedmo\Tests\IpTraceable\Fixture\Type;
+use Gedmo\Tests\TestIpAddressProvider;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -29,16 +30,19 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 final class IpTraceableTest extends BaseTestCaseORM
 {
     private const TEST_IP = '34.234.1.10';
+    private const TEST_PROVIDER_IP = '34.234.2.10';
+
+    private IpTraceableListener $listener;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $listener = new IpTraceableListener();
-        $listener->setIpValue(self::TEST_IP);
+        $this->listener = new IpTraceableListener();
+        $this->listener->setIpValue(self::TEST_IP);
 
         $evm = new EventManager();
-        $evm->addEventSubscriber($listener);
+        $evm->addEventSubscriber($this->listener);
 
         $this->getDefaultMockSqliteEntityManager($evm);
     }
@@ -114,6 +118,50 @@ final class IpTraceableTest extends BaseTestCaseORM
         static::assertSame(self::TEST_IP, $sportComment->getClosed());
 
         static::assertSame(self::TEST_IP, $sport->getPublished());
+    }
+
+    public function testIpTraceableWithProvider(): void
+    {
+        $this->listener->setIpAddressProvider(new TestIpAddressProvider(self::TEST_PROVIDER_IP));
+
+        $sport = new Article();
+        $sport->setTitle('Sport');
+
+        $sportComment = new Comment();
+        $sportComment->setMessage('hello');
+        $sportComment->setArticle($sport);
+        $sportComment->setStatus(0);
+
+        $this->em->persist($sport);
+        $this->em->persist($sportComment);
+        $this->em->flush();
+        $this->em->clear();
+
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
+        static::assertSame(self::TEST_PROVIDER_IP, $sport->getCreated());
+        static::assertSame(self::TEST_PROVIDER_IP, $sport->getUpdated());
+        static::assertNull($sport->getPublished());
+
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
+        static::assertSame(self::TEST_PROVIDER_IP, $sportComment->getModified());
+        static::assertNull($sportComment->getClosed());
+
+        $sportComment->setStatus(1);
+        $published = new Type();
+        $published->setTitle('Published');
+
+        $sport->setTitle('Updated');
+        $sport->setType($published);
+        $this->em->persist($sport);
+        $this->em->persist($published);
+        $this->em->persist($sportComment);
+        $this->em->flush();
+        $this->em->clear();
+
+        $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
+        static::assertSame(self::TEST_PROVIDER_IP, $sportComment->getClosed());
+
+        static::assertSame(self::TEST_PROVIDER_IP, $sport->getPublished());
     }
 
     public function testForcedValues(): void

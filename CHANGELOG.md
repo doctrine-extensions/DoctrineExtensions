@@ -21,6 +21,9 @@ a release.
 ### Fixed
 - SoftDeleteable: Resolved a bug where a soft-deleted object isn't remove from the ObjectManager (#2930)
 
+### Added
+- IP address provider for use with extensions with IP address references (#2928)
+
 ## [3.19.0] - 2025-02-24
 ### Added
 - Actor provider for use with extensions with user references (#2914)
