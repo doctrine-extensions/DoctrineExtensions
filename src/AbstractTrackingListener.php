@@ -48,7 +48,6 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             'prePersist',
             'onFlush',
             'loadClassMetadata',
-            'preRemove',
         ];
     }
 
