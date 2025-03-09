@@ -548,7 +548,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $this->em->remove($comment);
 
-        // The Comment has been marked for removal, but not yet flushed.  This means the
+        // The Comment has been marked for removal, but not yet flushed. This means the
         // Comment should still be available.
         static::assertInstanceOf(Comment::class, $commentRepo->find($comment->getId()));
 
