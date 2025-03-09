@@ -19,6 +19,9 @@ a release.
 
 ## [Unreleased]
 
+## Added
+- Support for blameable on `remove` event (#2929)
+
 ## [3.19.0] - 2025-02-24
 ### Added
 - Actor provider for use with extensions with user references (#2914)
@@ -103,7 +106,7 @@ a release.
 - Dropped support for doctrine/dbal < 3.2
 
 ### Deprecated
-- Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
+- Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`)
 - Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead.
 
 ## [3.13.0] - 2023-09-06
