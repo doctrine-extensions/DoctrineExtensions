@@ -48,7 +48,7 @@ class Article implements Blameable
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Blameable\Fixture\Entity\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @Gedmo\Blameable(on="create")

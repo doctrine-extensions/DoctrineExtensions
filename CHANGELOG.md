@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- SoftDeleteable: Resolved a bug where a soft-deleted object isn't remove from the ObjectManager (#2930)
+
 ### Added
 - IP address provider for use with extensions with IP address references (#2928)
 
@@ -105,7 +108,7 @@ a release.
 - Dropped support for doctrine/dbal < 3.2
 
 ### Deprecated
-- Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`) 
+- Calling `Gedmo\Mapping\Event\Adapter\ORM::getObjectManager()` and `getObject()` on EventArgs that do not implement `getObjectManager()` and `getObject()` (such as old EventArgs implementing `getEntityManager()` and `getEntity()`)
 - Calling `Gedmo\Uploadable\Event\UploadableBaseEventArgs::getEntityManager()` and `getEntity()`. Call `getObjectManager()` and `getObject()` instead.
 
 ## [3.13.0] - 2023-09-06
