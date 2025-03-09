@@ -41,7 +41,6 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  * extended drivers
  *
  * @phpstan-template TConfig of array
- * @phpstan-template TEventAdapter of AdapterInterface
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
@@ -256,8 +255,6 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @throws InvalidArgumentException if event is not recognized
      *
      * @return AdapterInterface
-     *
-     * @phpstan-return TEventAdapter
      */
     protected function getEventAdapter(EventArgs $args)
     {

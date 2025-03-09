@@ -214,13 +214,13 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata($object::class);
+        $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->getName());
 
         if ($config) {
             if (isset($config['remove'])) {
                 foreach ($config['remove'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+                    if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
                         $oldValue = $meta->getReflectionProperty($field)->getValue($object);
                         $newValue = $this->getFieldValue($meta, $field, $ea);
                         $this->updateField($object, $ea, $meta, $field);

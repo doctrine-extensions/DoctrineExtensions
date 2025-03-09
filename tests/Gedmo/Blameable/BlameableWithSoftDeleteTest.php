@@ -70,13 +70,13 @@ final class BlameableWithSoftDeleteTest extends BaseTestCaseORM
         $this->em->clear();
 
         $article = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
-        $this->assertSame('testuser', $article->getCreated());
-        $this->assertSame('testuser', $article->getUpdated());
-        $this->assertNull($article->getPublished());
+        static::assertSame('testuser', $article->getCreated());
+        static::assertSame('testuser', $article->getUpdated());
+        static::assertNull($article->getPublished());
 
         $comment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
-        $this->assertSame('testuser', $comment->getModified());
-        $this->assertNull($comment->getClosed());
+        static::assertSame('testuser', $comment->getModified());
+        static::assertNull($comment->getClosed());
 
         $comment->setStatus(1);
         $type = new Type();
@@ -91,16 +91,16 @@ final class BlameableWithSoftDeleteTest extends BaseTestCaseORM
         $this->em->clear();
 
         $comment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
-        $this->assertSame('testuser', $comment->getClosed());
-        $this->assertSame('testuser', $article->getPublished());
+        static::assertSame('testuser', $comment->getClosed());
+        static::assertSame('testuser', $article->getPublished());
 
         // Now delete event
         $article = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Updated']);
         $this->em->remove($article);
         $this->em->flush();
 
-        $this->assertTrue($article->isDeleted());
-        $this->assertSame('testuser', $article->getDeleted());
+        static::assertTrue($article->isDeleted());
+        static::assertSame('testuser', $article->getDeleted());
     }
 
     protected function getUsedEntityFixtures(): array

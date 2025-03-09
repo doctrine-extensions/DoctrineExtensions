@@ -26,7 +26,6 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 #[Gedmo\SoftDeleteable]
 class Article implements Blameable
 {
-
     use SoftDeleteableEntity;
 
     /**
