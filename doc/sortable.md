@@ -3,31 +3,27 @@
 **Sortable** behavior will maintain a position field for ordering entities.
 
 Features:
+
 - Automatic handling of position index
 - Group entity ordering by one or more fields
 - Can be nested with other behaviors
 - Annotation, Attribute and Xml mapping support for extensions
 
 Contents:
-- [Sortable behavior extension for Doctrine](#sortable-behavior-extension-for-doctrine)
-  - [Setup and autoloading](#setup-and-autoloading)
-  - [Sortable mapping](#sortable-mapping)
-    - [Annotation mapping example](#annotation-mapping-example)
-    - [Attribute mapping example](#attribute-mapping-example)
-    - [Xml mapping example](#xml-mapping-example)
-  - [Basic usage examples](#basic-usage-examples)
-    - [To save **Items** at the end of the sorting list simply do:](#to-save-items-at-the-end-of-the-sorting-list-simply-do)
-    - [Save **Item** at a given position](#save-item-at-a-given-position)
-    - [Reordering the sorted list](#reordering-the-sorted-list)
-    - [Using a foreign\_key / relation as SortableGroup](#using-a-foreign_key--relation-as-sortablegroup)
-  - [Custom comparison](#custom-comparison)
-  - [Blameable Support](#blameable-support)
+
+- [Setup and autoloading](#setup-and-autoloading)
+- [Sortable mapping](#sortable-mapping)
+- [Basic usage examples](#basic-usage-examples)
+- [Custom comparison](#custom-comparison)
+- [Blameable Support](#blameable-support)
 
 ## Setup and autoloading
+
 Read the [documentation](./annotations.md#em-setup) or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 ## Sortable mapping
+
 - [SortableGroup](../src/Mapping/Annotation/SortableGroup.php) - used to specify property for **grouping**
 - [SortablePosition](../src/Mapping/Annotation/SortablePosition.php) - used to specify property to store **position** index
 
