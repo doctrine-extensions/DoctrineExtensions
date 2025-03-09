@@ -24,7 +24,7 @@ use Symfony\Component\Yaml\Yaml as YamlParser;
  *
  * @internal
  */
-class Yaml extends File
+final class Yaml extends File
 {
     /**
      * File extension
