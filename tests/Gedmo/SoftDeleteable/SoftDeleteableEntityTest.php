@@ -554,7 +554,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        // Now that we've flushed, the Comment should no longer be available and should return null
+        // Now that we've flushed, the Comment should no longer be available and should return null.
         static::assertNull($commentRepo->find($comment->getId()));
     }
 
