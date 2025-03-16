@@ -292,7 +292,7 @@ final class RevisionableListener extends MappedEventSubscriber
 
             $value = $changes[1];
 
-            if ($meta instanceof MongoDBODMClassMetadata && $meta->hasEmbed($field)) {
+            if ($meta instanceof MongoDBODMClassMetadata && $meta->hasEmbed($field) && null !== $value) {
                 $value = $this->getObjectChangeSetData($ea, $value, $revision);
             } elseif ($meta->isSingleValuedAssociation($field)) {
                 if ($value) {
