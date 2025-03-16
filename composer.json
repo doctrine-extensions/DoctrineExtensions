@@ -36,8 +36,8 @@
     ],
     "homepage": "http://gediminasm.org/",
     "support": {
-        "email": "gediminas.morkevicius@gmail.com",
-        "wiki": "https://github.com/Atlantic18/DoctrineExtensions/tree/main/doc"
+        "issues": "https://github.com/doctrine-extensions/DoctrineExtensions/issues",
+        "docs": "https://github.com/doctrine-extensions/DoctrineExtensions/tree/main/doc"
     },
     "require": {
         "php": "^7.4 || ^8.0",
