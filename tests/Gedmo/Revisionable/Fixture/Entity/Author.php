@@ -23,20 +23,20 @@ use Gedmo\Revisionable\Revisionable;
 class Author implements Revisionable
 {
     /**
-     * @ORM\Column(name="name", type="string")
+     * @ORM\Column(name="name", type="string", nullable=true)
      *
      * @Gedmo\Versioned
      */
-    #[ORM\Column(name: 'name', type: Types::STRING)]
+    #[ORM\Column(name: 'name', type: Types::STRING, nullable: true)]
     #[Gedmo\Versioned]
     private ?string $name = null;
 
     /**
-     * @ORM\Column(name="email", type="string")
+     * @ORM\Column(name="email", type="string", nullable=true)
      *
      * @Gedmo\Versioned
      */
-    #[ORM\Column(name: 'email', type: Types::STRING)]
+    #[ORM\Column(name: 'email', type: Types::STRING, nullable: true)]
     #[Gedmo\Versioned]
     private ?string $email = null;
 
