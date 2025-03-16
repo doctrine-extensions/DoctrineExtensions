@@ -142,14 +142,12 @@ class RevisionRepository extends DocumentRepository
             }
 
             $documentWrapper->setPropertyValue($field, $value);
-            unset($fields[$field]);
+            unset($fields[array_search($field, $fields, true)]);
         }
 
-        /*
         if (count($fields)) {
-            throw new UnexpectedValueException(sprintf('Could not fully revert document %s to version %d.', $documentMetadata->getName(), $version));
+            throw new UnexpectedValueException(sprintf('Could not fully revert document %s.', $documentMeta->getName()));
         }
-        */
     }
 
     /**
