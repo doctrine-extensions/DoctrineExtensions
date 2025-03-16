@@ -123,16 +123,26 @@ final class RevisionableDocumentTest extends BaseTestCaseMongoODM
 
         static::assertInstanceOf(RevisionRepository::class, $commentRevisionRepository);
 
-        $comment = $commentRepository->findOneBy(['message' => 'm-v5']);
+        $comment = $commentRepository->findOneBy(['message' => 'm-v7']);
 
-        static::assertSame('m-v5', $comment->getMessage());
+        static::assertInstanceOf(Comment::class, $comment);
+        static::assertSame('m-v7', $comment->getMessage());
         static::assertSame('s-v3', $comment->getSubject());
         static::assertSame('2024-06-24 23:30:00', $comment->getWrittenAt()->format('Y-m-d H:i:s'));
         static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());
         static::assertSame('Jane Doe', $comment->getAuthor()->getName());
         static::assertSame('jane@doe.com', $comment->getAuthor()->getEmail());
 
-        // test revert
+        // test revert single version
+        $commentRevisionRepository->revert($comment, 6);
+
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('m-v6', $comment->getMessage());
+        static::assertSame('2024-06-24 23:30:00', $comment->getWrittenAt()->format('Y-m-d H:i:s'));
+        static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());
+        static::assertNull($comment->getAuthor());
+
+        // test revert multiple versions
         $commentRevisionRepository->revert($comment, 3);
 
         static::assertSame('s-v3', $comment->getSubject());
@@ -148,7 +158,7 @@ final class RevisionableDocumentTest extends BaseTestCaseMongoODM
         // test fetch revisions
         $revisions = $commentRevisionRepository->getRevisions($comment);
 
-        static::assertCount(6, $revisions);
+        static::assertCount(8, $revisions);
 
         $latest = array_shift($revisions);
 
@@ -202,6 +212,7 @@ final class RevisionableDocumentTest extends BaseTestCaseMongoODM
         $author->setName('John Doe');
         $author->setEmail('john@doe.com');
 
+        // version 1
         $comment = new Comment();
         $comment->setArticle($article);
         $comment->setAuthor($author);
@@ -213,11 +224,13 @@ final class RevisionableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($comment);
         $this->dm->flush();
 
+        // version 2
         $comment->setMessage('m-v2');
 
         $this->dm->persist($comment);
         $this->dm->flush();
 
+        // version 3
         $comment->setSubject('s-v3');
 
         $this->dm->persist($comment);
@@ -231,6 +244,7 @@ final class RevisionableDocumentTest extends BaseTestCaseMongoODM
         $author2->setName('Jane Doe');
         $author2->setEmail('jane@doe.com');
 
+        // version 4
         $comment->setAuthor($author2);
         $comment->setArticle($article2);
 
@@ -238,7 +252,22 @@ final class RevisionableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($comment);
         $this->dm->flush();
 
+        // version 5
         $comment->setMessage('m-v5');
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // version 6
+        $comment->setMessage('m-v6');
+        $comment->setAuthor(null);
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // version 7
+        $comment->setMessage('m-v7');
+        $comment->setAuthor($author2);
 
         $this->dm->persist($comment);
         $this->dm->flush();
