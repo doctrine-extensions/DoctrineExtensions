@@ -149,6 +149,7 @@ final class RevisionableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('m-v2', $comment->getMessage());
         static::assertSame('2024-06-24 23:30:00', $comment->getWrittenAt()->format('Y-m-d H:i:s'));
         static::assertSame('a1-t-v1', $comment->getArticle()->getTitle());
+        static::assertNotNull($comment->getAuthor());
         static::assertSame('John Doe', $comment->getAuthor()->getName());
         static::assertSame('john@doe.com', $comment->getAuthor()->getEmail());
 
