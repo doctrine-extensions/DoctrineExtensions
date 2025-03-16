@@ -19,7 +19,6 @@ use Gedmo\Tests\Blameable\Fixture\Entity\Article;
 use Gedmo\Tests\Blameable\Fixture\Entity\Comment;
 use Gedmo\Tests\Blameable\Fixture\Entity\Type;
 use Gedmo\Tests\Clock;
-use Gedmo\Tests\TestActorProvider;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
