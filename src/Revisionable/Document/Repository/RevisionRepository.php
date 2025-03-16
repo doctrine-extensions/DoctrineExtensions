@@ -124,13 +124,15 @@ class RevisionRepository extends DocumentRepository
             $mapping = $documentMeta->getFieldMapping($field);
 
             // Fill the embedded document
-            if ($documentWrapper->isEmbeddedAssociation($field) && null !== $value) {
-                assert(class_exists($mapping['targetDocument']));
+            if ($documentWrapper->isEmbeddedAssociation($field)) {
+                if (null !== $value) {
+                    assert(class_exists($mapping['targetDocument']));
 
-                $embeddedMetadata = $this->getDocumentManager()->getClassMetadata($mapping['targetDocument']);
-                $document = $embeddedMetadata->newInstance();
-                $this->fillDocument($document, $value);
-                $value = $document;
+                    $embeddedMetadata = $this->getDocumentManager()->getClassMetadata($mapping['targetDocument']);
+                    $document = $embeddedMetadata->newInstance();
+                    $this->fillDocument($document, $value);
+                    $value = $document;
+                }
             } elseif ($documentMeta->isSingleValuedAssociation($field)) {
                 assert(class_exists($mapping['targetDocument']));
 
