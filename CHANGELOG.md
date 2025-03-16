@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- IP address provider for use with extensions with IP address references (#2928)
 
 ## Added
 - Support for blameable on `remove` event (#2929)
