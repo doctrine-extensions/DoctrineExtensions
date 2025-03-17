@@ -47,18 +47,11 @@ use Gedmo\References\Mapping\Event\ReferencesAdapter;
 class ReferencesListener extends MappedEventSubscriber
 {
     /**
-     * @var array<string, ObjectManager>
-     */
-    private array $managers;
-
-    /**
      * @param array<string, ObjectManager> $managers
      */
-    public function __construct(array $managers = [])
+    public function __construct(private array $managers = [])
     {
         parent::__construct();
-
-        $this->managers = $managers;
     }
 
     /**
@@ -87,16 +80,12 @@ class ReferencesListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
                 $property = $meta->reflClass->getProperty($mapping['field']);
-
-                if (PHP_VERSION_ID < 80100) {
-                    $property->setAccessible(true);
-                }
 
                 if (isset($mapping['identifier'])) {
                     $referencedObjectId = $meta->getFieldValue($object, $mapping['identifier']);
@@ -117,10 +106,6 @@ class ReferencesListener extends MappedEventSubscriber
         if (isset($config['referenceMany'])) {
             foreach ($config['referenceMany'] as $mapping) {
                 $property = $meta->reflClass->getProperty($mapping['field']);
-
-                if (PHP_VERSION_ID < 80100) {
-                    $property->setAccessible(true);
-                }
 
                 if (isset($mapping['mappedBy'])) {
                     $id = $ea->extractIdentifier($om, $object);
@@ -220,16 +205,12 @@ class ReferencesListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceManyEmbed'])) {
             foreach ($config['referenceManyEmbed'] as $mapping) {
                 $property = $meta->reflClass->getProperty($mapping['field']);
-
-                if (PHP_VERSION_ID < 80100) {
-                    $property->setAccessible(true);
-                }
 
                 $id = $ea->extractIdentifier($om, $object);
                 $manager = $this->getManager('document');
@@ -270,18 +251,13 @@ class ReferencesListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
                 if (isset($mapping['identifier'])) {
                     $property = $meta->reflClass->getProperty($mapping['field']);
-
-                    if (PHP_VERSION_ID < 80100) {
-                        $property->setAccessible(true);
-                    }
-
                     $referencedObject = $property->getValue($object);
 
                     if (is_object($referencedObject)) {

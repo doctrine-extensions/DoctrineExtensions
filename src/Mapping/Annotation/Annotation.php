@@ -14,6 +14,4 @@ namespace Gedmo\Mapping\Annotation;
 /**
  * @internal
  */
-interface Annotation
-{
-}
+interface Annotation {}

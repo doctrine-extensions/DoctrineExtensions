@@ -21,15 +21,9 @@ use Gedmo\Blameable\Traits\BlameableEntity;
 #[ORM\Entity]
 class UsingTrait
 {
-    /*
-     * Hook Blameable behavior
-     * updates createdAt, updatedAt fields
-     */
     use BlameableEntity;
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -37,7 +31,7 @@ class UsingTrait
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(length=128)

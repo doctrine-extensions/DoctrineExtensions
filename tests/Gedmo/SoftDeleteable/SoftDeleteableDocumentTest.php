@@ -62,14 +62,14 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        static::assertNull($user->getDeletedAt());
+        static::assertNotInstanceOf(\DateTime::class, $user->getDeletedAt());
 
         $this->dm->remove($user);
         $this->dm->flush();
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        static::assertNull($user);
+        static::assertNotInstanceOf(User::class, $user);
     }
 
     /**
@@ -92,18 +92,18 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        static::assertNull($user->getDeletedAt());
+        static::assertNotInstanceOf(\DateTime::class, $user->getDeletedAt());
         $this->dm->remove($user);
         $this->dm->flush();
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        static::assertNotNull($user->getDeletedAt());
+        static::assertInstanceOf(\DateTime::class, $user->getDeletedAt());
 
         $filter->enableForDocument(User::class);
 
         $user = $repo->findOneBy(['username' => $username]);
-        static::assertNull($user);
+        static::assertNotInstanceOf(User::class, $user);
     }
 
     /**
@@ -144,7 +144,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        static::assertNull($user);
+        static::assertNotInstanceOf(UserTimeAware::class, $user);
         $this->dm->flush();
     }
 
@@ -177,7 +177,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => 'test_user']);
 
-        static::assertNull($user->getDeletedAt());
+        static::assertNotInstanceOf(\DateTime::class, $user->getDeletedAt());
 
         $this->dm->remove($user);
         $this->dm->flush();

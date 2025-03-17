@@ -22,23 +22,19 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Type
 {
     /**
-     * @var Article
-     *
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article", mappedBy="type")
      *
      * @Gedmo\ReferenceIntegrity("nullify")
      */
     #[ODM\ReferenceOne(targetDocument: Article::class, mappedBy: 'type')]
     #[Gedmo\ReferenceIntegrity(value: 'nullify')]
-    protected $article;
+    protected ?Article $article = null;
 
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @ODM\Field(type="string")

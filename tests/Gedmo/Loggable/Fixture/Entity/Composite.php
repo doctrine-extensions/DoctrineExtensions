@@ -23,22 +23,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Composite
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     */
-    #[ORM\Id]
-    #[ORM\Column(name: 'one', type: Types::INTEGER)]
-    private int $one;
-
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     */
-    #[ORM\Id]
-    #[ORM\Column(name: 'two', type: Types::INTEGER)]
-    private int $two;
-
-    /**
      * @ORM\Column(length=8)
      *
      * @Gedmo\Versioned
@@ -47,11 +31,22 @@ class Composite
     #[Gedmo\Versioned]
     private ?string $title = null;
 
-    public function __construct(int $one, int $two)
-    {
-        $this->one = $one;
-        $this->two = $two;
-    }
+    public function __construct(
+        /**
+         * @ORM\Id
+         * @ORM\Column(type="integer")
+         */
+        #[ORM\Id]
+        #[ORM\Column(name: 'one', type: Types::INTEGER)]
+        private int $one,
+        /**
+         * @ORM\Id
+         * @ORM\Column(type="integer")
+         */
+        #[ORM\Id]
+        #[ORM\Column(name: 'two', type: Types::INTEGER)]
+        private int $two
+    ) {}
 
     public function getOne(): int
     {

@@ -19,6 +19,4 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 #[ORM\Table(name: 'ext_translations')]
 #[ORM\Index(name: 'translations_lookup_idx', columns: ['locale', 'object_Class', 'foreign_key'])]
 #[ORM\UniqueConstraint(name: 'lookup_unique_idx', columns: ['locale', 'object_Class', 'foreign_key', 'field'])]
-class PersonTranslation extends AbstractTranslation
-{
-}
+class PersonTranslation extends AbstractTranslation {}

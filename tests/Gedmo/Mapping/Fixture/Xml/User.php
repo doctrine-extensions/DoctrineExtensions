@@ -13,10 +13,7 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class User
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     private ?string $password = null;
 
@@ -24,12 +21,9 @@ class User
 
     private ?string $company = null;
 
-    /**
-     * @var string
-     */
-    private $localeField;
+    private ?string $localeField = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -39,7 +33,7 @@ class User
         $this->password = $password;
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -49,7 +43,7 @@ class User
         $this->username = $username;
     }
 
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -59,7 +53,7 @@ class User
         $this->company = $company;
     }
 
-    public function getCompany(): string
+    public function getCompany(): ?string
     {
         return $this->company;
     }

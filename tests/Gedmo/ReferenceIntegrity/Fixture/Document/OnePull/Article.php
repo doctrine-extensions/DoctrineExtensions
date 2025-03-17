@@ -23,12 +23,10 @@ use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 class Article
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @ODM\Field(type="string")
@@ -42,7 +40,7 @@ class Article
      * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Type", inversedBy="articles")
      */
     #[ODM\ReferenceMany(targetDocument: Type::class, inversedBy: 'articles')]
-    private $types;
+    private Collection $types;
 
     public function __construct()
     {

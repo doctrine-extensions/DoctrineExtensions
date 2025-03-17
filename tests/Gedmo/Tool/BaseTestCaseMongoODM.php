@@ -99,15 +99,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
      */
     protected function getMetadataDriverImplementation(): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriver();
-        }
-
-        if (!isset($_ENV['annotation_reader'])) {
-            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
-        }
-
-        return new AnnotationDriver($_ENV['annotation_reader']);
+        return new AttributeDriver();
     }
 
     /**
@@ -161,7 +153,7 @@ abstract class BaseTestCaseMongoODM extends TestCase
 
     private function getMetadataDefaultDriverImplementation(): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (class_exists(AttributeDriver::class)) {
             return new AttributeDriver([]);
         }
 

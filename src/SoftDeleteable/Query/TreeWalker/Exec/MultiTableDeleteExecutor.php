@@ -54,11 +54,6 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
             }
         }
 
-        // @todo: Once the minimum supported ORM version is 2.17, this can always write to the `$this->sqlStatements` property
-        if (property_exists($this, 'sqlStatements')) {
-            $this->sqlStatements = $sqlStatements;
-        } else {
-            $this->_sqlStatements = $sqlStatements;
-        }
+        $this->sqlStatements = $sqlStatements;
     }
 }

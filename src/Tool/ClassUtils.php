@@ -18,9 +18,7 @@ use Doctrine\Common\Util\ClassUtils as CommonClassUtils;
  */
 final class ClassUtils
 {
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Gets the real class name of an object (even if it's a proxy).
@@ -39,6 +37,6 @@ final class ClassUtils
             return CommonClassUtils::getClass($object);
         }
 
-        return get_class($object);
+        return $object::class;
     }
 }

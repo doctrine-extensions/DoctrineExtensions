@@ -11,18 +11,9 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class LoggableCompositeRelation
 {
-    /**
-     * @var Loggable
-     */
-    private $one;
+    private ?Loggable $one = null;
 
-    /**
-     * @var int
-     */
-    private $two;
+    private ?int $two = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 }

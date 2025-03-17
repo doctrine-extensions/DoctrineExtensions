@@ -18,8 +18,6 @@ use Gedmo\Tests\Loggable\LoggableEntityTest;
 /**
  * These are tests for loggable behavior with an attribute reader
  *
- * @requires PHP >= 8.0
- *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 final class AttributeLoggableEntityTest extends LoggableEntityTest

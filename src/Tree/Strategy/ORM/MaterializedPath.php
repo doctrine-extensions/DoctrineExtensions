@@ -32,7 +32,7 @@ class MaterializedPath extends AbstractMaterializedPath
     {
         $wrapped = AbstractWrapper::wrap($node, $om);
 
-        $path = addcslashes($wrapped->getPropertyValue($config['path']), '%');
+        $path = addcslashes((string) $wrapped->getPropertyValue($config['path']), '%');
 
         $separator = $config['path_ends_with_separator'] ? null : $config['path_separator'];
 

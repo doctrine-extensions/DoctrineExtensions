@@ -82,7 +82,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         // check all scheduled updates
         $all = array_merge($ea->getScheduledObjectInsertions($uow), $ea->getScheduledObjectUpdates($uow));
         foreach ($all as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if (!$config = $this->getConfiguration($om, $meta->getName())) {
                 continue;
             }
@@ -129,7 +129,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                     foreach ($trackedFields as $trackedField) {
                         $trackedChild = null;
                         $tracked = null;
-                        $parts = explode('.', $trackedField);
+                        $parts = explode('.', (string) $trackedField);
                         if (isset($parts[1])) {
                             $tracked = $parts[0];
                             $trackedChild = $parts[1];
@@ -147,7 +147,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                                 if (!is_object($changingObject)) {
                                     throw new UnexpectedValueException("Field - [{$tracked}] is expected to be object in class - {$meta->getName()}");
                                 }
-                                $objectMeta = $om->getClassMetadata(get_class($changingObject));
+                                $objectMeta = $om->getClassMetadata($changingObject::class);
                                 $om->initializeObject($changingObject);
                                 $value = $objectMeta->getFieldValue($changingObject, $trackedChild);
                             } else {
@@ -185,7 +185,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {

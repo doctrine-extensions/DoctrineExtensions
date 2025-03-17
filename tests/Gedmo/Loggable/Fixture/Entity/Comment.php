@@ -27,16 +27,14 @@ use Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment as CommentLog;
 class Comment implements Loggable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
-    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue]
-    private $id;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
     /**
      * @Gedmo\Versioned

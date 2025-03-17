@@ -9,6 +9,8 @@
 
 namespace Gedmo\Tests\Tree\Fixture\Issue2616;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -29,32 +31,27 @@ class Category
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="category_id", onDelete="cascade")
      *
      * @Gedmo\TreeParent
-     *
-     * @var Category|null
      */
     #[Gedmo\TreeParent]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'category_id', onDelete: 'cascade')]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
-    protected $parent;
+    protected ?Category $parent = null;
 
     /**
      * @ORM\OneToMany(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2616\Category", mappedBy="parent", fetch="EXTRA_LAZY")
      *
-     * @var Category[]|null
+     * @var Collection<int, Category>
      */
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, fetch: 'EXTRA_LAZY')]
-    protected $children;
+    protected Collection $children;
 
     /**
      * @ORM\OneToOne(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2616\Page", mappedBy="category", cascade={"remove"})
-     *
-     * @var Page|null
      */
     #[ORM\OneToOne(targetEntity: Page::class, mappedBy: 'category', cascade: ['remove'])]
-    protected $page;
+    protected ?Page $page = null;
+
     /**
-     * @var int|null
-     *
      * @ORM\Column(name="category_id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -65,7 +62,7 @@ class Category
     #[ORM\Column(name: 'category_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue]
     #[ORM\Id]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -77,49 +74,41 @@ class Category
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="level", type="integer", nullable=true)
-     *
-     * @var int|null
      */
     #[Gedmo\TreeLevel]
     #[ORM\Column(name: 'level', type: Types::INTEGER, nullable: true)]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @Gedmo\TreePath(separator="/", endsWithSeparator=false)
      *
      * @ORM\Column(name="path", type="string", nullable=true)
-     *
-     * @var string|null
      */
     #[ORM\Column(name: 'path', type: Types::STRING, nullable: true)]
     #[Gedmo\TreePath(separator: '/', endsWithSeparator: false)]
-    private $path;
+    private ?string $path = null;
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Category|null
-     */
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    /**
-     * @param Category|null $parent
-     */
-    public function setParent($parent): void
+    public function setParent(?self $parent): void
     {
         $this->parent = $parent;
     }
 
-    /**
-     * @return Page|null
-     */
-    public function getPage()
+    public function getPage(): ?Page
     {
         return $this->page;
     }
@@ -130,36 +119,22 @@ class Category
         $page->setCategory($this);
     }
 
-    /**
-     * @return int
-     */
-    public function getLevel()
+    public function getLevel(): ?int
     {
         return $this->level;
     }
 
-    /**
-     * @param int $level
-     */
-    public function setLevel($level): void
+    public function setLevel(?int $level): void
     {
         $this->level = $level;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPath()
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return void
-     */
-    public function setPath($path)
+    public function setPath(?string $path): void
     {
         $this->path = $path;
     }

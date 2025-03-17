@@ -13,6 +13,4 @@ namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 
-class Annotation extends Attribute implements AnnotationDriverInterface
-{
-}
+class Annotation extends Attribute implements AnnotationDriverInterface {}

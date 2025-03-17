@@ -17,6 +17,4 @@ namespace Gedmo\Uploadable\Event;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class UploadablePreFileProcessEventArgs extends UploadableBaseEventArgs
-{
-}
+class UploadablePreFileProcessEventArgs extends UploadableBaseEventArgs {}

@@ -20,14 +20,10 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 final class WithPreAndPostSoftDeleteEventArgsTypeListener implements EventSubscriber
 {
     /** @param PreSoftDeleteEventArgs<ObjectManager> $args */
-    public function preSoftDelete(PreSoftDeleteEventArgs $args): void
-    {
-    }
+    public function preSoftDelete(PreSoftDeleteEventArgs $args): void {}
 
     /** @param PostSoftDeleteEventArgs<ObjectManager> $args */
-    public function postSoftDelete(PostSoftDeleteEventArgs $args): void
-    {
-    }
+    public function postSoftDelete(PostSoftDeleteEventArgs $args): void {}
 
     public function getSubscribedEvents(): array
     {

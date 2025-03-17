@@ -25,8 +25,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class FileWithAllowedTypes
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -34,7 +32,7 @@ class FileWithAllowedTypes
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", nullable=true)

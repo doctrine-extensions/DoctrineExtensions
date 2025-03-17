@@ -17,13 +17,9 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 final class WithLifecycleEventArgsFromORMTypeListener implements EventSubscriber
 {
-    public function preSoftDelete(LifecycleEventArgs $args): void
-    {
-    }
+    public function preSoftDelete(LifecycleEventArgs $args): void {}
 
-    public function postSoftDelete(LifecycleEventArgs $args): void
-    {
-    }
+    public function postSoftDelete(LifecycleEventArgs $args): void {}
 
     public function getSubscribedEvents(): array
     {

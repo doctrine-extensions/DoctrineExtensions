@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
@@ -47,11 +46,7 @@ final class TimestampableMappingTest extends ORMMappingTestCase
      */
     public static function dataTimestampableObject(): \Generator
     {
-        if (PHP_VERSION_ID >= 80000) {
-            yield 'Model with attributes' => [AnnotatedCategory::class];
-        } elseif (class_exists(AnnotationReader::class)) {
-            yield 'Model with annotations' => [AnnotatedCategory::class];
-        }
+        yield 'Model with attributes' => [AnnotatedCategory::class];
 
         if (class_exists(YamlDriver::class)) {
             yield 'Model with YAML mapping' => [YamlCategory::class];

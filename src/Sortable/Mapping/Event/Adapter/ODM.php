@@ -71,7 +71,7 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
     {
         $dm = $this->getObjectManager();
 
-        $delta = array_map('intval', $delta);
+        $delta = array_map(intval(...), $delta);
 
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
         $qb->updateMany();

@@ -24,16 +24,11 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  *
- * @requires PHP >= 8.0
- *
  * @todo This test requires {@see ChangeTest} to have been run first to load the {@see TimestampableListenerStub}
  */
 final class AttributeChangeTest extends BaseTestCaseORM
 {
-    /**
-     * @var TimestampableListenerStub
-     */
-    protected $listener;
+    protected TimestampableListenerStub $listener;
 
     protected function setUp(): void
     {
@@ -69,14 +64,8 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Changed.
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getChtitle()->format('Y-m-d H:i:s')
-        );
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getClosed()->format('Y-m-d H:i:s')
-        );
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getChtitle()->format('Y-m-d H:i:s'));
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getClosed()->format('Y-m-d H:i:s'));
 
         $anotherDate = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00');
         $this->listener->eventAdapter->setDateValue($anotherDate);
@@ -88,14 +77,8 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Not Changed.
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getChtitle()->format('Y-m-d H:i:s')
-        );
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getClosed()->format('Y-m-d H:i:s')
-        );
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getChtitle()->format('Y-m-d H:i:s'));
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getClosed()->format('Y-m-d H:i:s'));
 
         $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setState('Published');
@@ -103,10 +86,7 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Changed.
-        static::assertSame(
-            $anotherDate->format('Y-m-d H:i:s'),
-            $test->getClosed()->format('Y-m-d H:i:s')
-        );
+        static::assertSame($anotherDate->format('Y-m-d H:i:s'), $test->getClosed()->format('Y-m-d H:i:s'));
     }
 
     protected function getUsedEntityFixtures(): array

@@ -35,14 +35,7 @@ class CategoryTranslation extends AbstractPersonalTranslation
     #[ORM\JoinColumn(name: 'object_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     protected $object;
 
-    /**
-     * Convenient constructor
-     *
-     * @param string $locale
-     * @param string $field
-     * @param string $value
-     */
-    public function __construct($locale, $field, $value)
+    public function __construct(string $locale, string $field, string $value)
     {
         $this->setLocale($locale);
         $this->setField($field);

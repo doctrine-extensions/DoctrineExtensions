@@ -320,6 +320,8 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
+     * @param class-string<UploadableException> $exceptionClass
+     *
      * @dataProvider uploadExceptionsProvider
      */
     public function testUploadExceptions(int $error, string $exceptionClass): void
@@ -363,7 +365,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $sha1String = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
+        $sha1String = substr((string) $file->getFilePath(), strrpos((string) $file->getFilePath(), '/') + 1);
         $sha1String = str_replace('.txt', '', $sha1String);
 
         static::assertMatchesRegularExpression('/[a-z0-9]{40}/', $sha1String);
@@ -381,7 +383,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
+        $filename = substr((string) $file->getFilePath(), strrpos((string) $file->getFilePath(), '/') + 1);
 
         static::assertSame('test-3.txt', $filename);
     }
@@ -398,7 +400,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
+        $filename = substr((string) $file->getFilePath(), strrpos((string) $file->getFilePath(), '/') + 1);
 
         static::assertSame('123.txt', $filename);
     }
@@ -479,19 +481,17 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
-     * @return array<string, array<string, string>>
+     * @return \Iterator<string, array<string, string>>
      */
-    public static function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): array
+    public static function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): \Iterator
     {
-        return [
-            'With extension' => [
-                'Filename' => 'test.txt',
-                'Expected filename' => 'test-2.txt',
-            ],
-            'Without extension' => [
-                'Filename' => 'test',
-                'Expected filename' => 'test-2',
-            ],
+        yield 'With extension' => [
+            'Filename' => 'test.txt',
+            'Expected filename' => 'test-2.txt',
+        ];
+        yield 'Without extension' => [
+            'Filename' => 'test',
+            'Expected filename' => 'test-2',
         ];
     }
 
@@ -520,7 +520,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        static::assertSame($expectedFilename, basename($file2->getFilePath()));
+        static::assertSame($expectedFilename, basename((string) $file2->getFilePath()));
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath(): void
@@ -663,11 +663,9 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
-     * @param mixed $class
-     *
      * @dataProvider invalidFileInfoClassesProvider
      */
-    public function testSetDefaultFileInfoClassThrowExceptionIfInvalidClassArePassed($class): void
+    public function testSetDefaultFileInfoClassThrowExceptionIfInvalidClassArePassed(mixed $class): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->listener->setDefaultFileInfoClass($class);
@@ -714,37 +712,31 @@ final class UploadableEntityTest extends BaseTestCaseORM
     // Data Providers
 
     /**
-     * @return list<array{mixed}>
+     * @return \Generator<array{mixed}>
      */
-    public static function invalidFileInfoClassesProvider(): array
+    public static function invalidFileInfoClassesProvider(): \Generator
     {
-        return [
-            [''],
-            [false],
-            [null],
-            ['FakeFileInfo'],
-            [[]],
-            [new \DateTime()],
-        ];
+        yield [''];
+        yield [false];
+        yield [null];
+        yield ['FakeFileInfo'];
+        yield [[]];
+        yield [new \DateTime()];
     }
 
     /**
-     * @return list<int, array{int, string}>
-     *
-     * @phpstan-return list<array{int, class-string<UploadableException>}>
+     * @phpstan-return \Generator<array{int, class-string<UploadableException>}>
      */
-    public static function uploadExceptionsProvider(): array
+    public static function uploadExceptionsProvider(): \Generator
     {
-        return [
-            [1, UploadableIniSizeException::class],
-            [2, UploadableFormSizeException::class],
-            [3, UploadablePartialException::class],
-            [4, UploadableNoFileException::class],
-            [6, UploadableNoTmpDirException::class],
-            [7, UploadableCantWriteException::class],
-            [8, UploadableExtensionException::class],
-            [999, UploadableUploadException::class],
-        ];
+        yield [1, UploadableIniSizeException::class];
+        yield [2, UploadableFormSizeException::class];
+        yield [3, UploadablePartialException::class];
+        yield [4, UploadableNoFileException::class];
+        yield [6, UploadableNoTmpDirException::class];
+        yield [7, UploadableCantWriteException::class];
+        yield [8, UploadableExtensionException::class];
+        yield [999, UploadableUploadException::class];
     }
 
     protected function getUsedEntityFixtures(): array
@@ -804,9 +796,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     }
 }
 
-class FakeFileInfo
-{
-}
+class FakeFileInfo {}
 
 class FakeFilenameGenerator implements FilenameGeneratorInterface
 {

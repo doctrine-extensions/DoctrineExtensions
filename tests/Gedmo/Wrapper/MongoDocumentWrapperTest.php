@@ -50,11 +50,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     {
         $this->dm->clear();
         $test = $this->dm->getReference(Article::class, $this->articleId);
-
-        if (method_exists($this->dm, 'isUninitializedObject')) {
-            static::assertTrue($this->dm->isUninitializedObject($test));
-        }
-
+        static::assertTrue($this->dm->isUninitializedObject($test));
         static::assertInstanceOf(Article::class, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 

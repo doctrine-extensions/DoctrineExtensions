@@ -28,8 +28,6 @@ use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 class MPCategoryWithRootAssociation
 {
     /**
-     * @var int|null
-     *
      * @Gedmo\TreePathSource
      *
      * @ORM\Id
@@ -40,7 +38,7 @@ class MPCategoryWithRootAssociation
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreePathSource]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreePath
@@ -71,19 +69,15 @@ class MPCategoryWithRootAssociation
     private ?MPCategoryWithRootAssociation $parentId = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
-     * @var self|null
-     *
      * @Gedmo\TreeRoot
      *
      * @ORM\ManyToOne(targetEntity="MPCategoryWithRootAssociation")
@@ -94,7 +88,7 @@ class MPCategoryWithRootAssociation
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'tree_root_entity', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeRoot]
-    private $treeRootEntity;
+    private ?MPCategoryWithRootAssociation $treeRootEntity = null;
 
     /**
      * @var Collection<int, self>

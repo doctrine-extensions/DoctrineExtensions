@@ -11,10 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\ExtensionMetadataFactory;
@@ -32,17 +30,8 @@ final class ExtensionMetadataFactoryReaderTest extends ORMMappingTestCase
 {
     public function testThrowsWhenNoReaderIsProvidedForAnAttributeOrAnnotationDriver(): void
     {
-        if (PHP_VERSION_ID < 80000 && !class_exists(AnnotationReader::class)) {
-            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
-        }
-
         $config = $this->getBasicConfiguration();
-
-        if (PHP_VERSION_ID >= 80000) {
-            $config->setMetadataDriverImpl(new AttributeDriver([]));
-        } else {
-            $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
-        }
+        $config->setMetadataDriverImpl(new AttributeDriver([]));
 
         $connection = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',

@@ -18,6 +18,4 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
  *
  * @author David Buchmann <mail@davidbu.ch>
  */
-final class ODM extends BaseAdapterODM implements BlameableAdapter
-{
-}
+final class ODM extends BaseAdapterODM implements BlameableAdapter {}

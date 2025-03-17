@@ -23,8 +23,6 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 class Item
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,7 +30,7 @@ class Item
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=191)
