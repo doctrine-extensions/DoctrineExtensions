@@ -21,6 +21,8 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 /**
  * @ORM\Entity
+ *
+ * @Gedmo\SoftDeleteable
  */
 #[ORM\Entity]
 #[Gedmo\SoftDeleteable]
