@@ -49,12 +49,10 @@ final class ORM extends BaseAdapterORM implements SoftDeleteableAdapter, ClockAw
      * Generates current timestamp for the specified mapping
      *
      * @param array<string, mixed>|FieldMapping $mapping
-     *
-     * @return \DateTimeInterface|int
      */
-    private function getRawDateValue($mapping)
+    private function getRawDateValue(array|FieldMapping $mapping): \DateTimeInterface|int
     {
-        $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
+        $datetime = $this->clock?->now() ?? new \DateTimeImmutable();
         $type = $mapping instanceof FieldMapping ? $mapping->type : ($mapping['type'] ?? '');
 
         if ('integer' === $type) {

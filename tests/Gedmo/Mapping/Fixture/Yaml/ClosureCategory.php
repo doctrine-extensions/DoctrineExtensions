@@ -16,19 +16,16 @@ use Doctrine\Common\Collections\Collection;
 
 class ClosureCategory
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     private ?string $title = null;
 
     /**
      * @var Collection<int, ClosureCategory>
      */
-    private $children;
+    private Collection $children;
 
-    private ?ClosureCategory $parent = null;
+    private ?self $parent = null;
 
     private ?int $level = null;
 

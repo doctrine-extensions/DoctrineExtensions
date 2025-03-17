@@ -26,9 +26,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Geo
 {
     /**
-     * @var string|null
-     *
-     * @phpstan-var numeric-string|null
+     * @var numeric-string|null
      *
      * @ORM\Column(type="decimal", precision=9, scale=6)
      *
@@ -36,12 +34,10 @@ class Geo
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Gedmo\Versioned]
-    protected $latitude;
+    protected ?string $latitude = null;
 
     /**
-     * @var string|null
-     *
-     * @phpstan-var numeric-string|null
+     * @var numeric-string|null
      *
      * @ORM\Column(type="decimal", precision=9, scale=6)
      *
@@ -49,24 +45,22 @@ class Geo
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Gedmo\Versioned]
-    protected $longitude;
+    protected ?string $longitude = null;
 
-    /**
-     * @var GeoLocation
-     *
-     * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation")
-     *
-     * @Gedmo\Versioned
-     */
-    #[ORM\Embedded(class: GeoLocation::class)]
-    #[Gedmo\Versioned]
-    protected $geoLocation;
-
-    public function __construct(float $latitude, float $longitude, GeoLocation $geoLocation)
-    {
+    public function __construct(
+        float $latitude,
+        float $longitude,
+        /**
+         * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation")
+         *
+         * @Gedmo\Versioned
+         */
+        #[ORM\Embedded(class: GeoLocation::class)]
+        #[Gedmo\Versioned]
+        protected GeoLocation $geoLocation
+    ) {
         $this->latitude = $this->parseFloatToString($latitude);
         $this->longitude = $this->parseFloatToString($longitude);
-        $this->geoLocation = $geoLocation;
     }
 
     public function getLatitude(): float
@@ -100,7 +94,7 @@ class Geo
     }
 
     /**
-     * @phpstan-return numeric-string
+     * @return numeric-string
      */
     private function parseFloatToString(float $number): string
     {

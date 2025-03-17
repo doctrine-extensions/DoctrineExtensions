@@ -21,12 +21,10 @@ use Doctrine\ODM\MongoDB\Types\Type;
 class Article
 {
     /**
-     * @var string|null
-     *
      * @MongoODM\Id
      */
     #[MongoODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @MongoODM\Field(type="string")

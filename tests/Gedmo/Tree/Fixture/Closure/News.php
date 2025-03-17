@@ -23,8 +23,6 @@ use Doctrine\ORM\Mapping as ORM;
 class News
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -32,25 +30,20 @@ class News
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
-    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    private string $title;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\Category", cascade={"persist"})
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
-     */
-    #[ORM\OneToOne(targetEntity: Category::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
-    private Category $category;
-
-    public function __construct(string $title, Category $category)
-    {
-        $this->title = $title;
-        $this->category = $category;
-    }
+    public function __construct(
+        /**
+         * @ORM\Column(name="title", type="string", length=64)
+         */
+        #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+        private string $title,
+        /**
+         * @ORM\OneToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\Category", cascade={"persist"})
+         * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+         */
+        #[ORM\OneToOne(targetEntity: Category::class, cascade: ['persist'])]
+        #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
+        private Category $category
+    ) {}
 }

@@ -28,8 +28,6 @@ use Gedmo\Tests\Translatable\Fixture\Sport;
 abstract class Vehicle
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -37,7 +35,7 @@ abstract class Vehicle
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     public function getId(): ?int
     {

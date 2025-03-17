@@ -24,24 +24,20 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class LoggableCompositeRelation
 {
     /**
-     * @var Loggable
-     *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Loggable")
      */
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Loggable::class)]
-    private $one;
+    private ?Loggable $one = null;
 
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
-    private $two;
+    private ?int $two = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)

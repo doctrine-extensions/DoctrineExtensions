@@ -19,6 +19,4 @@ use Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class UploadableUploadException extends UploadableException implements Exception
-{
-}
+class UploadableUploadException extends UploadableException implements Exception {}

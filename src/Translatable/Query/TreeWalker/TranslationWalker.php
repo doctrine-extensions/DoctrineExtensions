@@ -9,9 +9,7 @@
 
 namespace Gedmo\Translatable\Query\TreeWalker;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -91,16 +89,6 @@ class TranslationWalker extends SqlOutputWalker
     private array $translatedComponents = [];
 
     /**
-     * DBAL database platform
-     */
-    private AbstractPlatform $platform;
-
-    /**
-     * DBAL database connection
-     */
-    private Connection $conn;
-
-    /**
      * List of aliases to replace with translation
      * content reference
      *
@@ -120,8 +108,6 @@ class TranslationWalker extends SqlOutputWalker
     public function __construct($query, $parserResult, array $queryComponents)
     {
         parent::__construct($query, $parserResult, $queryComponents);
-        $this->conn = $this->getConnection();
-        $this->platform = $this->getConnection()->getDatabasePlatform();
         $this->listener = $this->getTranslatableListener();
         $this->extractTranslatedComponents($queryComponents);
     }
@@ -282,6 +268,7 @@ class TranslationWalker extends SqlOutputWalker
             // Skip preparation as there's no need to translate anything
             return;
         }
+        $platform = $this->getConnection()->getDatabasePlatform();
         $em = $this->getEntityManager();
         $ea = new TranslatableEventAdapter();
         $ea->setEntityManager($em);
@@ -294,45 +281,45 @@ class TranslationWalker extends SqlOutputWalker
             $config = $this->listener->getConfiguration($em, $meta->getName());
             $transClass = $this->listener->getTranslationClass($ea, $meta->getName());
             $transMeta = $em->getClassMetadata($transClass);
-            $transTable = $quoteStrategy->getTableName($transMeta, $this->platform);
+            $transTable = $quoteStrategy->getTableName($transMeta, $platform);
             foreach ($config['fields'] as $field) {
                 $compTblAlias = $this->walkIdentificationVariable($dqlAlias, $field);
                 $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
                 $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
-                $sql .= ' ON '.$tblAlias.'.'.$quoteStrategy->getColumnName('locale', $transMeta, $this->platform)
-                    .' = '.$this->conn->quote($locale);
-                $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('field', $transMeta, $this->platform)
-                    .' = '.$this->conn->quote($field);
+                $sql .= ' ON '.$tblAlias.'.'.$quoteStrategy->getColumnName('locale', $transMeta, $platform)
+                    .' = '.$this->getConnection()->quote($locale);
+                $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('field', $transMeta, $platform)
+                    .' = '.$this->getConnection()->quote($field);
                 $identifier = $meta->getSingleIdentifierFieldName();
-                $idColName = $quoteStrategy->getColumnName($identifier, $meta, $this->platform);
+                $idColName = $quoteStrategy->getColumnName($identifier, $meta, $platform);
                 if ($ea->usesPersonalTranslation($transClass)) {
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getSingleAssociationJoinColumnName('object')
                         .' = '.$compTblAlias.'.'.$idColName;
                 } else {
-                    $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('objectClass', $transMeta, $this->platform)
-                        .' = '.$this->conn->quote($config['useObjectClass']);
+                    $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('objectClass', $transMeta, $platform)
+                        .' = '.$this->getConnection()->quote($config['useObjectClass']);
 
                     $mappingFK = $transMeta->getFieldMapping('foreignKey');
                     $mappingPK = $meta->getFieldMapping($identifier);
                     $fkColName = $this->getCastedForeignKey($compTblAlias.'.'.$idColName, $mappingFK->type ?? $mappingFK['type'], $mappingPK->type ?? $mappingPK['type']);
-                    $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('foreignKey', $transMeta, $this->platform)
+                    $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('foreignKey', $transMeta, $platform)
                         .' = '.$fkColName;
                 }
                 isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
 
-                $originalField = $compTblAlias.'.'.$quoteStrategy->getColumnName($field, $meta, $this->platform);
-                $substituteField = $tblAlias.'.'.$quoteStrategy->getColumnName('content', $transMeta, $this->platform);
+                $originalField = $compTblAlias.'.'.$quoteStrategy->getColumnName($field, $meta, $platform);
+                $substituteField = $tblAlias.'.'.$quoteStrategy->getColumnName('content', $transMeta, $platform);
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if ((($this->platform instanceof AbstractMySQLPlatform)
+                if ((($platform instanceof AbstractMySQLPlatform)
                     && in_array($fieldMapping->type ?? $fieldMapping['type'], ['decimal'], true))
-                    || (!($this->platform instanceof AbstractMySQLPlatform)
+                    || (!($platform instanceof AbstractMySQLPlatform)
                     && !in_array($fieldMapping->type ?? $fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time'], true))) {
                     $type = Type::getType($fieldMapping->type ?? $fieldMapping['type']);
 
                     // In ORM 2.x, $fieldMapping is an array. In ORM 3.x, it's a data object. Always cast to an array for compatibility across versions.
-                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration((array) $fieldMapping, $this->platform).')';
+                    $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration((array) $fieldMapping, $platform).')';
                 }
 
                 // Fallback to original if was asked for
@@ -413,7 +400,7 @@ class TranslationWalker extends SqlOutputWalker
     private function replace(array $repl, string $str): string
     {
         foreach ($repl as $target => $result) {
-            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static fn (array $m): string => $m[1].$result.$m[3].$m[4], $str);
+            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static fn (array $m): string => $m[1].$result.$m[3].$m[4], (string) $str);
         }
 
         return $str;
@@ -438,7 +425,7 @@ class TranslationWalker extends SqlOutputWalker
         }
 
         // try to look at postgres casting
-        if ($this->platform instanceof PostgreSQLPlatform) {
+        if ($this->getConnection()->getDatabasePlatform() instanceof PostgreSQLPlatform) {
             switch ($typeFK) {
                 case 'string':
                 case 'guid':

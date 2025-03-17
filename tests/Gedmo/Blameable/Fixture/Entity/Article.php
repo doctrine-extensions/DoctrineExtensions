@@ -25,8 +25,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article implements Blameable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -34,7 +32,7 @@ class Article implements Blameable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
@@ -48,7 +46,7 @@ class Article implements Blameable
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Blameable\Fixture\Entity\Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @Gedmo\Blameable(on="create")

@@ -23,16 +23,14 @@ use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
 class StockItem
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column
