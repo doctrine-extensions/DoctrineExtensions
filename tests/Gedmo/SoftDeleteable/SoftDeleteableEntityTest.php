@@ -522,6 +522,42 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         static::assertCount(0, $data);
     }
 
+    public function testSoftDeletedObjectIsRemovedPostFlush(): void
+    {
+        $repo = $this->em->getRepository(Article::class);
+        $commentRepo = $this->em->getRepository(Comment::class);
+
+        $comment = new Comment();
+        $commentValue = 'Comment 1';
+        $comment->setComment($commentValue);
+
+        $art0 = new Article();
+        $field = 'title';
+        $value = 'Title 1';
+        $art0->setTitle($value);
+        $art0->addComment($comment);
+
+        $this->em->persist($art0);
+        $this->em->flush();
+
+        $art = $repo->findOneBy([$field => $value]);
+
+        static::assertNull($art->getDeletedAt());
+        static::assertNull($comment->getDeletedAt());
+        static::assertCount(1, $art->getComments());
+
+        $this->em->remove($comment);
+
+        // The Comment has been marked for removal, but not yet flushed. This means the
+        // Comment should still be available.
+        static::assertInstanceOf(Comment::class, $commentRepo->find($comment->getId()));
+
+        $this->em->flush();
+
+        // Now that we've flushed, the Comment should no longer be available and should return null.
+        static::assertNull($commentRepo->find($comment->getId()));
+    }
+
     public function testPostSoftDeleteEventIsDispatched(): void
     {
         $this->em->getEventManager()->addEventSubscriber(new WithPreAndPostSoftDeleteEventArgsTypeListener());
