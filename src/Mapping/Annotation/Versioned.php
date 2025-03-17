@@ -24,6 +24,4 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Versioned implements GedmoAnnotation
-{
-}
+final class Versioned implements GedmoAnnotation {}

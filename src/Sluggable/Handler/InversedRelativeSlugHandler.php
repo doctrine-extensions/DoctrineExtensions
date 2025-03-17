@@ -43,26 +43,22 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
         $this->sluggable = $sluggable;
     }
 
-    public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
-    {
-    }
+    public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug) {}
 
-    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
-    {
-    }
+    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug) {}
 
     /**
      * @param ClassMetadata<object> $meta
      */
     public static function validate(array $options, ClassMetadata $meta)
     {
-        if (!isset($options['relationClass']) || !strlen($options['relationClass'])) {
+        if (!isset($options['relationClass']) || !strlen((string) $options['relationClass'])) {
             throw new InvalidMappingException("'relationClass' option must be specified for object slug mapping - {$meta->getName()}");
         }
-        if (!isset($options['mappedBy']) || !strlen($options['mappedBy'])) {
+        if (!isset($options['mappedBy']) || !strlen((string) $options['mappedBy'])) {
             throw new InvalidMappingException("'mappedBy' option must be specified for object slug mapping - {$meta->getName()}");
         }
-        if (!isset($options['inverseSlugField']) || !strlen($options['inverseSlugField'])) {
+        if (!isset($options['inverseSlugField']) || !strlen((string) $options['inverseSlugField'])) {
             throw new InvalidMappingException("'inverseSlugField' option must be specified for object slug mapping - {$meta->getName()}");
         }
     }

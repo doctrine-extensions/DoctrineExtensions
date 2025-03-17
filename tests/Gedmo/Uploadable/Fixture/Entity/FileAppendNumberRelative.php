@@ -26,8 +26,6 @@ use Gedmo\Uploadable\Mapping\Validator;
 class FileAppendNumberRelative
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -35,7 +33,7 @@ class FileAppendNumberRelative
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", nullable=true)

@@ -19,7 +19,6 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Id\IdentityGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Mapping\Driver\AttributeReader;
@@ -50,19 +49,11 @@ final class ForcedMetadataTest extends TestCase
             $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         }
 
-        if (PHP_VERSION_ID >= 80000) {
-            $config->setMetadataDriverImpl(new AttributeDriver([]));
-        } else {
-            $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
-        }
+        $config->setMetadataDriverImpl(new AttributeDriver([]));
 
         $this->timestampable = new TimestampableListener();
 
-        if (PHP_VERSION_ID >= 80000) {
-            $this->timestampable->setAnnotationReader(new AttributeReader());
-        } else {
-            $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
-        }
+        $this->timestampable->setAnnotationReader(new AttributeReader());
 
         $evm = new EventManager();
         $evm->addEventSubscriber($this->timestampable);
@@ -86,7 +77,7 @@ final class ForcedMetadataTest extends TestCase
         );
 
         // @todo: This assertion fails when run in isolation
-        static::assertTrue(isset($conf['create']));
+        static::assertArrayHasKey('create', $conf);
 
         $test = new Timestampable();
         $this->em->persist($test);

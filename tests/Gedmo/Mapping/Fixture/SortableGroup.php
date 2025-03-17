@@ -23,8 +23,6 @@ use Doctrine\ORM\Mapping as ORM;
 class SortableGroup
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,13 +30,11 @@ class SortableGroup
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=64)
      */
     #[ORM\Column(type: Types::STRING, length: 64)]
-    private $name;
+    private ?string $name = null;
 }

@@ -24,8 +24,6 @@ use Gedmo\Translatable\Translatable;
 class TransArticleManySlug implements Sluggable, Translatable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,7 +31,7 @@ class TransArticleManySlug implements Sluggable, Translatable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     private ?int $page = null;
 
@@ -53,15 +51,13 @@ class TransArticleManySlug implements Sluggable, Translatable
     private ?string $uniqueTitle = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(fields={"uniqueTitle"})
      *
      * @ORM\Column(type="string", length=128)
      */
     #[Gedmo\Slug(fields: ['uniqueTitle'])]
     #[ORM\Column(type: Types::STRING, length: 128)]
-    private $uniqueSlug;
+    private ?string $uniqueSlug = null;
 
     /**
      * @Gedmo\Translatable
@@ -73,8 +69,6 @@ class TransArticleManySlug implements Sluggable, Translatable
     private ?string $code = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title", "code"})
      *
@@ -83,7 +77,7 @@ class TransArticleManySlug implements Sluggable, Translatable
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\Slug(fields: ['title', 'code'])]
     #[Gedmo\Translatable]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @Gedmo\Locale

@@ -31,18 +31,16 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
      *
      * @var PropertyChangedListener[]
      */
-    private $_propertyChangedListeners = [];
+    private array $propertyChangedListeners = [];
 
     /**
      * Adds a listener that wants to be notified about property changes.
      *
      * @see \Doctrine\Common\NotifyPropertyChanged::addPropertyChangedListener()
-     *
-     * @return void
      */
-    public function addPropertyChangedListener(PropertyChangedListener $listener)
+    public function addPropertyChangedListener(PropertyChangedListener $listener): void
     {
-        $this->_propertyChangedListeners[] = $listener;
+        $this->propertyChangedListeners[] = $listener;
     }
 
     public function setName(?string $name): void
@@ -62,21 +60,15 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
 
     /**
      * Notify property change event to listeners
-     *
-     * @param mixed $oldValue
-     * @param mixed $newValue
      */
-    protected function triggerPropertyChanged(string $propName, $oldValue, $newValue): void
+    protected function triggerPropertyChanged(string $propName, mixed $oldValue, mixed $newValue): void
     {
-        foreach ($this->_propertyChangedListeners as $listener) {
+        foreach ($this->propertyChangedListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
         }
     }
 
-    /**
-     * @param mixed $newValue
-     */
-    protected function setProperty(string $property, $newValue): void
+    protected function setProperty(string $property, mixed $newValue): void
     {
         $oldValue = $this->{$property};
         if ($oldValue !== $newValue) {

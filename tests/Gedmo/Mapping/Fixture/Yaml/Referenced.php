@@ -13,13 +13,7 @@ namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class Referenced
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Referencer
-     */
-    private $referencer;
+    private ?Referencer $referencer = null;
 }

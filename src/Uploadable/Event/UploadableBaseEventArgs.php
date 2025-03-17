@@ -21,60 +21,27 @@ use Gedmo\Uploadable\UploadableListener;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-import-type UploadableConfiguration from UploadableListener
  */
 abstract class UploadableBaseEventArgs extends EventArgs
 {
     /**
-     * The instance of the Uploadable listener that fired this event
-     */
-    private UploadableListener $uploadableListener;
-
-    private EntityManagerInterface $em;
-
-    /**
-     * @todo Check if this property must be removed, as it is not used.
-     */
-    private array $config = [];
-
-    /**
-     * The Uploadable entity
+     * @param UploadableListener         $uploadableListener     The instance of the Uploadable listener that fired this event
+     * @param array<string, mixed>       $extensionConfiguration
+     * @param object                     $entity                 The Uploadable entity
+     * @param 'INSERT'|'UPDATE'|'DELETE' $action
      *
-     * @var object
+     * @phpstan-param UploadableConfiguration $extensionConfiguration
      */
-    private $entity;
-
-    /**
-     * The configuration of the Uploadable extension for this entity class
-     *
-     * @todo Check if this property must be removed, as it is never set.
-     *
-     * @var array
-     */
-    private $extensionConfiguration;
-
-    private FileInfoInterface $fileInfo;
-
-    /**
-     * Is the file being created, updated or removed?
-     * This value can be: CREATE, UPDATE or DELETE
-     *
-     * @var string
-     */
-    private $action;
-
-    /**
-     * @param object $entity
-     * @param string $action
-     */
-    public function __construct(UploadableListener $listener, EntityManagerInterface $em, array $config, FileInfoInterface $fileInfo, $entity, $action)
-    {
-        $this->uploadableListener = $listener;
-        $this->em = $em;
-        $this->config = $config;
-        $this->fileInfo = $fileInfo;
-        $this->entity = $entity;
-        $this->action = $action;
-    }
+    public function __construct(
+        private readonly UploadableListener $uploadableListener,
+        private readonly EntityManagerInterface $em,
+        private readonly array $extensionConfiguration,
+        private readonly FileInfoInterface $fileInfo,
+        private $entity,
+        private $action
+    ) {}
 
     /**
      * Retrieve the associated listener
@@ -143,7 +110,9 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * Retrieve associated Uploadable extension configuration
      *
-     * @return array
+     * @return array<string, mixed>
+     *
+     * @phpstan-return UploadableConfiguration
      */
     public function getExtensionConfiguration()
     {
@@ -161,9 +130,9 @@ abstract class UploadableBaseEventArgs extends EventArgs
     }
 
     /**
-     * Retrieve the action being performed to the entity: CREATE, UPDATE or DELETE
+     * Retrieve the action being performed to the object
      *
-     * @return string
+     * @return 'INSERT'|'UPDATE'|'DELETE'
      */
     public function getAction()
     {

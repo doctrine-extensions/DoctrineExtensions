@@ -13,8 +13,5 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class EmbeddedTranslatable
 {
-    /**
-     * @var string
-     */
-    private $subtitle;
+    private ?string $subtitle = null;
 }

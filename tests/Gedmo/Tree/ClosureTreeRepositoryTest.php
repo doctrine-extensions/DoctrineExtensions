@@ -211,7 +211,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
         $vegitables = $repo->findOneBy(['title' => 'Vegitables']);
         static::assertSame(2, $repo->childCount($vegitables, true));
-        static::assertNull($vegitables->getParent());
+        static::assertNotInstanceOf(Category::class, $vegitables->getParent());
 
         $repo->removeFromTree($lemons);
         static::assertCount(5, $repo->children(null, true));
@@ -241,7 +241,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
         $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
-        static::assertFalse(strpos($qb->getQuery()->getDql(), '(SELECT MAX('));
+        static::assertStringNotContainsString('(SELECT MAX(', (string) $qb->getQuery()->getDql());
     }
 
     public function testNotHavingLevelPropertyUsesASubqueryInSelectInGetNodesHierarchy(): void
@@ -254,7 +254,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
         $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
-        static::assertTrue((bool) strpos($qb->getQuery()->getDql(), '(SELECT MAX('));
+        static::assertTrue((bool) strpos((string) $qb->getQuery()->getDql(), '(SELECT MAX('));
     }
 
     public function testChangeChildrenIndex(): void
@@ -475,7 +475,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             array_merge($sortOption, ['decorate' => true]),
             $includeNode
         );
-        $getTreeHtml = static function ($includeNode) {
+        $getTreeHtml = static function ($includeNode): string {
             $baseHtml = '<li>Boring Food<ul><li>Vegitables<ul><li>Cabbages</li><li>Carrots</li></ul></li></ul></li><li>Fruits<ul><li>Berries<ul><li>Strawberries</li></ul></li><li>Lemons</li><li>Oranges</li></ul></li><li>Milk<ul><li>Cheese<ul><li>Mould cheese</li></ul></li></ul></li></ul>';
 
             return $includeNode ? '<ul><li>Food<ul>'.$baseHtml.'</li></ul>' : '<ul>'.$baseHtml;

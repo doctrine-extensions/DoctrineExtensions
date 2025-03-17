@@ -28,8 +28,6 @@ use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 class MPCategoryWithTrimmedSeparator
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -37,7 +35,7 @@ class MPCategoryWithTrimmedSeparator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreePath(appendId=false, startsWithSeparator=false, endsWithSeparator=false)
@@ -71,15 +69,13 @@ class MPCategoryWithTrimmedSeparator
     private ?MPCategoryWithTrimmedSeparator $parentId = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var Collection<int, self>

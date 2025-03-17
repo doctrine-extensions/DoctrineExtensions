@@ -22,50 +22,39 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class MappedSupperClass
 {
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
-    #[ORM\Column(name: 'id', type: Types::INTEGER)]
-    protected $id;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    protected ?int $id = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Locale
      */
     #[Gedmo\Locale]
-    protected $locale;
+    protected ?string $locale = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      *
      * @ORM\Column(name="name", type="string", length=191)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 191)]
-    protected $name;
+    protected ?string $name = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="created_by", type="string")
      *
      * @Gedmo\Blameable(on="create")
      */
     #[ORM\Column(name: 'created_by', type: Types::STRING)]
     #[Gedmo\Blameable(on: 'create')]
-    protected $createdBy;
+    protected ?string $createdBy = null;
 
-    /**
-     * @codeCoverageIgnore
-     */
     public function getId(): ?int
     {
         return $this->id;

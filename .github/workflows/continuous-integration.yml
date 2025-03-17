@@ -24,8 +24,6 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -38,12 +36,12 @@ jobs:
           - ""
         include:
           - deps: "lowest"
-            php-version: "7.4"
+            php-version: "8.1"
           - deps: "highest"
             php-version: "8.4"
           # Run builds on low and high PHP versions with `doctrine/annotations` removed
           - deps: "highest"
-            php-version: "7.4"
+            php-version: "8.1"
             no-annotations: true
           - deps: "highest"
             php-version: "8.4"
@@ -51,7 +49,7 @@ jobs:
           # Run builds on high PHP version with `doctrine/orm` version pinned
           - deps: "highest"
             php-version: "8.4"
-            orm: "^2.14"
+            orm: "^2.20"
           - deps: "highest"
             php-version: "8.4"
             orm: "^3.0"
@@ -109,7 +107,7 @@ jobs:
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.2"
+          php-version: "8.4"
           extensions: mongodb
 
       - name: "Install dependencies with Composer"

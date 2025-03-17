@@ -15,17 +15,9 @@ use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
 
 class MimeTypeGuesserStub implements MimeTypeGuesserInterface
 {
-    /**
-     * @var string|null
-     */
-    protected $mimeType;
+    public function __construct(protected ?string $mimeType) {}
 
-    public function __construct(?string $mimeType)
-    {
-        $this->mimeType = $mimeType;
-    }
-
-    public function guess($path): ?string
+    public function guess($filePath): ?string
     {
         return $this->mimeType;
     }

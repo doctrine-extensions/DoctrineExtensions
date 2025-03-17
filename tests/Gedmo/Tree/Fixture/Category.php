@@ -29,8 +29,6 @@ use Gedmo\Tree\Node as NodeInterface;
 class Category implements NodeInterface
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -38,7 +36,7 @@ class Category implements NodeInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -47,26 +45,22 @@ class Category implements NodeInterface
     private ?string $title = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -82,15 +76,13 @@ class Category implements NodeInterface
     private ?Category $parentId = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
      * @var Collection<int, self>

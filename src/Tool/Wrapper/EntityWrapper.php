@@ -32,7 +32,7 @@ class EntityWrapper extends AbstractWrapper
      *
      * @var array<string, mixed>|null
      */
-    private $identifier;
+    private ?array $identifier = null;
 
     /**
      * Wrap entity
@@ -43,7 +43,7 @@ class EntityWrapper extends AbstractWrapper
     {
         $this->om = $em;
         $this->object = $entity;
-        $this->meta = $em->getClassMetadata(get_class($this->object));
+        $this->meta = $em->getClassMetadata($this->object::class);
     }
 
     public function getPropertyValue($property)
