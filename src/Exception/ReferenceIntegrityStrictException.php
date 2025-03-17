@@ -16,6 +16,4 @@ namespace Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class ReferenceIntegrityStrictException extends RuntimeException
-{
-}
+class ReferenceIntegrityStrictException extends RuntimeException {}

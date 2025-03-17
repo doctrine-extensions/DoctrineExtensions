@@ -25,10 +25,7 @@ final class ChangeTest extends BaseTestCaseORM
 {
     private const TEST_IP = '34.234.1.10';
 
-    /**
-     * @var IpTraceableListener
-     */
-    protected $listener;
+    private IpTraceableListener $listener;
 
     protected function setUp(): void
     {

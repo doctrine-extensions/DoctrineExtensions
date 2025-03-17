@@ -43,12 +43,6 @@ parameters:
 			path: src/Blameable/Mapping/Driver/Yaml.php
 
 		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/DoctrineExtensions.php
-
-		-
 			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
 			identifier: class.notFound
 			count: 1
@@ -473,18 +467,6 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: src/SoftDeleteable/Mapping/Validator.php
-
-		-
-			message: '#^Access to an undefined property Gedmo\\SoftDeleteable\\Query\\TreeWalker\\Exec\\MultiTableDeleteExecutor\:\:\$_sqlStatements\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/SoftDeleteable/Query/TreeWalker/Exec/MultiTableDeleteExecutor.php
-
-		-
-			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\SoftDeleteable\\Query\\TreeWalker\\Exec\\MultiTableDeleteExecutor\) and ''sqlStatements'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/SoftDeleteable/Query/TreeWalker/Exec/MultiTableDeleteExecutor.php
 
 		-
 			message: '#^Method Gedmo\\SoftDeleteable\\Query\\TreeWalker\\SoftDeleteableWalker\:\:__construct\(\) has parameter \$parserResult with no type specified\.$#'
@@ -937,42 +919,6 @@ parameters:
 			path: src/Tree/TreeListener.php
 
 		-
-			message: '#^Method Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:__construct\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
-			message: '#^Method Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:getExtensionConfiguration\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
-			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$config is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
-			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$config type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
-			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$extensionConfiguration is never written, only read\.$#'
-			identifier: property.onlyRead
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
-			message: '#^Property Gedmo\\Uploadable\\Event\\UploadableBaseEventArgs\:\:\$extensionConfiguration type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Uploadable/Event/UploadableBaseEventArgs.php
-
-		-
 			message: '#^Method Gedmo\\Uploadable\\FileInfo\\FileInfoArray\:\:getName\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
@@ -1033,60 +979,6 @@ parameters:
 			path: src/Uploadable/UploadableListener.php
 
 		-
-			message: '#^Class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: tests/Gedmo/DoctrineExtensionsTest.php
-
-		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$title \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
-
-		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$titleFallbackFalse \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
-
-		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$titleFallbackTrue \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
-
-		-
-			message: '#^Class Gedmo\\Tests\\Translatable\\Fixture\\CategoryTranslation not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Fixture/Category.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: tests/Gedmo/Mapping/MappingEventSubscriberTest.php
-
-		-
-			message: '#^Parameter \#1 \$driverImpl of method Doctrine\\ORM\\Configuration\:\:setMetadataDriverImpl\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
-			identifier: argument.type
-			count: 2
-			path: tests/Gedmo/Mapping/MappingEventSubscriberTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/MappingTest.php
-
-		-
-			message: '#^Parameter \#1 \$driverImpl of method Doctrine\\ORM\\Configuration\:\:setMetadataDriverImpl\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Gedmo/Mapping/MappingTest.php
-
-		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<T of object\>\:\:mapField\(\)\.$#'
 			identifier: method.notFound
 			count: 2
@@ -1101,18 +993,6 @@ parameters:
 		-
 			message: '#^Class Doctrine\\ORM\\Id\\IdentityGenerator does not have a constructor and must be instantiated without any parameters\.$#'
 			identifier: new.noConstructor
-			count: 1
-			path: tests/Gedmo/Mapping/MetadataFactory/ForcedMetadataTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/MetadataFactory/ForcedMetadataTest.php
-
-		-
-			message: '#^Parameter \#1 \$driverImpl of method Doctrine\\ORM\\Configuration\:\:setMetadataDriverImpl\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
-			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/MetadataFactory/ForcedMetadataTest.php
 
@@ -1133,18 +1013,6 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/Mapping/Driver/Attribute.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: tests/Gedmo/Mapping/MultiManagerMappingTest.php
-
-		-
-			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Gedmo/Mapping/ORMMappingTestCase.php
 
 		-
 			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\YamlDriver given\.$#'
@@ -1171,12 +1039,6 @@ parameters:
 			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
 
 		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/TreeMappingTest.php
-
-		-
 			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\YamlDriver not found\.$#'
 			identifier: class.notFound
 			count: 1
@@ -1187,48 +1049,12 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/TreeMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/ClosureTreeMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/MaterializedPathTreeMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/ReferencesMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/TranslatableMappingTest.php
 
 		-
 			message: '#^Method Gedmo\\Tests\\Sluggable\\Fixture\\Doctrine\\FakeFilter\:\:addFilterConstraint\(\) has parameter \$targetTableAlias with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
 			path: tests/Gedmo/Sluggable/Fixture/Doctrine/FakeFilter.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\YamlDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Sluggable/Issue/Issue116Test.php
-
-		-
-			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\YamlDriver given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Gedmo/Sluggable/Issue/Issue116Test.php
 
 		-
 			message: '#^Parameter \$args of method Gedmo\\Tests\\SoftDeleteable\\Fixture\\Listener\\WithLifecycleEventArgsFromORMTypeListener\:\:postSoftDelete\(\) has invalid type Doctrine\\ORM\\Event\\LifecycleEventArgs\.$#'
@@ -1243,40 +1069,10 @@ parameters:
 			path: tests/Gedmo/SoftDeleteable/Fixture/Listener/WithLifecycleEventArgsFromORMTypeListener.php
 
 		-
-			message: '#^Method Gedmo\\Tests\\Timestampable\\Fixture\\ArticleCarbon\:\:getCreated\(\) should return Carbon\\Carbon\|null but returns DateTime\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: tests/Gedmo/Timestampable/Fixture/ArticleCarbon.php
-
-		-
 			message: '#^Call to function method_exists\(\) with Doctrine\\ORM\\EntityManager\|null and ''merge'' will always evaluate to false\.$#'
 			identifier: function.impossibleType
 			count: 2
 			path: tests/Gedmo/Timestampable/TimestampableTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseOM.php
-
-		-
-			message: '#^Method Gedmo\\Tests\\Tool\\BaseTestCaseOM\:\:getORMDriver\(\) should return Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver but returns Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver\.$#'
-			identifier: return.type
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseOM.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseORM.php
-
-		-
-			message: '#^Method Gedmo\\Tests\\Tool\\BaseTestCaseORM\:\:getMetadataDriverImplementation\(\) should return Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver but returns Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver\.$#'
-			identifier: return.type
-			count: 1
-			path: tests/Gedmo/Tool/BaseTestCaseORM.php
 
 		-
 			message: '#^Property Gedmo\\Tests\\Tree\\MaterializedPathODMMongoDBRepositoryTest\:\:\$repo \(Gedmo\\Tree\\Document\\MongoDB\\Repository\\MaterializedPathRepository\<Gedmo\\Tests\\Tree\\Fixture\\Document\\Category\>\) does not accept Doctrine\\ORM\\EntityRepository\<Gedmo\\Tests\\Tree\\Fixture\\Document\\Category\>\.$#'

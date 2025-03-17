@@ -68,26 +68,22 @@ class MPCategoryUuid
     private ?MPCategoryUuid $parentId = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\TreeRoot
      *
      * @ORM\Column(name="tree_root_value", type="string", nullable=true)
      */
     #[ORM\Column(name: 'tree_root_value', type: Types::STRING, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $treeRootValue;
+    private ?string $treeRootValue = null;
 
     /**
      * @var Collection<int, self>

@@ -16,6 +16,4 @@ use Gedmo\Mapping\Event\AdapterInterface;
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  */
-interface SortableAdapter extends AdapterInterface
-{
-}
+interface SortableAdapter extends AdapterInterface {}

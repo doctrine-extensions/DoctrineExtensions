@@ -17,6 +17,4 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  */
 #[ORM\Entity]
-class SportCar extends Car
-{
-}
+class SportCar extends Car {}

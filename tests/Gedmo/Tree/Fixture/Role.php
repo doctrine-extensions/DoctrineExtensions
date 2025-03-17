@@ -33,7 +33,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 #[ORM\DiscriminatorColumn(name: 'discr', type: Types::STRING)]
 #[ORM\DiscriminatorMap(['user' => User::class, 'usergroup' => UserGroup::class, 'userldap' => UserLDAP::class])]
 #[Gedmo\Tree(type: 'nested')]
-abstract class Role
+abstract class Role implements \Stringable
 {
     /**
      * @var Collection<int, Role>
@@ -41,11 +41,9 @@ abstract class Role
      * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
+    protected Collection $children;
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -53,7 +51,7 @@ abstract class Role
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreeParent
@@ -65,37 +63,31 @@ abstract class Role
     private ?UserGroup $parent = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $lvl;
+    private ?int $lvl = null;
 
     /**
      * @ORM\Column(name="role", type="string", length=191, nullable=false)

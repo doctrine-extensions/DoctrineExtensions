@@ -154,7 +154,7 @@ class TreeListener extends MappedEventSubscriber
 
         // check all scheduled updates for TreeNodes
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($this->getConfiguration($om, $meta->getName())) {
                 $this->usedClassesOnFlush[$meta->getName()] = null;
                 $this->getStrategy($om, $meta->getName())->processScheduledInsertion($om, $object, $ea);
@@ -163,7 +163,7 @@ class TreeListener extends MappedEventSubscriber
         }
 
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($this->getConfiguration($om, $meta->getName())) {
                 $this->usedClassesOnFlush[$meta->getName()] = null;
                 $this->getStrategy($om, $meta->getName())->processScheduledUpdate($om, $object, $ea);
@@ -171,7 +171,7 @@ class TreeListener extends MappedEventSubscriber
         }
 
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($this->getConfiguration($om, $meta->getName())) {
                 $this->usedClassesOnFlush[$meta->getName()] = null;
                 $this->getStrategy($om, $meta->getName())->processScheduledDelete($om, $object);
@@ -197,7 +197,7 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($this->getConfiguration($om, $meta->getName())) {
             $this->getStrategy($om, $meta->getName())->processPreRemove($om, $object);
@@ -218,7 +218,7 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($this->getConfiguration($om, $meta->getName())) {
             $this->getStrategy($om, $meta->getName())->processPrePersist($om, $object);
@@ -239,7 +239,7 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($this->getConfiguration($om, $meta->getName())) {
             $this->getStrategy($om, $meta->getName())->processPreUpdate($om, $object);
@@ -261,7 +261,7 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($this->getConfiguration($om, $meta->getName())) {
             $this->getStrategy($om, $meta->getName())->processPostPersist($om, $object, $ea);
@@ -283,7 +283,7 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($this->getConfiguration($om, $meta->getName())) {
             $this->getStrategy($om, $meta->getName())->processPostUpdate($om, $object, $ea);
@@ -305,7 +305,7 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($this->getConfiguration($om, $meta->getName())) {
             $this->getStrategy($om, $meta->getName())->processPostRemove($om, $object, $ea);

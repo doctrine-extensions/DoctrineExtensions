@@ -27,8 +27,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -36,7 +34,7 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Translatable
@@ -53,7 +51,7 @@ class Article
      * @ORM\OneToMany(targetEntity="PersonalArticleTranslation", mappedBy="object")
      */
     #[ORM\OneToMany(targetEntity: PersonalArticleTranslation::class, mappedBy: 'object')]
-    private $translations;
+    private Collection $translations;
 
     public function __construct()
     {

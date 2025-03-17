@@ -31,8 +31,8 @@ return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRules([
         '@DoctrineAnnotation' => true,
-        '@PHP74Migration' => true,
-        '@PHP74Migration:risky' => true,
+        '@PHP81Migration' => true,
+        '@PHP80Migration:risky' => true,
         '@PHPUnit91Migration:risky' => true,
         '@PSR2' => true,
         '@Symfony' => true,
@@ -78,6 +78,7 @@ return (new PhpCsFixer\Config())
         'random_api_migration' => true,
         'return_assignment' => true,
         'self_accessor' => true,
+        'single_line_empty_body' => true,
         'static_lambda' => true,
         'strict_param' => true,
         'ternary_to_null_coalescing' => true,

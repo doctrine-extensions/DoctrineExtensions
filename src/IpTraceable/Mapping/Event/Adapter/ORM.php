@@ -18,6 +18,4 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  */
-final class ORM extends BaseAdapterORM implements IpTraceableAdapter
-{
-}
+final class ORM extends BaseAdapterORM implements IpTraceableAdapter {}

@@ -34,7 +34,5 @@ final class Events
      */
     public const uploadablePostFileProcess = 'uploadablePostFileProcess';
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

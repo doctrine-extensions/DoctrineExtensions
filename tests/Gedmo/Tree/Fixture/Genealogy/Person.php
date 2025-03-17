@@ -41,11 +41,9 @@ abstract class Person
      * @ORM\OneToMany(targetEntity="Person", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
+    protected Collection $children;
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -53,7 +51,7 @@ abstract class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreeParent
@@ -65,47 +63,39 @@ abstract class Person
     private ?Person $parent = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      *
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      *
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $lvl;
+    private ?int $lvl = null;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=191, nullable=false)
-     */
-    #[ORM\Column(name: 'name', type: Types::STRING, length: 191, nullable: false)]
-    private string $name;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
+    public function __construct(
+        /**
+         * @ORM\Column(name="name", type="string", length=191, nullable=false)
+         */
+        #[ORM\Column(name: 'name', type: Types::STRING, length: 191, nullable: false)]
+        private string $name
+    ) {
         $this->children = new ArrayCollection();
     }
 

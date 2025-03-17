@@ -64,7 +64,7 @@ class TranslationRepository extends DocumentRepository
      */
     public function translate($document, $field, $locale, $value)
     {
-        $meta = $this->dm->getClassMetadata(get_class($document));
+        $meta = $this->dm->getClassMetadata($document::class);
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->dm, $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'], true)) {

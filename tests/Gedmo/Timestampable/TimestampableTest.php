@@ -116,19 +116,19 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
-        static::assertNotNull($sc = $sport->getCreated());
-        static::assertNotNull($su = $sport->getUpdated());
-        static::assertNull($sport->getContentChanged());
-        static::assertNull($sport->getPublished());
-        static::assertNull($sport->getAuthorChanged());
+        static::assertInstanceOf(\DateTime::class, $sc = $sport->getCreated());
+        static::assertInstanceOf(\DateTime::class, $su = $sport->getUpdated());
+        static::assertNotInstanceOf(\DateTime::class, $sport->getContentChanged());
+        static::assertNotInstanceOf(\DateTime::class, $sport->getPublished());
+        static::assertNotInstanceOf(\DateTime::class, $sport->getAuthorChanged());
 
         $author = $sport->getAuthor();
         $author->setName('New author');
         $sport->setAuthor($author);
 
         $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
-        static::assertNotNull($sportComment->getModified());
-        static::assertNull($sportComment->getClosed());
+        static::assertInstanceOf(\DateTime::class, $sportComment->getModified());
+        static::assertNotInstanceOf(\DateTime::class, $sportComment->getClosed());
 
         $sportComment->setStatus(1);
         $published = new Type();
@@ -141,9 +141,9 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $sportComment = $this->em->getRepository(Comment::class)->findOneBy(['message' => 'hello']);
-        static::assertNotNull($scc = $sportComment->getClosed());
-        static::assertNotNull($sp = $sport->getPublished());
-        static::assertNotNull($sa = $sport->getAuthorChanged());
+        static::assertInstanceOf(\DateTime::class, $scc = $sportComment->getClosed());
+        static::assertInstanceOf(\DateTime::class, $sp = $sport->getPublished());
+        static::assertInstanceOf(\DateTime::class, $sa = $sport->getAuthorChanged());
 
         $sport->setTitle('Updated');
         $this->em->persist($sport);
@@ -188,18 +188,9 @@ final class TimestampableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertSame(
-            '2000-01-01',
-            $sport->getCreated()->format('Y-m-d')
-        );
-        static::assertSame(
-            '2000-01-01 12:00:00',
-            $sport->getUpdated()->format('Y-m-d H:i:s')
-        );
-        static::assertSame(
-            '2000-01-01 12:00:00',
-            $sport->getContentChanged()->format('Y-m-d H:i:s')
-        );
+        static::assertSame('2000-01-01', $sport->getCreated()->format('Y-m-d'));
+        static::assertSame('2000-01-01 12:00:00', $sport->getUpdated()->format('Y-m-d H:i:s'));
+        static::assertSame('2000-01-01 12:00:00', $sport->getContentChanged()->format('Y-m-d H:i:s'));
 
         $published = new Type();
         $published->setTitle('Published');
@@ -211,10 +202,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertSame(
-            '2000-01-01 12:00:00',
-            $sport->getPublished()->format('Y-m-d H:i:s')
-        );
+        static::assertSame('2000-01-01 12:00:00', $sport->getPublished()->format('Y-m-d H:i:s'));
 
         $this->em->clear();
     }
@@ -241,7 +229,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $art->setType($type);
         $this->em->flush(); // in v2.4.x will work on insert too
 
-        static::assertNotNull($art->getPublished());
+        static::assertInstanceOf(\DateTime::class, $art->getPublished());
     }
 
     /**
@@ -253,7 +241,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $timespampable->setTitle('My article');
         $timespampable->setBody('My article body.');
 
-        static::assertNull($timespampable->getReachedRelevantLevel());
+        static::assertNotInstanceOf(\DateTimeInterface::class, $timespampable->getReachedRelevantLevel());
         $timespampable->setLevel(8);
 
         $this->em->persist($timespampable);
@@ -262,7 +250,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(Article::class);
         $found = $repo->findOneBy(['body' => 'My article body.']);
 
-        static::assertNull($found->getReachedRelevantLevel());
+        static::assertNotInstanceOf(\DateTimeInterface::class, $found->getReachedRelevantLevel());
 
         $timespampable->setLevel(9);
 
@@ -271,7 +259,7 @@ final class TimestampableTest extends BaseTestCaseORM
 
         $found = $repo->findOneBy(['body' => 'My article body.']);
 
-        static::assertNull($found->getReachedRelevantLevel());
+        static::assertNotInstanceOf(\DateTimeInterface::class, $found->getReachedRelevantLevel());
 
         $timespampable->setLevel(10);
 

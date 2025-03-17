@@ -16,6 +16,4 @@ use Gedmo\Exception;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-class InvalidArgumentException extends \InvalidArgumentException implements Exception
-{
-}
+class InvalidArgumentException extends \InvalidArgumentException implements Exception {}

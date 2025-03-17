@@ -54,28 +54,16 @@ final class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 
         $bookFromRepo = $repo->findOneBy(['title' => 'Cats & Dogs']);
 
-        static::assertNotNull($bookFromRepo);
+        static::assertInstanceOf(Book::class, $bookFromRepo);
 
         $date = new \DateTime();
 
-        static::assertSame(
-            $date->format('Y-m-d H:i'),
-            $book->getTags()->get(0)->getCreated()->format('Y-m-d H:i')
-        );
+        static::assertSame($date->format('Y-m-d H:i'), $book->getTags()->get(0)->getCreated()->format('Y-m-d H:i'));
 
-        static::assertSame(
-            $date->format('Y-m-d H:i'),
-            $book->getTags()->get(1)->getCreated()->format('Y-m-d H:i')
-        );
+        static::assertSame($date->format('Y-m-d H:i'), $book->getTags()->get(1)->getCreated()->format('Y-m-d H:i'));
 
-        static::assertSame(
-            $date->format('Y-m-d H:i'),
-            $book->getTags()->get(0)->getUpdated()->format('Y-m-d H:i')
-        );
+        static::assertSame($date->format('Y-m-d H:i'), $book->getTags()->get(0)->getUpdated()->format('Y-m-d H:i'));
 
-        static::assertSame(
-            $date->format('Y-m-d H:i'),
-            $book->getTags()->get(1)->getUpdated()->format('Y-m-d H:i')
-        );
+        static::assertSame($date->format('Y-m-d H:i'), $book->getTags()->get(1)->getUpdated()->format('Y-m-d H:i'));
     }
 }

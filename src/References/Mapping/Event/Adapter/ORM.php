@@ -34,7 +34,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
         }
 
         if ($om instanceof MongoDocumentManager) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($object instanceof GhostObjectInterface) {
                 $id = $om->getUnitOfWork()->getDocumentIdentifier($object);
             } else {
@@ -49,7 +49,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
         }
 
         if ($om instanceof PhpcrDocumentManager) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             assert(1 === count($meta->getIdentifier()));
             $id = $meta->getFieldValue($object, $meta->getIdentifier()[0]);
 
@@ -82,7 +82,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
         if ($object instanceof PersistenceProxy) {
             $id = $om->getUnitOfWork()->getEntityIdentifier($object);
         } else {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             $id = [];
             foreach ($meta->getIdentifier() as $name) {
                 $id[$name] = $meta->getFieldValue($object, $name);
@@ -110,7 +110,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
     private function throwIfNotDocumentManager($dm): void
     {
         if (!($dm instanceof MongoDocumentManager) && !($dm instanceof PhpcrDocumentManager)) {
-            throw new InvalidArgumentException(sprintf('Expected a %s or %s instance but got "%s"', MongoDocumentManager::class, 'Doctrine\ODM\PHPCR\DocumentManager', is_object($dm) ? get_class($dm) : gettype($dm)));
+            throw new InvalidArgumentException(sprintf('Expected a %s or %s instance but got "%s"', MongoDocumentManager::class, 'Doctrine\ODM\PHPCR\DocumentManager', get_debug_type($dm)));
         }
     }
 }

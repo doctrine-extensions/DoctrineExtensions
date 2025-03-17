@@ -23,17 +23,11 @@ use Gedmo\Tree\TreeListener;
  */
 final class TreeListenerMock extends TreeListener
 {
-    /**
-     * @var bool
-     */
-    public $releaseLocks = false;
+    public bool $releaseLocks = false;
 
-    /**
-     * @var MaterializedPathMock
-     */
-    protected $strategy;
+    protected ?MaterializedPathMock $strategy = null;
 
-    public function getStrategy(ObjectManager $om, $class)
+    public function getStrategy(ObjectManager $om, $class): MaterializedPathMock
     {
         if (null === $this->strategy) {
             $this->strategy = new MaterializedPathMock($this);

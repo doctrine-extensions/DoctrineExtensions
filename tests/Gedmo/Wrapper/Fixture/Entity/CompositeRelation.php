@@ -44,9 +44,9 @@ class CompositeRelation
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
-    public function __construct(Article $articleOne, int $status)
+    public function __construct(Article $article, int $status)
     {
-        $this->article = $articleOne;
+        $this->article = $article;
         $this->status = $status;
     }
 

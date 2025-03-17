@@ -18,8 +18,5 @@ namespace Gedmo\Tests\Mapping\Fixture\Yaml;
  */
 class Embedded
 {
-    /**
-     * @var string
-     */
-    private $subtitle;
+    private ?string $subtitle = null;
 }

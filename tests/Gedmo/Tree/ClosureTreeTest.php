@@ -325,9 +325,9 @@ final class ClosureTreeTest extends BaseTestCaseORM
     }
 
     /**
-     * @return array<string, array<int, Category>>
+     * @return \Generator<string, array<int, Category>>
      */
-    public static function provideNodeOrders(): array
+    public static function provideNodeOrders(): \Generator
     {
         $grandpa = new Category();
         $grandpa->setTitle('grandpa');
@@ -340,14 +340,12 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $son->setTitle('son');
         $son->setParent($father);
 
-        return [
-            'order-123' => [$grandpa, $father, $son],
-            'order-132' => [$grandpa, $son, $father],
-            'order-213' => [$father, $grandpa, $son],
-            'order-231' => [$father, $son, $grandpa],
-            'order-312' => [$son, $grandpa, $father],
-            'order-321' => [$son, $father, $grandpa],
-        ];
+        yield 'order-123' => [$grandpa, $father, $son];
+        yield 'order-132' => [$grandpa, $son, $father];
+        yield 'order-213' => [$father, $grandpa, $son];
+        yield 'order-231' => [$father, $son, $grandpa];
+        yield 'order-312' => [$son, $grandpa, $father];
+        yield 'order-321' => [$son, $father, $grandpa];
     }
 
     protected function getUsedEntityFixtures(): array

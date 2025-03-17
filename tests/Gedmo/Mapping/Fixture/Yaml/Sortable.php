@@ -16,33 +16,18 @@ use Gedmo\Tests\Mapping\Fixture\SortableGroup;
 
 class Sortable
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var int
-     */
-    private $position;
+    private ?int $position = null;
 
-    /**
-     * @var string
-     */
-    private $grouping;
+    private ?string $grouping = null;
 
-    /**
-     * @var SortableGroup
-     */
-    private $sortable_group;
+    private ?SortableGroup $sortable_group = null;
 
     /**
      * @var Collection<int, SortableGroup>
      */
-    private $sortable_groups;
+    private Collection $sortable_groups;
 }

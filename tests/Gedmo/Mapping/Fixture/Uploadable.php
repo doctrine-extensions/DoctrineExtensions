@@ -26,8 +26,6 @@ use Gedmo\Uploadable\Mapping\Validator;
 class Uploadable
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -35,18 +33,16 @@ class Uploadable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="mime", type="string")
      *
      * @Gedmo\UploadableFileMimeType
      */
     #[ORM\Column(name: 'mime', type: Types::STRING)]
     #[Gedmo\UploadableFileMimeType]
-    private $mimeType;
+    private ?string $mimeType = null;
 
     /**
      * @var array<string, mixed>
@@ -54,33 +50,27 @@ class Uploadable
     private $fileInfo;
 
     /**
-     * @var float
-     *
      * @ORM\Column(name="size", type="decimal", precision=10, scale=2)
      *
      * @Gedmo\UploadableFileSize
      */
     #[ORM\Column(name: 'size', type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Gedmo\UploadableFileSize]
-    private $size;
+    private ?float $size = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="path", type="string")
      *
      * @Gedmo\UploadableFilePath
      */
     #[ORM\Column(name: 'path', type: Types::STRING)]
     #[Gedmo\UploadableFilePath]
-    private $path;
+    private ?string $path = null;
 
     public function getPath(): string
     {
         return $this->path;
     }
 
-    public function callbackMethod(): void
-    {
-    }
+    public function callbackMethod(): void {}
 }

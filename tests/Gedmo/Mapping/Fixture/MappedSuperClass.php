@@ -22,8 +22,6 @@ use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 class MappedSuperClass
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -31,7 +29,7 @@ class MappedSuperClass
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(length=32)

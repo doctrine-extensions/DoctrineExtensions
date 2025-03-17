@@ -17,6 +17,4 @@ namespace Gedmo\Mapping\Driver;
  *
  * @deprecated since gedmo/doctrine-extensions 3.16, will be removed in version 4.0.
  */
-interface AnnotationDriverInterface extends AttributeDriverInterface
-{
-}
+interface AnnotationDriverInterface extends AttributeDriverInterface {}

@@ -11,13 +11,11 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
@@ -57,7 +55,7 @@ abstract class ORMMappingTestCase extends TestCase
 
     final protected function getBasicEntityManager(?Configuration $config = null, ?Connection $connection = null, ?EventManager $evm = null): EntityManager
     {
-        if (null === $config) {
+        if (!$config instanceof Configuration) {
             $config = $this->getBasicConfiguration();
             $config->setMetadataDriverImpl($this->createChainedMappingDriver());
         }
@@ -80,11 +78,7 @@ abstract class ORMMappingTestCase extends TestCase
             $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
         }
 
-        if (PHP_VERSION_ID >= 80000) {
-            $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
-        } elseif (class_exists(AnnotationDriver::class) && class_exists(AnnotationReader::class)) {
-            $chain->addDriver(new AnnotationDriver(new AnnotationReader()), 'Gedmo\Tests\Mapping\Fixture');
-        }
+        $chain->addDriver(new AttributeDriver([]), 'Gedmo\Tests\Mapping\Fixture');
 
         return $chain;
     }

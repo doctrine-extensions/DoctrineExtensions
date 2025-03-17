@@ -32,15 +32,13 @@ class Type
      */
     #[ODM\ReferenceMany(targetDocument: Article::class, mappedBy: 'types')]
     #[Gedmo\ReferenceIntegrity(value: 'pull')]
-    protected $articles;
+    protected Collection $articles;
 
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @ODM\Field(type="string")

@@ -15,13 +15,10 @@ use Doctrine\Common\Collections\Collection;
 
 class Referencer
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var Collection<int, Referenced>
      */
-    private $referencedDocuments;
+    private Collection $referencedDocuments;
 }

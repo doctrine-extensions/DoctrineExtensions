@@ -17,6 +17,4 @@ use Gedmo\Exception;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-class UploadableException extends RuntimeException implements Exception
-{
-}
+class UploadableException extends RuntimeException implements Exception {}

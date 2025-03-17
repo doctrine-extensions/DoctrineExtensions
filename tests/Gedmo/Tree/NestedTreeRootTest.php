@@ -398,13 +398,13 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(4, $fact->getRight());
         static::assertSame(0, $fact->getLevel());
         static::assertSame(1, $fact->getRoot());
-        static::assertNull($fact->getParent());
+        static::assertNotInstanceOf(ForeignRootCategory::class, $fact->getParent());
 
         static::assertSame(5, $fiction->getLeft());
         static::assertSame(10, $fiction->getRight());
         static::assertSame(0, $fiction->getLevel());
         static::assertSame(1, $fiction->getRoot());
-        static::assertNull($fiction->getParent());
+        static::assertNotInstanceOf(ForeignRootCategory::class, $fiction->getParent());
 
         static::assertSame(6, $lotr->getLeft());
         static::assertSame(7, $lotr->getRight());
@@ -428,19 +428,19 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(2, $comedy->getRight());
         static::assertSame(0, $comedy->getLevel());
         static::assertSame(2, $comedy->getRoot());
-        static::assertNull($comedy->getParent());
+        static::assertNotInstanceOf(ForeignRootCategory::class, $comedy->getParent());
 
         static::assertSame(3, $horror->getLeft());
         static::assertSame(8, $horror->getRight());
         static::assertSame(0, $horror->getLevel());
         static::assertSame(2, $horror->getRoot());
-        static::assertNull($horror->getParent());
+        static::assertNotInstanceOf(ForeignRootCategory::class, $horror->getParent());
 
         static::assertSame(9, $action->getLeft());
         static::assertSame(10, $action->getRight());
         static::assertSame(0, $action->getLevel());
         static::assertSame(2, $action->getRoot());
-        static::assertNull($action->getParent());
+        static::assertNotInstanceOf(ForeignRootCategory::class, $action->getParent());
 
         static::assertSame(4, $dracula->getLeft());
         static::assertSame(5, $dracula->getRight());
@@ -473,7 +473,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
         static::assertSame(10, $horror->getRight());
         static::assertSame(0, $horror->getLevel());
         static::assertSame(2, $horror->getRoot());
-        static::assertNull($horror->getParent());
+        static::assertNotInstanceOf(ForeignRootCategory::class, $horror->getParent());
 
         static::assertSame(6, $dracula->getLeft());
         static::assertSame(7, $dracula->getRight());

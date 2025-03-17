@@ -15,10 +15,7 @@ use Gedmo\Uploadable\UploadableListener;
 
 final class UploadableListenerStub extends UploadableListener
 {
-    /**
-     * @var bool
-     */
-    public $returnFalseOnMoveUploadedFile = false;
+    public bool $returnFalseOnMoveUploadedFile = false;
 
     public function doMoveFile($source, $dest, $isUploadedFile = true): bool
     {

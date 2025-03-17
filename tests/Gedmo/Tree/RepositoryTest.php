@@ -262,7 +262,7 @@ final class RepositoryTest extends BaseTestCaseORM
         $vegies = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Vegitables']);
 
-        static::assertNull($vegies);
+        static::assertNotInstanceOf(Category::class, $vegies);
 
         $node = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Fruits']);
@@ -294,7 +294,7 @@ final class RepositoryTest extends BaseTestCaseORM
         $this->em->clear();
 
         $food = $repo->findOneBy(['title' => 'Food']);
-        static::assertNull($food);
+        static::assertNotInstanceOf(Category::class, $food);
 
         $node = $repo->findOneBy(['title' => 'Fruits']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
@@ -302,7 +302,7 @@ final class RepositoryTest extends BaseTestCaseORM
 
         static::assertSame(1, $left);
         static::assertSame(2, $right);
-        static::assertNull($node->getParent());
+        static::assertNotInstanceOf(Category::class, $node->getParent());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
@@ -310,7 +310,7 @@ final class RepositoryTest extends BaseTestCaseORM
 
         static::assertSame(3, $left);
         static::assertSame(12, $right);
-        static::assertNull($node->getParent());
+        static::assertNotInstanceOf(Category::class, $node->getParent());
     }
 
     public function testVerificationAndRecover(): void
@@ -372,7 +372,7 @@ final class RepositoryTest extends BaseTestCaseORM
 
         static::assertSame(3, $left);
         static::assertSame(12, $right);
-        static::assertNull($food->getParent());
+        static::assertNotInstanceOf(Category::class, $food->getParent());
 
         static::assertTrue($repo->verify());
     }

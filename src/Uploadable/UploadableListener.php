@@ -36,7 +36,9 @@ use Gedmo\Uploadable\Event\UploadablePostFileProcessEventArgs;
 use Gedmo\Uploadable\Event\UploadablePreFileProcessEventArgs;
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
 use Gedmo\Uploadable\FileInfo\FileInfoInterface;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorSha1;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\MimeType\MimeTypeGuesser;
 use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
@@ -73,15 +75,8 @@ class UploadableListener extends MappedEventSubscriber
 
     /**
      * Default path to move files in
-     *
-     * @var string
      */
-    private $defaultPath;
-
-    /**
-     * Mime type guesser
-     */
-    private MimeTypeGuesserInterface $mimeTypeGuesser;
+    private ?string $defaultPath = null;
 
     /**
      * Default FileInfoInterface class
@@ -107,11 +102,9 @@ class UploadableListener extends MappedEventSubscriber
      */
     private array $fileInfoObjects = [];
 
-    public function __construct(?MimeTypeGuesserInterface $mimeTypeGuesser = null)
+    public function __construct(private MimeTypeGuesserInterface $mimeTypeGuesser = new MimeTypeGuesser())
     {
         parent::__construct();
-
-        $this->mimeTypeGuesser = $mimeTypeGuesser ?? new MimeTypeGuesser();
     }
 
     /**
@@ -152,7 +145,7 @@ class UploadableListener extends MappedEventSubscriber
 
         foreach ($this->fileInfoObjects as $info) {
             $entity = $info['entity'];
-            $meta = $om->getClassMetadata(get_class($entity));
+            $meta = $om->getClassMetadata($entity::class);
             $config = $this->getConfiguration($om, $meta->getName());
 
             // If the entity is in the identity map, it means it will be updated. We need to force the
@@ -204,7 +197,7 @@ class UploadableListener extends MappedEventSubscriber
 
         // Do we need to remove any files?
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
 
             if ($config = $this->getConfiguration($om, $meta->getName())) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
@@ -252,7 +245,7 @@ class UploadableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         \assert($om instanceof EntityManagerInterface);
         $uow = $om->getUnitOfWork();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $config = $this->getConfiguration($om, $meta->getName());
 
         if (!$config || !isset($config['uploadable']) || !$config['uploadable']) {
@@ -313,24 +306,12 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         // We generate the filename based on configuration
-        $generatorNamespace = 'Gedmo\Uploadable\FilenameGenerator';
-
-        switch ($config['filenameGenerator']) {
-            case Validator::FILENAME_GENERATOR_ALPHANUMERIC:
-                $generatorClass = $generatorNamespace.'\FilenameGeneratorAlphanumeric';
-
-                break;
-            case Validator::FILENAME_GENERATOR_SHA1:
-                $generatorClass = $generatorNamespace.'\FilenameGeneratorSha1';
-
-                break;
-            case Validator::FILENAME_GENERATOR_NONE:
-                $generatorClass = false;
-
-                break;
-            default:
-                $generatorClass = $config['filenameGenerator'];
-        }
+        $generatorClass = match ($config['filenameGenerator']) {
+            Validator::FILENAME_GENERATOR_ALPHANUMERIC => FilenameGeneratorAlphanumeric::class,
+            Validator::FILENAME_GENERATOR_SHA1 => FilenameGeneratorSha1::class,
+            Validator::FILENAME_GENERATOR_NONE => false,
+            default => $config['filenameGenerator'],
+        };
 
         $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber'], $object);
 
@@ -339,7 +320,6 @@ class UploadableListener extends MappedEventSubscriber
 
         if ('' !== $config['callback']) {
             $callbackMethod = $refl->getMethod($config['callback']);
-            $callbackMethod->setAccessible(true);
 
             $callbackMethod->invokeArgs($object, [$info]);
         }
@@ -466,7 +446,7 @@ class UploadableListener extends MappedEventSubscriber
             'fileSize' => $fileInfo->getSize(),
         ];
 
-        $info['fileName'] = basename($fileInfo->getName());
+        $info['fileName'] = basename((string) $fileInfo->getName());
         $info['filePath'] = $path.'/'.$info['fileName'];
 
         $hasExtension = strrpos($info['fileName'], '.');
@@ -624,7 +604,7 @@ class UploadableListener extends MappedEventSubscriber
         if (!$fileInfo instanceof FileInfoInterface) {
             $msg = 'You must pass an instance of FileInfoInterface or a valid array for entity of class "%s".';
 
-            throw new \RuntimeException(sprintf($msg, get_class($entity)));
+            throw new \RuntimeException(sprintf($msg, $entity::class));
         }
 
         $this->fileInfoObjects[spl_object_id($entity)] = [
@@ -643,7 +623,7 @@ class UploadableListener extends MappedEventSubscriber
         $oid = spl_object_id($entity);
 
         if (!isset($this->fileInfoObjects[$oid])) {
-            throw new \RuntimeException(sprintf('There\'s no FileInfoInterface object for entity of class "%s".', get_class($entity)));
+            throw new \RuntimeException(sprintf('There\'s no FileInfoInterface object for entity of class "%s".', $entity::class));
         }
 
         return $this->fileInfoObjects[$oid]['fileInfo'];
@@ -669,6 +649,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param ClassMetadata<object> $meta
      * @param array<string, mixed>  $config
      * @param object                $object Entity
+     *
+     * @phpstan-param UploadableConfiguration $config
      *
      * @throws UploadableNoPathDefinedException
      *
@@ -702,6 +684,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param ClassMetadata<object> $meta
      * @param array<string, mixed>  $config
      * @param object                $object Entity
+     *
+     * @phpstan-param UploadableConfiguration $config
      *
      * @return void
      */
@@ -753,6 +737,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param array<string, mixed>  $config
      * @param object                $object
      *
+     * @phpstan-param UploadableConfiguration $config
+     *
      * @return string
      */
     protected function getFilePathFieldValue(ClassMetadata $meta, array $config, $object)
@@ -766,6 +752,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param ClassMetadata<object> $meta
      * @param array<string, mixed>  $config
      * @param object                $object
+     *
+     * @phpstan-param UploadableConfiguration $config
      *
      * @return string
      */

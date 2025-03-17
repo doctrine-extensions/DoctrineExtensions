@@ -18,6 +18,4 @@ use Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class UnexpectedValueException extends \UnexpectedValueException implements Exception
-{
-}
+class UnexpectedValueException extends \UnexpectedValueException implements Exception {}

@@ -18,13 +18,9 @@ use PHPUnit\Framework\TestCase;
 abstract class BasePropertyAnnotationTestCase extends TestCase
 {
     /**
-     * @requires PHP 8
-     *
      * @dataProvider getValidParameters
-     *
-     * @param mixed $expectedReturn
      */
-    public function testLoadFromAttribute(string $annotationProperty, string $classProperty, $expectedReturn): void
+    public function testLoadFromAttribute(string $annotationProperty, string $classProperty, mixed $expectedReturn): void
     {
         $annotation = $this->getMethodAnnotation($classProperty, true);
         static::assertSame($annotation->$annotationProperty, $expectedReturn);
@@ -32,10 +28,8 @@ abstract class BasePropertyAnnotationTestCase extends TestCase
 
     /**
      * @dataProvider getValidParameters
-     *
-     * @param mixed $expectedReturn
      */
-    public function testLoadFromDoctrineAnnotation(string $annotationProperty, string $classProperty, $expectedReturn): void
+    public function testLoadFromDoctrineAnnotation(string $annotationProperty, string $classProperty, mixed $expectedReturn): void
     {
         $annotation = $this->getMethodAnnotation($classProperty, false);
         static::assertSame($annotation->$annotationProperty, $expectedReturn);
@@ -44,7 +38,7 @@ abstract class BasePropertyAnnotationTestCase extends TestCase
     /**
      * @phpstan-return iterable<int, array{0: string, 1: string, 2: ?bool}>
      */
-    abstract public function getValidParameters(): iterable;
+    abstract public static function getValidParameters(): iterable;
 
     abstract protected function getAnnotationClass(): string;
 

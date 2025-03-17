@@ -85,7 +85,7 @@ final class SluggableTest extends BaseTestCaseORM
             $this->em->clear();
 
             $shorten = $article->getSlug();
-            static::assertSame(64, strlen($shorten));
+            static::assertSame(64, strlen((string) $shorten));
             $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
             $expected = substr($expected, 0, 64 - (strlen($uniqueSuffix) + 1)).'-'.$uniqueSuffix;
             static::assertSame($shorten, $expected);

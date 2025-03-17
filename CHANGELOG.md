@@ -19,6 +19,9 @@ a release.
 
 ## [Unreleased]
 
+### Changed
+- Dropped support for PHP < 8.1
+
 ## [3.21.0] - 2025-09-22
 ### Added
 - SoftDeleteable: `$handlePostFlushEvent` parameter to `SoftDeleteableListener::__construct()` to enable or disable handling of the `postFlush` event (#2958)

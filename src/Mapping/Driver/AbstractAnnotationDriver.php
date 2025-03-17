@@ -114,9 +114,7 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
      *
      * @return void
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-    }
+    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
 
     /**
      * Checks if $field type is valid

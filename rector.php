@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Rector\ValueObject\PhpVersion;
 
@@ -19,12 +21,17 @@ return RectorConfig::configure()
         __DIR__.'/tests',
         __DIR__.'/example',
     ])
-    ->withPhpVersion(PhpVersion::PHP_74)
+    ->withPhpVersion(PhpVersion::PHP_81)
     ->withPhpSets()
     ->withConfiguredRule(TypedPropertyFromAssignsRector::class, [])
     ->withSkip([
+        ReadOnlyPropertyRector::class => [
+            __DIR__.'/tests', // A lot of test fixtures have properties that aren't mutated, don't let Rector try to make them readonly though
+        ],
+        ClassPropertyAssignToConstructorPromotionRector::class => [
+            __DIR__.'/tests/Gedmo/Wrapper/Fixture/Entity/CompositeRelation.php', // @todo: Remove this when https://github.com/doctrine/orm/issues/8255 is solved
+        ],
         TypedPropertyFromAssignsRector::class => [
-            __DIR__.'/src/Mapping/MappedEventSubscriber.php', // Rector is trying to set a type on the $annotationReader property which requires a union type, not supported on PHP 7.4
             __DIR__.'/tests/Gedmo/Blameable/Fixture/Entity/Company.php', // @todo: Remove this when fixing the configuration for the `Company::$created` property
             __DIR__.'/tests/Gedmo/Wrapper/Fixture/Entity/CompositeRelation.php', // @todo: Remove this when https://github.com/doctrine/orm/issues/8255 is solved
         ],
