@@ -41,9 +41,9 @@ class Article implements Blameable
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=128)
+     * @ORM\Column(name="title", type="string", length=128, nullable=true)
      */
-    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128, nullable: true)]
     private ?string $title = null;
 
     /**
@@ -55,31 +55,31 @@ class Article implements Blameable
     private $comments;
 
     /**
-     * @ORM\Column(name="created", type="string")
+     * @ORM\Column(name="created", type="string", nullable=true)
      *
      * @Gedmo\Blameable(on="create")
      */
-    #[ORM\Column(name: 'created', type: Types::STRING)]
+    #[ORM\Column(name: 'created', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'create')]
     private ?string $created = null;
 
     /**
-     * @ORM\Column(name="updated", type="string")
+     * @ORM\Column(name="updated", type="string", nullable=true)
      *
      * @Gedmo\Blameable(on="update")
      */
     #[Gedmo\Blameable]
-    #[ORM\Column(name: 'updated', type: Types::STRING)]
+    #[ORM\Column(name: 'updated', type: Types::STRING, nullable: true)]
     private ?string $updated = null;
 
     /**
-     * @ORM\Column(name="deleted", type="string")
+     * @ORM\Column(name="deleted_by", type="string", nullable=true)
      *
      * @Gedmo\Blameable(on="remove")
      */
     #[Gedmo\Blameable]
-    #[ORM\Column(name: 'deleted', type: Types::STRING)]
-    private ?string $deleted = null;
+    #[ORM\Column(name: 'deleted_by', type: Types::STRING, nullable: true)]
+    private ?string $deletedBy = null;
 
     /**
      * @ORM\Column(name="published", type="string", nullable=true)
@@ -165,13 +165,13 @@ class Article implements Blameable
         $this->updated = $updated;
     }
 
-    public function getDeleted(): ?string
+    public function getDeletedBy(): ?string
     {
-        return $this->deleted;
+        return $this->deletedBy;
     }
 
-    public function setDeleted(?string $deleted): void
+    public function setDeletedBy(?string $deletedBy): void
     {
-        $this->deleted = $deleted;
+        $this->deletedBy = $deletedBy;
     }
 }

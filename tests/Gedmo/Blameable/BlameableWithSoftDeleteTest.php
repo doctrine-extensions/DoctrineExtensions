@@ -99,7 +99,7 @@ final class BlameableWithSoftDeleteTest extends BaseTestCaseORM
         $this->em->flush();
 
         static::assertTrue($article->isDeleted());
-        static::assertSame('testuser', $article->getDeleted());
+        static::assertSame('testuser', $article->getDeletedBy());
     }
 
     protected function getUsedEntityFixtures(): array
