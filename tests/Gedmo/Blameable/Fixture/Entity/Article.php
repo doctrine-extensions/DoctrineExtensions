@@ -68,7 +68,7 @@ class Article implements Blameable
      *
      * @Gedmo\Blameable(on="update")
      */
-    #[Gedmo\Blameable]
+    #[Gedmo\Blameable(on: 'update')]
     #[ORM\Column(name: 'updated', type: Types::STRING, nullable: true)]
     private ?string $updated = null;
 
@@ -77,7 +77,7 @@ class Article implements Blameable
      *
      * @Gedmo\Blameable(on="remove")
      */
-    #[Gedmo\Blameable]
+    #[Gedmo\Blameable(on: 'remove')]
     #[ORM\Column(name: 'deleted_by', type: Types::STRING, nullable: true)]
     private ?string $deletedBy = null;
 
