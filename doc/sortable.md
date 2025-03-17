@@ -3,25 +3,27 @@
 **Sortable** behavior will maintain a position field for ordering entities.
 
 Features:
+
 - Automatic handling of position index
 - Group entity ordering by one or more fields
 - Can be nested with other behaviors
 - Annotation, Attribute and Xml mapping support for extensions
 
 Contents:
+
 - [Setup and autoloading](#setup-and-autoloading)
 - [Sortable mapping](#sortable-mapping)
-  - [Annotations](#annotation-mapping-example)
-  - [Attributes](#attribute-mapping-example)
-  - [Xml](#xml-mapping-example)
 - [Basic usage examples](#basic-usage-examples)
-- [Custom comparison method](#custom-comparison)
+- [Custom comparison](#custom-comparison)
+- [Blameable Support](#blameable-support)
 
 ## Setup and autoloading
+
 Read the [documentation](./annotations.md#em-setup) or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 ## Sortable mapping
+
 - [SortableGroup](../src/Mapping/Annotation/SortableGroup.php) - used to specify property for **grouping**
 - [SortablePosition](../src/Mapping/Annotation/SortablePosition.php) - used to specify property to store **position** index
 
@@ -339,4 +341,13 @@ class Item implements Comparable
         // return 0 if this object is considered equal to the compare value
     }
 }
+```
+
+## Blameable Support
+
+You can also use the [Blameable](./blameable.md) extension to automatically set a `deletedBy` field when an entity is removed/deleted.
+
+```php
+#[Gedmo\Blameable(on: 'remove')]
+private string $deletedBy;
 ```
