@@ -407,6 +407,11 @@ class Nested implements Strategy
                 $wrapped->setPropertyValue($config['right'], $right);
             }
             $newRoot = $parentRoot;
+
+            if (!isset($this->treeEdges[$meta->getName()])) {
+                $this->treeEdges[$meta->getName()] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
+            }
+            $this->treeEdges[$meta->getName()] += 2;
         } elseif (!isset($config['root'])
             || ($meta->isSingleValuedAssociation($config['root']) && null !== $parent && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
             if (!isset($this->treeEdges[$meta->getName()])) {
