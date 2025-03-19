@@ -28,12 +28,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class RelatedArticle implements Loggable
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @Gedmo\Versioned
@@ -59,7 +57,7 @@ class RelatedArticle implements Loggable
      * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Comment", mappedBy="article")
      */
     #[ODM\ReferenceMany(targetDocument: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     public function __construct()
     {

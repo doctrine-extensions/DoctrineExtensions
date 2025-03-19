@@ -15,12 +15,7 @@ use Gedmo\Tool\IpAddressProviderInterface;
 
 final class TestIpAddressProvider implements IpAddressProviderInterface
 {
-    private ?string $address;
-
-    public function __construct(?string $address)
-    {
-        $this->address = $address;
-    }
+    public function __construct(private readonly ?string $address) {}
 
     public function getAddress(): ?string
     {

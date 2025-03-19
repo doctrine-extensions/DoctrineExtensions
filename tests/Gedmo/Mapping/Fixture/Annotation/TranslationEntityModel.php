@@ -16,6 +16,4 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @Gedmo\TranslationEntity(class="stdClass")
  */
-class TranslationEntityModel
-{
-}
+class TranslationEntityModel {}

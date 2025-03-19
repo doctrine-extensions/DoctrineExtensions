@@ -67,8 +67,8 @@ class Issue2616Test extends BaseTestCaseORM
         $this->em->remove($food);
         $this->em->flush();
 
-        static::assertNull($categoryRepo->findOneBy(['title' => 'Fruits']));
-        static::assertNull($categoryRepo->findOneBy(['title' => 'Vegetables']));
+        static::assertNotInstanceOf(Category::class, $categoryRepo->findOneBy(['title' => 'Fruits']));
+        static::assertNotInstanceOf(Category::class, $categoryRepo->findOneBy(['title' => 'Vegetables']));
 
         // Page should be removed as well, because children Fruits/Vegetables are removed and they have Page with cascade remove.
         static::assertEmpty($this->em->getRepository(Page::class)->findAll());

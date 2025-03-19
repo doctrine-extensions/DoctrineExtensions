@@ -31,8 +31,6 @@ use Gedmo\Translator\Entity\Translation;
 class PersonTranslation extends Translation
 {
     /**
-     * @var Person|null
-     *
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="translations")
      */
     #[ORM\ManyToOne(targetEntity: Person::class, inversedBy: 'translations')]

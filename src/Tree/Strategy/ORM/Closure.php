@@ -221,7 +221,7 @@ class Closure implements Strategy
 
         if (!$hasTheUserExplicitlyDefinedMapping) {
             $metadataFactory = $em->getMetadataFactory();
-            $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
+            $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, $metadataFactory::class);
 
             $metadataCache = $getCache($metadataFactory);
 
@@ -237,35 +237,25 @@ class Closure implements Strategy
         }
     }
 
-    public function onFlushEnd($em, AdapterInterface $ea)
-    {
-    }
+    public function onFlushEnd($em, AdapterInterface $ea) {}
 
     public function processPrePersist($em, $node)
     {
         $this->pendingChildNodeInserts[spl_object_id($em)][spl_object_id($node)] = $node;
     }
 
-    public function processPreUpdate($em, $node)
-    {
-    }
+    public function processPreUpdate($em, $node) {}
 
-    public function processPreRemove($em, $node)
-    {
-    }
+    public function processPreRemove($em, $node) {}
 
-    public function processScheduledInsertion($em, $node, AdapterInterface $ea)
-    {
-    }
+    public function processScheduledInsertion($em, $node, AdapterInterface $ea) {}
 
-    public function processScheduledDelete($em, $entity)
-    {
-    }
+    public function processScheduledDelete($em, $entity) {}
 
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
         \assert($em instanceof EntityManagerInterface);
-        $meta = $em->getClassMetadata(get_class($entity));
+        $meta = $em->getClassMetadata($entity::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
 
         // Process TreeLevel field value
@@ -274,9 +264,7 @@ class Closure implements Strategy
         }
     }
 
-    public function processPostRemove($em, $entity, AdapterInterface $ea)
-    {
-    }
+    public function processPostRemove($em, $entity, AdapterInterface $ea) {}
 
     /**
      * @param EntityManagerInterface $em
@@ -287,7 +275,7 @@ class Closure implements Strategy
         $emHash = spl_object_id($em);
 
         while ($node = array_shift($this->pendingChildNodeInserts[$emHash])) {
-            $meta = $em->getClassMetadata(get_class($node));
+            $meta = $em->getClassMetadata($node::class);
             $config = $this->listener->getConfiguration($em, $meta->getName());
 
             $identifier = $meta->getSingleIdentifierFieldName();
@@ -374,7 +362,7 @@ class Closure implements Strategy
      */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
         $changeSet = $uow->getEntityChangeSet($node);
@@ -507,7 +495,7 @@ class Closure implements Strategy
 
             assert(null !== $first);
 
-            $meta = $em->getClassMetadata(get_class($first));
+            $meta = $em->getClassMetadata($first::class);
             unset($first);
             $identifier = $meta->getIdentifier();
             $mapping = $meta->getFieldMapping($identifier[0]);

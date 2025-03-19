@@ -32,12 +32,10 @@ class UserTimeAware
     #[ODM\Field(type: Type::DATE)]
     protected $deletedAt;
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @ODM\Field(type="string")

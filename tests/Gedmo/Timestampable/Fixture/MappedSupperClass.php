@@ -22,50 +22,39 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class MappedSupperClass
 {
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    #[ORM\Column(name: 'id', type: Types::INTEGER)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
-
-    /**
-     * @var string|null
-     *
      * @Gedmo\Locale
      */
     #[Gedmo\Locale]
-    protected $locale;
+    protected ?string $locale = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      *
      * @ORM\Column(name="name", type="string", length=191)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 191)]
-    protected $name;
+    protected ?string $name = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="created_at", type="datetime")
      *
      * @Gedmo\Timestampable(on="create")
      */
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    protected $createdAt;
+    protected ?\DateTime $createdAt = null;
 
     /**
-     * @codeCoverageIgnore
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
+
     public function getId(): ?int
     {
         return $this->id;

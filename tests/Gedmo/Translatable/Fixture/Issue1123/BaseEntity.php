@@ -32,8 +32,6 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class BaseEntity
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -41,5 +39,5 @@ abstract class BaseEntity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    protected $id;
+    protected ?int $id = null;
 }

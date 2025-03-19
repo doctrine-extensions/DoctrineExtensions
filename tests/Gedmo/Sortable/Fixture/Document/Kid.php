@@ -44,12 +44,10 @@ class Kid
     protected $birthdate;
 
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @ODM\Field(type="string")

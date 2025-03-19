@@ -23,7 +23,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 #[ODM\EmbeddedDocument]
 #[Gedmo\Loggable]
-class Author implements Loggable
+class Author implements Loggable, \Stringable
 {
     /**
      * @Gedmo\Versioned
@@ -43,7 +43,7 @@ class Author implements Loggable
     #[Gedmo\Versioned]
     private ?string $email = null;
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getName();
     }

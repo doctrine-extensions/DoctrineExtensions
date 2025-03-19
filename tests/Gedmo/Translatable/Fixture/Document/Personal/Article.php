@@ -27,12 +27,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article
 {
     /**
-     * @var string|null
-     *
      * @MongoODM\Id
      */
     #[MongoODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @Gedmo\Translatable
@@ -49,14 +47,11 @@ class Article
      * @MongoODM\ReferenceMany(targetDocument="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation", mappedBy="object")
      */
     #[MongoODM\ReferenceMany(targetDocument: ArticleTranslation::class, mappedBy: 'object')]
-    private $translations;
+    private Collection $translations;
 
     private ?string $code = null;
 
-    /**
-     * @var string
-     */
-    private $slug;
+    private ?string $slug = null;
 
     public function __construct()
     {

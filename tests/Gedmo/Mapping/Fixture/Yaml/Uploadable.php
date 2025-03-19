@@ -13,37 +13,23 @@ namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class Uploadable
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $mimeType;
+    private ?string $mimeType = null;
 
     /**
      * @var array<string, mixed>
      */
-    private $fileInfo;
+    private array $fileInfo = [];
 
-    /**
-     * @var float
-     */
-    private $size;
+    private ?float $size = null;
 
-    /**
-     * @var string
-     */
-    private $path;
+    private ?string $path = null;
 
-    public function getPath(): string
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function callbackMethod(): void
-    {
-    }
+    public function callbackMethod(): void {}
 }

@@ -25,15 +25,7 @@ use Gedmo\Tests\Tree\Fixture\Mock\TreeListenerMock;
  */
 final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
 {
-    /**
-     * @var array<string, mixed>
-     */
-    protected $config;
-
-    /**
-     * @var TreeListenerMock
-     */
-    protected $listener;
+    private TreeListenerMock $listener;
 
     protected function setUp(): void
     {
@@ -45,9 +37,6 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $evm->addEventSubscriber($this->listener);
 
         $this->getDefaultDocumentManager($evm);
-
-        $meta = $this->dm->getClassMetadata(Article::class);
-        $this->config = $this->listener->getConfiguration($this->dm, $meta->getName());
     }
 
     public function testModifyingANodeWhileItsTreeIsLockedShouldThrowAnException(): void
