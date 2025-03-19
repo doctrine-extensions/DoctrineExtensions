@@ -286,7 +286,7 @@ final class RevisionableListener extends MappedEventSubscriber
         $newValues = [];
 
         foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
-            if (empty($config['versioned']) || !in_array($field, $config['versioned'], true)) {
+            if (!isset($config['versioned']) || !in_array($field, $config['versioned'], true)) {
                 continue;
             }
 
@@ -372,11 +372,6 @@ final class RevisionableListener extends MappedEventSubscriber
 
         if (RevisionInterface::ACTION_CREATE !== $action) {
             $version = $ea->getNewVersion($revisionMeta, $object);
-
-            if (empty($version)) {
-                // was versioned later
-                $version = 1;
-            }
         }
 
         $revision->setVersion($version);
