@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Table(name="ous")
  * @ORM\Index(name="idx_tree", columns={"lft", "rgt"})
- * @ORM\Entity())
+ * @ORM\Entity()
  */
 #[ORM\Table(name: 'ous')]
 #[ORM\Index(name: 'idx_tree', columns: ['lft', 'rgt'])]
