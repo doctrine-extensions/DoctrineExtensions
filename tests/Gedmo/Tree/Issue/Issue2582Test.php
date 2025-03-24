@@ -57,7 +57,7 @@ class Issue2582Test extends BaseTestCaseORM
                 $expected[$i],
                 [
                     $a->getId(),
-                    $a->getParent()?->getId(),
+                    $a->getParent() ? $a->getParent()->getId() : null,
                     $a->getLeft(),
                     $a->getLevel(),
                     $a->getRight(),
@@ -93,7 +93,7 @@ class Issue2582Test extends BaseTestCaseORM
                 $expected[$i],
                 [
                     $a->getId(),
-                    $a->getParent()?->getId(),
+                    $a->getParent() ? $a->getParent()->getId() : null,
                     $a->getLeft(),
                     $a->getLevel(),
                     $a->getRight(),
@@ -130,7 +130,7 @@ class Issue2582Test extends BaseTestCaseORM
                 $expected[$i],
                 [
                     $a->getId(),
-                    $a->getParent()?->getId(),
+                    $a->getParent() ? $a->getParent()->getId() : null,
                     $a->getLeft(),
                     $a->getLevel(),
                     $a->getRight(),
