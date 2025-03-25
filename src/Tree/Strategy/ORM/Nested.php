@@ -628,6 +628,7 @@ class Nested implements Strategy
 
                 if (property_exists($nodeMeta, 'propertyAccessors')) {
                     // ORM 3.4+
+                    /** @phpstan-ignore-next-line method.NotFound Method introduced in ORM 3.4 */
                     if (!array_key_exists($config['left'], $nodeMeta->getPropertyAccessors())) {
                         continue;
                     }
@@ -727,6 +728,7 @@ class Nested implements Strategy
 
                 if (property_exists($nodeMeta, 'propertyAccessors')) {
                     // ORM 3.4+
+                    /** @phpstan-ignore-next-line method.NotFound Method introduced in ORM 3.4 */
                     if (!array_key_exists($config['left'], $nodeMeta->getPropertyAccessors())) {
                         continue;
                     }
