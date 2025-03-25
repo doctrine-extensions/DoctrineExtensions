@@ -10,8 +10,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @Gedmo\Tree(type="nested")
  *
- * @ORM\Table(name="ous")
- * @ORM\Index(name="idx_tree", columns={"lft", "rgt"})
+ * @ORM\Table(
+ *     name="ous",
+ *     indexes={
+ *          @ORM\Index(name="idx_tree", fields={"left", "right"})
+ *    }
+ * )
  * @ORM\Entity()
  */
 #[ORM\Table(name: 'ous')]
