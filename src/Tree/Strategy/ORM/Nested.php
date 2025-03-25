@@ -626,8 +626,17 @@ class Nested implements Strategy
 
                 $nodeMeta = $em->getClassMetadata(get_class($node));
 
-                if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
-                    continue;
+                if (property_exists($nodeMeta, 'propertyAccessors')) {
+                    // ORM 3.4+
+                    /** @phpstan-ignore-next-line method.NotFound Method introduced in ORM 3.4 */
+                    if (!array_key_exists($config['left'], $nodeMeta->getPropertyAccessors())) {
+                        continue;
+                    }
+                } else {
+                    // ORM 3.3-
+                    if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
+                        continue;
+                    }
                 }
 
                 $oid = spl_object_id($node);
@@ -717,8 +726,17 @@ class Nested implements Strategy
 
                 $nodeMeta = $em->getClassMetadata(get_class($node));
 
-                if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
-                    continue;
+                if (property_exists($nodeMeta, 'propertyAccessors')) {
+                    // ORM 3.4+
+                    /** @phpstan-ignore-next-line method.NotFound Method introduced in ORM 3.4 */
+                    if (!array_key_exists($config['left'], $nodeMeta->getPropertyAccessors())) {
+                        continue;
+                    }
+                } else {
+                    // ORM 3.3-
+                    if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
+                        continue;
+                    }
                 }
 
                 $left = $meta->getReflectionProperty($config['left'])->getValue($node);
