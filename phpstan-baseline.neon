@@ -3,13 +3,13 @@ parameters:
 		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
 			identifier: method.notFound
-			count: 4
+			count: 6
 			path: src/AbstractTrackingListener.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
 			identifier: method.notFound
-			count: 3
+			count: 4
 			path: src/AbstractTrackingListener.php
 
 		-
@@ -1247,4 +1247,3 @@ parameters:
 			identifier: deadCode.unreachable
 			count: 1
 			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBTreeLockingTest.php
-

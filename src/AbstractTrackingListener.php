@@ -206,6 +206,10 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
 
     /**
      * Checks for a soft delete event as remove
+     *
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
      */
     public function preRemove(EventArgs $args): void
     {
