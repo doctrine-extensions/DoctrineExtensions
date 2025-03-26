@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tests\Tree\Fixture\Issue2582;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -73,6 +80,8 @@ class OU
     /**
      * @ORM\OneToMany(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2582\OU", mappedBy="parent")
      * @ORM\OrderBy({"left" = "ASC"})
+     *
+     * @var Collection<int, self>
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     #[ORM\OrderBy(['left' => 'ASC'])]
@@ -80,9 +89,9 @@ class OU
 
     public function __construct(string $id, ?self $parent = null)
     {
-        $this->id       = $id;
+        $this->id = $id;
         $this->children = new ArrayCollection();
-        $this->parent   = $parent;
+        $this->parent = $parent;
         if ($parent) {
             $parent->children->add($this);
         }
@@ -93,7 +102,7 @@ class OU
         return $this->id;
     }
 
-    public function getParent(): ?OU
+    public function getParent(): ?self
     {
         return $this->parent;
     }
@@ -113,6 +122,9 @@ class OU
         return $this->right;
     }
 
+    /**
+     * @return Collection<int, self>
+     */
     public function getChildren(): Collection
     {
         return $this->children;

@@ -32,9 +32,9 @@ class Issue2582Test extends BaseTestCaseORM
 
     public function testInsertTwoRootsInOneFlush(): void
     {
-        $ou1  = new OU('00000000-0000-0000-0000-000000000001', null);
+        $ou1 = new OU('00000000-0000-0000-0000-000000000001', null);
         $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
-        $ou2  = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
 
 
@@ -53,7 +53,7 @@ class Issue2582Test extends BaseTestCaseORM
             ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
         ];
         foreach ($this->fetchAllOUs() as $i => $a) {
-            self::assertSame(
+            static::assertSame(
                 $expected[$i],
                 [
                     $a->getId(),
@@ -68,9 +68,9 @@ class Issue2582Test extends BaseTestCaseORM
 
     public function testInsertTwoRootsInOneFlushRootsFirst(): void
     {
-        $ou1  = new OU('00000000-0000-0000-0000-000000000001', null);
+        $ou1 = new OU('00000000-0000-0000-0000-000000000001', null);
         $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
-        $ou2  = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
 
 
@@ -89,7 +89,7 @@ class Issue2582Test extends BaseTestCaseORM
             ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
         ];
         foreach ($this->fetchAllOUs() as $i => $a) {
-            self::assertSame(
+            static::assertSame(
                 $expected[$i],
                 [
                     $a->getId(),
@@ -104,9 +104,9 @@ class Issue2582Test extends BaseTestCaseORM
 
     public function testInsertTwoRootsInTwoFlushes(): void
     {
-        $ou1  = new OU('00000000-0000-0000-0000-000000000001', null);
+        $ou1 = new OU('00000000-0000-0000-0000-000000000001', null);
         $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
-        $ou2  = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
 
 
@@ -126,7 +126,7 @@ class Issue2582Test extends BaseTestCaseORM
             ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
         ];
         foreach ($this->fetchAllOUs() as $i => $a) {
-            self::assertSame(
+            static::assertSame(
                 $expected[$i],
                 [
                     $a->getId(),
@@ -139,6 +139,14 @@ class Issue2582Test extends BaseTestCaseORM
         }
     }
 
+    protected function getUsedEntityFixtures(): array
+    {
+        return [OU::class];
+    }
+
+    /**
+     * @return list<OU>
+     */
     private function fetchAllOUs(): array
     {
         $categoryRepo = $this->em->getRepository(OU::class);
@@ -147,10 +155,5 @@ class Issue2582Test extends BaseTestCaseORM
             ->orderBy('ou.left', 'ASC')
             ->getQuery()
             ->getResult();
-    }
-
-    protected function getUsedEntityFixtures(): array
-    {
-        return [OU::class];
     }
 }
