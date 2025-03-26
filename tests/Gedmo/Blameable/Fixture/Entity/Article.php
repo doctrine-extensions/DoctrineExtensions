@@ -17,13 +17,19 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 /**
  * @ORM\Entity
+ *
+ * @Gedmo\SoftDeleteable
  */
 #[ORM\Entity]
+#[Gedmo\SoftDeleteable]
 class Article implements Blameable
 {
+    use SoftDeleteableEntity;
+
     /**
      * @var int|null
      *
@@ -37,9 +43,9 @@ class Article implements Blameable
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=128)
+     * @ORM\Column(name="title", type="string", length=128, nullable=true)
      */
-    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128, nullable: true)]
     private ?string $title = null;
 
     /**
@@ -51,22 +57,31 @@ class Article implements Blameable
     private Collection $comments;
 
     /**
-     * @Gedmo\Blameable(on="create")
+     * @ORM\Column(name="created", type="string", nullable=true)
      *
-     * @ORM\Column(name="created", type="string")
+     * @Gedmo\Blameable(on="create")
      */
-    #[ORM\Column(name: 'created', type: Types::STRING)]
+    #[ORM\Column(name: 'created', type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'create')]
     private ?string $created = null;
 
     /**
-     * @ORM\Column(name="updated", type="string")
+     * @ORM\Column(name="updated", type="string", nullable=true)
      *
-     * @Gedmo\Blameable
+     * @Gedmo\Blameable(on="update")
      */
-    #[Gedmo\Blameable]
-    #[ORM\Column(name: 'updated', type: Types::STRING)]
+    #[Gedmo\Blameable(on: 'update')]
+    #[ORM\Column(name: 'updated', type: Types::STRING, nullable: true)]
     private ?string $updated = null;
+
+    /**
+     * @ORM\Column(name="deleted_by", type="string", nullable=true)
+     *
+     * @Gedmo\Blameable(on="remove")
+     */
+    #[Gedmo\Blameable(on: 'remove')]
+    #[ORM\Column(name: 'deleted_by', type: Types::STRING, nullable: true)]
+    private ?string $deletedBy = null;
 
     /**
      * @ORM\Column(name="published", type="string", nullable=true)
@@ -150,5 +165,15 @@ class Article implements Blameable
     public function setUpdated(?string $updated): void
     {
         $this->updated = $updated;
+    }
+
+    public function getDeletedBy(): ?string
+    {
+        return $this->deletedBy;
+    }
+
+    public function setDeletedBy(?string $deletedBy): void
+    {
+        $this->deletedBy = $deletedBy;
     }
 }

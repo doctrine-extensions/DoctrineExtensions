@@ -205,6 +205,39 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     }
 
     /**
+     * Checks for a soft delete event as remove
+     *
+     * @param LifecycleEventArgs $args
+     *
+     * @phpstan-param LifecycleEventArgs<ObjectManager> $args
+     */
+    public function preRemove(EventArgs $args): void
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->getName());
+
+        if ($config) {
+            if (isset($config['remove'])) {
+                foreach ($config['remove'] as $field) {
+                    if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
+                        $oldValue = $meta->getReflectionProperty($field)->getValue($object);
+                        $newValue = $this->getFieldValue($meta, $field, $ea);
+                        $this->updateField($object, $ea, $meta, $field);
+                        $uow->propertyChanged($object, $field, $oldValue, $newValue);
+                        $uow->scheduleExtraUpdate($object, [
+                            $field => [$oldValue, $newValue],
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Get the value for an updated field.
      *
      * @param ClassMetadata<object> $meta
