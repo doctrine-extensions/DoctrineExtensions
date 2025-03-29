@@ -37,7 +37,6 @@ class Issue2582Test extends BaseTestCaseORM
         $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
 
-
         $this->em->persist($ou1);
         $this->em->persist($ou11);
         $this->em->persist($ou2);
@@ -73,7 +72,6 @@ class Issue2582Test extends BaseTestCaseORM
         $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
 
-
         $this->em->persist($ou1);
         $this->em->persist($ou2);
         $this->em->persist($ou11);
@@ -108,7 +106,6 @@ class Issue2582Test extends BaseTestCaseORM
         $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
         $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
-
 
         $this->em->persist($ou1);
         $this->em->persist($ou11);
@@ -150,6 +147,7 @@ class Issue2582Test extends BaseTestCaseORM
     private function fetchAllOUs(): array
     {
         $categoryRepo = $this->em->getRepository(OU::class);
+
         return $categoryRepo
             ->createQueryBuilder('ou')
             ->orderBy('ou.left', 'ASC')
