@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.20.0] - 2025-04-04
 ### Fixed
 - SoftDeleteable: Resolved a bug where a soft-deleted object isn't remove from the ObjectManager (#2930)
 
