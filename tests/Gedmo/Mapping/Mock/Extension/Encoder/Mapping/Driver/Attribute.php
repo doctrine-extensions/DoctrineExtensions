@@ -16,7 +16,12 @@ use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Encode;
 
 class Attribute extends AbstractAnnotationDriver
 {
-    public function readExtendedMetadata($meta, array &$config)
+    /**
+     * @param array<string, mixed> $config
+     *
+     * @return array<string, mixed>
+     */
+    public function readExtendedMetadata($meta, array &$config): array
     {
         $class = $meta->getReflectionClass();
 

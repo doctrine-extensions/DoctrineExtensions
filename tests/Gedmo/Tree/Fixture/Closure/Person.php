@@ -36,8 +36,6 @@ use Gedmo\Tree\Entity\Repository\ClosureTreeRepository;
 abstract class Person
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -45,7 +43,7 @@ abstract class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="full_name", type="string", length=64)

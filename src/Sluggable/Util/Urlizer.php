@@ -16,6 +16,4 @@ use Behat\Transliterator\Transliterator;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class Urlizer extends Transliterator
-{
-}
+class Urlizer extends Transliterator {}

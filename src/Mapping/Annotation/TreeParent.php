@@ -22,6 +22,4 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class TreeParent implements GedmoAnnotation
-{
-}
+final class TreeParent implements GedmoAnnotation {}

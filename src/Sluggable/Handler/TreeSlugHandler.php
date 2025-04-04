@@ -40,36 +40,24 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
      */
     protected $sluggable;
 
-    /**
-     * @var string
-     */
-    private $prefix;
+    private string $prefix = '';
 
-    /**
-     * @var string
-     */
-    private $suffix;
+    private string $suffix = '';
 
     /**
      * True if node is being inserted
-     *
-     * @var bool
      */
-    private $isInsert = false;
+    private bool $isInsert = false;
 
     /**
      * Transliterated parent slug
-     *
-     * @var string
      */
-    private $parentSlug;
+    private string $parentSlug = '';
 
     /**
      * Used path separator
-     *
-     * @var string
      */
-    private $usedPathSeparator;
+    private string $usedPathSeparator = self::SEPARATOR;
 
     public function __construct(SluggableListener $sluggable)
     {
@@ -108,7 +96,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
             if (isset($options['suffix'])) {
                 $suffix = $options['suffix'];
 
-                if (substr($this->parentSlug, -strlen($suffix)) === $suffix) { // endsWith
+                if (str_ends_with((string) $this->parentSlug, $suffix)) { // endsWith
                     $this->parentSlug = substr_replace($this->parentSlug, '', -1 * strlen($suffix));
                 }
             }

@@ -18,15 +18,14 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'app:print-category-translation-tree', description: 'Seeds an example category tree with translations and prints the tree.')]
 final class PrintCategoryTranslationTreeCommand extends Command
 {
-    protected static $defaultName = 'app:print-category-translation-tree';
-    protected static $defaultDescription = 'Seeds an example category tree with translations and prints the tree.';
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var EntityManagerHelper $helper */

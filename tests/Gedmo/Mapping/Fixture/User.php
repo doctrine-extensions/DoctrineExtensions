@@ -34,8 +34,6 @@ use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
 class User
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -43,7 +41,7 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Ext\Encode(type="sha1", secret="xxx")
@@ -85,12 +83,10 @@ class User
     private ?string $company = null;
 
     /**
-     * @var string
-     *
      * @Gedmo\Locale
      */
     #[Gedmo\Locale]
-    private $localeField;
+    private ?string $localeField = null;
 
     public function setName(?string $name): void
     {

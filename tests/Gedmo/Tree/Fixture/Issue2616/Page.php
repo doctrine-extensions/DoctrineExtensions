@@ -20,17 +20,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Page
 {
     /**
-     * @var Category|null
-     *
      * @ORM\OneToOne(targetEntity="Category", inversedBy="page")
      * @ORM\JoinColumn(name="entity_id", referencedColumnName="category_id", nullable=false)
      */
     #[ORM\JoinColumn(name: 'entity_id', referencedColumnName: 'category_id', nullable: false)]
     #[ORM\OneToOne(targetEntity: Category::class, inversedBy: 'page')]
-    protected $category;
+    protected ?Category $category = null;
     /**
-     * @var int|null
-     *
      * @ORM\Column(name="page_id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -38,7 +34,7 @@ class Page
     #[ORM\Column(name: 'page_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue]
     #[ORM\Id]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)

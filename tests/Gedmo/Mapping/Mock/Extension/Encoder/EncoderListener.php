@@ -53,7 +53,7 @@ class EncoderListener extends MappedEventSubscriber
 
         // check all pending updates
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             // if it has our metadata lets encode the properties
             if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->encode($ea, $object, $config);
@@ -61,7 +61,7 @@ class EncoderListener extends MappedEventSubscriber
         }
         // check all pending insertions
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             // if it has our metadata lets encode the properties
             if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->encode($ea, $object, $config);
@@ -81,7 +81,7 @@ class EncoderListener extends MappedEventSubscriber
     private function encode(EventAdapterInterface $ea, object $object, array $config): void
     {
         $om = $ea->getObjectManager();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $uow = $om->getUnitOfWork();
         foreach ($config['encode'] as $field => $options) {
             $value = $meta->getReflectionProperty($field)->getValue($object);

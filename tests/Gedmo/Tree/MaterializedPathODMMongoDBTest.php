@@ -23,18 +23,17 @@ use Gedmo\Tree\TreeListener;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @phpstan-import-type TreeConfiguration from TreeListener
  */
 final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 {
     /**
-     * @var array<string, mixed>
+     * @phpstan-var TreeConfiguration
      */
-    protected $config;
+    private array $config;
 
-    /**
-     * @var TreeListener
-     */
-    protected $listener;
+    private TreeListener $listener;
 
     protected function setUp(): void
     {

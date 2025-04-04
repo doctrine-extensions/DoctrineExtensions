@@ -18,6 +18,4 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  */
-final class ODM extends BaseAdapterODM implements IpTraceableAdapter
-{
-}
+final class ODM extends BaseAdapterODM implements IpTraceableAdapter {}

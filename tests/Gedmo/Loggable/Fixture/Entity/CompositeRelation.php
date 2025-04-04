@@ -23,22 +23,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class CompositeRelation
 {
     /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Article")
-     */
-    #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: Article::class)]
-    private Article $articleOne;
-
-    /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Article")
-     */
-    #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: Article::class)]
-    private Article $articleTwo;
-
-    /**
      * @ORM\Column(length=8)
      *
      * @Gedmo\Versioned
@@ -47,11 +31,22 @@ class CompositeRelation
     #[Gedmo\Versioned]
     private ?string $title = null;
 
-    public function __construct(Article $articleOne, Article $articleTwo)
-    {
-        $this->articleOne = $articleOne;
-        $this->articleTwo = $articleTwo;
-    }
+    public function __construct(
+        /**
+         * @ORM\Id
+         * @ORM\ManyToOne(targetEntity="Article")
+         */
+        #[ORM\Id]
+        #[ORM\ManyToOne(targetEntity: Article::class)]
+        private Article $articleOne,
+        /**
+         * @ORM\Id
+         * @ORM\ManyToOne(targetEntity="Article")
+         */
+        #[ORM\Id]
+        #[ORM\ManyToOne(targetEntity: Article::class)]
+        private Article $articleTwo
+    ) {}
 
     public function getArticleOne(): Article
     {

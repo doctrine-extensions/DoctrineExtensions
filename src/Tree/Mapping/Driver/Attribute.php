@@ -304,7 +304,7 @@ class Attribute extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->getName()}");
                 }
 
-                $method = 'validate'.ucfirst($config['strategy']).'TreeMetadata';
+                $method = 'validate'.ucfirst((string) $config['strategy']).'TreeMetadata';
                 $validator->$method($meta, $config);
             } else {
                 throw new InvalidMappingException("Cannot find Tree type for class: {$meta->getName()}");

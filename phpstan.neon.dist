@@ -17,6 +17,7 @@ parameters:
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.$#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.$#'
         - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is unused\.$#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ (.*) is never assigned (.*) so it can be removed from the property type\.$#'
         - '#^Method Gedmo\\(?:[^\\]+\\)*Mapping\\Driver[^:]+::readExtendedMetadata\(\) with return type void returns [\w\|<>\s,]+ but should not return anything\.$#'
         - '#^Result of method Gedmo\\Mapping\\Driver::readExtendedMetadata\(\) \(void\) is used\.$#'
     excludePaths:

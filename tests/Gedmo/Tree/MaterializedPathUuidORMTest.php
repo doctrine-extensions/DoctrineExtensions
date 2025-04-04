@@ -23,15 +23,17 @@ use Symfony\Component\Uid\UuidV4;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Andrea Bergamasco <a.bergamasco@keesystem.com>
+ *
+ * @phpstan-import-type TreeConfiguration from TreeListener
  */
 final class MaterializedPathUuidORMTest extends BaseTestCaseORM
 {
     /**
-     * @var array<string, mixed>
+     * @phpstan-var TreeConfiguration
      */
-    protected array $config;
+    private array $config;
 
-    protected TreeListener $listener;
+    private TreeListener $listener;
 
     protected function setUp(): void
     {
@@ -53,16 +55,16 @@ final class MaterializedPathUuidORMTest extends BaseTestCaseORM
         // Insert
         $category = $this->createCategory();
         $category->setTitle('1');
-        static::assertNotNull($category->getId());
+        static::assertInstanceOf(UuidV4::class, $category->getId());
         $category2 = $this->createCategory();
         $category2->setTitle('2');
-        static::assertNotNull($category2->getId());
+        static::assertInstanceOf(UuidV4::class, $category2->getId());
         $category3 = $this->createCategory();
         $category3->setTitle('3');
-        static::assertNotNull($category3->getId());
+        static::assertInstanceOf(UuidV4::class, $category3->getId());
         $category4 = $this->createCategory();
         $category4->setTitle('4');
-        static::assertNotNull($category4->getId());
+        static::assertInstanceOf(UuidV4::class, $category4->getId());
 
         $category2->setParent($category);
         $category3->setParent($category2);
@@ -162,7 +164,7 @@ final class MaterializedPathUuidORMTest extends BaseTestCaseORM
 
     private function getTreeRootValueOfRootNode(MPCategoryUuid $category): string
     {
-        while (null !== $category->getParent()) {
+        while ($category->getParent() instanceof MPCategoryUuid) {
             $category = $category->getParent();
         }
 

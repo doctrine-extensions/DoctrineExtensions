@@ -16,6 +16,4 @@ use Gedmo\Mapping\Event\AdapterInterface;
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  */
-interface IpTraceableAdapter extends AdapterInterface
-{
-}
+interface IpTraceableAdapter extends AdapterInterface {}
