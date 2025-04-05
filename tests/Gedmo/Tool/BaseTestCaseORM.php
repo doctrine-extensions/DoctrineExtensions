@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Revisionable\RevisionableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
@@ -115,6 +116,7 @@ abstract class BaseTestCaseORM extends TestCase
         $evm->addEventSubscriber(new TreeListener());
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new LoggableListener());
+        $evm->addEventSubscriber(new RevisionableListener());
         $evm->addEventSubscriber(new TranslatableListener());
         $evm->addEventSubscriber(new TimestampableListener());
         $evm->addEventSubscriber(new SoftDeleteableListener());
