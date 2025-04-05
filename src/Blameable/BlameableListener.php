@@ -35,6 +35,14 @@ class BlameableListener extends AbstractTrackingListener
     protected $user;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getSubscribedEvents(): array
+    {
+        return array_merge(parent::getSubscribedEvents(), ['preRemove']);
+    }
+
+    /**
      * Get the user value to set on a blameable field
      *
      * @param ClassMetadata<object> $meta
