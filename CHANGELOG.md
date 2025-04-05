@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Translatable: Ignore notInsertable columns in postPersist hook
 
 ## [3.20.0] - 2025-04-04
 ### Fixed
