@@ -558,6 +558,52 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         static::assertNull($commentRepo->find($comment->getId()));
     }
 
+    public function testSoftDeletedObjectNotRemovedPostFlush(): void
+    {
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+
+        $repo = $this->em->getRepository(Article::class);
+        $commentRepo = $this->em->getRepository(Comment::class);
+
+        $comment = new Comment();
+        $commentValue = 'Comment 1';
+        $comment->setComment($commentValue);
+
+        $art0 = new Article();
+        $field = 'title';
+        $value = 'Title 1';
+        $art0->setTitle($value);
+        $art0->addComment($comment);
+
+        $this->em->persist($art0);
+        $this->em->flush();
+
+        $art = $repo->findOneBy([$field => $value]);
+
+        static::assertNull($art->getDeletedAt());
+        static::assertNull($comment->getDeletedAt());
+        static::assertCount(1, $art->getComments());
+
+        $this->em->remove($comment);
+
+        // The Comment has been marked for removal, but not yet flushed. This means the
+        // Comment should still be available.
+        $sameComment = $commentRepo->find($comment->getId());
+        static::assertInstanceOf(Comment::class, $sameComment);
+        static::assertSame($comment, $sameComment);
+
+        $this->em->flush();
+
+        // Now that we've flushed, but the soft-deleteable filter is
+        // deactivated. Hence the comment should still be available and find()
+        // should return the same instance.
+        $sameComment = $commentRepo->find($comment->getId());
+        static::assertInstanceOf(Comment::class, $sameComment);
+        static::assertSame($comment, $sameComment);
+
+        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+    }
+
     public function testPostSoftDeleteEventIsDispatched(): void
     {
         $this->em->getEventManager()->addEventSubscriber(new WithPreAndPostSoftDeleteEventArgsTypeListener());
