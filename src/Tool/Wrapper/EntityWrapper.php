@@ -11,7 +11,6 @@ namespace Gedmo\Tool\Wrapper;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\Proxy as PersistenceProxy;
 use Gedmo\Tool\ClassUtils;
 
 /**
@@ -34,11 +33,6 @@ class EntityWrapper extends AbstractWrapper
      * @var array<string, mixed>|null
      */
     private $identifier;
-
-    /**
-     * True if entity or proxy is loaded
-     */
-    private bool $initialized = false;
 
     /**
      * Wrap entity
@@ -124,12 +118,8 @@ class EntityWrapper extends AbstractWrapper
      */
     protected function initialize()
     {
-        if (!$this->initialized) {
-            if ($this->object instanceof PersistenceProxy) {
-                if (!$this->object->__isInitialized()) {
-                    $this->object->__load();
-                }
-            }
+        if ($this->om->isUninitializedObject($this->object)) {
+            $this->om->initializeObject($this->object);
         }
     }
 }
