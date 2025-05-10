@@ -19,6 +19,9 @@ a release.
 
 ## [Unreleased]
 
+### Changed
+- Replace the `behat/transliterator` with `symfony/string` for the Sluggable extension for its default transliteration and urlization steps"
+
 ## [3.20.0] - 2025-04-04
 ### Fixed
 - SoftDeleteable: Resolved a bug where a soft-deleted object isn't remove from the ObjectManager (#2930)
