@@ -541,12 +541,6 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
-			message: '#^Access to an undefined property ProxyManager\\Proxy\\GhostObjectInterface&TObject of object\:\:\$identifier\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
-
-		-
 			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator\) and ''_em'' will always evaluate to false\.$#'
 			identifier: function.impossibleType
 			count: 1
