@@ -19,6 +19,9 @@ a release.
 
 ## [Unreleased]
 
+### Changed
+- Replace the `behat/transliterator` with `symfony/string` for the Sluggable extension for its default transliteration and urlization steps"
+
 ## [3.20.1] - 2025-09-14
 ### Fixed
 - Compatibility with `doctrine/mongodb-odm` ^2.11 (#2945)
