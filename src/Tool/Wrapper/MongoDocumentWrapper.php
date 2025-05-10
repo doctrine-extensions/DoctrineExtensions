@@ -33,11 +33,6 @@ class MongoDocumentWrapper extends AbstractWrapper
     private ?string $identifier = null;
 
     /**
-     * True if document or proxy is loaded
-     */
-    private bool $initialized = false;
-
-    /**
      * Wrap document
      *
      * @param TObject $document
@@ -111,24 +106,15 @@ class MongoDocumentWrapper extends AbstractWrapper
      */
     protected function initialize()
     {
-        if (!$this->initialized) {
-            if ($this->object instanceof GhostObjectInterface) {
-                $uow = $this->om->getUnitOfWork();
-                if (!$this->object->isProxyInitialized()) {
-                    $persister = $uow->getDocumentPersister($this->meta->getName());
-                    $identifier = null;
-                    if ($uow->isInIdentityMap($this->object)) {
-                        $identifier = $this->getIdentifier();
-                    } else {
-                        // this may not happen but in case
-                        $getIdentifier = \Closure::bind(fn () => $this->identifier, $this->object, get_class($this->object));
+        if (method_exists($this->om, 'isUninitializedObject') && $this->om->isUninitializedObject($this->object)) {
+            $this->om->initializeObject($this->object);
 
-                        $identifier = $getIdentifier();
-                    }
-                    $this->object->initializeProxy();
-                    $persister->load($identifier, $this->object);
-                }
-            }
+            return;
+        }
+
+        // @todo: Drop support for this fallback when requiring `doctrine/mongodb-odm:^2.6 as a minimum`
+        if ($this->object instanceof GhostObjectInterface && !$this->object->isProxyInitialized()) {
+            $this->om->initializeObject($this->object);
         }
     }
 }
