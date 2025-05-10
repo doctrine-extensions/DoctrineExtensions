@@ -20,7 +20,9 @@ use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Handler\SlugHandlerInterface;
 use Gedmo\Sluggable\Handler\SlugHandlerWithUniqueCallbackInterface;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
-use Gedmo\Sluggable\Util\Urlizer;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+
+use function Symfony\Component\String\u;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -60,6 +62,7 @@ use Gedmo\Sluggable\Util\Urlizer;
  *     relationField?: string,
  *     relationSlugField?: string,
  *     separator?: string,
+ *     urilize?: bool,
  *   }>,
  *   uniqueOverTranslations: bool,
  *   useObjectClass?: class-string,
@@ -78,20 +81,16 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Transliteration callback for slugs
      *
-     * @var callable
-     *
-     * @phpstan-var callable(string $text, string $separator, object $object): string
+     * @var callable(string, string, object): string
      */
-    private $transliterator = [Urlizer::class, 'transliterate'];
+    private $transliterator;
 
     /**
      * Urlize callback for slugs
      *
-     * @var callable
-     *
-     * @phpstan-var callable(string $text, string $separator, object $object): string
+     * @var callable(string, string, object): string
      */
-    private $urlizer = [Urlizer::class, 'urlize'];
+    private $urlizer;
 
     /**
      * List of inserted slugs for each object class.
@@ -120,6 +119,28 @@ class SluggableListener extends MappedEventSubscriber
      * @var array<string, array<string, mixed>>
      */
     private array $managedFilters = [];
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setTransliterator(
+            static fn (string $text, string $separator, object $object): string => u($text)->ascii()->toString()
+        );
+
+        /*
+         * Note - Requiring the call to `lower()` in this chain contradicts with the `style` configuration
+         * which doesn't require or enforce lowercase styling by default, but the Behat transliterator applied
+         * this styling so it is used for B/C
+         */
+
+        $this->setUrlizer(
+            static fn (string $text, string $separator, object $object): string => (new AsciiSlugger())
+                ->slug($text, $separator)
+                ->lower()
+                ->toString()
+        );
+    }
 
     /**
      * Specifies the list of events to listen
@@ -412,25 +433,21 @@ class SluggableListener extends MappedEventSubscriber
                 switch ($options['style']) {
                     case 'camel':
                         $quotedSeparator = preg_quote($options['separator']);
-                        $slug = preg_replace_callback('/^[a-z]|'.$quotedSeparator.'[a-z]/smi', static fn ($m) => strtoupper($m[0]), $slug);
+                        $slug = preg_replace_callback(
+                            '/^[a-z]|'.$quotedSeparator.'[a-z]/smi',
+                            static fn (array $m): string => u($m[0])->upper()->toString(),
+                            $slug
+                        );
 
                         break;
 
                     case 'lower':
-                        if (function_exists('mb_strtolower')) {
-                            $slug = mb_strtolower($slug);
-                        } else {
-                            $slug = strtolower($slug);
-                        }
+                        $slug = u($slug)->lower()->toString();
 
                         break;
 
                     case 'upper':
-                        if (function_exists('mb_strtoupper')) {
-                            $slug = mb_strtoupper($slug);
-                        } else {
-                            $slug = strtoupper($slug);
-                        }
+                        $slug = u($slug)->upper()->toString();
 
                         break;
 

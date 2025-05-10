@@ -38,14 +38,6 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
      */
     protected $sluggable;
 
-    /**
-     * $options = array(
-     *     'relationClass' => 'objectclass',
-     *     'inverseSlugField' => 'slug',
-     *     'mappedBy' => 'relationField'
-     * )
-     * {@inheritdoc}
-     */
     public function __construct(SluggableListener $sluggable)
     {
         $this->sluggable = $sluggable;
