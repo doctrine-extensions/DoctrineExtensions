@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\Category" table="categories">
+        <indexes>
+            <index name="search_idx" columns="title"/>
+        </indexes>
+        <id name="id" type="integer">
+            <generator/>
+        </id>
+        <field name="title" length="64">
+            <gedmo:translatable/>
+        </field>
+        <field name="slug" length="64">
+            <gedmo:slug separator="_" style="camel" fields="title">
+                <gedmo:handler class="Gedmo\Sluggable\Handler\RelativeSlugHandler">
+                    <gedmo:handler-option name="relationField" value="parent"/>
+                    <gedmo:handler-option name="relationSlugField" value="slug"/>
+                    <gedmo:handler-option name="separator" value="/"/>
+                </gedmo:handler>
+                <gedmo:handler class="Gedmo\Sluggable\Handler\TreeSlugHandler">
+                    <gedmo:handler-option name="parentRelationField" value="parent"/>
+                    <gedmo:handler-option name="separator" value="/"/>
+                </gedmo:handler>
+            </gedmo:slug>
+        </field>
+        <field name="changed" type="date">
+            <gedmo:timestampable on="change" field="title" value="Test"/>
+        </field>
+        <many-to-one field="parent" target-entity="Gedmo\Tests\Mapping\Fixture\Xml\Category" inversed-by="children">
+            <join-column name="parent_id"/>
+            <gedmo:tree-parent/>
+        </many-to-one>
+        <one-to-many field="children" target-entity="Gedmo\Tests\Mapping\Fixture\Xml\Category" mapped-by="parent"/>
+        <gedmo:translation entity="Gedmo\Tests\Translatable\Fixture\CategoryTranslation" locale="localeField"/>
+        <gedmo:tree type="nested"/>
+        <gedmo:loggable/>
+    </entity>
+</doctrine-mapping>

@@ -45,7 +45,7 @@ final class TranslatableMappingTest extends ORMMappingTestCase
     /**
      * @return \Generator<string, array{class-string}>
      */
-    public static function dataSortableObject(): \Generator
+    public static function dataTranslatableObject(): \Generator
     {
         yield 'Model with XML mapping' => [XmlUser::class];
 
@@ -63,7 +63,7 @@ final class TranslatableMappingTest extends ORMMappingTestCase
     /**
      * @param class-string $className
      *
-     * @dataProvider dataSortableObject
+     * @dataProvider dataTranslatableObject
      */
     public function testTranslatableMapping(string $className): void
     {

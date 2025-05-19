@@ -11,55 +11,40 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\EventManager;
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\ReferenceIntegrity\ReferenceIntegrityListener;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Referenced;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Referencer;
-use Gedmo\Tests\Tool\BaseTestCaseOM;
+use Gedmo\Tests\Mapping\Fixture\Referencing;
 
 /**
  * These are mapping tests for ReferenceIntegrity extension
  *
  * @author Jonathan Eskew <jonathan@jeskew.net>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @requires extension mongodb
  */
-final class ReferenceIntegrityMappingTest extends BaseTestCaseOM
+final class ReferenceIntegrityMappingTest extends MongoDBODMMappingTestCase
 {
-    private DocumentManager $dm;
-
-    private ReferenceIntegrityListener $referenceIntegrity;
-
     protected function setUp(): void
     {
-        static::markTestSkipped('Intentionally skipping test. Doctrine MongoDB ODM 2.0 removed the YAML mapping driver; skipping test until it can be rewritten using a supported mapper.');
-
         parent::setUp();
 
-        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
+        $listener = new ReferenceIntegrityListener();
+        $listener->setCacheItemPool($this->cache);
 
-        $this->referenceIntegrity = new ReferenceIntegrityListener();
-        $this->evm = new EventManager();
-        $this->evm->addEventSubscriber($this->referenceIntegrity);
-
-        $this->dm = $this->getMockDocumentManager('gedmo_extensions_test', $yamlDriver);
+        $this->dm->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping(): void
+    public function testMapping(): void
     {
-        $referencerMeta = $this->dm->getClassMetadata(Referencer::class);
-        $referenceeMeta = $this->dm->getClassMetadata(Referenced::class);
-        $config = $this->referenceIntegrity->getConfiguration($this->dm, $referencerMeta->getName());
+        // Force metadata class loading.
+        $this->dm->getClassMetadata(Referencing::class);
+        $cacheId = ExtensionMetadataFactory::getCacheId(Referencing::class, 'Gedmo\ReferenceIntegrity');
 
-        static::assertNotEmpty($config['referenceIntegrity']);
-        foreach ($config['referenceIntegrity'] as $propertyName => $referenceConfiguration) {
-            static::assertArrayHasKey($propertyName, $referencerMeta->reflFields);
+        $config = $this->cache->getItem($cacheId)->get();
 
-            foreach ($referenceConfiguration as $inversedPropertyName => $integrityType) {
-                static::assertArrayHasKey($inversedPropertyName, $referenceeMeta->reflFields);
-                static::assertContains($integrityType, ['nullify', 'restrict']);
-            }
-        }
+        static::assertArrayHasKey('referenceIntegrity', $config);
+        static::assertArrayHasKey('referencer', $config['referenceIntegrity']);
+        static::assertSame('nullify', $config['referenceIntegrity']['referencer']);
     }
 }

@@ -11,17 +11,10 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\Xml;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\AttributeDriver;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
-use Gedmo\Tests\Mapping\Fixture\Xml\Translatable;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Xml\TranslatableWithEmbedded;
-use Gedmo\Tests\Tool\BaseTestCaseOM;
-use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Tests\Mapping\ORMMappingTestCase;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -29,62 +22,28 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class TranslatableMappingTest extends BaseTestCaseOM
+final class TranslatableMappingTest extends ORMMappingTestCase
 {
     private EntityManager $em;
-
-    private TranslatableListener $translatable;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationDriver = new AttributeDriver([]);
-        } else {
-            $annotationDriver = new AnnotationDriver(new AnnotationReader());
-        }
+        $listener = new TranslatableListener();
+        $listener->setCacheItemPool($this->cache);
 
-        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml', XmlDriver::DEFAULT_FILE_EXTENSION, false);
-
-        $chain = new MappingDriverChain();
-        $chain->addDriver($annotationDriver, 'Gedmo\Translatable');
-        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
-
-        $this->translatable = new TranslatableListener();
-        $this->evm = new EventManager();
-        $this->evm->addEventSubscriber($this->translatable);
-
-        $this->em = $this->getDefaultMockSqliteEntityManager([
-            Translation::class,
-            Translatable::class,
-        ], $chain);
-    }
-
-    public function testTranslatableMetadata(): void
-    {
-        $meta = $this->em->getClassMetadata(Translatable::class);
-        $config = $this->translatable->getConfiguration($this->em, $meta->getName());
-
-        static::assertArrayHasKey('translationClass', $config);
-        static::assertSame(Translation::class, $config['translationClass']);
-        static::assertArrayHasKey('locale', $config);
-        static::assertSame('locale', $config['locale']);
-
-        static::assertArrayHasKey('fields', $config);
-        static::assertCount(4, $config['fields']);
-        static::assertContains('title', $config['fields']);
-        static::assertContains('content', $config['fields']);
-        static::assertContains('author', $config['fields']);
-        static::assertContains('views', $config['fields']);
-        static::assertTrue($config['fallback']['author']);
-        static::assertFalse($config['fallback']['views']);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
     public function testTranslatableMetadataWithEmbedded(): void
     {
-        $meta = $this->em->getClassMetadata(TranslatableWithEmbedded::class);
-        $config = $this->translatable->getConfiguration($this->em, $meta->getName());
+        // Force metadata class loading.
+        $this->em->getClassMetadata(TranslatableWithEmbedded::class);
+        $cacheId = ExtensionMetadataFactory::getCacheId(TranslatableWithEmbedded::class, 'Gedmo\Translatable');
+
+        $config = $this->cache->getItem($cacheId)->get();
 
         static::assertContains('embedded.subtitle', $config['fields']);
     }
