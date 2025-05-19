@@ -15,12 +15,12 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
-use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
-use Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory;
-use Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory;
+use Gedmo\Tests\Mapping\Fixture\Xml\Category;
+use Gedmo\Tests\Mapping\Fixture\Xml\ClosureCategory;
+use Gedmo\Tests\Mapping\Fixture\Xml\MaterializedPathCategory;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosureWithoutMapping;
 use Gedmo\Tree\TreeListener;
 
@@ -35,13 +35,6 @@ final class TreeMappingTest extends ORMMappingTestCase
 
     private TreeListener $listener;
 
-    public static function setUpBeforeClass(): void
-    {
-        if (!class_exists(YamlDriver::class)) {
-            static::markTestSkipped('Test requires deprecated ORM YAML mapping.');
-        }
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,8 +43,7 @@ final class TreeMappingTest extends ORMMappingTestCase
 
         $chain = new MappingDriverChain();
 
-        // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
-        $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
+        $chain->addDriver(new XmlDriver(__DIR__.'/Driver/Xml', XmlDriver::DEFAULT_FILE_EXTENSION, false), 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         if (PHP_VERSION_ID >= 80000) {
             $annotationOrAttributeDriver = new AttributeDriver([]);
@@ -90,7 +82,7 @@ final class TreeMappingTest extends ORMMappingTestCase
         static::assertTrue($meta->hasAssociation('descendant'));
     }
 
-    public function testYamlNestedMapping(): void
+    public function testNestedMapping(): void
     {
         $this->em->getClassMetadata(Category::class);
         $cacheId = ExtensionMetadataFactory::getCacheId(
@@ -112,10 +104,7 @@ final class TreeMappingTest extends ORMMappingTestCase
         static::assertSame('nested', $config['strategy']);
     }
 
-    /**
-     * @group legacy
-     */
-    public function testYamlClosureMapping(): void
+    public function testClosureMapping(): void
     {
         // Force metadata class loading.
         $this->em->getClassMetadata(ClosureCategory::class);
@@ -130,7 +119,7 @@ final class TreeMappingTest extends ORMMappingTestCase
         static::assertSame(CategoryClosureWithoutMapping::class, $config['closure']);
     }
 
-    public function testYamlMaterializedPathMapping(): void
+    public function testMaterializedPathMapping(): void
     {
         $meta = $this->em->getClassMetadata(MaterializedPathCategory::class);
         $config = $this->listener->getConfiguration($this->em, $meta->getName());
