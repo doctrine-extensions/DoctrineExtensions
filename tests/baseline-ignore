@@ -1,0 +1,6 @@
+# Ignore MongoDB deprecations from low dependencies
+%Passing an integer mode to "MongoDB\\Driver\\ReadPreference::__construct" is deprecated%
+# Ignore deprecated ORM 2.x proxies
+%class implements "Doctrine\\ORM\\Proxy\\Proxy" that is deprecated%
+# Ignore symfony/var-dumper lazy ghost deprecations (required for PHP 8.3 and earlier compat)
+%Using ProxyHelper::generateLazyGhost() is deprecated%
