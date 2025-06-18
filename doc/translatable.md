@@ -506,6 +506,11 @@ $query->setHint(
     \Gedmo\Translatable\TranslatableListener::HINT_FALLBACK,
     1 // fallback to default values in case if record is not translated
 );
+// refresh entities
+$query->setHint(
+    \Doctrine\ORM\Query::HINT_REFRESH,
+    true // update entity with correct locale if it was already loaded before
+);
 
 $articles = $query->getResult(); // object hydration
 ```
