@@ -18,6 +18,14 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- SoftDeleteable: Add option to enable or disable handling of the `postFlush` event (#2958)
+
+### Changed
+- SoftDeleteable: Handling of the `postFlush` event is now disabled by default (#2958)
+
+### Fixed
+- SoftDeleteable: Prevent cascade persist from re-inserting soft-deleted entities still referenced in the identity map (#2958)
 
 ### Changed
 - Sluggable: Replaced abandoned `behat/transliterator` with `symfony/string` for default transliteration and urlization steps (#2985)
