@@ -52,11 +52,23 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public const POST_SOFT_DELETE = 'postSoftDelete';
 
     /**
+     * Whether the postFlush event should be handled.
+     */
+    private bool $handlePostFlushEvent;
+
+    /**
      * Objects soft-deleted on flush.
      *
      * @var array<object>
      */
     private array $softDeletedObjects = [];
+
+    public function __construct(bool $handlePostFlushEvent = false)
+    {
+        parent::__construct();
+
+        $this->handlePostFlushEvent = $handlePostFlushEvent;
+    }
 
     /**
      * @return string[]
@@ -138,7 +150,9 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     );
                 }
 
-                $this->softDeletedObjects[] = $object;
+                if ($this->handlePostFlushEvent) {
+                    $this->softDeletedObjects[] = $object;
+                }
             }
         }
     }
@@ -150,6 +164,10 @@ class SoftDeleteableListener extends MappedEventSubscriber
      */
     public function postFlush(EventArgs $args)
     {
+        if (!$this->handlePostFlushEvent) {
+            return;
+        }
+
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         foreach ($this->softDeletedObjects as $index => $object) {
@@ -170,6 +188,16 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $this->loadMetadataForObjectClass($eventArgs->getObjectManager(), $eventArgs->getClassMetadata());
+    }
+
+    public function setHandlePostFlushEvent(bool $handlePostFlushEvent): void
+    {
+        $this->handlePostFlushEvent = $handlePostFlushEvent;
+    }
+
+    public function shouldHandlePostFlushEvent(): bool
+    {
+        return $this->handlePostFlushEvent;
     }
 
     protected function getNamespace()
