@@ -312,8 +312,8 @@ class Closure implements Strategy
             $config = $this->listener->getConfiguration($em, $meta->getName());
 
             $identifier = $meta->getSingleIdentifierFieldName();
-            $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
-            $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+            $nodeId = $meta->getFieldValue($node, $identifier);
+            $parent = $meta->getFieldValue($node, $config['parent']);
 
             $closureClass = $config['closure'];
             $closureMeta = $em->getClassMetadata($closureClass);
@@ -366,8 +366,7 @@ class Closure implements Strategy
             } elseif (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, [$config['level'] => [null, 1]]);
                 $ea->setOriginalObjectProperty($uow, $node, $config['level'], 1);
-                $levelProp = $meta->getReflectionProperty($config['level']);
-                $levelProp->setValue($node, 1);
+                $meta->setFieldValue($node, $config['level'], 1);
             }
 
             foreach ($entries as $closure) {
@@ -569,14 +568,13 @@ class Closure implements Strategy
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
                 // Update new level
                 $level = $levels[$nodeId];
-                $levelProp = $meta->getReflectionProperty($config['level']);
                 $uow->scheduleExtraUpdate(
                     $node,
                     [$config['level'] => [
-                        $levelProp->getValue($node), $level,
+                        $meta->getFieldValue($node, $config['level']), $level,
                     ]]
                 );
-                $levelProp->setValue($node, $level);
+                $meta->setFieldValue($node, $config['level'], $level);
                 $uow->setOriginalEntityProperty(spl_object_id($node), $config['level'], $level);
             }
 

@@ -94,8 +94,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
             $config = $this->getConfiguration($om, $meta->getName());
 
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
-                $reflProp = $meta->getReflectionProperty($config['fieldName']);
-                $oldValue = $reflProp->getValue($object);
+                $oldValue = $meta->getFieldValue($object, $config['fieldName']);
                 $date = $ea->getDateValue($meta, $config['fieldName']);
 
                 if (isset($config['hardDelete']) && $config['hardDelete'] && $oldValue instanceof \DateTimeInterface && $oldValue <= $date) {
@@ -114,7 +113,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     );
                 }
 
-                $reflProp->setValue($object, $date);
+                $meta->setFieldValue($object, $config['fieldName'], $date);
 
                 $om->persist($object);
                 $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
