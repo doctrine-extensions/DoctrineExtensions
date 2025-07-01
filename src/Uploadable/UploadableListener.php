@@ -791,9 +791,8 @@ class UploadableListener extends MappedEventSubscriber
      */
     protected function updateField($object, $uow, AdapterInterface $ea, ClassMetadata $meta, $field, $value, $notifyPropertyChanged = true)
     {
-        $property = $meta->getReflectionProperty($field);
-        $oldValue = $property->getValue($object);
-        $property->setValue($object, $value);
+        $oldValue = $meta->getFieldValue($object, $field);
+        $meta->setFieldValue($object, $field, $value);
 
         if ($notifyPropertyChanged && $object instanceof NotifyPropertyChanged) {
             $uow = $ea->getObjectManager()->getUnitOfWork();

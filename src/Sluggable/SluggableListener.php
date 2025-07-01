@@ -278,7 +278,7 @@ class SluggableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['slugs'] as $slugField => $options) {
                 if ($meta->isIdentifier($slugField)) {
-                    $meta->getReflectionProperty($slugField)->setValue($object, uniqid('__sluggable_placeholder__'));
+                    $meta->setFieldValue($object, $slugField, uniqid('__sluggable_placeholder__'));
                 }
             }
         }
@@ -362,7 +362,7 @@ class SluggableListener extends MappedEventSubscriber
             $hasHandlers = [] !== $options['handlers'];
             $options['useObjectClass'] = $config['useObjectClass'];
             // collect the slug from fields
-            $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+            $slug = $meta->getFieldValue($object, $slugField);
 
             // if slug should not be updated, skip it
             if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || 0 === strpos($slug, '__sluggable_placeholder__'))) {
@@ -380,7 +380,7 @@ class SluggableListener extends MappedEventSubscriber
                     if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
                         $needToChangeSlug = true;
                     }
-                    $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
+                    $value = $meta->getFieldValue($object, $sluggableField);
                     $slug .= $value instanceof \DateTimeInterface ? $value->format($options['dateFormat']) : $value;
                     $slug .= ' ';
                 }
@@ -490,7 +490,7 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // set the final slug
-                $meta->getReflectionProperty($slugField)->setValue($object, $slug);
+                $meta->setFieldValue($object, $slugField, $slug);
                 // recompute changeset
                 $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
                 // overwrite changeset (to set old value)
@@ -513,16 +513,16 @@ class SluggableListener extends MappedEventSubscriber
         $base = false;
 
         if ($config['unique'] && isset($config['unique_base'])) {
-            $base = $meta->getReflectionProperty($config['unique_base'])->getValue($object);
+            $base = $meta->getFieldValue($object, $config['unique_base']);
         }
 
         // collect similar persisted slugs during this flush
         if (isset($this->persisted[$class = $ea->getRootObjectClass($meta)])) {
             foreach ($this->persisted[$class] as $obj) {
-                if (false !== $base && $meta->getReflectionProperty($config['unique_base'])->getValue($obj) !== $base) {
+                if (false !== $base && $meta->getFieldValue($obj, $config['unique_base']) !== $base) {
                     continue; // if unique_base field is not the same, do not take slug as similar
                 }
-                $slug = $meta->getReflectionProperty($config['slug'])->getValue($obj);
+                $slug = $meta->getFieldValue($obj, $config['slug']);
                 $quotedPreferredSlug = preg_quote($preferredSlug);
                 if (preg_match("@^{$quotedPreferredSlug}.*@smi", $slug)) {
                     $similarPersisted[] = [$config['slug'] => $slug];
