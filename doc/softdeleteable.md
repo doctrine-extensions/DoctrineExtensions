@@ -87,6 +87,8 @@ it's not removed. A date value means it was removed). NOTE: The field MUST be nu
 
 - **hardDelete** - A boolean to enable or disable hard delete after soft delete has already been done. NOTE: Set to true by default.
 
+- **nonDeletedColumnValue** - The value that is seen as not deleted, default: null
+
 **Note:** that SoftDeleteable interface is not necessary, except in cases where
 you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
 cache is activated.
@@ -104,10 +106,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true, nonDeletedColumnValue=null)
  */
 #[ORM\Entity]
-#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true, nonDeletedColumnValue: null)]
 class Article
 {
     /**
@@ -183,7 +185,7 @@ class Article
 
         <field name="deletedAt" type="datetime" nullable="true" />
 
-        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" hard-delete="true" />
+        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" hard-delete="true" non-deleted-column-value="0"/>
     </entity>
 
 </doctrine-mapping>
