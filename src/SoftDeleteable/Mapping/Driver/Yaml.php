@@ -72,9 +72,9 @@ class Yaml extends File implements Driver
                 }
 
                 $config['nonDeletedColumnValue'] = null;
-                if (isset($classMapping['soft_deleteable']['deleted_value'])) {
-                    if (!is_string($classMapping['soft_deleteable']['deleted_value'])) {
-                        throw new InvalidMappingException('nonDeletedColumnValue must be string. '.gettype($classMapping['soft_deleteable']['deleted_value']).' provided.');
+                if (isset($classMapping['soft_deleteable']['non_deleted_column_value'])) {
+                    if (!is_string($classMapping['soft_deleteable']['non_deleted_column_value'])) {
+                        throw new InvalidMappingException('nonDeletedColumnValue must be string. '.gettype($classMapping['soft_deleteable']['non_deleted_column_value']).' provided.');
                     }
                     $config['nonDeletedColumnValue'] = $classMapping['soft_deleteable']['non_deleted_column_value'];
                 }

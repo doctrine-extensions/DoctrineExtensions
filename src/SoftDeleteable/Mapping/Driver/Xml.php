@@ -60,7 +60,7 @@ class Xml extends BaseXml
                 }
 
                 $config['nonDeletedColumnValue'] = null;
-                if ($this->_isAttributeSet($xml->{'soft-deleteable'}, 'deleted-value')) {
+                if ($this->_isAttributeSet($xml->{'soft-deleteable'}, 'non-deleted-column-value')) {
                     $config['nonDeletedColumnValue'] = $this->_getAttribute($xml->{'soft-deleteable'}, 'non-deleted-column-value');
                 }
             }

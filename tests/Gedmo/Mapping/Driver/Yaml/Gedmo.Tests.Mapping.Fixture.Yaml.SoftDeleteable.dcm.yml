@@ -14,3 +14,5 @@ Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable:
     deletedAt:
       type: datetime
       nullable: true
+    deletedValue:
+      nonDeletedColumnValue: '0'
