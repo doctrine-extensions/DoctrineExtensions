@@ -41,8 +41,14 @@ final class ForcedMetadataTest extends TestCase
     protected function setUp(): void
     {
         $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Mapping\Proxy');
+
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'enableNativeLazyObjects')) {
+            $config->enableNativeLazyObjects(true);
+        } else {
+            $config->setProxyDir(TESTS_TEMP_DIR);
+            $config->setProxyNamespace('Gedmo\Mapping\Proxy');
+        }
 
         if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));

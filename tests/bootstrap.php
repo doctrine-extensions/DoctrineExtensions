@@ -28,6 +28,10 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', sys_get_temp_dir().'/doctrine-extension-tests');
 
+if (!is_dir(TESTS_TEMP_DIR)) {
+    mkdir(TESTS_TEMP_DIR, 0755, true);
+}
+
 require dirname(__DIR__).'/vendor/autoload.php';
 
 if (class_exists(AnnotationReader::class)) {
