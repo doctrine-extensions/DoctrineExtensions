@@ -328,7 +328,7 @@ $ bin/console doctrine:mapping:info
 
 ### Soft Deleteable Filter
 
-When using the [Soft Deleteable](../softdeleteable.md) extension, a filter is available which allows configuring whether
+When using the [Soft Deleteable](../soft-deleteable.md) extension, a filter is available which allows configuring whether
 soft-deleted objects are included in query results.
 
 > [!NOTE]

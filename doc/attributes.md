@@ -558,7 +558,7 @@ class Article
 
 ### Soft Deleteable Extension
 
-The below attributes are used to configure the [Soft Deleteable extension](./softdeleteable.md).
+The below attributes are used to configure the [Soft Deleteable extension](./soft-deleteable.md).
 
 #### `#[Gedmo\Mapping\Annotation\SoftDeleteable]`
 
