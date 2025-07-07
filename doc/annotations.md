@@ -647,7 +647,7 @@ Optional Attributes:
 
 ### Soft Deleteable Extension
 
-The below annotations are used to configure the [Soft Deleteable extension](./softdeleteable.md).
+The below annotations are used to configure the [Soft Deleteable extension](./soft-deleteable.md).
 
 #### `@Gedmo\Mapping\Annotation\SoftDeleteable`
 
