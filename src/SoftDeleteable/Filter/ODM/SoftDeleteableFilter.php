@@ -60,18 +60,19 @@ class SoftDeleteableFilter extends BsonFilter
         }
 
         $column = $targetEntity->getFieldMapping($config['fieldName']);
+        $nonDeletedValue = $config['nonDeletedColumnValue'] ?? null;
 
         if (isset($config['timeAware']) && $config['timeAware']) {
             return [
                 '$or' => [
-                    [$column['fieldName'] => null],
+                    [$column['fieldName'] => $nonDeletedValue],
                     [$column['fieldName'] => ['$gt' => new \DateTime()]],
                 ],
             ];
         }
 
         return [
-            $column['fieldName'] => null,
+            $column['fieldName'] => $nonDeletedValue,
         ];
     }
 
