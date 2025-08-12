@@ -67,9 +67,9 @@ final class RevisionableMongoDBODMMappingTest extends MongoDBODMMappingTestCase
         static::assertArrayHasKey('revisionable', $config);
         static::assertTrue($config['revisionable']);
 
-        static::assertArrayHasKey('versioned', $config);
-        static::assertCount(1, $config['versioned']);
-        static::assertContains('title', $config['versioned']);
+        static::assertArrayHasKey('versionedFields', $config);
+        static::assertCount(1, $config['versionedFields']);
+        static::assertContains('title', $config['versionedFields']);
     }
 
     /**
@@ -108,10 +108,10 @@ final class RevisionableMongoDBODMMappingTest extends MongoDBODMMappingTestCase
         static::assertArrayHasKey('revisionClass', $config);
         static::assertSame(Revision::class, $config['revisionClass']);
 
-        static::assertArrayHasKey('versioned', $config);
-        static::assertCount(2, $config['versioned']);
-        static::assertContains('title', $config['versioned']);
-        static::assertContains('embedded', $config['versioned']);
+        static::assertArrayHasKey('versionedFields', $config);
+        static::assertCount(2, $config['versionedFields']);
+        static::assertContains('title', $config['versionedFields']);
+        static::assertContains('embedded', $config['versionedFields']);
 
         /*
          * Inspect the embedded class
@@ -120,8 +120,8 @@ final class RevisionableMongoDBODMMappingTest extends MongoDBODMMappingTestCase
         $cacheId = ExtensionMetadataFactory::getCacheId($embeddedClassName, 'Gedmo\Revisionable');
         $config = $this->cache->getItem($cacheId)->get();
 
-        static::assertArrayHasKey('versioned', $config);
-        static::assertCount(1, $config['versioned']);
-        static::assertContains('subtitle', $config['versioned']);
+        static::assertArrayHasKey('versionedFields', $config);
+        static::assertCount(1, $config['versionedFields']);
+        static::assertContains('subtitle', $config['versionedFields']);
     }
 }

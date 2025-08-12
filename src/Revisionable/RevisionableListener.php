@@ -33,7 +33,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * @phpstan-type RevisionableConfiguration = array{
  *   revisionable?: bool,
  *   revisionClass?: class-string<RevisionInterface<T>>,
- *   versioned?: list<non-empty-string>,
+ *   versionedFields?: list<non-empty-string>,
  * }
  *
  * @template T of Revisionable|object
@@ -286,7 +286,7 @@ final class RevisionableListener extends MappedEventSubscriber
         $newValues = [];
 
         foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
-            if (!isset($config['versioned']) || !in_array($field, $config['versioned'], true)) {
+            if (!isset($config['versionedFields']) || !in_array($field, $config['versionedFields'], true)) {
                 continue;
             }
 
@@ -358,7 +358,7 @@ final class RevisionableListener extends MappedEventSubscriber
 
         $newValues = [];
 
-        if (RevisionInterface::ACTION_REMOVE !== $action && isset($config['versioned'])) {
+        if (RevisionInterface::ACTION_REMOVE !== $action && isset($config['versionedFields'])) {
             $newValues = $this->getObjectChangeSetData($ea, $object, $revision);
             $revision->setData($newValues);
         }

@@ -114,7 +114,7 @@ class RevisionRepository extends DocumentRepository
         assert($documentMeta instanceof ClassMetadata);
 
         $config = $this->getListener()->getConfiguration($this->getDocumentManager(), $documentMeta->getName());
-        $fields = $config['versioned'];
+        $fields = $config['versionedFields'];
 
         foreach ($data as $field => $value) {
             if (!in_array($field, $fields, true)) {

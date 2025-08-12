@@ -88,7 +88,7 @@ class RevisionRepository extends EntityRepository
             ->setParameter('version', $version);
 
         $config = $this->getListener()->getConfiguration($this->getEntityManager(), $entityClass);
-        $fields = $config['versioned'];
+        $fields = $config['versionedFields'];
         $filled = false;
         $revisionsFound = false;
 

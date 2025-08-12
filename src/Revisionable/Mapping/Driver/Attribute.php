@@ -95,14 +95,14 @@ class Attribute extends AbstractAnnotationDriver
                     continue;
                 }
 
-                $config['versioned'][] = $field;
+                $config['versionedFields'][] = $field;
             }
         }
 
         // Validate configuration
         if (!$meta->isMappedSuperclass && $config) {
             // The revisionable flag must be set, except for embedded models, and the versioned config should be a non-empty array
-            if (isset($config['versioned']) && !isset($config['revisionable']) && !$this->isEmbed($meta)) {
+            if (isset($config['versionedFields']) && !isset($config['revisionable']) && !$this->isEmbed($meta)) {
                 throw new InvalidMappingException(sprintf('Class "%s" has "%s" annotated fields but is missing the "%s" class annotation.', $meta->getName(), Versioned::class, Revisionable::class));
             }
         }
@@ -130,7 +130,7 @@ class Attribute extends AbstractAnnotationDriver
                     continue;
                 }
 
-                $config['versioned'][] = $embeddedField;
+                $config['versionedFields'][] = $embeddedField;
             }
         }
 
