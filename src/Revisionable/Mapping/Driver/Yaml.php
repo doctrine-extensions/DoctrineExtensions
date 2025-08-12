@@ -66,7 +66,7 @@ final class Yaml extends File
         // Validate configuration
         if (!$meta->isMappedSuperclass && $config) {
             // The revisionable flag must be set, except for embedded models, and the versioned config should be a non-empty array
-            if (isset($config['versioned']) && !isset($config['revisionable'])) {
+            if (isset($config['versionedFields']) && !isset($config['revisionable'])) {
                 throw new InvalidMappingException(sprintf("Class '%s' has fields marked as versioned but the class does not have the 'revisionable' configuration.", $meta->getName()));
             }
         }
@@ -167,7 +167,7 @@ final class Yaml extends File
                     continue;
                 }
 
-                $config['versioned'][] = $prepend
+                $config['versionedFields'][] = $prepend
                     ? $prepend.'.'.$field
                     : $field;
             }
