@@ -1,24 +1,28 @@
 <?php
 
-namespace Gedmo\Blameable;
+declare(strict_types=1);
 
-use Blameable\Fixture\Entity\WithoutInterface;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Blameable;
+
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Entity\WithoutInterface;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NoInterfaceTest extends BaseTestCaseORM
+final class NoInterfaceTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Blameable\\Fixture\\Entity\\WithoutInterface';
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,10 +32,10 @@ class NoInterfaceTest extends BaseTestCaseORM
         $blameableListener->setUserValue('testuser');
         $evm->addEventSubscriber($blameableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testBlameableNoInterface()
+    public function testBlameableNoInterface(): void
     {
         $test = new WithoutInterface();
         $test->setTitle('Test');
@@ -40,15 +44,15 @@ class NoInterfaceTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
-        $this->assertEquals('testuser', $test->getCreated());
-        $this->assertEquals('testuser', $test->getUpdated());
+        $test = $this->em->getRepository(WithoutInterface::class)->findOneBy(['title' => 'Test']);
+        static::assertSame('testuser', $test->getCreated());
+        static::assertSame('testuser', $test->getUpdated());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
+            WithoutInterface::class,
         ];
     }
 }

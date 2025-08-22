@@ -1,70 +1,86 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
 
-use Doctrine\ORM\Mapping\Driver\DriverChain;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
+
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\User as AnnotatedUser;
+use Gedmo\Tests\Mapping\Fixture\Xml\User as XmlUser;
+use Gedmo\Tests\Mapping\Fixture\Yaml\User as YamlUser;
+use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are mapping tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
+final class TranslatableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\User';
-    private $em;
+    private EntityManager $em;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $chainDriverImpl = new DriverChain();
-        $chainDriverImpl->addDriver(
-            new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Mapping\Fixture\Yaml'
-        );
-        $config->setMetadataDriverImpl($chainDriverImpl);
+        parent::setUp();
 
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
+        $listener = new TranslatableListener();
+        $listener->setCacheItemPool($this->cache);
+        $listener->setTranslatableLocale('en_us');
 
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-
-        $evm = new \Doctrine\Common\EventManager();
-        $this->translatableListener = new TranslatableListener();
-        $this->translatableListener->setTranslatableLocale('en_us');
-        $evm->addEventSubscriber($this->translatableListener);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping()
+    /**
+     * @return \Generator<string, array{class-string}>
+     */
+    public static function dataSortableObject(): \Generator
     {
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
-        $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::TEST_YAML_ENTITY_CLASS,
-            'Gedmo\Translatable'
-        );
-        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-        $this->assertArrayHasKey('translationClass', $config);
-        $this->assertEquals('Translatable\Fixture\PersonTranslation', $config['translationClass']);
-        $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(3, $config['fields']);
-        $this->assertEquals('password', $config['fields'][0]);
-        $this->assertEquals('username', $config['fields'][1]);
-        $this->assertArrayHasKey('locale', $config);
-        $this->assertEquals('localeField', $config['locale']);
-        $this->assertCount(1, $config['fallback']);
-        $this->assertTrue($config['fallback']['company']);
+        yield 'Model with XML mapping' => [XmlUser::class];
+
+        if (PHP_VERSION_ID >= 80000) {
+            yield 'Model with attributes' => [AnnotatedUser::class];
+        } elseif (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedUser::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlUser::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataSortableObject
+     */
+    public function testTranslatableMapping(string $className): void
+    {
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Translatable');
+        $config = $this->cache->getItem($cacheId)->get();
+
+        static::assertArrayHasKey('translationClass', $config);
+        static::assertSame(PersonTranslation::class, $config['translationClass']);
+        static::assertArrayHasKey('fields', $config);
+        static::assertCount(3, $config['fields']);
+        static::assertSame('password', $config['fields'][0]);
+        static::assertSame('username', $config['fields'][1]);
+        static::assertArrayHasKey('locale', $config);
+        static::assertSame('localeField', $config['locale']);
+        static::assertCount(1, $config['fallback']);
+        static::assertTrue($config['fallback']['company']);
     }
 }

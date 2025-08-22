@@ -1,0 +1,22 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded:
+  type: entity
+  table: loggable_with_embedded
+  gedmo:
+    loggable:
+      logEntryClass: Gedmo\Loggable\Entity\LogEntry
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      gedmo:
+        - versioned
+  embedded:
+    embedded:
+      class: Gedmo\Tests\Mapping\Fixture\Yaml\Embedded
+      gedmo:
+        - versioned

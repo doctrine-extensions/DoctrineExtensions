@@ -1,33 +1,37 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\Sluggable;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Comment;
+use Gedmo\Tests\Sluggable\Fixture\Page;
+use Gedmo\Tests\Sluggable\Fixture\TranslatableArticle;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\Translatable;
 use Gedmo\Translatable\TranslatableListener;
-use Sluggable\Fixture\Comment;
-use Sluggable\Fixture\Page;
-use Sluggable\Fixture\TranslatableArticle;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableSlugTest extends BaseTestCaseORM
+final class TranslatableSlugTest extends BaseTestCaseORM
 {
-    private $articleId;
-    private $translatableListener;
+    private ?int $articleId = null;
 
-    public const ARTICLE = 'Sluggable\\Fixture\\TranslatableArticle';
-    public const COMMENT = 'Sluggable\\Fixture\\Comment';
-    public const PAGE = 'Sluggable\\Fixture\\Page';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {
@@ -39,21 +43,21 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testSlugAndTranslation()
+    public function testSlugAndTranslation(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $this->assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-        $this->assertEquals('the-title-my-code', $article->getSlug());
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $article = $this->em->find(TranslatableArticle::class, $this->articleId);
+        static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
+        static::assertSame('the-title-my-code', $article->getSlug());
+        $repo = $this->em->getRepository(Translation::class);
 
         $translations = $repo->findTranslations($article);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(TranslatableArticle::class, $this->articleId);
         $article->setTranslatableLocale('de_DE');
         $article->setCode('code in de');
         $article->setTitle('title in de');
@@ -62,23 +66,23 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($article);
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_DE', $translations);
-        $this->assertCount(3, $translations['de_DE']);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_DE', $translations);
+        static::assertCount(3, $translations['de_DE']);
 
-        $this->assertArrayHasKey('code', $translations['de_DE']);
-        $this->assertEquals('code in de', $translations['de_DE']['code']);
+        static::assertArrayHasKey('code', $translations['de_DE']);
+        static::assertSame('code in de', $translations['de_DE']['code']);
 
-        $this->assertArrayHasKey('title', $translations['de_DE']);
-        $this->assertEquals('title in de', $translations['de_DE']['title']);
+        static::assertArrayHasKey('title', $translations['de_DE']);
+        static::assertSame('title in de', $translations['de_DE']['title']);
 
-        $this->assertArrayHasKey('slug', $translations['de_DE']);
-        $this->assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
+        static::assertArrayHasKey('slug', $translations['de_DE']);
+        static::assertSame('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
 
-    public function testConcurrentChanges()
+    public function testConcurrentChanges(): void
     {
         $page = new Page();
         $page->setContent('cont test');
@@ -86,7 +90,7 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $a0Page = new Page();
         $a0Page->setContent('bi vv');
 
-        $article0 = $this->em->find(self::ARTICLE, $this->articleId);
+        $article0 = $this->em->find(TranslatableArticle::class, $this->articleId);
         $article0->setCode('cell');
         $article0->setTitle('xx gg');
         $a0Page->addArticle($article0);
@@ -125,20 +129,20 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals($page->getSlug(), 'Cont_Test');
+        static::assertSame('Cont_Test', $page->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::PAGE,
-            self::TRANSLATION,
+            TranslatableArticle::class,
+            Comment::class,
+            Page::class,
+            Translation::class,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new TranslatableArticle();
         $article->setTitle('the title');

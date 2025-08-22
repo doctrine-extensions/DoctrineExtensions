@@ -1,27 +1,32 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\StringIdentifier;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\StringIdentifier;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableIdentifierTest extends BaseTestCaseORM
+final class TranslatableIdentifierTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Translatable\\Fixture\\StringIdentifier';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    private ?string $testObjectId = null;
 
-    private $testObjectId;
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {
@@ -33,38 +38,27 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $conn = [
-                    'driver' => 'pdo_mysql',
-                    'host' => '127.0.0.1',
-                    'dbname' => 'test',
-                    'user' => 'root',
-                    'password' => 'nimda',
-        ];
-        //$this->getMockCustomEntityManager($conn, $evm);
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleStringIdentifier()
+    public function testShouldHandleStringIdentifier(): void
     {
         $object = new StringIdentifier();
         $object->setTitle('title in en');
-        $object->setUid(md5(self::FIXTURE.time()));
+        $object->setUid(md5(StringIdentifier::class.time()));
 
         $this->em->persist($object);
         $this->em->flush();
         $this->em->clear();
         $this->testObjectId = $object->getUid();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $object = $this->em->find(self::FIXTURE, $this->testObjectId);
+        $repo = $this->em->getRepository(Translation::class);
+        $object = $this->em->find(StringIdentifier::class, $this->testObjectId);
 
         $translations = $repo->findTranslations($object);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
-        $object = $this->em->find(self::FIXTURE, $this->testObjectId);
+        $object = $this->em->find(StringIdentifier::class, $this->testObjectId);
         $object->setTitle('title in de');
         $object->setTranslatableLocale('de_de');
 
@@ -72,48 +66,48 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
 
         // test the entity load by translated title
         $object = $repo->findObjectByTranslatedField(
             'title',
             'title in de',
-            self::FIXTURE
+            StringIdentifier::class
         );
 
-        $this->assertEquals($this->testObjectId, $object->getUid());
+        static::assertSame($this->testObjectId, $object->getUid());
 
         $translations = $repo->findTranslations($object);
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_de', $translations);
 
-        $this->assertArrayHasKey('title', $translations['de_de']);
-        $this->assertEquals('title in de', $translations['de_de']['title']);
+        static::assertArrayHasKey('title', $translations['de_de']);
+        static::assertSame('title in de', $translations['de_de']['title']);
 
         // dql test object hydration
         $q = $this->em
-            ->createQuery('SELECT si FROM '.self::FIXTURE.' si WHERE si.uid = :id')
+            ->createQuery('SELECT si FROM '.StringIdentifier::class.' si WHERE si.uid = :id')
             ->setParameter('id', $this->testObjectId)
-            ->useResultCache(false)
+            ->disableResultCache()
         ;
         $data = $q->getResult();
-        $this->assertCount(1, $data);
+        static::assertCount(1, $data);
         $object = $data[0];
-        $this->assertEquals('title in en', $object->getTitle());
+        static::assertSame('title in en', $object->getTitle());
 
         $this->em->clear(); // based on 2.3.0 it caches in identity map
         $this->translatableListener->setTranslatableLocale('de_de');
         $data = $q->getResult();
-        $this->assertCount(1, $data);
+        static::assertCount(1, $data);
         $object = $data[0];
-        $this->assertEquals('title in de', $object->getTitle());
+        static::assertSame('title in de', $object->getTitle());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
-            self::TRANSLATION,
+            StringIdentifier::class,
+            Translation::class,
         ];
     }
 }

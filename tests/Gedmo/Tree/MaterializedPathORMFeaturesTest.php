@@ -1,25 +1,37 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\MPFeaturesCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
+final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\MPFeaturesCategory';
-
+    /**
+     * @var array<string, mixed>
+     */
     protected $config;
+
+    /**
+     * @var TreeListener
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -31,16 +43,13 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
-        $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->em, $meta->name);
+        $meta = $this->em->getClassMetadata(MPFeaturesCategory::class);
+        $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
-    /**
-     * @test
-     */
-    public function checkPathsAndHash()
+    public function testCheckPathsAndHash(): void
     {
         $category = $this->createCategory();
         $category->setTitle('1');
@@ -65,37 +74,40 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $this->em->refresh($category3);
         $this->em->refresh($category4);
 
-        $this->assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
-        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
-        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
-        $this->assertEquals($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        static::assertSame($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
 
-        $this->assertEquals($this->generatePathHash(['1' => $category->getId()]), $category->getPathHash());
-        $this->assertEquals($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPathHash());
-        $this->assertEquals($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPathHash());
-        $this->assertEquals($this->generatePathHash(['4' => $category4->getId()]), $category4->getPathHash());
+        static::assertSame($this->generatePathHash(['1' => $category->getId()]), $category->getPathHash());
+        static::assertSame($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPathHash());
+        static::assertSame($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPathHash());
+        static::assertSame($this->generatePathHash(['4' => $category4->getId()]), $category4->getPathHash());
 
-        $this->assertEquals($category->getTitle(), $category->getTreeRootValue());
-        $this->assertEquals($category->getTitle(), $category2->getTreeRootValue());
-        $this->assertEquals($category->getTitle(), $category3->getTreeRootValue());
-        $this->assertEquals($category4->getTitle(), $category4->getTreeRootValue());
+        static::assertSame($category->getTitle(), $category->getTreeRootValue());
+        static::assertSame($category->getTitle(), $category2->getTreeRootValue());
+        static::assertSame($category->getTitle(), $category3->getTreeRootValue());
+        static::assertSame($category4->getTitle(), $category4->getTreeRootValue());
     }
 
-    public function createCategory()
+    protected function getUsedEntityFixtures(): array
     {
-        $class = self::CATEGORY;
+        return [
+            MPFeaturesCategory::class,
+        ];
+    }
+
+    private function createCategory(): MPFeaturesCategory
+    {
+        $class = MPFeaturesCategory::class;
 
         return new $class();
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-        ];
-    }
-
-    public function generatePath(array $sources)
+    /**
+     * @param array<int|string, int|string|null> $sources
+     */
+    private function generatePath(array $sources): string
     {
         $path = '';
         foreach ($sources as $p => $id) {
@@ -105,7 +117,10 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         return $path;
     }
 
-    public function generatePathHash(array $sources)
+    /**
+     * @param array<int|string, int|string|null> $sources
+     */
+    private function generatePathHash(array $sources): string
     {
         return md5($this->generatePath($sources));
     }

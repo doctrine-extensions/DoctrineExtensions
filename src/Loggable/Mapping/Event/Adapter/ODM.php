@@ -1,7 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 
@@ -10,20 +19,16 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
  * for Loggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class ODM extends BaseAdapterODM implements LoggableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getDefaultLogEntryClass()
     {
-        return 'Gedmo\\Loggable\\Document\\LogEntry';
+        return LogEntry::class;
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata<object> $meta
      */
     public function isPostInsertGenerator($meta)
     {
@@ -31,7 +36,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata<object> $meta
      */
     public function getNewVersion($meta, $object)
     {
@@ -40,10 +45,10 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($object);
 
-        $qb = $dm->createQueryBuilder($meta->name);
+        $qb = $dm->createQueryBuilder($meta->getName());
         $qb->select('version');
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($objectMeta->name);
+        $qb->field('objectClass')->equals($objectMeta->getName());
         $qb->sort('version', 'DESC');
         $qb->limit(1);
         $q = $qb->getQuery();

@@ -1,76 +1,121 @@
-# Loggable behavioral extension for Doctrine2
+# Loggable Behavior Extension for Doctrine
 
-**Loggable** behavior tracks your record changes and is able to
-manage versions.
+The **Loggable** behavior adds support for logging changes to and restoring prior versions of your Doctrine objects.
 
-Features:
+> [!NOTE]
+> The Loggable extension is NOT compatible with `doctrine/dbal` 4.0 or later
 
-- Automatic storage of log entries in database
-- ORM and ODM support using same listener
-- Can be nested with other behaviors
-- Objects can be reverted to previous versions
-- Annotation, Yaml and Xml mapping support for extensions
+## Index
 
-Update **2011-04-04**
+- [Getting Started](#getting-started)
+- [Configuring Loggable Objects](#configuring-loggable-objects)
+- [Customizing The Log Entry Model](#customizing-the-log-entry-model)
+- [Object Repositories](#object-repositories)
+    - [Fetching a Model's Log Entries](#fetching-a-models-log-entries)
+    - [Revert a Model to a Previous Version](#revert-a-model-to-a-previous-version)
 
-- Made single listener, one instance can be used for any object manager
-and any number of them
+## Getting Started
 
-**Portability:**
+The loggable behavior can be added to a supported Doctrine object manager by registering its event subscriber
+when creating the manager.
 
-- **Loggable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
+```php
+use Gedmo\Loggable\LoggableListener;
 
-This article will cover the basic installation and functionality of **Loggable**
-behavior
+$listener = new LoggableListener();
 
-Content:
-
-- [Including](#including-extension) the extension
-- Entity [example](#entity-mapping)
-- Document [example](#document-mapping)
-- [Yaml](#yaml-mapping) mapping example
-- [Xml](#xml-mapping) mapping example
-- Basic usage [examples](#basic-examples)
-
-<a name="including-extension"></a>
-
-## Setup and autoloading
-
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
-on how to setup and use the extensions in most optimized way.
-
-### Loggable annotations:
-
-- **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="my\class")** this class annotation
-will store logs to optionally specified **logEntryClass**. You will still need to specify versioned fields with the following annotation.
-- **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
-
-### Loggable username:
-
-In order to set the username, when adding the loggable listener you need to set it this way:
-
-``` php
-$loggableListener = new Gedmo\Loggable\LoggableListener;
-$loggableListener->setAnnotationReader($cachedAnnotationReader);
-$loggableListener->setUsername('admin');
-$evm->addEventSubscriber($loggableListener);
+// The $om is either an instance of the ORM's entity manager or the MongoDB ODM's document manager
+$om->getEventManager()->addEventSubscriber($listener);
 ```
-<a name="entity-mapping"></a>
 
-## Loggable Entity example:
+Then, once your application has it available (i.e. after validating the authentication for your user during an HTTP request),
+you can set a reference to the user who performed actions on a loggable model.
 
-**Note:** that Loggable interface is not necessary, except in cases there
-you need to identify entity as being Loggable. The metadata is loaded only once when
-cache is active
+The user reference can be set through either an [actor provider service](./utils/actor-provider.md) or by calling the
+listener's `setUsername` method with a resolved user.
 
-``` php
+> [!TIP]
+> When an actor provider is given to the extension, any data set with the `setUsername` method will be ignored.
+
+```php
+// The $provider must be an implementation of Gedmo\Tool\ActorProviderInterface
+$listener->setActorProvider($provider);
+
+// The $user can be either an object or a string
+$listener->setUsername($user);
+```
+
+## Configuring Loggable Objects
+
+The loggable extension can be configured with [annotations](./annotations.md#loggable-extension),
+[attributes](./attributes.md#loggable-extension), or XML configuration (matching the mapping of
+your domain models). The full configuration for annotations and attributes can be reviewed in
+the linked documentation.
+
+The below examples show the simplest and default configuration for the extension, logging changes for defined fields.
+
+### Attribute Configuration
+
+```php
 <?php
-namespace Entity;
+namespace App\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+#[ORM\Entity]
+#[Gedmo\Loggable]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    public bool $published = false;
+
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\Versioned]
+    public ?string $title = null;
+}
+```
+
+### XML Configuration
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+
+    <entity name="App\Model\Article" table="articles">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="published" type="boolean"/>
+
+        <field name="title" type="string">
+            <gedmo:versioned/>
+        </field>
+
+        <gedmo:loggable/>
+    </entity>
+</doctrine-mapping>
+```
+
+### Annotation Configuration
+
+> [!NOTE]
+> Support for annotations is deprecated and will be removed in 4.0.
+
+```php
+<?php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -79,188 +124,126 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    private $id;
+    public ?int $id = null;
 
     /**
-     * @Gedmo\Versioned
-     * @ORM\Column(name="title", type="string", length=8)
+     * @ORM\Column(type="boolean")
      */
-    private $title;
+    public bool $published = false;
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
+    /**
+     * @ORM\Column(type="string")
+     * @Gedmo\Versioned
+     */
+    public ?string $title = null;
 }
 ```
 
-<a name="document-mapping"></a>
+## Customizing The Log Entry Model
 
-## Loggable Document example:
+When configuring loggable models, you are able to specify a custom model to be used for the log entries for objects
+of that type using the `logEntryClass` parameter:
 
-``` php
+### Attribute Configuration
+
+```php
 <?php
-namespace Document;
+namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
-/**
- * @ODM\Document(collection="articles")
- * @Gedmo\Loggable
- */
+#[ORM\Entity]
+#[Gedmo\Loggable(logEntryClass: ArticleLogEntry::class)]
 class Article
 {
-    /** @ODM\Id */
-    private $id;
-
-    /**
-     * @ODM\Field(type="string")
-     * @Gedmo\Versioned
-     */
-    private $title;
-
-    public function __toString()
-    {
-        return $this->title;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
 }
 ```
 
-<a name="yaml-mapping"></a>
+### XML Configuration
 
-## Yaml mapping example
-
-Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
-
-```
----
-Entity\Article:
-  type: entity
-  table: articles
-  gedmo:
-    loggable:
-# using specific personal LogEntryClass class:
-      logEntryClass: My\LogEntry
-# without specifying the LogEntryClass class:
-#   loggable: true
-  id:
-    id:
-      type: integer
-      generator:
-        strategy: AUTO
-  fields:
-    title:
-      type: string
-      length: 64
-      gedmo:
-        - versioned
-    content:
-      type: text
-```
-
-<a name="xml-mapping"></a>
-
-## Xml mapping example
-
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 
-    <entity name="Mapping\Fixture\Xml\Loggable" table="loggables">
-
+    <entity name="App\Model\Article" table="articles">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="title" type="string" length="128">
-            <gedmo:versioned/>
-        </field>
-        <many-to-one field="status" target-entity="Status">
-            <join-column name="status_id" referenced-column-name="id"/>
-            <gedmo:versioned/>
-        </many-to-one>
-
-        <gedmo:loggable log-entry-class="Gedmo\Loggable\Entity\LogEntry"/>
-
+        <gedmo:loggable log-entry-class="App\Model\ArticleLogEntry"/>
     </entity>
 </doctrine-mapping>
 ```
 
-<a name="basic-examples"></a>
+A custom model must implement `Gedmo\Loggable\LogEntryInterface`. For convenience, we recommend extending from
+`Gedmo\Loggable\Entity\MappedSuperClass\AbstractLogEntry` for Doctrine ORM users or
+`Gedmo\Loggable\Document\MappedSuperClass\AbstractLogEntry` for Doctrine MongoDB ODM users, which provides a default
+mapping configuration for each object manager.
 
-## Basic usage examples:
+## Object Repositories
 
-``` php
-<?php
-$article = new Entity\Article;
-$article->setTitle('my title');
-$em->persist($article);
-$em->flush();
-```
+The loggable extension includes a `Doctrine\Persistence\ObjectRepository` implementation for each supported object manager
+that provides out-of-the-box features for all log entry models. When creating custom models, you are welcome to extend
+from either `Gedmo\Loggable\Entity\Repository\LogEntryRepository` for Doctrine ORM users or
+`Gedmo\Loggable\Document\Repository\LogEntryRepository` for Doctrine MongoDB ODM users to provide these features.
 
-This inserted an article and inserted the logEntry for it, which contains
-all new changeset. In case if there is **OneToOne or ManyToOne** relation,
-it will store only identifier of that object to avoid storing proxies
+### Fetching a Model's Log Entries
 
-Now lets update our article:
+The repository classes provide a `getLogEntries` method which allows fetching the list of log entries for a given model.
 
-``` php
-<?php
-// first load the article
-$article = $em->find('Entity\Article', 1 /*article id*/);
-$article->setTitle('my new title');
-$em->persist($article);
-$em->flush();
-```
+```php
+use App\Entity\Article;
+use Doctrine\ORM\EntityManagerInterface;
+use Gedmo\Loggable\Entity\LogEntry;
+use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
+use Gedmo\Loggable\LoggableListener;
 
-This updated an article and inserted the logEntry for update action with new changeset
-Now lets revert it to previous version:
+/** @var EntityManagerInterface $em */
 
-``` php
-<?php
-// first check our log entries
-$repo = $em->getRepository('Gedmo\Loggable\Entity\LogEntry'); // we use default log entry class
-$article = $em->find('Entity\Article', 1 /*article id*/);
+// Load our loggable model
+$article = $em->find(Article::class, 1);
+
+// Next, get the LogEntry repository
+/** @var LogEntryRepository $repo */
+$repo = $em->getRepository(LogEntry::class);
+
+// Lastly, get the article's log entries
 $logs = $repo->getLogEntries($article);
-/* $logs contains 2 logEntries */
-// lets revert to first version
-$repo->revert($article, 1/*version*/);
-// notice article is not persisted yet, you need to persist and flush it
-echo $article->getTitle(); // prints "my title"
-$em->persist($article);
-$em->flush();
-// if article had changed relation, it would be reverted also.
 ```
 
-Easy like that, any suggestions on improvements are very welcome
+### Revert a Model to a Previous Version
+
+The repository classes provide a `revert` method which allows reverting a model to a previous version. The repository
+will incrementally revert back to the version specified (for example, a model is currently on version 5, and you want to
+revert to version 2, it will restore the state of version 4, then version 3, and finally, version 2).
+
+```php
+use App\Entity\Article;
+use Doctrine\ORM\EntityManagerInterface;
+use Gedmo\Loggable\Entity\LogEntry;
+use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
+use Gedmo\Loggable\LoggableListener;
+
+/** @var EntityManagerInterface $em */
+
+// Load our loggable model
+$article = $em->find(Article::class, 1);
+
+// Next, get the LogEntry repository
+/** @var LogEntryRepository $repo */
+$repo = $em->getRepository(LogEntry::class);
+
+// We are now able to revert to an older version
+$repo->revert($article, 2);
+```

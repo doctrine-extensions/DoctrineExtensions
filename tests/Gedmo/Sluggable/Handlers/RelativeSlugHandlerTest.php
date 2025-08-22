@@ -1,26 +1,29 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Handler\Article;
-use Sluggable\Fixture\Handler\ArticleRelativeSlug;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\Article;
+use Gedmo\Tests\Sluggable\Fixture\Handler\ArticleRelativeSlug;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class RelativeSlugHandlerTest extends BaseTestCaseORM
+final class RelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    public const SLUG = 'Sluggable\\Fixture\\Handler\\ArticleRelativeSlug';
-    public const ARTICLE = 'Sluggable\\Fixture\\Handler\\Article';
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,68 +31,68 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::SLUG);
+        $repo = $this->em->getRepository(ArticleRelativeSlug::class);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
-        $this->assertEquals('sport-test/thomas', $thomas->getSlug());
+        static::assertSame('sport-test/thomas', $thomas->getSlug());
 
         $jen = $repo->findOneBy(['title' => 'Jen']);
-        $this->assertEquals('sport-test/jen', $jen->getSlug());
+        static::assertSame('sport-test/jen', $jen->getSlug());
 
         $john = $repo->findOneBy(['title' => 'John']);
-        $this->assertEquals('cars-code/john', $john->getSlug());
+        static::assertSame('cars-code/john', $john->getSlug());
 
         $single = $repo->findOneBy(['title' => 'Single']);
-        $this->assertEquals('single', $single->getSlug());
+        static::assertSame('single', $single->getSlug());
     }
 
-    public function testUpdateOperations()
+    public function testUpdateOperations(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::SLUG);
+        $repo = $this->em->getRepository(ArticleRelativeSlug::class);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
         $thomas->setTitle('Ninja');
         $this->em->persist($thomas);
         $this->em->flush();
 
-        $this->assertEquals('sport-test/ninja', $thomas->getSlug());
+        static::assertSame('sport-test/ninja', $thomas->getSlug());
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
+        $sport = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Sport']);
         $sport->setTitle('Martial Arts');
 
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertEquals('martial-arts-test/ninja', $thomas->getSlug());
+        static::assertSame('martial-arts-test/ninja', $thomas->getSlug());
 
         $jen = $repo->findOneBy(['title' => 'Jen']);
-        $this->assertEquals('martial-arts-test/jen', $jen->getSlug());
+        static::assertSame('martial-arts-test/jen', $jen->getSlug());
 
-        $cars = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Cars']);
+        $cars = $this->em->getRepository(Article::class)->findOneBy(['title' => 'Cars']);
         $jen->setArticle($cars);
 
         $this->em->persist($jen);
         $this->em->flush();
 
-        $this->assertEquals('cars-code/jen', $jen->getSlug());
+        static::assertSame('cars-code/jen', $jen->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::SLUG,
-            self::ARTICLE,
+            ArticleRelativeSlug::class,
+            Article::class,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');

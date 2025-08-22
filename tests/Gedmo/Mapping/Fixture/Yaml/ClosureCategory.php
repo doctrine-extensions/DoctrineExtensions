@@ -1,95 +1,86 @@
 <?php
 
-namespace Mapping\Fixture\Yaml;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping\Fixture\Yaml;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 class ClosureCategory
 {
+    /**
+     * @var int
+     */
     private $id;
 
-    private $title;
-
-    private $children;
-
-    private $parent;
-
-    private $level;
+    private ?string $title = null;
 
     /**
-     * Get id
-     *
-     * @return int $id
+     * @var Collection<int, ClosureCategory>
      */
-    public function getId()
+    private $children;
+
+    private ?ClosureCategory $parent = null;
+
+    private ?int $level = null;
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set title
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * Get title
-     *
-     * @return string $title
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Add children
-     *
-     * @param Entity\Category $children
-     */
-    public function addChildren(Category $children)
+    public function addChildren(self $children): void
     {
         $this->children[] = $children;
     }
 
     /**
-     * Get children
-     *
-     * @return Doctrine\Common\Collections\Collection $children
+     * @return Collection<int, self>
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    /**
-     * Set parent
-     *
-     * @param Entity\Category $parent
-     */
-    public function setParent($parent)
+    public function setParent(self $parent): void
     {
         $this->parent = $parent;
     }
 
-    /**
-     * Get parent
-     *
-     * @return Entity\Category $parent
-     */
-    public function getParent()
+    public function getParent(): self
     {
         return $this->parent;
     }
 
-    public function setLevel($level)
+    public function setLevel(int $level): void
     {
         $this->level = $level;
     }
 
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }

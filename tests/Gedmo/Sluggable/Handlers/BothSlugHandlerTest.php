@@ -1,27 +1,30 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\People\Occupation;
+use Gedmo\Tests\Sluggable\Fixture\Handler\People\Person;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\People\Occupation;
-use Sluggable\Fixture\Handler\People\Person;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class BothSlugHandlerTest extends BaseTestCaseORM
+final class BothSlugHandlerTest extends BaseTestCaseORM
 {
-    public const OCCUPATION = 'Sluggable\\Fixture\\Handler\\People\\Occupation';
-    public const PERSON = 'Sluggable\\Fixture\\Handler\\People\\Person';
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,37 +33,37 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new TreeListener());
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::PERSON);
+        $repo = $this->em->getRepository(Person::class);
 
         $herzult = $repo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/developer/php/herzult', $herzult->getSlug());
+        static::assertSame('web/developer/php/herzult', $herzult->getSlug());
 
         $gedi = $repo->findOneBy(['name' => 'Gedi']);
-        $this->assertEquals('web/developer/gedi', $gedi->getSlug());
+        static::assertSame('web/developer/gedi', $gedi->getSlug());
 
         $hurty = $repo->findOneBy(['name' => 'Hurty']);
-        $this->assertEquals('singer/hurty', $hurty->getSlug());
+        static::assertSame('singer/hurty', $hurty->getSlug());
     }
 
-    public function testSlugUpdates()
+    public function testSlugUpdates(): void
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::PERSON);
+        $repo = $this->em->getRepository(Person::class);
 
         $gedi = $repo->findOneBy(['name' => 'Gedi']);
         $gedi->setName('Upd Gedi');
         $this->em->persist($gedi);
         $this->em->flush();
 
-        $this->assertEquals('web/developer/upd-gedi', $gedi->getSlug());
+        static::assertSame('web/developer/upd-gedi', $gedi->getSlug());
 
-        $artist = $this->em->getRepository(self::OCCUPATION)->findOneBy(['title' => 'Singer']);
+        $artist = $this->em->getRepository(Occupation::class)->findOneBy(['title' => 'Singer']);
         $artist->setTitle('Artist');
 
         $this->em->persist($artist);
@@ -70,20 +73,20 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($gedi);
         $this->em->flush();
 
-        $this->assertEquals('artist/upd-gedi', $gedi->getSlug());
+        static::assertSame('artist/upd-gedi', $gedi->getSlug());
 
         $hurty = $repo->findOneBy(['name' => 'Hurty']);
-        $this->assertEquals('artist/hurty', $hurty->getSlug());
+        static::assertSame('artist/hurty', $hurty->getSlug());
     }
 
-    public function test1093()
+    public function test1093(): void
     {
         $this->populate();
-        $personRepo = $this->em->getRepository(self::PERSON);
-        $occupationRepo = $this->em->getRepository(self::OCCUPATION);
+        $personRepo = $this->em->getRepository(Person::class);
+        $occupationRepo = $this->em->getRepository(Occupation::class);
 
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/developer/php/herzult', $herzult->getSlug());
+        static::assertSame('web/developer/php/herzult', $herzult->getSlug());
 
         $developer = $occupationRepo->findOneBy(['title' => 'Developer']);
         $developer->setTitle('Enthusiast');
@@ -93,26 +96,26 @@ class BothSlugHandlerTest extends BaseTestCaseORM
 
         // Works (but is not updated in the actual DB)
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
+        static::assertSame('web/enthusiast/php/herzult', $herzult->getSlug());
 
         $this->em->clear();
 
         // Does not work.
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
+        static::assertSame('web/enthusiast/php/herzult', $herzult->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::OCCUPATION,
-            self::PERSON,
+            Occupation::class,
+            Person::class,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
-        $repo = $this->em->getRepository(self::OCCUPATION);
+        $repo = $this->em->getRepository(Occupation::class);
 
         $web = new Occupation();
         $web->setTitle('Web');

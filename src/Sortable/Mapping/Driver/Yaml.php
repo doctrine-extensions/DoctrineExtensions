@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sortable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
@@ -13,23 +21,19 @@ use Gedmo\Mapping\Driver\File;
  * extension.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
+ *
+ * @internal
  */
 class Yaml extends File implements Driver
 {
     /**
-     * File extension
-     *
-     * @var string
-     */
-    protected $_extension = '.dcm.yml';
-
-    /**
      * List of types which are valid for position fields
      *
-     * @var array
+     * @var string[]
      */
-    private $validTypes = [
+    private const VALID_TYPES = [
         'int',
         'integer',
         'smallint',
@@ -37,56 +41,45 @@ class Yaml extends File implements Driver
     ];
 
     /**
-     * {@inheritdoc}
+     * File extension
+     *
+     * @var string
      */
+    protected $_extension = '.dcm.yml';
+
     public function readExtendedMetadata($meta, array &$config)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('sortablePosition', $fieldMapping['gedmo'])) {
+                    if (in_array('sortablePosition', $fieldMapping['gedmo'], true)) {
                         if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                            throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->getName()}");
                         }
                         $config['position'] = $field;
                     }
                 }
             }
-            $this->readSortableGroups($mapping['fields'], $config);
+            $config = $this->readSortableGroups($mapping['fields'], $config);
         }
         if (isset($mapping['manyToOne'])) {
-            $this->readSortableGroups($mapping['manyToOne'], $config);
+            $config = $this->readSortableGroups($mapping['manyToOne'], $config);
         }
         if (isset($mapping['manyToMany'])) {
-            $this->readSortableGroups($mapping['manyToMany'], $config);
+            $config = $this->readSortableGroups($mapping['manyToMany'], $config);
         }
 
         if (!$meta->isMappedSuperclass && $config) {
             if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
+                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 
-    private function readSortableGroups($mapping, array &$config)
-    {
-        foreach ($mapping as $field => $fieldMapping) {
-            if (isset($fieldMapping['gedmo'])) {
-                if (in_array('sortableGroup', $fieldMapping['gedmo'])) {
-                    if (!isset($config['groups'])) {
-                        $config['groups'] = [];
-                    }
-                    $config['groups'][] = $field;
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
@@ -95,8 +88,8 @@ class Yaml extends File implements Driver
     /**
      * Checks if $field type is valid as SortablePosition field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
      *
      * @return bool
      */
@@ -104,6 +97,28 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        return $mapping && in_array($mapping->type ?? $mapping['type'], self::VALID_TYPES, true);
+    }
+
+    /**
+     * @param iterable<string, array<string, mixed>> $mapping
+     * @param array<string, mixed>                   $config
+     *
+     * @return array<string, mixed>
+     */
+    private function readSortableGroups(iterable $mapping, array $config): array
+    {
+        foreach ($mapping as $field => $fieldMapping) {
+            if (isset($fieldMapping['gedmo'])) {
+                if (in_array('sortableGroup', $fieldMapping['gedmo'], true)) {
+                    if (!isset($config['groups'])) {
+                        $config['groups'] = [];
+                    }
+                    $config['groups'][] = $field;
+                }
+            }
+        }
+
+        return $config;
     }
 }

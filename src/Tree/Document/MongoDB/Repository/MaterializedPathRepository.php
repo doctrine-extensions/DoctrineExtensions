@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
+use Doctrine\ODM\MongoDB\Query\Builder;
+use Doctrine\ODM\MongoDB\Query\Query;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Tree\Strategy;
@@ -15,16 +24,19 @@ use MongoDB\BSON\Regex;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @template T of object
+ *
+ * @template-extends AbstractTreeRepository<T>
  */
 class MaterializedPathRepository extends AbstractTreeRepository
 {
     /**
      * Get tree query builder
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      *
-     * @return \Doctrine\ODM\MongoDB\Query\Builder
+     * @return Builder
      */
     public function getTreeQueryBuilder($rootNode = null)
     {
@@ -34,9 +46,9 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
      *
-     * @return \Doctrine\ODM\MongoDB\Query\Query
+     * @return Query
      */
     public function getTreeQuery($rootNode = null)
     {
@@ -46,46 +58,36 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree
      *
-     * @param object $rootNode
+     * @param object|null $rootNode
+     *
+     * @phpstan-return Iterator<object>
      */
     public function getTree($rootNode = null): Iterator
     {
-        return $this->getTreeQuery($rootNode)->execute();
+        return $this->getTreeQuery($rootNode)->getIterator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
         return $this->getChildrenQueryBuilder(null, true, $sortByField, $direction);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
         return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRootNodes($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQuery($sortByField, $direction)->execute();
+        return $this->getRootNodesQuery($sortByField, $direction)->getIterator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function childCount($node = null, $direct = false)
     {
         $meta = $this->getClassMetadata();
 
         if (is_object($node)) {
-            if (!($node instanceof $meta->name)) {
+            if (!is_a($node, $meta->getName())) {
                 throw new InvalidArgumentException('Node is not related to this repository');
             }
 
@@ -103,42 +105,45 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return (int) $qb->getQuery()->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $config = $this->listener->getConfiguration($this->dm, $meta->getName());
         $separator = preg_quote($config['path_separator']);
         $qb = $this->dm->createQueryBuilder()
-            ->find($meta->name);
+            ->find($meta->getName());
         $regex = false;
 
-        if (is_object($node) && $node instanceof $meta->name) {
+        if (is_a($node, $meta->getName())) {
             $node = new MongoDocumentWrapper($node, $this->dm);
             $nodePath = preg_quote($node->getPropertyValue($config['path']));
 
             if ($direct) {
-                $regex = sprintf('^%s([^%s]+%s)'.($includeNode ? '?' : '').'$',
-                     $nodePath,
-                     $separator,
-                     $separator);
+                $regex = sprintf(
+                    '^%s([^%s]+%s)'.($includeNode ? '?' : '').'$',
+                    $nodePath,
+                    $separator,
+                    $separator
+                );
             } else {
-                $regex = sprintf('^%s(.+)'.($includeNode ? '?' : ''),
-                     $nodePath);
+                $regex = sprintf(
+                    '^%s(.+)'.($includeNode ? '?' : ''),
+                    $nodePath
+                );
             }
         } elseif ($direct) {
-            $regex = sprintf('^([^%s]+)'.($includeNode ? '?' : '').'%s$',
+            $regex = sprintf(
+                '^([^%s]+)'.($includeNode ? '?' : '').'%s$',
                 $separator,
-                $separator);
+                $separator
+            );
         }
 
         if ($regex) {
             $qb->field($config['path'])->equals(new Regex($regex));
         }
 
-        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, 'asc' === $direction ? 'asc' : 'desc');
+        $qb->sort($sortByField ?? $config['path'], 'asc' === strtolower($direction) ? 'asc' : 'desc');
 
         return $qb;
     }
@@ -151,17 +156,11 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return $this->getChildrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
-        return $this->getChildrenQuery($node, $direct, $sortByField, $direction, $includeNode)->execute();
+        return $this->getChildrenQuery($node, $direct, $sortByField, $direction, $includeNode)->getIterator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $sortBy = [
@@ -176,17 +175,11 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir'], $includeNode);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodesHierarchyQuery($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         return $this->getNodesHierarchyQueryBuilder($node, $direct, $options, $includeNode)->getQuery();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $query = $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode);
@@ -195,9 +188,6 @@ class MaterializedPathRepository extends AbstractTreeRepository
         return $query->toArray();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function validate()
     {
         return Strategy::MATERIALIZED_PATH === $this->listener->getStrategy($this->dm, $this->getClassMetadata()->name)->getName();

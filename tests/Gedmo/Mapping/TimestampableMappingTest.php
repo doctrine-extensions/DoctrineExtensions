@@ -1,68 +1,105 @@
 <?php
 
-namespace Gedmo\Timestampable;
+declare(strict_types=1);
 
-use Doctrine\ORM\Mapping\Driver\DriverChain;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
+
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\Category as AnnotatedCategory;
+use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Category as YamlCategory;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are mapping tests for timestampable extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
+final class TimestampableMappingTest extends ORMMappingTestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
-    private $em;
+    private EntityManager $em;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $chainDriverImpl = new DriverChain();
-        $chainDriverImpl->addDriver(
-            new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Mapping\Fixture\Yaml'
-        );
-        $config->setMetadataDriverImpl($chainDriverImpl);
+        parent::setUp();
 
-        $conn = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
+        $listener = new TimestampableListener();
+        $listener->setCacheItemPool($this->cache);
 
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-
-        $evm = new \Doctrine\Common\EventManager();
-        $evm->addEventSubscriber(new TimestampableListener());
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping()
+    /**
+     * @return \Generator<string, array{class-string}>
+     *
+     * @note the XML fixture has a different mapping from the other configs, so it is tested separately
+     */
+    public static function dataTimestampableObject(): \Generator
     {
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
-        $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::TEST_YAML_ENTITY_CLASS,
-            'Gedmo\Timestampable'
-        );
-        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-        $this->assertArrayHasKey('create', $config);
-        $this->assertEquals('created', $config['create'][0]);
-        $this->assertArrayHasKey('update', $config);
-        $this->assertEquals('updated', $config['update'][0]);
-        $this->assertArrayHasKey('change', $config);
+        if (PHP_VERSION_ID >= 80000) {
+            yield 'Model with attributes' => [AnnotatedCategory::class];
+        } elseif (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedCategory::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlCategory::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataTimestampableObject
+     */
+    public function testTimestampableMapping(string $className): void
+    {
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Timestampable');
+        $config = $this->cache->getItem($cacheId)->get();
+
+        static::assertArrayHasKey('create', $config);
+        static::assertSame('created', $config['create'][0]);
+        static::assertArrayHasKey('update', $config);
+        static::assertSame('updated', $config['update'][0]);
+        static::assertArrayHasKey('change', $config);
         $onChange = $config['change'][0];
 
-        $this->assertEquals('changed', $onChange['field']);
-        $this->assertEquals('title', $onChange['trackedField']);
-        $this->assertEquals('Test', $onChange['value']);
+        static::assertSame('changed', $onChange['field']);
+        static::assertSame('title', $onChange['trackedField']);
+        static::assertSame('Test', $onChange['value']);
+    }
+
+    public function testTimestampableXmlMapping(): void
+    {
+        $className = Timestampable::class;
+
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Timestampable');
+        $config = $this->cache->getItem($cacheId)->get();
+
+        static::assertArrayHasKey('create', $config);
+        static::assertSame('created', $config['create'][0]);
+        static::assertArrayHasKey('update', $config);
+        static::assertSame('updated', $config['update'][0]);
+        static::assertArrayHasKey('change', $config);
+        $onChange = $config['change'][0];
+
+        static::assertSame('published', $onChange['field']);
+        static::assertSame('status.title', $onChange['trackedField']);
+        static::assertSame('Published', $onChange['value']);
     }
 }

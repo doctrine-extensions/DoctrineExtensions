@@ -1,15 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 /**
- * MaterializedPath Trait
+ * Trait for objects in a materialized path tree.
+ *
+ *  This implementation does not provide any mapping configurations.
  *
  * @author Steffen Roßkamp <steffen.rosskamp@gimmickmedia.de>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 trait MaterializedPath
 {
@@ -17,29 +25,31 @@ trait MaterializedPath
      * @var string
      */
     protected $path;
+
     /**
-     * @var self
+     * @var self|null
      */
     protected $parent;
+
     /**
      * @var int
      */
     protected $level;
+
     /**
-     * @var Collection|self[]
+     * @var Collection<int, self>|self[]|null
      */
     protected $children;
+
     /**
      * @var string
      */
     protected $hash;
 
     /**
-     * @param self $parent
-     *
      * @return self
      */
-    public function setParent(self $parent = null)
+    public function setParent(?self $parent = null)
     {
         $this->parent = $parent;
 
@@ -103,7 +113,7 @@ trait MaterializedPath
     }
 
     /**
-     * @param Collection|self[] $children
+     * @param Collection<int, self>|self[] $children
      *
      * @return self
      */
@@ -115,10 +125,10 @@ trait MaterializedPath
     }
 
     /**
-     * @return Collection|self[]
+     * @return Collection<int, self>|self[]
      */
     public function getChildren()
     {
-        return $this->children = $this->children ?: new ArrayCollection();
+        return $this->children ??= new ArrayCollection();
     }
 }

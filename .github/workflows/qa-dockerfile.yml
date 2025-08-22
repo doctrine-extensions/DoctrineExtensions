@@ -1,0 +1,38 @@
+name: "Quality Assurance"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".docker/php/Dockerfile"
+      - "compose.yaml"
+  pull_request:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  lint-dockerfile:
+    name: Hadolint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ".docker/php/Dockerfile"
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build containers with Docker Compose
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build "php" container
+        uses: isbang/compose-action@v2.2.0
+        with:
+          compose-file: "./compose.yaml"
+          services: |
+            php

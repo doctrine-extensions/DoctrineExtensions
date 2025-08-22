@@ -1,27 +1,30 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Timestampable\Fixture\SupperClassExtension;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Timestampable\Fixture\SupperClassExtension;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ProtectedPropertySupperclassTest extends BaseTestCaseORM
+final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    public const SUPERCLASS = 'Timestampable\\Fixture\\SupperClassExtension';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,10 +35,10 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $evm->addEventSubscriber($translatableListener);
         $evm->addEventSubscriber(new TimestampableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testProtectedProperty()
+    public function testProtectedProperty(): void
     {
         $test = new SupperClassExtension();
         $test->setName('name');
@@ -45,18 +48,18 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo = $this->em->getRepository(Translation::class);
         $translations = $repo->findTranslations($test);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
-        $this->assertNotNull($test->getCreatedAt());
+        static::assertNotNull($test->getCreatedAt());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TRANSLATION,
-            self::SUPERCLASS,
+            Translation::class,
+            SupperClassExtension::class,
         ];
     }
 }

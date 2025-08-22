@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
-use SimpleXMLElement;
 
 /**
  * The mapping XmlDriver abstract class, defines the
@@ -13,7 +19,6 @@ use SimpleXMLElement;
  *
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class Xml extends File
 {
@@ -35,7 +40,7 @@ abstract class Xml extends File
      *
      * @return string
      */
-    protected function _getAttribute(SimpleXmlElement $node, $attributeName)
+    protected function _getAttribute(\SimpleXMLElement $node, $attributeName)
     {
         $attributes = $node->attributes();
 
@@ -50,7 +55,7 @@ abstract class Xml extends File
      *
      * @return bool
      */
-    protected function _getBooleanAttribute(SimpleXmlElement $node, $attributeName)
+    protected function _getBooleanAttribute(\SimpleXMLElement $node, $attributeName)
     {
         $rawValue = strtolower($this->_getAttribute($node, $attributeName));
         if ('1' === $rawValue || 'true' === $rawValue) {
@@ -59,6 +64,7 @@ abstract class Xml extends File
         if ('0' === $rawValue || 'false' === $rawValue) {
             return false;
         }
+
         throw new InvalidMappingException(sprintf("Attribute %s must have a valid boolean value, '%s' found", $attributeName, $this->_getAttribute($node, $attributeName)));
     }
 
@@ -68,22 +74,23 @@ abstract class Xml extends File
      *
      * @param string $attributeName
      *
-     * @return string
+     * @return bool
      */
-    protected function _isAttributeSet(SimpleXmlElement $node, $attributeName)
+    protected function _isAttributeSet(\SimpleXMLElement $node, $attributeName)
     {
         $attributes = $node->attributes();
 
         return isset($attributes[$attributeName]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         $result = [];
-        $xmlElement = simplexml_load_file($file);
+        // We avoid calling `simplexml_load_file()` in order to prevent file operations in libXML.
+        // If `libxml_disable_entity_loader(true)` is called before, `simplexml_load_file()` fails,
+        // that's why we use `simplexml_load_string()` instead.
+        // @see https://bugs.php.net/bug.php?id=62577.
+        $xmlElement = simplexml_load_string(file_get_contents($file));
         $xmlElement = $xmlElement->children(self::DOCTRINE_NAMESPACE_URI);
 
         if (isset($xmlElement->entity)) {

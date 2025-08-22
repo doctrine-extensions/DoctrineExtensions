@@ -1,28 +1,32 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue138\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue138\Article;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue138Test extends BaseTestCaseORM
+final class Issue138Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Translatable\\Fixture\\Issue138\\Article';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-    public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
-
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {
@@ -35,37 +39,35 @@ class Issue138Test extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIssue138()
+    public function testIssue138(): void
     {
         $this->populate();
-        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
+        $dql = 'SELECT a FROM '.Article::class.' a';
         $dql .= " WHERE a.title LIKE '%foo%'";
         $q = $this->em->createQuery($dql);
-        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
 
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
-        //die($q->getSQL());
+        // die($q->getSQL());
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
-        $this->assertEquals('Food', $result[0]['title']);
+        static::assertCount(1, $result);
+        static::assertSame('Food', $result[0]['title']);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::TRANSLATION,
+            Article::class,
+            Translation::class,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
-        $repo = $this->em->getRepository(self::ARTICLE);
-
         $food = new Article();
         $food->setTitle('Food');
         $food->setTitleTest('about food');

@@ -23,7 +23,7 @@ begin the second one which in turn would lock the third one if there would be an
 
 **NOTE:** it is not enough to simply have a transaction.
 
-So how we can achieve this? The simplest solution is [pessimistic locking](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/transactions-and-concurrency.html#pessimistic-locking) which is supported by ORM.
+So how we can achieve this? The simplest solution is [pessimistic locking](https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/transactions-and-concurrency.html#pessimistic-locking) which is supported by ORM.
 
 So how we can use it correctly to maintain our transactions safe from one another. Lets say we have two entity types in
 our application:
@@ -36,7 +36,7 @@ if a category is being moved, inserted or removed.
 
 To start with, I'll make the simple definitions of these two entities:
 
-``` php
+```php
 <?php
 
 namespace App\Entity;
@@ -75,7 +75,7 @@ class Shop
 
 It should have owner and so many more attributes, but lets keep it simple. Here follows Category:
 
-``` php
+```php
 <?php
 
 namespace App\Entity;
@@ -180,7 +180,7 @@ might be available only in next versions.
 
 Now everytime we do **insert**, **move** or **remove** actions for Category:
 
-``` php
+```php
 <?php
 
 use Doctrine\DBAL\LockMode;

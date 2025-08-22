@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\LoggableWithEmbedded" table="loggables_with_embedded">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <embedded name="embedded" class="Gedmo\Tests\Mapping\Fixture\Xml\Embedded">
+            <gedmo:versioned/>
+        </embedded>
+        <field name="title" type="string" length="128">
+            <gedmo:versioned/>
+        </field>
+        <many-to-one field="status" target-entity="Status">
+            <join-column name="status_id" referenced-column-name="id"/>
+            <gedmo:versioned/>
+        </many-to-one>
+        <gedmo:loggable log-entry-class="Gedmo\Loggable\Entity\LogEntry"/>
+    </entity>
+</doctrine-mapping>

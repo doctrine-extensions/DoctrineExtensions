@@ -1,25 +1,37 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tool;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
+
 /**
- * Object wrapper interface
+ * Interface for a wrapper of a managed object.
+ *
+ * @template-covariant TClassMetadata of ClassMetadata<TObject>
+ * @template-covariant TObject        of object
+ * @template-covariant TObjectManager of ObjectManager
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 interface WrapperInterface
 {
     /**
-     * Get currently wrapped object
-     * etc.: entity, document
+     * Get the currently wrapped object.
      *
-     * @return object
+     * @return TObject
      */
     public function getObject();
 
     /**
-     * Extract property value from object
+     * Retrieves a property's value from the wrapped object.
      *
      * @param string $property
      *
@@ -28,54 +40,62 @@ interface WrapperInterface
     public function getPropertyValue($property);
 
     /**
-     * Set the property
+     * Sets a property's value on the wrapped object.
      *
      * @param string $property
      * @param mixed  $value
      *
-     * @return \Gedmo\Tool\WrapperInterface
+     * @return $this
      */
     public function setPropertyValue($property, $value);
 
     /**
-     * Populates the object with given property values
+     * @deprecated since gedmo/doctrine-extensions 3.5 and to be removed in version 4.0.
      *
-     * @return static
+     * Populates the wrapped object with the given property values.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return $this
      */
     public function populate(array $data);
 
     /**
-     * Checks if identifier is valid
+     * Checks if the identifier is valid.
      *
      * @return bool
      */
     public function hasValidIdentifier();
 
     /**
-     * Get metadata
+     * Get the object metadata.
      *
-     * @return object
+     * @return TClassMetadata
      */
     public function getMetadata();
 
     /**
-     * Get the object identifier, single or composite
+     * Get the object identifier, single or composite.
      *
      * @param bool $single
      *
-     * @return array|mixed
+     * @return array<string, mixed>|mixed Array if a composite value, otherwise a single scalar
+     *
+     * @todo Uncomment the second parameter for 4.0
      */
-    public function getIdentifier($single = true);
+    public function getIdentifier($single = true/* , bool $flatten = false */);
 
     /**
-     * Get root object class name
+     * Get the root object class name.
      *
      * @return string
+     *
+     * @phpstan-return class-string
      */
     public function getRootObjectName();
 
     /**
-     * Chechks if association is embedded
+     * Checks if an association is embedded.
      *
      * @param string $field
      *

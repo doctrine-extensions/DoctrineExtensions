@@ -1,51 +1,53 @@
 <?php
 
-namespace Gedmo\Loggable;
+declare(strict_types=1);
 
-use Doctrine\Common\EventManager;
-use Loggable\Fixture\Entity\Address;
-use Loggable\Fixture\Entity\Article;
-use Loggable\Fixture\Entity\Comment;
-use Loggable\Fixture\Entity\Geo;
-use Loggable\Fixture\Entity\GeoLocation;
-use Loggable\Fixture\Entity\RelatedArticle;
-use Tool\BaseTestCaseORM;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Loggable;
+
+use Doctrine\DBAL\Types\ArrayType;
+use Gedmo\Loggable\Entity\LogEntry;
+use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
+use Gedmo\Loggable\Loggable;
+use Gedmo\Loggable\LoggableListener;
+use Gedmo\Tests\Loggable\Fixture\Entity\Address;
+use Gedmo\Tests\Loggable\Fixture\Entity\Article;
+use Gedmo\Tests\Loggable\Fixture\Entity\Comment;
+use Gedmo\Tests\Loggable\Fixture\Entity\Composite;
+use Gedmo\Tests\Loggable\Fixture\Entity\CompositeRelation;
+use Gedmo\Tests\Loggable\Fixture\Entity\Geo;
+use Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation;
+use Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment as CommentLog;
+use Gedmo\Tests\Loggable\Fixture\Entity\RelatedArticle;
+use Gedmo\Tests\TestActorProvider;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for loggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class LoggableEntityTest extends BaseTestCaseORM
+abstract class LoggableEntityTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Loggable\Fixture\Entity\Article';
-    public const COMMENT = 'Loggable\Fixture\Entity\Comment';
-    public const RELATED_ARTICLE = 'Loggable\Fixture\Entity\RelatedArticle';
-    public const COMMENT_LOG = 'Loggable\Fixture\Entity\Log\Comment';
+    /**
+     * @var LoggableListener<Loggable|object>
+     */
+    protected LoggableListener $listener;
 
-    private $articleId;
-    private $LoggableListener;
-
-    protected function setUp(): void
+    public static function setUpBeforeClass(): void
     {
-        parent::setUp();
-
-        $evm = new EventManager();
-        $this->LoggableListener = new LoggableListener();
-        $this->LoggableListener->setUsername('jules');
-        $evm->addEventSubscriber($this->LoggableListener);
-
-        $this->em = $this->getMockSqliteEntityManager($evm);
+        if (!class_exists(ArrayType::class)) {
+            static::markTestSkipped('The loggable extension is not compatible with doctrine/dbal:>=4.0');
+        }
     }
 
-    /**
-     * @test
-     */
-    public function shouldHandleClonedEntity()
+    public function testShouldHandleClonedEntity(): void
     {
         $art0 = new Article();
         $art0->setTitle('Title');
@@ -58,19 +60,19 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->persist($art1);
         $this->em->flush();
 
-        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+        $logRepo = $this->em->getRepository(LogEntry::class);
         $logs = $logRepo->findAll();
-        $this->assertSame(2, count($logs));
-        $this->assertSame('create', $logs[0]->getAction());
-        $this->assertSame('create', $logs[1]->getAction());
-        $this->assertTrue($logs[0]->getObjectId() !== $logs[1]->getObjectId());
+        static::assertCount(2, $logs);
+        static::assertSame('create', $logs[0]->getAction());
+        static::assertSame('create', $logs[1]->getAction());
+        static::assertNotSame($logs[0]->getObjectId(), $logs[1]->getObjectId());
     }
 
-    public function testLoggable()
+    public function testLoggable(): void
     {
-        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
-        $articleRepo = $this->em->getRepository(self::ARTICLE);
-        $this->assertCount(0, $logRepo->findAll());
+        $logRepo = $this->em->getRepository(LogEntry::class);
+        $articleRepo = $this->em->getRepository(Article::class);
+        static::assertCount(0, $logRepo->findAll());
 
         $art0 = new Article();
         $art0->setTitle('Title');
@@ -80,15 +82,15 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
-        $this->assertNotNull($log);
-        $this->assertEquals('create', $log->getAction());
-        $this->assertEquals(get_class($art0), $log->getObjectClass());
-        $this->assertEquals('jules', $log->getUsername());
-        $this->assertEquals(1, $log->getVersion());
+        static::assertNotNull($log);
+        static::assertSame('create', $log->getAction());
+        static::assertSame(get_class($art0), $log->getObjectClass());
+        static::assertSame('jules', $log->getUsername());
+        static::assertSame(1, $log->getVersion());
         $data = $log->getData();
-        $this->assertCount(1, $data);
-        $this->assertArrayHasKey('title', $data);
-        $this->assertEquals($data['title'], 'Title');
+        static::assertCount(1, $data);
+        static::assertArrayHasKey('title', $data);
+        static::assertSame('Title', $data['title']);
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);
@@ -99,7 +101,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->clear();
 
         $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
-        $this->assertEquals('update', $log->getAction());
+        static::assertSame('update', $log->getAction());
 
         // test delete
         $article = $articleRepo->findOneBy(['title' => 'New']);
@@ -108,65 +110,221 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->clear();
 
         $log = $logRepo->findOneBy(['version' => 3, 'objectId' => 1]);
-        $this->assertEquals('remove', $log->getAction());
-        $this->assertNull($log->getData());
+        static::assertSame('remove', $log->getAction());
+        static::assertNull($log->getData());
     }
 
-    public function testVersionControl()
+    public function testLoggableWithActorProvider(): void
+    {
+        $this->listener->setActorProvider(new TestActorProvider('testactor'));
+
+        $logRepo = $this->em->getRepository(LogEntry::class);
+        $articleRepo = $this->em->getRepository(Article::class);
+        static::assertCount(0, $logRepo->findAll());
+
+        $art0 = new Article();
+        $art0->setTitle('Title');
+
+        $this->em->persist($art0);
+        $this->em->flush();
+
+        $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
+
+        static::assertNotNull($log);
+        static::assertSame('create', $log->getAction());
+        static::assertSame(get_class($art0), $log->getObjectClass());
+        static::assertSame('testactor', $log->getUsername());
+        static::assertSame(1, $log->getVersion());
+        $data = $log->getData();
+        static::assertCount(1, $data);
+        static::assertArrayHasKey('title', $data);
+        static::assertSame('Title', $data['title']);
+
+        // test update
+        $article = $articleRepo->findOneBy(['title' => 'Title']);
+
+        $article->setTitle('New');
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
+        static::assertSame('update', $log->getAction());
+
+        // test delete
+        $article = $articleRepo->findOneBy(['title' => 'New']);
+        $this->em->remove($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $log = $logRepo->findOneBy(['version' => 3, 'objectId' => 1]);
+        static::assertSame('remove', $log->getAction());
+        static::assertNull($log->getData());
+    }
+
+    public function testVersionControl(): void
     {
         $this->populate();
-        $commentLogRepo = $this->em->getRepository(self::COMMENT_LOG);
-        $commentRepo = $this->em->getRepository(self::COMMENT);
+        /** @var LogEntryRepository<Comment> $commentLogRepo */
+        $commentLogRepo = $this->em->getRepository(CommentLog::class);
+        $commentRepo = $this->em->getRepository(Comment::class);
 
         $comment = $commentRepo->find(1);
-        $this->assertEquals('m-v5', $comment->getMessage());
-        $this->assertEquals('s-v3', $comment->getSubject());
-        $this->assertEquals(2, $comment->getArticle()->getId());
+        static::assertInstanceOf(Comment::class, $comment);
+        static::assertSame('m-v5', $comment->getMessage());
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame(2, $comment->getArticle()->getId());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
-        $this->assertEquals('s-v3', $comment->getSubject());
-        $this->assertEquals('m-v2', $comment->getMessage());
-        $this->assertEquals(1, $comment->getArticle()->getId());
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('m-v2', $comment->getMessage());
+        static::assertSame(1, $comment->getArticle()->getId());
         $this->em->persist($comment);
         $this->em->flush();
 
         // test get log entries
         $logEntries = $commentLogRepo->getLogEntries($comment);
-        $this->assertCount(6, $logEntries);
+        static::assertCount(6, $logEntries);
         $latest = $logEntries[0];
-        $this->assertEquals('update', $latest->getAction());
+        static::assertSame('update', $latest->getAction());
     }
 
-    public function testLogEmbedded()
+    public function testLogEmbedded(): void
     {
         $address = $this->populateEmbedded();
-
-        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+        /** @var LogEntryRepository<Address> $logRepo */
+        $logRepo = $this->em->getRepository(LogEntry::class);
 
         $logEntries = $logRepo->getLogEntries($address);
 
-        $this->assertCount(4, $logEntries);
-        $this->assertCount(1, $logEntries[0]->getData());
-        $this->assertCount(2, $logEntries[1]->getData());
-        $this->assertCount(3, $logEntries[2]->getData());
-        $this->assertCount(5, $logEntries[3]->getData());
+        static::assertCount(4, $logEntries);
+        static::assertCount(1, $logEntries[0]->getData());
+        static::assertCount(2, $logEntries[1]->getData());
+        static::assertCount(3, $logEntries[2]->getData());
+        static::assertCount(5, $logEntries[3]->getData());
     }
 
-    protected function getUsedEntityFixtures()
+    public function testComposite(): void
+    {
+        $logRepo = $this->em->getRepository(LogEntry::class);
+        $compositeRepo = $this->em->getRepository(Composite::class);
+        static::assertCount(0, $logRepo->findAll());
+
+        $compositeIds = [1, 2];
+
+        $cmp = new Composite(...$compositeIds);
+        $cmp->setTitle('Title2');
+
+        $this->em->persist($cmp);
+        $this->em->flush();
+
+        $cmpId = sprintf('%s %s', ...$compositeIds);
+
+        $log = $logRepo->findOneBy(['objectId' => $cmpId]);
+
+        static::assertNotNull($log);
+        static::assertSame('create', $log->getAction());
+        static::assertSame(get_class($cmp), $log->getObjectClass());
+        static::assertSame('jules', $log->getUsername());
+        static::assertSame(1, $log->getVersion());
+        $data = $log->getData();
+        static::assertCount(1, $data);
+        static::assertArrayHasKey('title', $data);
+        static::assertSame($data['title'], 'Title2');
+
+        // test update
+        $composite = $compositeRepo->findOneBy(['title' => 'Title2']);
+
+        $composite->setTitle('New');
+        $this->em->persist($composite);
+        $this->em->flush();
+        $this->em->clear();
+
+        $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $cmpId]);
+        static::assertSame('update', $log->getAction());
+
+        // test delete
+        $composite = $compositeRepo->findOneBy(['title' => 'New']);
+        $this->em->remove($composite);
+        $this->em->flush();
+        $this->em->clear();
+
+        $log = $logRepo->findOneBy(['version' => 3, 'objectId' => $cmpId]);
+        static::assertSame('remove', $log->getAction());
+        static::assertNull($log->getData());
+    }
+
+    public function testCompositeRelation(): void
+    {
+        $logRepo = $this->em->getRepository(LogEntry::class);
+        $compositeRepo = $this->em->getRepository(CompositeRelation::class);
+        static::assertCount(0, $logRepo->findAll());
+
+        $art0 = new Article();
+        $art0->setTitle('Title0');
+        $art1 = new Article();
+        $art1->setTitle('Title1');
+        $cmp0 = new CompositeRelation($art0, $art1);
+        $cmp0->setTitle('Title2');
+
+        $this->em->persist($art0);
+        $this->em->persist($art1);
+        $this->em->persist($cmp0);
+        $this->em->flush();
+
+        $cmpId = sprintf('%s %s', $art0->getId(), $art1->getId());
+
+        $log = $logRepo->findOneBy(['objectId' => $cmpId]);
+
+        static::assertNotNull($log);
+        static::assertSame('create', $log->getAction());
+        static::assertSame(get_class($cmp0), $log->getObjectClass());
+        static::assertSame('jules', $log->getUsername());
+        static::assertSame(1, $log->getVersion());
+        $data = $log->getData();
+        static::assertCount(1, $data);
+        static::assertArrayHasKey('title', $data);
+        static::assertSame($data['title'], 'Title2');
+
+        // test update
+        $composite = $compositeRepo->findOneBy(['title' => 'Title2']);
+
+        $composite->setTitle('New');
+        $this->em->persist($composite);
+        $this->em->flush();
+        $this->em->clear();
+
+        $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $cmpId]);
+        static::assertSame('update', $log->getAction());
+
+        // test delete
+        $composite = $compositeRepo->findOneBy(['title' => 'New']);
+        $this->em->remove($composite);
+        $this->em->flush();
+        $this->em->clear();
+
+        $log = $logRepo->findOneBy(['version' => 3, 'objectId' => $cmpId]);
+        static::assertSame('remove', $log->getAction());
+        static::assertNull($log->getData());
+    }
+
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
-            self::COMMENT,
-            self::COMMENT_LOG,
-            self::RELATED_ARTICLE,
-            'Gedmo\Loggable\Entity\LogEntry',
-            'Loggable\Fixture\Entity\Address',
-            'Loggable\Fixture\Entity\Geo',
+            Article::class,
+            Comment::class,
+            CommentLog::class,
+            RelatedArticle::class,
+            Composite::class,
+            CompositeRelation::class,
+            LogEntry::class,
+            Address::class,
+            Geo::class,
         ];
     }
 
-    private function populateEmbedded()
+    private function populateEmbedded(): Address
     {
         $address = new Address();
         $address->setCity('city-v1');
@@ -199,7 +357,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         return $address;
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new RelatedArticle();
         $article->setTitle('a1-t-v1');

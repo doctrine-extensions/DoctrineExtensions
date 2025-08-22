@@ -1,0 +1,32 @@
+services:
+  php:
+    build:
+      context: .
+      target: php
+      dockerfile: ./.docker/php/Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.4-cli}
+    volumes:
+      - .:/var/www
+    working_dir: /var/www
+    environment:
+      MONGODB_SERVER: 'mongodb://mongodb:27017'
+    tty: true
+    stdin_open: true
+    init: true
+
+  mysql:
+    image: mysql:8.0
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h mysql --user=root --password=$${MYSQL_ROOT_PASSWORD} -e status"]
+      interval: 10s
+      timeout: 2s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: de_root_password
+      MYSQL_DATABASE: de_testing
+      MYSQL_USER: de_user
+      MYSQL_PASSWORD: de_password
+
+  mongodb:
+    image: mongo

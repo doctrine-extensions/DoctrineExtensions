@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\User" table="users">
+        <indexes>
+            <index name="search_idx" columns="username"/>
+        </indexes>
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+        <field name="password" type="string" column="password" length="32">
+            <gedmo:translatable/>
+        </field>
+        <field name="username" type="string" column="username" length="128">
+            <gedmo:translatable/>
+        </field>
+        <field name="company" type="string" column="company" length="128" nullable="true">
+            <gedmo:translatable fallback="true"/>
+        </field>
+        <gedmo:translation entity="Gedmo\Tests\Translatable\Fixture\PersonTranslation" locale="localeField"/>
+    </entity>
+</doctrine-mapping>

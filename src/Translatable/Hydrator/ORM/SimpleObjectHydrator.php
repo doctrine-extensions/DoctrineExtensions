@@ -1,8 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Hydrator\ORM;
 
 use Doctrine\ORM\Internal\Hydration\SimpleObjectHydrator as BaseSimpleObjectHydrator;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Tool\ORM\Hydration\EntityManagerRetriever;
+use Gedmo\Tool\ORM\Hydration\HydratorCompat;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -12,24 +22,23 @@ use Gedmo\Translatable\TranslatableListener;
  * of the fields
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class SimpleObjectHydrator extends BaseSimpleObjectHydrator
 {
+    use EntityManagerRetriever;
+    use HydratorCompat;
+
     /**
      * State of skipOnLoad for listener between hydrations
      *
      * @see SimpleObjectHydrator::prepare()
      * @see SimpleObjectHydrator::cleanup()
-     *
-     * @var bool
      */
-    private $savedSkipOnLoad;
+    private ?bool $savedSkipOnLoad = null;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function prepare()
+    protected function doPrepareWithCompat(): void
     {
         $listener = $this->getTranslatableListener();
         $this->savedSkipOnLoad = $listener->isSkipOnLoad();
@@ -37,42 +46,30 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
         parent::prepare();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function cleanup()
+    protected function doCleanupWithCompat(): void
     {
         parent::cleanup();
         $listener = $this->getTranslatableListener();
-        $listener->setSkipOnLoad(null !== $this->savedSkipOnLoad ? $this->savedSkipOnLoad : false);
+        $listener->setSkipOnLoad($this->savedSkipOnLoad ?? false);
     }
 
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws RuntimeException if listener is not found
      *
      * @return TranslatableListener
      */
     protected function getTranslatableListener()
     {
-        $translatableListener = null;
-        foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
-            foreach ($listeners as $hash => $listener) {
+        foreach ($this->getEntityManager()->getEventManager()->getAllListeners() as $listeners) {
+            foreach ($listeners as $listener) {
                 if ($listener instanceof TranslatableListener) {
-                    $translatableListener = $listener;
-                    break;
+                    return $listener;
                 }
             }
-            if ($translatableListener) {
-                break;
-            }
         }
 
-        if (is_null($translatableListener)) {
-            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
-        }
-
-        return $translatableListener;
+        throw new RuntimeException('The translation listener could not be found');
     }
 }

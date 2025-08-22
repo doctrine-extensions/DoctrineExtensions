@@ -1,25 +1,29 @@
 <?php
 
-namespace Wrapper;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Wrapper;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Wrapper\Fixture\Document\Article;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
-use Tool\BaseTestCaseMongoODM;
-use Wrapper\Fixture\Document\Article;
 
 /**
  * Mongo Document wrapper tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
+final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Wrapper\\Fixture\\Document\\Article';
-    private $articleId;
+    private ?string $articleId = null;
 
     protected function setUp(): void
     {
@@ -28,66 +32,66 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         $this->populate();
     }
 
-    public function testManaged()
+    public function testManaged(): void
     {
-        $test = $this->dm->find(self::ARTICLE, $this->articleId);
-        $this->assertInstanceOf(self::ARTICLE, $test);
+        $test = $this->dm->find(Article::class, $this->articleId);
+        static::assertInstanceOf(Article::class, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        $this->assertEquals($this->articleId, $wrapped->getIdentifier());
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame($this->articleId, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
         $wrapped->setPropertyValue('title', 'changed');
-        $this->assertEquals('changed', $wrapped->getPropertyValue('title'));
+        static::assertSame('changed', $wrapped->getPropertyValue('title'));
 
-        $this->assertTrue($wrapped->hasValidIdentifier());
+        static::assertTrue($wrapped->hasValidIdentifier());
     }
 
-    public function testProxy()
+    public function testProxy(): void
     {
         $this->dm->clear();
-        $test = $this->dm->getReference(self::ARTICLE, $this->articleId);
-        $this->assertStringStartsWith('Proxy', get_class($test));
-        $this->assertInstanceOf(self::ARTICLE, $test);
+        $test = $this->dm->getReference(Article::class, $this->articleId);
+        static::assertStringStartsWith('Proxy', get_class($test));
+        static::assertInstanceOf(Article::class, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         $id = $wrapped->getIdentifier(false);
-        $this->assertEquals($this->articleId, $id);
+        static::assertSame($this->articleId, $id);
 
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
-    public function testDetachedEntity()
+    public function testDetachedEntity(): void
     {
-        $test = $this->dm->find(self::ARTICLE, $this->articleId);
+        $test = $this->dm->find(Article::class, $this->articleId);
         $this->dm->clear();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        $this->assertEquals($this->articleId, $wrapped->getIdentifier());
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame($this->articleId, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
-    public function testDetachedProxy()
+    public function testDetachedProxy(): void
     {
-        $test = $this->dm->getReference(self::ARTICLE, $this->articleId);
+        $test = $this->dm->getReference(Article::class, $this->articleId);
         $this->dm->clear();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        $this->assertEquals($this->articleId, $wrapped->getIdentifier());
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame($this->articleId, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
-    public function testSomeFunctions()
+    public function testSomeFunctions(): void
     {
         $test = new Article();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        $wrapped->populate(['title' => 'test']);
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        $test->setTitle('test');
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
 
-        $this->assertFalse($wrapped->hasValidIdentifier());
+        static::assertFalse($wrapped->hasValidIdentifier());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $test = new Article();
         $test->setTitle('test');

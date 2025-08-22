@@ -1,66 +1,100 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Blameable;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
+use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tool\ActorProviderInterface;
 
 /**
  * The Blameable listener handles the update of
  * dates on creation and update.
  *
+ * @phpstan-extends AbstractTrackingListener<array, BlameableAdapter>
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class BlameableListener extends AbstractTrackingListener
 {
+    protected ?ActorProviderInterface $actorProvider = null;
+
+    /**
+     * @var mixed
+     */
     protected $user;
 
     /**
      * Get the user value to set on a blameable field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata<object> $meta
+     * @param string                $field
+     * @param BlameableAdapter      $eventAdapter
      *
      * @return mixed
      */
     public function getFieldValue($meta, $field, $eventAdapter)
     {
+        $actor = $this->actorProvider instanceof ActorProviderInterface ? $this->actorProvider->getActor() : $this->user;
+
         if ($meta->hasAssociation($field)) {
-            if (null !== $this->user && !is_object($this->user)) {
+            if (null !== $actor && !is_object($actor)) {
                 throw new InvalidArgumentException('Blame is reference, user must be an object');
             }
 
-            return $this->user;
+            return $actor;
         }
 
-        // ok so its not an association, then it is a string
-        if (is_object($this->user)) {
-            if (method_exists($this->user, 'getUsername')) {
-                return (string) $this->user->getUsername();
+        // ok so it's not an association, then it is a string, or an object
+        if (is_object($actor)) {
+            if (method_exists($actor, 'getUserIdentifier')) {
+                return (string) $actor->getUserIdentifier();
             }
-            if (method_exists($this->user, '__toString')) {
-                return $this->user->__toString();
+            if (method_exists($actor, 'getUsername')) {
+                return (string) $actor->getUsername();
             }
-            throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUsername or __toString');
+            if (method_exists($actor, '__toString')) {
+                return $actor->__toString();
+            }
+
+            throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUserIdentifier, getUsername or __toString');
         }
 
-        return $this->user;
+        return $actor;
     }
 
     /**
-     * Set a user value to return
+     * Set an actor provider for the user value.
+     */
+    public function setActorProvider(ActorProviderInterface $actorProvider): void
+    {
+        $this->actorProvider = $actorProvider;
+    }
+
+    /**
+     * Set a user value to return.
+     *
+     * If an actor provider is also provided, it will take precedence over this value.
      *
      * @param mixed $user
+     *
+     * @return void
      */
     public function setUserValue($user)
     {
         $this->user = $user;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getNamespace()
     {
         return __NAMESPACE__;

@@ -1,30 +1,33 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Article;
+use Gedmo\Tests\Translatable\Fixture\Comment;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translation query walker
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue135Test extends BaseTestCaseORM
+final class Issue135Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Translatable\\Fixture\\Article';
-    public const COMMENT = 'Translatable\\Fixture\\Comment';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-
-    public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
-
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {
@@ -36,15 +39,15 @@ class Issue135Test extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testIssue135()
+    public function testIssue135(): void
     {
         $query = $this->em->createQueryBuilder();
         $query->select('a')
-            ->from(self::ARTICLE, 'a')
+            ->from(Article::class, 'a')
             ->add('where', $query->expr()->not($query->expr()->eq('a.title', ':title')))
             ->setParameter('title', 'NA')
         ;
@@ -52,23 +55,14 @@ class Issue135Test extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setTranslationFallback(true);
         $query = $query->getQuery();
-        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
 
         $count = 0;
-        str_replace("locale = 'en'", '', $query->getSql(), $count);
-        $this->assertEquals(0, $count);
+        str_replace("locale = 'en'", '', $query->getSQL(), $count);
+        static::assertSame(0, $count);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
-        ];
-    }
-
-    public function populate()
+    public function populate(): void
     {
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -99,5 +93,14 @@ class Issue135Test extends BaseTestCaseORM
         $this->em->persist($text1);
         $this->em->persist($text0);
         $this->em->flush();
+    }
+
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            Article::class,
+            Translation::class,
+            Comment::class,
+        ];
     }
 }

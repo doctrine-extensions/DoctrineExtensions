@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -16,7 +23,8 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * where path separator separates the relative slug
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class RelativeSlugHandler implements SlugHandlerInterface
 {
@@ -35,7 +43,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     /**
      * Used options
      *
-     * @var array
+     * @var array<string, mixed>
      */
     private $usedOptions;
 
@@ -60,14 +68,11 @@ class RelativeSlugHandler implements SlugHandlerInterface
         $this->sluggable = $sluggable;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
         $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
-        $this->usedOptions = $config['handlers'][get_called_class()];
+        $this->usedOptions = $config['handlers'][static::class];
         if (!isset($this->usedOptions['separator'])) {
             $this->usedOptions['separator'] = self::SEPARATOR;
         }
@@ -79,9 +84,6 @@ class RelativeSlugHandler implements SlugHandlerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
@@ -89,18 +91,15 @@ class RelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata<object> $meta
      */
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!$meta->isSingleValuedAssociation($options['relationField'])) {
-            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->name}");
+            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->getName()}");
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
     }
@@ -141,9 +140,6 @@ class RelativeSlugHandler implements SlugHandlerInterface
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handlesUrlization()
     {
         return true;

@@ -1,103 +1,116 @@
 <?php
 
-namespace Gedmo\Mapping;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Tool\BaseTestCaseOM;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Gedmo\Tests\Mapping\Fixture\Xml\User;
+use Gedmo\Tests\Sluggable\Fixture\Article as ArticleEntity;
+use Gedmo\Tests\Sluggable\Fixture\Document\Article as ArticleDocument;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
+use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
 
 /**
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiManagerMappingTest extends BaseTestCaseOM
+final class MultiManagerMappingTest extends BaseTestCaseOM
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
-    private $em1;
+    private EntityManager $em1;
 
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
-    private $em2;
+    private EntityManager $em2;
 
-    /**
-     * @var Doctrine\ODM\MongoDB\DocumentManager
-     */
-    private $dm1;
+    private DocumentManager $dm1;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        // EM with standard annotation mapping
-        $this->em1 = $this->getMockSqliteEntityManager([
-            'Sluggable\Fixture\Article',
+
+        // EM with standard annotation/attribute mapping
+        $this->em1 = $this->getDefaultMockSqliteEntityManager([
+            ArticleEntity::class,
         ]);
-        // EM with yaml and annotation mapping
-        $reader = new AnnotationReader();
-        $annotationDriver = new AnnotationDriver($reader);
 
-        $reader = new AnnotationReader();
-        $annotationDriver2 = new AnnotationDriver($reader);
+        // EM with XML and annotation/attribute mapping
+        if (PHP_VERSION_ID >= 80000) {
+            $annotationDriver = new AttributeDriver([]);
 
-        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
+            $annotationDriver2 = new AttributeDriver([]);
+        } else {
+            $reader = new AnnotationReader();
+            $annotationDriver = new AnnotationDriver($reader);
 
-        $chain = new DriverChain();
-        $chain->addDriver($annotationDriver, 'Translatable\Fixture');
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
+            $reader = new AnnotationReader();
+            $annotationDriver2 = new AnnotationDriver($reader);
+        }
+
+        $xmlDriver = new XmlDriver(__DIR__.'/Driver/Xml', XmlDriver::DEFAULT_FILE_EXTENSION, false);
+
+        $chain = new MappingDriverChain();
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Translatable\Fixture');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
         $chain->addDriver($annotationDriver2, 'Gedmo\Translatable');
 
-        $this->em2 = $this->getMockSqliteEntityManager([
-            'Translatable\Fixture\PersonTranslation',
-            'Mapping\Fixture\Yaml\User',
+        $this->em2 = $this->getDefaultMockSqliteEntityManager([
+            PersonTranslation::class,
+            User::class,
         ], $chain);
-        // DM with standard annotation mapping
+
+        // DM with standard annotation/attribute mapping
         $this->dm1 = $this->getMockDocumentManager('gedmo_extensions_test');
     }
 
-    public function testTwoDiferentManager()
+    public function testTwoDifferentManagers(): void
     {
-        $meta = $this->dm1->getClassMetadata('Sluggable\Fixture\Document\Article');
-        $dmArticle = new \Sluggable\Fixture\Document\Article();
+        // Force metadata class loading.
+        $this->dm1->getClassMetadata(ArticleDocument::class);
+        $dmArticle = new ArticleDocument();
         $dmArticle->setCode('code');
         $dmArticle->setTitle('title');
         $this->dm1->persist($dmArticle);
         $this->dm1->flush();
 
-        $this->assertEquals('title-code', $dmArticle->getSlug());
-        $em1Article = new \Sluggable\Fixture\Article();
+        static::assertSame('title-code', $dmArticle->getSlug());
+        $em1Article = new ArticleEntity();
         $em1Article->setCode('code');
         $em1Article->setTitle('title');
         $this->em1->persist($em1Article);
         $this->em1->flush();
 
-        $this->assertEquals('title-code', $em1Article->getSlug());
+        static::assertSame('title-code', $em1Article->getSlug());
     }
 
-    public function testTwoSameManagers()
+    public function testTwoSameManagers(): void
     {
-        $em1Article = new \Sluggable\Fixture\Article();
+        $em1Article = new ArticleEntity();
         $em1Article->setCode('code');
         $em1Article->setTitle('title');
         $this->em1->persist($em1Article);
         $this->em1->flush();
 
-        $this->assertEquals('title-code', $em1Article->getSlug());
+        static::assertSame('title-code', $em1Article->getSlug());
 
-        $user = new \Mapping\Fixture\Yaml\User();
+        $user = new User();
         $user->setUsername('user');
         $user->setPassword('secret');
         $this->em2->persist($user);
         $this->em2->flush();
 
-        $this->assertEquals(1, $user->getId());
+        static::assertSame(1, $user->getId());
     }
 }

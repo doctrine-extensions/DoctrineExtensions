@@ -1,6 +1,0 @@
----
-Mapping\Fixture\Yaml\Embedded:
-  type: embeddable
-  fields:
-    subtitle:
-      type: string

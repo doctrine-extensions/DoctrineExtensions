@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Loggable\Mapping\Driver;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
@@ -14,9 +22,12 @@ use Gedmo\Mapping\Driver\File;
  *
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.5, will be removed in version 4.0.
+ *
+ * @internal
  */
-class Yaml extends File implements Driver
+class Yaml extends File
 {
     /**
      * File extension
@@ -25,12 +36,9 @@ class Yaml extends File implements Driver
      */
     protected $_extension = '.dcm.yml';
 
-    /**
-     * {@inheritdoc}
-     */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
@@ -48,9 +56,9 @@ class Yaml extends File implements Driver
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->name}");
+                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
                         // fields cannot be overrided and throws mapping exception
                         $config['versioned'][] = $field;
@@ -62,9 +70,9 @@ class Yaml extends File implements Driver
         if (isset($mapping['attributeOverride'])) {
             foreach ($mapping['attributeOverride'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->name}");
+                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
                         // fields cannot be overrided and throws mapping exception
                         $config['versioned'][] = $field;
@@ -76,9 +84,9 @@ class Yaml extends File implements Driver
         if (isset($mapping['manyToOne'])) {
             foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->name}");
+                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
                         // fields cannot be overrided and throws mapping exception
                         $config['versioned'][] = $field;
@@ -90,9 +98,9 @@ class Yaml extends File implements Driver
         if (isset($mapping['oneToOne'])) {
             foreach ($mapping['oneToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->name}");
+                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
                         // fields cannot be overrided and throws mapping exception
                         $config['versioned'][] = $field;
@@ -104,45 +112,49 @@ class Yaml extends File implements Driver
         if (isset($mapping['embedded'])) {
             foreach ($mapping['embedded'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->name}");
+                            throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
                         // fields cannot be overrided and throws mapping exception
                         $mapping = $this->_getMapping($fieldMapping['class']);
-                        $this->inspectEmbeddedForVersioned($field, $mapping, $config);
+                        $config = $this->inspectEmbeddedForVersioned($field, $mapping, $config);
                     }
                 }
             }
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
+            if ($meta instanceof ClassMetadata && count($meta->getIdentifier()) > 1) {
+                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {
-                throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+                throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->getName()}");
             }
         }
+
+        return $config;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 
     /**
-     * @param string $field
+     * @param array<string, array<string, array<string, mixed>>> $mapping
+     * @param array<string, mixed>                               $config
+     *
+     * @return array<string, mixed>
      */
-    private function inspectEmbeddedForVersioned($field, array $mapping, array &$config)
+    private function inspectEmbeddedForVersioned(string $field, array $mapping, array $config): array
     {
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $property => $fieldMapping) {
                 $config['versioned'][] = $field.'.'.$property;
             }
         }
+
+        return $config;
     }
 }

@@ -1,29 +1,86 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use Doctrine\Deprecations\Deprecation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * Tree annotation for Tree behavioral extension
  *
  * @Annotation
+ *
+ * @NamedArgumentConstructor
+ *
  * @Target("CLASS")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class Tree extends Annotation
+#[\Attribute(\Attribute::TARGET_CLASS)]
+final class Tree implements GedmoAnnotation
 {
-    /** @var string */
-    public $type = 'nested';
+    use ForwardCompatibilityTrait;
 
-    /** @var string */
-    public $activateLocking = false;
+    /**
+     * @phpstan-var 'closure'|'materializedPath'|'nested'
+     */
+    public string $type = 'nested';
 
-    /** @var int */
-    public $lockingTimeout = 3;
+    public bool $activateLocking = false;
 
-    /** @var string */
+    /**
+     * @phpstan-var positive-int
+     */
+    public int $lockingTimeout = 3;
+
+    /**
+     * @var string|null
+     *
+     * @deprecated to be removed in 4.0, unused, configure the property on the TreeRoot annotation instead
+     */
     public $identifierMethod;
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @phpstan-param 'closure'|'materializedPath'|'nested'|null $type
+     */
+    public function __construct(
+        array $data = [],
+        ?string $type = null,
+        bool $activateLocking = false,
+        int $lockingTimeout = 3,
+        ?string $identifierMethod = null
+    ) {
+        if ([] !== $data) {
+            Deprecation::trigger(
+                'gedmo/doctrine-extensions',
+                'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2388',
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
+                __METHOD__
+            );
+
+            $args = func_get_args();
+
+            $this->type = $this->getAttributeValue($data, 'type', $args, 1, $type);
+            $this->activateLocking = $this->getAttributeValue($data, 'activateLocking', $args, 2, $activateLocking);
+            $this->lockingTimeout = $this->getAttributeValue($data, 'lockingTimeout', $args, 3, $lockingTimeout);
+            $this->identifierMethod = $this->getAttributeValue($data, 'identifierMethod', $args, 4, $identifierMethod);
+
+            return;
+        }
+
+        $this->type = $type;
+        $this->activateLocking = $activateLocking;
+        $this->lockingTimeout = $lockingTimeout;
+        $this->identifierMethod = $identifierMethod;
+    }
 }

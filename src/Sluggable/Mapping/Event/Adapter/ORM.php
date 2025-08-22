@@ -1,28 +1,38 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata as EntityClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo as LegacyEntityClassMetadata;
 use Doctrine\ORM\Query;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\Translatable;
 
 /**
  * Doctrine event adapter for ORM adapted
  * for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class ORM extends BaseAdapterORM implements SluggableAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $em = $this->getObjectManager();
+        /** @var EntityWrapper<object> $wrapped */
         $wrapped = AbstractWrapper::wrap($object, $em);
         $qb = $em->createQueryBuilder();
         $qb->select('rec.'.$config['slug'])
@@ -45,12 +55,14 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             if (($ubase || 0 === $ubase) && !$mapping) {
                 $qb->andWhere('rec.'.$config['unique_base'].' = :unique_base');
                 $qb->setParameter(':unique_base', $ubase);
-            } elseif ($ubase && $mapping && in_array($mapping['type'], [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE])) {
+            } elseif ($ubase && $mapping && in_array($mapping['type'], [EntityClassMetadata::ONE_TO_ONE, EntityClassMetadata::MANY_TO_ONE], true)) {
                 $mappedAlias = 'mapped_'.$config['unique_base'];
                 $wrappedUbase = AbstractWrapper::wrap($ubase, $em);
+                $metadata = $wrappedUbase->getMetadata();
+                assert($metadata instanceof EntityClassMetadata || $metadata instanceof LegacyEntityClassMetadata);
                 $qb->innerJoin('rec.'.$config['unique_base'], $mappedAlias);
                 foreach (array_keys($mapping['targetToSourceKeyColumns']) as $i => $mappedKey) {
-                    $mappedProp = $wrappedUbase->getMetadata()->fieldNames[$mappedKey];
+                    $mappedProp = $metadata->getFieldName($mappedKey);
                     $qb->andWhere($qb->expr()->eq($mappedAlias.'.'.$mappedProp, ':assoc'.$i));
                     $qb->setParameter(':assoc'.$i, $wrappedUbase->getPropertyValue($mappedProp));
                 }
@@ -67,15 +79,21 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
                 $qb->setParameter($namedId, $value, $meta->getTypeOfField($namedId));
             }
         }
-        $q = $qb->getQuery();
-        $q->setHydrationMode(Query::HYDRATE_ARRAY);
 
-        return $q->execute();
+        $query = $qb->getQuery();
+        $query->setHydrationMode(Query::HYDRATE_ARRAY);
+        // Force translation walker to look for slug translations to avoid duplicated slugs
+        // TODO: Remove isset when removing support of YAML driver
+        if (isset($config['uniqueOverTranslations']) && $config['uniqueOverTranslations'] && $object instanceof Translatable) {
+            $query->setHint(
+                Query::HINT_CUSTOM_OUTPUT_WALKER,
+                TranslationWalker::class
+            );
+        }
+
+        return $query->getArrayResult();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function replaceRelative($object, array $config, $target, $replacement)
     {
         $em = $this->getObjectManager();
@@ -96,9 +114,6 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
         return $q->execute();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function replaceInverseRelative($object, array $config, $target, $replacement)
     {
         $em = $this->getObjectManager();

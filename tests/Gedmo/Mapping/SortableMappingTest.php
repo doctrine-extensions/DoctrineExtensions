@@ -1,70 +1,81 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
+
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sortable\SortableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Mapping\Fixture\Sortable as AnnotatedSortable;
+use Gedmo\Tests\Mapping\Fixture\Xml\Sortable as XmlSortable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Sortable as YamlSortable;
 
 /**
  * These are mapping tests for sortable extension
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableMappingTest extends BaseTestCaseOM
+final class SortableMappingTest extends ORMMappingTestCase
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var Gedmo\Sortable\SortableListener
-     */
-    private $sortable;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $reader = new AnnotationReader();
-        $annotationDriver = new AnnotationDriver($reader);
+        $listener = new SortableListener();
+        $listener->setCacheItemPool($this->cache);
 
-        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
-
-        $chain = new DriverChain();
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
-
-        $this->sortable = new SortableListener();
-        $this->evm = new EventManager();
-        $this->evm->addEventSubscriber($this->sortable);
-
-        $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Yaml\Sortable',
-            'Mapping\Fixture\SortableGroup',
-        ], $chain);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping()
+    /**
+     * @return \Generator<string, array{class-string}>
+     */
+    public static function dataSortableObject(): \Generator
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Sortable');
-        $config = $this->sortable->getConfiguration($this->em, $meta->name);
+        yield 'Model with XML mapping' => [XmlSortable::class];
 
-        $this->assertArrayHasKey('position', $config);
-        $this->assertEquals('position', $config['position']);
-        $this->assertArrayHasKey('groups', $config);
-        $this->assertCount(3, $config['groups']);
-        $this->assertEquals('grouping', $config['groups'][0]);
-        $this->assertEquals('sortable_group', $config['groups'][1]);
-        $this->assertEquals('sortable_groups', $config['groups'][2]);
+        if (PHP_VERSION_ID >= 80000) {
+            yield 'Model with attributes' => [AnnotatedSortable::class];
+        } elseif (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedSortable::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlSortable::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataSortableObject
+     */
+    public function testSortableMapping(string $className): void
+    {
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Sortable');
+        $config = $this->cache->getItem($cacheId)->get();
+
+        static::assertArrayHasKey('position', $config);
+        static::assertSame('position', $config['position']);
+        static::assertArrayHasKey('groups', $config);
+        static::assertCount(3, $config['groups']);
+        static::assertSame('grouping', $config['groups'][0]);
+        static::assertSame('sortable_group', $config['groups'][1]);
+        static::assertSame('sortable_groups', $config['groups'][2]);
     }
 }

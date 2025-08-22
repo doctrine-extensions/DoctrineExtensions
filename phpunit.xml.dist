@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    bootstrap="./tests/bootstrap.php"
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+>
+    <coverage>
+        <include>
+            <directory>./src</directory>
+        </include>
+    </coverage>
+    <testsuites>
+        <testsuite name="Translatable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Translatable/</directory>
+        </testsuite>
+        <testsuite name="Sluggable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Sluggable/</directory>
+        </testsuite>
+        <testsuite name="Sortable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Sortable/</directory>
+        </testsuite>
+        <testsuite name="Tree Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Tree/</directory>
+        </testsuite>
+        <testsuite name="Timestampable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Timestampable/</directory>
+        </testsuite>
+        <testsuite name="Blameable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Blameable/</directory>
+        </testsuite>
+        <testsuite name="IpTraceable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/IpTraceable/</directory>
+        </testsuite>
+        <testsuite name="Mapping Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Mapping/</directory>
+        </testsuite>
+        <testsuite name="Loggable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Loggable/</directory>
+        </testsuite>
+        <testsuite name="Sortable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Sortable/</directory>
+        </testsuite>
+        <testsuite name="Object wrappers">
+            <directory suffix="Test.php">./tests/Gedmo/Wrapper/</directory>
+        </testsuite>
+        <testsuite name="Translator extension">
+            <directory suffix="Test.php">./tests/Gedmo/Translator/</directory>
+        </testsuite>
+        <testsuite name="SoftDeleteable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/SoftDeleteable/</directory>
+        </testsuite>
+        <testsuite name="Uploadable Extension">
+            <directory suffix="Test.php">./tests/Gedmo/Uploadable/</directory>
+        </testsuite>
+        <testsuite name="ReferenceIntegrity Extension">
+            <directory suffix="Test.php">./tests/Gedmo/ReferenceIntegrity/</directory>
+        </testsuite>
+        <testsuite name="References Extension">
+            <directory suffix="Test.php">./tests/Gedmo/References/</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0" />
+        <env name="MONGODB_SERVER" value="mongodb://mongodb:27017"/>
+    </php>
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+    </listeners>
+</phpunit>

@@ -1,7 +1,19 @@
 <?php
 
-namespace Blameable\Fixture\Entity;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Blameable\Fixture\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -9,117 +21,133 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Article implements Blameable
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
      */
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    private ?string $title = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Blameable\Fixture\Entity\Comment", mappedBy="article")
-     */
-    private $comments;
-
-    /**
-     * @var string
+     * @var Collection<int, Comment>
      *
+     * @ORM\OneToMany(targetEntity="Gedmo\Tests\Blameable\Fixture\Entity\Comment", mappedBy="article")
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
+    private Collection $comments;
+
+    /**
      * @Gedmo\Blameable(on="create")
+     *
      * @ORM\Column(name="created", type="string")
      */
-    private $created;
+    #[ORM\Column(name: 'created', type: Types::STRING)]
+    #[Gedmo\Blameable(on: 'create')]
+    private ?string $created = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="updated", type="string")
+     *
      * @Gedmo\Blameable
      */
-    private $updated;
+    #[Gedmo\Blameable]
+    #[ORM\Column(name: 'updated', type: Types::STRING)]
+    private ?string $updated = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="published", type="string", nullable=true)
+     *
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
-    private $published;
+    #[ORM\Column(name: 'published', type: Types::STRING, nullable: true)]
+    #[Gedmo\Blameable(on: 'change', field: 'type.title', value: 'Published')]
+    private ?string $published = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
      */
-    private $type;
+    #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
+    private ?Type $type = null;
 
-    public function setType($type)
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
+
+    public function setType(?Type $type): void
     {
         $this->type = $type;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function addComment(Comment $comment)
+    public function addComment(Comment $comment): void
     {
         $comment->setArticle($this);
         $this->comments[] = $comment;
     }
 
-    public function getComments()
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    /**
-     * Get created
-     *
-     * @return string $created
-     */
-    public function getCreated()
+    public function getCreated(): ?string
     {
         return $this->created;
     }
 
-    public function setCreated($created)
+    public function setCreated(?string $created): void
     {
         $this->created = $created;
     }
 
-    public function getPublished()
+    public function getPublished(): ?string
     {
         return $this->published;
     }
 
-    public function setPublished($published)
+    public function setPublished(?string $published): void
     {
         $this->published = $published;
     }
 
-    /**
-     * Get updated
-     *
-     * @return string $updated
-     */
-    public function getUpdated()
+    public function getUpdated(): ?string
     {
         return $this->updated;
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(?string $updated): void
     {
         $this->updated = $updated;
     }

@@ -1,32 +1,46 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Blameable\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Blameable Trait, usable with PHP >= 5.4
+ * Trait for blamable objects.
+ *
+ * This implementation provides a mapping configuration for the Doctrine ORM.
  *
  * @author David Buchmann <mail@davidbu.ch>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 trait BlameableEntity
 {
     /**
      * @var string
+     *
      * @Gedmo\Blameable(on="create")
+     *
      * @ORM\Column(nullable=true)
      */
     #[ORM\Column(nullable: true)]
+    #[Gedmo\Blameable(on: 'create')]
     protected $createdBy;
 
     /**
      * @var string
+     *
      * @Gedmo\Blameable(on="update")
+     *
      * @ORM\Column(nullable=true)
      */
     #[ORM\Column(nullable: true)]
+    #[Gedmo\Blameable(on: 'update')]
     protected $updatedBy;
 
     /**

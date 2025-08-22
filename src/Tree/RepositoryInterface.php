@@ -1,58 +1,79 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree;
 
+use Gedmo\Exception\InvalidArgumentException;
+
 /**
- * This interface ensures a consistent api between repositories for the ORM and the ODM.
+ * This interface ensures a consistent API between repositories for the ORM and the ODM.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @template T of object
  */
 interface RepositoryInterface extends RepositoryUtilsInterface
 {
     /**
-     * Get all root nodes
+     * Get all root nodes.
      *
      * @param string $sortByField
      * @param string $direction
      *
-     * @return array
+     * @return iterable<int|string, object>
+     *
+     * @phpstan-return iterable<int|string, T>
      */
     public function getRootNodes($sortByField = null, $direction = 'asc');
 
     /**
-     * Returns an array of nodes suitable for method buildTree
+     * Returns an array of nodes optimized for building a tree.
      *
-     * @param object $node        - Root node
-     * @param bool   $direct      - Obtain direct children?
-     * @param array  $options     - Options
-     * @param bool   $includeNode - Include node in results?
+     * @param object               $node        Root node
+     * @param bool                 $direct      Flag indicating whether only direct children should be retrieved
+     * @param array<string, mixed> $options     Options, see {@see RepositoryUtilsInterface::buildTree()} for supported keys
+     * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array - Array of nodes
+     * @return array<int|string, object>
+     *
+     * @phpstan-param T $node
+     *
+     * @phpstan-return iterable<int|string, T>
      */
     public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false);
 
     /**
-     * Get list of children followed by given $node
+     * Get the list of children for the given node.
      *
-     * @param object               $node        - if null, all tree nodes will be taken
-     * @param bool                 $direct      - true to take only direct children
-     * @param string|string[]|null $sortByField - field name(s) to sort by
-     * @param string               $direction   - sort direction : "ASC" or "DESC"
-     * @param bool                 $includeNode - Include the root node in results?
+     * @param object|null          $node        If null, all tree nodes will be taken
+     * @param bool                 $direct      True to take only direct children
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $includeNode Include the root node in results?
      *
-     * @return array - list of given $node children, null on failure
+     * @return iterable<int|string, object> List of children
+     *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     * @phpstan-param T|null $node
+     *
+     * @phpstan-return iterable<int|string, T>
      */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
     /**
-     * Counts the children of given TreeNode
+     * Counts the children of the given node
      *
-     * @param object $node   - if null counts all records in tree
-     * @param bool   $direct - true to count only direct children
+     * @param object|null $node   The object to count children for; if null, all nodes will be counted
+     * @param bool        $direct Flag indicating whether only direct children should be counted
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException - if input is not valid
+     * @throws InvalidArgumentException if the input is invalid
      *
      * @return int
      */

@@ -1,0 +1,16 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable:
+  type: entity
+  table: soft_deleteables
+  gedmo:
+    soft_deleteable:
+      field_name: deletedAt
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    deletedAt:
+      type: datetime
+      nullable: true

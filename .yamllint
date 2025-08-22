@@ -1,0 +1,16 @@
+ignore: vendor/
+
+extends: default
+
+rules:
+  comments: disable
+  comments-indentation: disable
+  document-start: disable
+  empty-lines:
+    max: 1
+    max-start: 0
+    max-end: 0
+  line-length: disable
+  truthy:
+    allowed-values: ['true', 'false']
+    check-keys: false

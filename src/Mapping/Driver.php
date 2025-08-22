@@ -1,31 +1,50 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as OdmClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata as OrmClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use Gedmo\Exception\InvalidMappingException;
+
 /**
- * The mapping driver abstract class, defines the
- * metadata extraction function common among
- * all drivers used on these extensions.
+ * The mapping driver interface defines the metadata extraction functions
+ * common among all drivers used on these extensions.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 interface Driver
 {
     /**
-     * Read extended metadata configuration for
-     * a single mapped class
+     * Read the extended metadata configuration for a single mapped class.
      *
-     * @param object $meta
+     * @todo In the next major release stop receiving by reference the `$config` parameter and use `array` as return type declaration
+     *
+     * @param ClassMetadata<T>     $meta
+     * @param array<string, mixed> $config
+     *
+     * @throws InvalidMappingException if the mapping configuration is invalid
      *
      * @return void
+     *
+     * @template T of object
+     *
+     * @phpstan-param ClassMetadata<T>&(OdmClassMetadata<T>|OrmClassMetadata<T>) $meta
      */
     public function readExtendedMetadata($meta, array &$config);
 
     /**
-     * Passes in the original driver
+     * Sets the original mapping driver.
      *
-     * @param object $driver
+     * @param MappingDriver $driver
      *
      * @return void
      */

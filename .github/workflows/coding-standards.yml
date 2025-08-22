@@ -1,28 +1,112 @@
 name: "Coding Standards"
 
 on:
-  pull_request: null
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  coding-standards:
-    name: "Coding Standards"
-    runs-on: "ubuntu-20.04"
+  php-coding-standards:
+    name: "PHP-CS-Fixer"
+    runs-on: "ubuntu-latest"
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v4"
 
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
-          php-version: "7.4"
+          php-version: "8.4"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "highest"
 
       - name: "Run PHP-CS-Fixer"
-        run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
+        run: "vendor/bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
 
+  rector:
+    name: "Rector"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Install PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: "none"
+          tools: "composer:v2"
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v3"
+        with:
+          dependency-versions: "highest"
+          composer-options: "--prefer-dist --prefer-stable"
+
+      - name: Rector
+        run: "vendor/bin/rector --no-progress-bar --dry-run"
+
+  composer:
+    name: Composer
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2, composer-normalize:2
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint Composer
+        run: make lint-composer
+
+  lint-xml-files:
+    name: Lint XML files
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install libxml2-utils
+
+      - name: Lint XML files
+        run: make lint-xml
+
+  lint-yaml-files:
+    name: Lint YAML files
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Ruby 3.0
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+
+      - name: Install required gem
+        run: gem install yaml-lint
+
+      - name: Lint YAML files
+        run: make lint-yaml

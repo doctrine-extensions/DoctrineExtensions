@@ -1,7 +1,17 @@
 <?php
 
-namespace Translatable\Fixture;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Fixture;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
@@ -9,89 +19,81 @@ use Gedmo\Translatable\Translatable;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Company implements Translatable
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
+     *
      * @Gedmo\Translatable
      */
-    private $title;
+    #[Gedmo\Translatable]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    private ?string $title = null;
 
     /**
-     * @var CompanyEmbedLink
-     * @ORM\Embedded(class="Translatable\Fixture\CompanyEmbedLink")
+     * @ORM\Embedded(class="Gedmo\Tests\Translatable\Fixture\CompanyEmbedLink")
      */
-    private $link;
+    #[ORM\Embedded(class: CompanyEmbedLink::class)]
+    private CompanyEmbedLink $link;
 
     /**
+     * @var string|null
+     *
      * Used locale to override Translation listener`s locale
      *
      * @Gedmo\Locale
      */
-    private $locale;
+    #[Gedmo\Locale]
+    private ?string $locale = null;
 
     public function __construct()
     {
         $this->link = new CompanyEmbedLink();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param mixed $title
-     *
-     * @return Company
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * @return CompanyEmbedLink
-     */
-    public function getLink()
+    public function getLink(): CompanyEmbedLink
     {
         return $this->link;
     }
 
-    /**
-     * @param mixed $link
-     *
-     * @return Company
-     */
-    public function setLink(CompanyEmbedLink $link)
+    public function setLink(CompanyEmbedLink $link): self
     {
         $this->link = $link;
 
         return $this;
     }
 
-    /**
-     * @param mixed $locale
-     *
-     * @return Company
-     */
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale(?string $locale): self
     {
         $this->locale = $locale;
 

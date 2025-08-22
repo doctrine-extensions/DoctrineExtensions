@@ -1,130 +1,97 @@
 <?php
 
-namespace Mapping\Fixture\Yaml;
+declare(strict_types=1);
 
-/**
- * @MappedSupperClass
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
+namespace Gedmo\Tests\Mapping\Fixture\Yaml;
+
 class BaseCategory
 {
-    /**
-     * @Column(type="integer")
-     */
-    private $left;
+    private ?int $left = null;
 
-    /**
-     * @Column(type="integer")
-     */
-    private $right;
+    private ?int $right = null;
 
-    /**
-     * @Column(type="integer")
-     */
-    private $level;
+    private ?int $level = null;
 
-    /**
-     * @Column(type="integer")
-     */
-    private $rooted;
+    private ?int $rooted = null;
 
-    /**
-     * @var datetime
-     *
-     * @Column(name="created", type="datetime")
-     */
-    private $created;
+    private ?\DateTime $created = null;
 
-    /**
-     * @var date
-     *
-     * @Column(name="updated", type="date")
-     */
-    private $updated;
+    private ?\DateTime $updated = null;
 
-    /**
-     * Set created
-     *
-     * @param dateTime $created
-     */
-    public function setCreated(\dateTime $created)
+    public function setCreated(\DateTime $created): void
     {
         $this->created = $created;
     }
 
     /**
-     * Get created
-     *
-     * @return dateTime $created
+     * @return \DateTime $created
      */
-    public function getCreated()
+    public function getCreated(): ?\DateTime
     {
         return $this->created;
     }
 
-    /**
-     * Set updated
-     *
-     * @param date $updated
-     */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated): void
     {
         $this->updated = $updated;
     }
 
-    /**
-     * Get updated
-     *
-     * @return date $updated
-     */
-    public function getUpdated()
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }
 
-    public function setLeft($left)
+    public function setLeft(int $left): self
     {
         $this->left = $left;
 
         return $this;
     }
 
-    public function getLeft()
+    public function getLeft(): int
     {
         return $this->left;
     }
 
-    public function setRight($right)
+    public function setRight(int $right): self
     {
         $this->right = $right;
 
         return $this;
     }
 
-    public function getRight()
+    public function getRight(): int
     {
         return $this->right;
     }
 
-    public function setLevel($level)
+    public function setLevel(int $level): self
     {
         $this->level = $level;
 
         return $this;
     }
 
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
 
-    public function setRooted($rooted)
+    public function setRooted(int $rooted): self
     {
         $this->rooted = $rooted;
 
         return $this;
     }
 
-    public function getRooted()
+    public function getRooted(): int
     {
         return $this->rooted;
     }

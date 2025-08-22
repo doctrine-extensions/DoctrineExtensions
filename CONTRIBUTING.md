@@ -18,7 +18,7 @@ pull request title.
   
 ## Changelog
 
-All updates must include an entry in the [Changelog](/changelog.md).
+All updates must include an entry in the [Changelog](/CHANGELOG.md).
 Put your entry in the `[Unreleased]` section at the top, under the
 corresponding Extension and Category.
 
@@ -26,9 +26,8 @@ If there is a related GitHub issue, add it as a suffix to your change.
 
 ```
 ## [Unreleased]
-### Loggable
-#### Fixed
-- Allow emoji in the docs (#123)
+### Fixed
+- Loggable: Allow emoji in the docs (#123)
 ```
 
 ## What You Can Contribute

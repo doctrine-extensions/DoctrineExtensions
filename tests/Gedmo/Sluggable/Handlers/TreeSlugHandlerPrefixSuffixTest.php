@@ -1,16 +1,24 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Handlers;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
-use Tool\BaseTestCaseORM;
 
-class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
+final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlugPrefixSuffix';
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -19,10 +27,10 @@ class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber(new TreeListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testPrefixSuffix()
+    public function testPrefixSuffix(): void
     {
         $foo = new TreeSlugPrefixSuffix();
         $foo->setTitle('Foo');
@@ -41,13 +49,13 @@ class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals('prefix.foo/bar/baz.suffix', $baz->getSlug());
+        static::assertSame('prefix.foo/bar/baz.suffix', $baz->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TARGET,
+            TreeSlugPrefixSuffix::class,
         ];
     }
 }

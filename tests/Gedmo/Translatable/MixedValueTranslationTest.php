@@ -1,34 +1,39 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Types\Type;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\MixedValue;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\MixedValue;
+use Gedmo\Tests\Translatable\Fixture\Type\Custom;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MixedValueTranslationTest extends BaseTestCaseORM
+final class MixedValueTranslationTest extends BaseTestCaseORM
 {
-    public const MIXED = 'Translatable\\Fixture\\MixedValue';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         if (!Type::hasType('custom')) {
-            Type::addType('custom', 'Translatable\Fixture\Type\Custom');
+            Type::addType('custom', Custom::class);
         }
 
         $evm = new EventManager();
@@ -37,23 +42,23 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testFixtureGeneratedTranslations()
+    public function testFixtureGeneratedTranslations(): void
     {
-        $repo = $this->em->getRepository(self::MIXED);
+        $repo = $this->em->getRepository(MixedValue::class);
         $mixed = $repo->findOneBy(['id' => 1]);
 
-        $this->assertTrue($mixed->getDate() instanceof \DateTime);
-        $this->assertTrue($mixed->getCust() instanceof \stdClass);
-        $this->assertEquals('en', $mixed->getCust()->test);
+        static::assertInstanceOf(\DateTime::class, $mixed->getDate());
+        static::assertInstanceOf(\stdClass::class, $mixed->getCust());
+        static::assertSame('en', $mixed->getCust()->test);
     }
 
-    public function testOtherTranslation()
+    public function testOtherTranslation(): void
     {
-        $repo = $this->em->getRepository(self::MIXED);
+        $repo = $this->em->getRepository(MixedValue::class);
         $mixed = $repo->findOneBy(['id' => 1]);
 
         $this->translatableListener->setTranslatableLocale('de_de');
@@ -67,26 +72,26 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $mixed = $repo->findOneBy(['id' => 1]);
-        $transRepo = $this->em->getRepository(self::TRANSLATION);
+        $transRepo = $this->em->getRepository(Translation::class);
         $translations = $transRepo->findTranslations($mixed);
 
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_de', $translations);
         $cust = unserialize($translations['de_de']['cust']);
 
-        $this->assertTrue($cust instanceof \stdClass);
-        $this->assertEquals('de', $cust->test);
+        static::assertInstanceOf(\stdClass::class, $cust);
+        static::assertSame('de', $cust->test);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::MIXED,
-            self::TRANSLATION,
+            MixedValue::class,
+            Translation::class,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $mixedEn = new MixedValue();
         $mixedEn->setDate(new \DateTime());

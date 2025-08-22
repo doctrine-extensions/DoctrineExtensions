@@ -1,56 +1,77 @@
 <?php
 
-namespace SoftDeleteable\Fixture\Entity;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\SoftDeleteable\Fixture\Entity;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
+ *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=true)
  */
+#[ORM\Entity]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: true)]
 class Person
 {
     /**
-     * @ORM\Column(type="integer")
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(length=32)
      */
-    private $name;
+    #[ORM\Column(length: 32)]
+    private ?string $name = null;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
-    private $deletedAt;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTime $deletedAt = null;
 
     /**
      * @ORM\OneToOne(targetEntity="Address", inversedBy="owner", cascade={"remove"})
      */
-    private $address;
+    #[ORM\OneToOne(targetEntity: Address::class, inversedBy: 'owner', cascade: ['remove'])]
+    private ?Address $address = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setAddress(Address $address)
+    public function setAddress(Address $address): self
     {
         $this->address = $address;
         $address->setOwner($this);
@@ -58,19 +79,19 @@ class Person
         return $this;
     }
 
-    public function getAddress()
+    public function getAddress(): ?Address
     {
         return $this->address;
     }
 
-    public function setDeletedAt($deletedAt)
+    public function setDeletedAt(?\DateTime $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
 
         return $this;
     }
 
-    public function getDeletedAt()
+    public function getDeletedAt(): ?\DateTime
     {
         return $this->deletedAt;
     }

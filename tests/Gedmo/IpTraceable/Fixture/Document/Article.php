@@ -1,140 +1,163 @@
 <?php
 
-namespace IpTraceable\Fixture\Document;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\IpTraceable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="articles")
  */
+#[ODM\Document(collection: 'articles')]
 class Article
 {
-    /** @ODM\Id */
+    /**
+     * @var string|null
+     *
+     * @ODM\Id
+     */
+    #[ODM\Id]
     private $id;
 
     /**
      * @ODM\Field(type="string")
      */
-    private $title;
+    #[ODM\Field(type: MongoDBType::STRING)]
+    private ?string $title = null;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="IpTraceable\Fixture\Document\Type")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\IpTraceable\Fixture\Document\Type")
      */
-    private $type;
+    #[ODM\ReferenceOne(targetDocument: Type::class)]
+    private ?Type $type = null;
 
     /**
-     * @var string
-     *
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable(on="create")
      */
-    private $created;
+    #[ODM\Field(type: MongoDBType::STRING)]
+    #[Gedmo\IpTraceable(on: 'create')]
+    private ?string $created = null;
 
     /**
-     * @var string
-     *
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable
      */
-    private $updated;
+    #[ODM\Field(type: MongoDBType::STRING)]
+    #[Gedmo\IpTraceable]
+    private ?string $updated = null;
 
     /**
-     * @var string
-     *
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
      */
-    private $published;
+    #[ODM\Field(type: MongoDBType::STRING)]
+    #[Gedmo\IpTraceable(on: 'change', field: 'type.title', value: 'Published')]
+    private ?string $published = null;
 
     /**
-     * @var string
      * @ODM\Field(type="string")
+     *
      * @Gedmo\IpTraceable(on="change", field="isReady", value=true)
      */
-    private $ready;
+    #[ODM\Field(type: MongoDBType::STRING)]
+    #[Gedmo\IpTraceable(on: 'change', field: 'isReady', value: true)]
+    private ?string $ready = null;
 
     /**
-     * @var bool
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
-    private $isReady = false;
+    #[ODM\Field(type: MongoDBType::BOOL)]
+    private bool $isReady = false;
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getCreated()
+    public function getCreated(): ?string
     {
         return $this->created;
     }
 
-    public function getPublished()
+    public function getPublished(): ?string
     {
         return $this->published;
     }
 
-    public function getUpdated()
+    public function getUpdated(): ?string
     {
         return $this->updated;
     }
 
-    public function setType(Type $type)
+    public function setType(Type $type): void
     {
         $this->type = $type;
     }
 
-    public function getType()
+    public function getType(): ?Type
     {
         return $this->type;
     }
 
-    public function setCreated($created)
+    public function setCreated(?string $created): void
     {
         $this->created = $created;
     }
 
-    public function setPublished($published)
+    public function setPublished(?string $published): void
     {
         $this->published = $published;
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(?string $updated): void
     {
         $this->updated = $updated;
     }
 
-    public function setReady($ready)
+    public function setReady(?string $ready): self
     {
         $this->ready = $ready;
 
         return $this;
     }
 
-    public function getReady()
+    public function getReady(): ?string
     {
         return $this->ready;
     }
 
-    public function setIsReady($isReady)
+    public function setIsReady(bool $isReady): self
     {
         $this->isReady = $isReady;
 
         return $this;
     }
 
-    public function getIsReady()
+    public function getIsReady(): bool
     {
         return $this->isReady;
     }

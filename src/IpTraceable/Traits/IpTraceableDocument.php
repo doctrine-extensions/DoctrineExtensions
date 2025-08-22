@@ -1,30 +1,47 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\IpTraceable\Traits;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * IpTraceable Trait, usable with PHP >= 5.4
+ * Trait for IP traceable objects.
+ *
+ * This implementation provides a mapping configuration for the Doctrine MongoDB ODM.
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 trait IpTraceableDocument
 {
     /**
      * @var string
+     *
      * @Gedmo\IpTraceable(on="create")
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\IpTraceable(on: 'create')]
     protected $createdFromIp;
 
     /**
      * @var string
+     *
      * @Gedmo\IpTraceable(on="update")
+     *
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\IpTraceable(on: 'update')]
     protected $updatedFromIp;
 
     /**

@@ -1,36 +1,40 @@
 <?php
 
-namespace Gedmo\ReferenceIntegrity;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\ReferenceIntegrity;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Exception\ReferenceIntegrityStrictException;
+use Gedmo\ReferenceIntegrity\ReferenceIntegrityListener;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article as ArticleManyNullify;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type as TypeManyNullify;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article as ArticleManyPull;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type as TypeManyPull;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Article;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Type;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article as ArticleOneNullify;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type as TypeOneNullify;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article as ArticleOnePull;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Type as TypeOnePull;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Article as ArticleOneRestrict;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Type as TypeOneRestrict;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for the ReferenceIntegrity extension
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
+final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 {
-    public const TYPE_ONE_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\OneNullify\Type';
-    public const ARTICLE_ONE_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\OneNullify\Article';
-
-    public const TYPE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Type';
-    public const ARTICLE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Article';
-
-    public const TYPE_ONE_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\OnePull\Type';
-    public const ARTICLE_ONE_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\OnePull\Article';
-
-    public const TYPE_MANY_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyPull\Type';
-    public const ARTICLE_MANY_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyPull\Article';
-
-    public const TYPE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Type';
-    public const ARTICLE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Article';
-
-    public const TYPE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
-    public const ARTICLE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,7 +42,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber(new ReferenceIntegrityListener());
 
-        $this->dm = $this->getMockDocumentManager($evm, $this->getMockAnnotatedConfig());
+        $this->dm = $this->getDefaultDocumentManager($evm);
 
         $this->populateOneNullify();
         $this->populateManyNullify();
@@ -50,152 +54,144 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->populateManyRestrict();
     }
 
-    public function testOneNullify()
+    public function testOneNullify(): void
     {
-        $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
+        $type = $this->dm->getRepository(TypeOneNullify::class)
             ->findOneBy(['title' => 'One Nullify Type']);
 
-        $this->assertFalse(is_null($type));
-        $this->assertTrue(is_object($type));
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();
 
-        $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
+        $type = $this->dm->getRepository(TypeOneNullify::class)
             ->findOneBy(['title' => 'One Nullify Type']);
-        $this->assertNull($type);
+        static::assertNull($type);
 
-        $article = $this->dm->getRepository(self::ARTICLE_ONE_NULLIFY_CLASS)
+        $article = $this->dm->getRepository(ArticleOneNullify::class)
             ->findOneBy(['title' => 'One Nullify Article']);
 
-        $this->assertNull($article->getType());
+        static::assertNull($article->getType());
 
         $this->dm->clear();
     }
 
-    public function testManyNullify()
+    public function testManyNullify(): void
     {
-        $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
+        $type = $this->dm->getRepository(TypeManyNullify::class)
             ->findOneBy(['title' => 'Many Nullify Type']);
 
-        $this->assertFalse(is_null($type));
-        $this->assertTrue(is_object($type));
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();
 
-        $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
+        $type = $this->dm->getRepository(TypeManyNullify::class)
             ->findOneBy(['title' => 'Many Nullify Type']);
-        $this->assertNull($type);
+        static::assertNull($type);
 
-        $article = $this->dm->getRepository(self::ARTICLE_MANY_NULLIFY_CLASS)
+        $article = $this->dm->getRepository(ArticleManyNullify::class)
             ->findOneBy(['title' => 'Many Nullify Article']);
 
-        $this->assertNull($article->getType());
+        static::assertNull($article->getType());
 
         $this->dm->clear();
     }
 
-    public function testOnePull()
+    public function testOnePull(): void
     {
-        $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+        $type1 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'One Pull Type 1']);
-        $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+        $type2 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'One Pull Type 2']);
 
-        $this->assertFalse(is_null($type1));
-        $this->assertTrue(is_object($type1));
+        static::assertNotNull($type1);
+        static::assertIsObject($type1);
 
-        $this->assertFalse(is_null($type2));
-        $this->assertTrue(is_object($type2));
+        static::assertNotNull($type2);
+        static::assertIsObject($type2);
 
         $this->dm->remove($type2);
         $this->dm->flush();
 
-        $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+        $type2 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'One Pull Type 2']);
-        $this->assertNull($type2);
+        static::assertNull($type2);
 
-        $article = $this->dm->getRepository(self::ARTICLE_ONE_PULL_CLASS)
+        $article = $this->dm->getRepository(ArticleOnePull::class)
             ->findOneBy(['title' => 'One Pull Article']);
 
         $types = $article->getTypes();
-        $this->assertTrue(1 === count($types));
-        $this->assertEquals('One Pull Type 1', $types[0]->getTitle());
+        static::assertCount(1, $types);
+        static::assertSame('One Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }
 
-    public function testManyPull()
+    public function testManyPull(): void
     {
-        $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+        $type1 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'Many Pull Type 1']);
-        $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+        $type2 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'Many Pull Type 2']);
 
-        $this->assertFalse(is_null($type1));
-        $this->assertTrue(is_object($type1));
+        static::assertNotNull($type1);
+        static::assertIsObject($type1);
 
-        $this->assertFalse(is_null($type2));
-        $this->assertTrue(is_object($type2));
+        static::assertNotNull($type2);
+        static::assertIsObject($type2);
 
         $this->dm->remove($type2);
         $this->dm->flush();
 
-        $type2 = $this->dm->getRepository(self::TYPE_MANY_PULL_CLASS)
+        $type2 = $this->dm->getRepository(TypeManyPull::class)
             ->findOneBy(['title' => 'Many Pull Type 2']);
-        $this->assertNull($type2);
+        static::assertNull($type2);
 
-        $article = $this->dm->getRepository(self::ARTICLE_MANY_PULL_CLASS)
+        $article = $this->dm->getRepository(ArticleManyPull::class)
             ->findOneBy(['title' => 'Many Pull Article']);
 
         $types = $article->getTypes();
-        $this->assertTrue(1 === count($types));
-        $this->assertEquals('Many Pull Type 1', $types[0]->getTitle());
+        static::assertCount(1, $types);
+        static::assertSame('Many Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }
 
-    /**
-     * @test
-     */
-    public function testOneRestrict()
+    public function testOneRestrict(): void
     {
-        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
-        $type = $this->dm->getRepository(self::TYPE_ONE_RESTRICT_CLASS)
+        $this->expectException(ReferenceIntegrityStrictException::class);
+        $type = $this->dm->getRepository(TypeOneRestrict::class)
             ->findOneBy(['title' => 'One Restrict Type']);
 
-        $this->assertFalse(is_null($type));
-        $this->assertTrue(is_object($type));
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();
     }
 
-    /**
-     * @test
-     */
-    public function testManyRestrict()
+    public function testManyRestrict(): void
     {
-        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
-        $type = $this->dm->getRepository(self::TYPE_MANY_RESTRICT_CLASS)
+        $this->expectException(ReferenceIntegrityStrictException::class);
+        $type = $this->dm->getRepository(Type::class)
             ->findOneBy(['title' => 'Many Restrict Type']);
 
-        $this->assertFalse(is_null($type));
-        $this->assertTrue(is_object($type));
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();
     }
 
-    private function populateOneNullify()
+    private function populateOneNullify(): void
     {
-        $typeClass = self::TYPE_ONE_NULLIFY_CLASS;
-        $type = new $typeClass();
+        $type = new TypeOneNullify();
         $type->setTitle('One Nullify Type');
 
-        $articleClass = self::ARTICLE_ONE_NULLIFY_CLASS;
-        $article = new $articleClass();
+        $article = new ArticleOneNullify();
         $article->setTitle('One Nullify Article');
         $article->setType($type);
 
@@ -206,14 +202,12 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateManyNullify()
+    private function populateManyNullify(): void
     {
-        $typeClass = self::TYPE_MANY_NULLIFY_CLASS;
-        $type = new $typeClass();
+        $type = new TypeManyNullify();
         $type->setTitle('Many Nullify Type');
 
-        $articleClass = self::ARTICLE_MANY_NULLIFY_CLASS;
-        $article = new $articleClass();
+        $article = new ArticleManyNullify();
         $article->setTitle('Many Nullify Article');
         $article->setType($type);
 
@@ -224,17 +218,15 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateOnePull()
+    private function populateOnePull(): void
     {
-        $typeClass = self::TYPE_ONE_PULL_CLASS;
-        $type1 = new $typeClass();
+        $type1 = new TypeOnePull();
         $type1->setTitle('One Pull Type 1');
 
-        $type2 = new $typeClass();
+        $type2 = new TypeOnePull();
         $type2->setTitle('One Pull Type 2');
 
-        $articleClass = self::ARTICLE_ONE_PULL_CLASS;
-        $article = new $articleClass();
+        $article = new ArticleOnePull();
         $article->setTitle('One Pull Article');
         $article->addType($type1);
         $article->addType($type2);
@@ -247,17 +239,15 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateManyPull()
+    private function populateManyPull(): void
     {
-        $typeClass = self::TYPE_MANY_PULL_CLASS;
-        $type1 = new $typeClass();
+        $type1 = new TypeManyPull();
         $type1->setTitle('Many Pull Type 1');
 
-        $type2 = new $typeClass();
+        $type2 = new TypeManyPull();
         $type2->setTitle('Many Pull Type 2');
 
-        $articleClass = self::ARTICLE_MANY_PULL_CLASS;
-        $article = new $articleClass();
+        $article = new ArticleManyPull();
         $article->setTitle('Many Pull Article');
         $article->addType($type1);
         $article->addType($type2);
@@ -270,14 +260,12 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateOneRestrict()
+    private function populateOneRestrict(): void
     {
-        $typeClass = self::TYPE_ONE_RESTRICT_CLASS;
-        $type = new $typeClass();
+        $type = new TypeOneRestrict();
         $type->setTitle('One Restrict Type');
 
-        $articleClass = self::ARTICLE_ONE_RESTRICT_CLASS;
-        $article = new $articleClass();
+        $article = new ArticleOneRestrict();
         $article->setTitle('One Restrict Article');
         $article->setType($type);
 
@@ -288,14 +276,12 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateManyRestrict()
+    private function populateManyRestrict(): void
     {
-        $typeClass = self::TYPE_MANY_RESTRICT_CLASS;
-        $type = new $typeClass();
+        $type = new Type();
         $type->setTitle('Many Restrict Type');
 
-        $articleClass = self::ARTICLE_MANY_RESTRICT_CLASS;
-        $article = new $articleClass();
+        $article = new Article();
         $article->setTitle('Many Restrict Article');
         $article->setType($type);
 

@@ -1,28 +1,32 @@
 <?php
 
-namespace Gedmo\Translatable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Translatable\Fixture\Document\Personal\Article;
-use Translatable\Fixture\Document\Personal\ArticleTranslation;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Translatable\Fixture\Document\Personal\Article;
+use Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
+final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Translatable\Fixture\Document\Personal\Article';
-    public const TRANSLATION = 'Translatable\Fixture\Document\Personal\ArticleTranslation';
+    private TranslatableListener $translatableListener;
 
-    private $translatableListener;
-    private $id;
+    private ?string $id = null;
 
     protected function setUp(): void
     {
@@ -34,34 +38,28 @@ class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldCreateTranslations()
+    public function testShouldCreateTranslations(): void
     {
         $this->populate();
-        $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
+        $article = $this->dm->getRepository(Article::class)->find($this->id);
         $translations = $article->getTranslations();
 
-        $this->assertCount(2, $translations);
+        static::assertCount(2, $translations);
     }
 
-    /**
-     * @test
-     */
-    public function shouldTranslateTheRecord()
+    public function testShouldTranslateTheRecord(): void
     {
         $this->populate();
         $this->translatableListener->setTranslatableLocale('lt');
 
-        $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
-        $this->assertEquals('lt', $article->getTitle());
+        $article = $this->dm->getRepository(Article::class)->find($this->id);
+        static::assertSame('lt', $article->getTitle());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new Article();
         $article->setTitle('en');

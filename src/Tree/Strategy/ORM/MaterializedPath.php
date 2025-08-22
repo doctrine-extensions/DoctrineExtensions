@@ -1,7 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 
@@ -10,16 +19,17 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @final since gedmo/doctrine-extensions 3.11
  */
 class MaterializedPath extends AbstractMaterializedPath
 {
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $om
+     * @param ClassMetadata<object>  $meta
      */
     public function removeNode($om, $meta, $config, $node)
     {
-        $uow = $om->getUnitOfWork();
         $wrapped = AbstractWrapper::wrap($node, $om);
 
         $path = addcslashes($wrapped->getPropertyValue($config['path']), '%');
@@ -41,20 +51,21 @@ class MaterializedPath extends AbstractMaterializedPath
         }
 
         $results = $qb->getQuery()
-            ->execute();
+            ->toIterable();
 
         foreach ($results as $node) {
-            $uow->scheduleForDelete($node);
+            $om->remove($node);
         }
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManagerInterface $om
+     * @param ClassMetadata<object>  $meta
      */
     public function getChildren($om, $meta, $config, $path)
     {
         $path = addcslashes($path, '%');
-        $qb = $om->createQueryBuilder($config['useObjectClass']);
+        $qb = $om->createQueryBuilder();
         $qb->select('e')
             ->from($config['useObjectClass'], 'e')
             ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')))
@@ -62,7 +73,6 @@ class MaterializedPath extends AbstractMaterializedPath
             ->orderBy('e.'.$config['path'], 'asc');      // This may save some calls to updateNode
         $qb->setParameter('path', $path);
 
-        return $qb->getQuery()
-            ->execute();
+        return $qb->getQuery()->getResult();
     }
 }

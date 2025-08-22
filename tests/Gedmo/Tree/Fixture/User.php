@@ -1,65 +1,67 @@
 <?php
 
-namespace Tree\Fixture;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree\Fixture;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @ORM\Table(name="user")
  */
+#[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[ORM\Table(name: 'user')]
 class User extends Role
 {
-    public const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
+    private const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
 
     /**
      * @ORM\Column(name="email", type="string", unique=true)
-     *
-     * @var string
      */
-    private $email;
+    #[ORM\Column(name: 'email', type: Types::STRING, unique: true)]
+    private ?string $email = null;
 
     /**
      * @ORM\Column(name="password_hash", type="string", length=32)
-     *
-     * @var string
      */
-    private $passwordHash;
+    #[ORM\Column(name: 'password_hash', type: Types::STRING, length: 32)]
+    private string $passwordHash;
 
     /**
      * @ORM\Column(name="activation_code", type="string", length=12)
-     *
-     * @var string
      */
-    private $activationCode;
+    #[ORM\Column(name: 'activation_code', type: Types::STRING, length: 12)]
+    private ?string $activationCode = null;
 
-    /**
-     * @param string $email
-     * @param string $password
-     */
-    public function __construct($email, $password)
+    public function __construct(string $email, string $password)
     {
         parent::__construct();
         $this
-      ->setEmail($email)
-      ->setPassword($password);
+            ->setEmail($email)
+            ->setPassword($password);
     }
 
-    public function init()
+    public function init(): void
     {
         $this->setActivationCode($this->generateString(12));
     }
 
     /**
      * Generates a random password
-     *
-     * @param int $length
-     *
-     * @return string
      */
-    public function generateString($length = 8)
+    public function generateString(int $length = 8): string
     {
-        $length = (int) $length;
+        $length = $length;
         if ($length < 0) {
             throw new \Exception("Invalid password length '$length'");
         }
@@ -67,7 +69,7 @@ class User extends Role
         $num = strlen($set);
         $ret = '';
         for ($i = 0; $i < $length; ++$i) {
-            $ret .= $set[rand(0, $num - 1)];
+            $ret .= $set[random_int(0, $num - 1)];
         }
 
         return $ret;
@@ -75,30 +77,18 @@ class User extends Role
 
     /**
      * Generates a password hash
-     *
-     * @param string $password
-     *
-     * @return string
      */
-    public function generatePasswordHash($password)
+    public function generatePasswordHash(string $password): string
     {
         return md5($password.self::PASSWORD_SALT);
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     *
-     * @return User
-     */
-    public function setEmail($email)
+    public function setEmail(string $email): self
     {
         $this->email = $email;
         $this->setRoleId($email);
@@ -106,40 +96,24 @@ class User extends Role
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPasswordHash()
+    public function getPasswordHash(): string
     {
         return $this->passwordHash;
     }
 
-    /**
-     * @param string $password
-     *
-     * @return User
-     */
-    public function setPassword($password)
+    public function setPassword(string $password): self
     {
         $this->passwordHash = $this->generatePasswordHash(trim($password));
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getActivationCode()
+    public function getActivationCode(): ?string
     {
         return $this->activationCode;
     }
 
-    /**
-     * @param string $activationCode
-     *
-     * @return User
-     */
-    public function setActivationCode($activationCode)
+    public function setActivationCode(string $activationCode): self
     {
         $this->activationCode = $activationCode;
 

@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tool\Wrapper;
 
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\UnsupportedObjectManagerException;
 use Gedmo\Tool\WrapperInterface;
@@ -12,65 +21,77 @@ use Gedmo\Tool\WrapperInterface;
  * Wraps entity or proxy for more convenient
  * manipulation
  *
+ * @template TClassMetadata of ClassMetadata<TObject>
+ * @template TObject        of object
+ * @template TObjectManager of ObjectManager
+ *
+ * @template-implements WrapperInterface<TClassMetadata, TObject, TObjectManager>
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class AbstractWrapper implements WrapperInterface
 {
     /**
      * Object metadata
      *
-     * @var object
+     * @var TClassMetadata
      */
     protected $meta;
 
     /**
      * Wrapped object
      *
-     * @var object
+     * @var TObject
      */
     protected $object;
 
     /**
      * Object manager instance
      *
-     * @var \Doctrine\Persistence\ObjectManager
+     * @var TObjectManager
      */
     protected $om;
 
     /**
-     * List of wrapped object references
-     *
-     * @var array
-     */
-    private static $wrappedObjectReferences;
-
-    /**
      * Wrap object factory method
      *
-     * @param object $object
+     * @param TObject        $object
+     * @param TObjectManager $om
      *
-     * @throws \Gedmo\Exception\UnsupportedObjectManagerException
+     * @psalm-param object        $object
+     * @psalm-param ObjectManager $om
      *
-     * @return \Gedmo\Tool\WrapperInterface
+     * @throws UnsupportedObjectManagerException
+     *
+     * @return WrapperInterface<TClassMetadata, TObject, TObjectManager>
      */
     public static function wrap($object, ObjectManager $om)
     {
         if ($om instanceof EntityManagerInterface) {
             return new EntityWrapper($object, $om);
-        } elseif ($om instanceof DocumentManager) {
+        }
+        if ($om instanceof DocumentManager) {
             return new MongoDocumentWrapper($object, $om);
         }
+
         throw new UnsupportedObjectManagerException('Given object manager is not managed by wrapper');
     }
 
+    /**
+     * @return void
+     */
     public static function clear()
     {
-        self::$wrappedObjectReferences = [];
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2410',
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
+            __METHOD__
+        );
     }
 
     /**
-     * {@inheritdoc}
+     * @return TObject
      */
     public function getObject()
     {
@@ -78,18 +99,22 @@ abstract class AbstractWrapper implements WrapperInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return TClassMetadata
      */
     public function getMetadata()
     {
         return $this->meta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function populate(array $data)
     {
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2410',
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
+            __METHOD__
+        );
+
         foreach ($data as $field => $value) {
             $this->setPropertyValue($field, $value);
         }

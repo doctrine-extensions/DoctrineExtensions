@@ -1,14 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Document\MappedSuperclass;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * Gedmo\Translatable\Document\MappedSuperclass\AbstractTranslation
  *
  * @MongoODM\MappedSuperclass
  */
+#[MongoODM\MappedSuperclass]
 abstract class AbstractTranslation
 {
     /**
@@ -16,6 +25,7 @@ abstract class AbstractTranslation
      *
      * @MongoODM\Id
      */
+    #[MongoODM\Id]
     protected $id;
 
     /**
@@ -23,6 +33,7 @@ abstract class AbstractTranslation
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
@@ -30,6 +41,7 @@ abstract class AbstractTranslation
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $objectClass;
 
     /**
@@ -37,6 +49,7 @@ abstract class AbstractTranslation
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $field;
 
     /**
@@ -44,6 +57,7 @@ abstract class AbstractTranslation
      *
      * @MongoODM\Field(type="string", name="foreign_key")
      */
+    #[MongoODM\Field(name: 'foreign_key', type: Type::STRING)]
     protected $foreignKey;
 
     /**
@@ -51,6 +65,7 @@ abstract class AbstractTranslation
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $content;
 
     /**

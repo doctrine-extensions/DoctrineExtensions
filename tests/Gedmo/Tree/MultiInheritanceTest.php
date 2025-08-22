@@ -1,51 +1,54 @@
 <?php
 
-namespace Gedmo\Tree;
+declare(strict_types=1);
 
-use Tool\BaseTestCaseORM;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree;
+
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\ANode;
+use Gedmo\Tests\Tree\Fixture\BaseNode;
+use Gedmo\Tests\Tree\Fixture\Node;
+use Gedmo\Translatable\Entity\Translation;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceTest extends BaseTestCaseORM
+final class MultiInheritanceTest extends BaseTestCaseORM
 {
-    public const NODE = 'Tree\\Fixture\\Node';
-    public const BASE_NODE = 'Tree\\Fixture\\BaseNode';
-    public const ANODE = 'Tree\\Fixture\\ANode';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->getMockSqliteEntityManager();
+        $this->getDefaultMockSqliteEntityManager();
         $this->populate();
     }
 
-    public function testInheritance()
+    public function testInheritance(): void
     {
-        $meta = $this->em->getClassMetadata(self::NODE);
-        $repo = $this->em->getRepository(self::NODE);
+        $meta = $this->em->getClassMetadata(Node::class);
+        $repo = $this->em->getRepository(Node::class);
 
         $food = $repo->findOneBy(['identifier' => 'food']);
         $left = $meta->getReflectionProperty('lft')->getValue($food);
-        $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
-        $this->assertEquals(1, $left);
-        $this->assertNotNull($food->getCreated());
-        $this->assertNotNull($food->getUpdated());
+        static::assertSame(1, $left);
+        static::assertNotNull($food->getCreated());
+        static::assertNotNull($food->getUpdated());
 
-        $translationRepo = $this->em->getRepository(self::TRANSLATION);
+        $translationRepo = $this->em->getRepository(Translation::class);
         $translations = $translationRepo->findTranslations($food);
 
-        $this->assertCount(0, $translations);
-        $this->assertEquals('food', $food->getSlug());
+        static::assertCount(0, $translations);
+        static::assertSame('food', $food->getSlug());
     }
 
     /**
@@ -53,65 +56,65 @@ class MultiInheritanceTest extends BaseTestCaseORM
      * Child count is invalid resulting in SINGLE_TABLE and JOINED
      * inheritance mapping. Also getChildren, getPath results are invalid
      */
-    public function testCaseGithubIssue7()
+    public function testCaseGithubIssue7(): void
     {
-        $repo = $this->em->getRepository(self::NODE);
+        $repo = $this->em->getRepository(Node::class);
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
-        $count = $repo->childCount($vegies, true/*direct*/);
-        $this->assertEquals(3, $count);
+        $count = $repo->childCount($vegies, true/* direct */);
+        static::assertSame(3, $count);
 
         $children = $repo->children($vegies, true);
-        $this->assertCount(3, $children);
+        static::assertCount(3, $children);
 
         // node repository will not find it
-        $baseNodeRepo = $this->em->getRepository(self::BASE_NODE);
+        $baseNodeRepo = $this->em->getRepository(BaseNode::class);
         $cabbage = $baseNodeRepo->findOneBy(['identifier' => 'cabbage']);
         $path = $baseNodeRepo->getPath($cabbage);
-        $this->assertCount(3, $path);
+        static::assertCount(3, $path);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::NODE,
-            self::ANODE,
-            self::TRANSLATION,
-            self::BASE_NODE,
+            Node::class,
+            ANode::class,
+            Translation::class,
+            BaseNode::class,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
-        $root = new \Tree\Fixture\Node();
+        $root = new Node();
         $root->setTitle('Food');
         $root->setIdentifier('food');
 
-        $root2 = new \Tree\Fixture\Node();
+        $root2 = new Node();
         $root2->setTitle('Sports');
         $root2->setIdentifier('sport');
 
-        $child = new \Tree\Fixture\Node();
+        $child = new Node();
         $child->setTitle('Fruits');
         $child->setParent($root);
         $child->setIdentifier('fruit');
 
-        $child2 = new \Tree\Fixture\Node();
+        $child2 = new Node();
         $child2->setTitle('Vegitables');
         $child2->setParent($root);
         $child2->setIdentifier('vegie');
 
-        $childsChild = new \Tree\Fixture\Node();
+        $childsChild = new Node();
         $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
         $childsChild->setIdentifier('carrot');
 
-        $potatoes = new \Tree\Fixture\Node();
+        $potatoes = new Node();
         $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
         $potatoes->setIdentifier('potatoe');
 
-        $cabbages = new \Tree\Fixture\BaseNode();
+        $cabbages = new BaseNode();
         $cabbages->setIdentifier('cabbage');
         $cabbages->setParent($child2);
 

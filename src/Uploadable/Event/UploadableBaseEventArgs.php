@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Uploadable\Event;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 use Gedmo\Uploadable\UploadableListener;
 
@@ -12,21 +21,20 @@ use Gedmo\Uploadable\UploadableListener;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class UploadableBaseEventArgs extends EventArgs
 {
     /**
      * The instance of the Uploadable listener that fired this event
-     *
-     * @var \Gedmo\Uploadable\UploadableListener
      */
-    private $uploadableListener;
+    private UploadableListener $uploadableListener;
+
+    private EntityManagerInterface $em;
 
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @todo Check if this property must be removed, as it is not used.
      */
-    private $em;
+    private array $config = [];
 
     /**
      * The Uploadable entity
@@ -38,18 +46,19 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * The configuration of the Uploadable extension for this entity class
      *
+     * @todo Check if this property must be removed, as it is never set.
+     *
      * @var array
      */
     private $extensionConfiguration;
 
-    /**
-     * @var \Gedmo\Uploadable\FileInfo\FileInfoInterface
-     */
-    private $fileInfo;
+    private FileInfoInterface $fileInfo;
 
     /**
-     * @var string - Is the file being created, updated or removed?
-     *             This value can be: CREATE, UPDATE or DELETE
+     * Is the file being created, updated or removed?
+     * This value can be: CREATE, UPDATE or DELETE
+     *
+     * @var string
      */
     private $action;
 
@@ -70,7 +79,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * Retrieve the associated listener
      *
-     * @return \Gedmo\Uploadable\UploadableListener
+     * @return UploadableListener
      */
     public function getListener()
     {
@@ -80,9 +89,26 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * Retrieve associated EntityManager
      *
-     * @return \Doctrine\ORM\EntityManagerInterface
+     * @return EntityManagerInterface
      */
     public function getEntityManager()
+    {
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2639',
+            '"%s()" is deprecated since gedmo/doctrine-extensions 3.14 and will be removed in version 4.0.',
+            __METHOD__
+        );
+
+        return $this->em;
+    }
+
+    /**
+     * Retrieve associated EntityManager
+     *
+     * @return ObjectManager
+     */
+    public function getObjectManager()
     {
         return $this->em;
     }
@@ -93,6 +119,23 @@ abstract class UploadableBaseEventArgs extends EventArgs
      * @return object
      */
     public function getEntity()
+    {
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2639',
+            '"%s()" is deprecated since gedmo/doctrine-extensions 3.14 and will be removed in version 4.0.',
+            __METHOD__
+        );
+
+        return $this->entity;
+    }
+
+    /**
+     * Retrieve associated Object
+     *
+     * @return object
+     */
+    public function getObject()
     {
         return $this->entity;
     }
@@ -110,7 +153,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * Retrieve the FileInfo associated with this entity.
      *
-     * @return \Gedmo\Uploadable\FileInfo\FileInfoInterface
+     * @return FileInfoInterface
      */
     public function getFileInfo()
     {

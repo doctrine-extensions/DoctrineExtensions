@@ -1,99 +1,120 @@
 <?php
 
-namespace References\Fixture\ORM;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\References\Fixture\ORM;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use References\Fixture\ODM\MongoDB\Product;
+use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class StockItem
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
-     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column
      */
-    private $name;
+    #[ORM\Column]
+    private ?string $name = null;
 
     /**
      * @ORM\Column
      */
-    private $sku;
+    #[ORM\Column]
+    private ?string $sku = null;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $quantity;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $quantity = null;
 
     /**
-     * @Gedmo\ReferenceOne(type="document", class="References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
+     * @Gedmo\ReferenceOne(type="document", class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
      */
-    private $product;
+    #[Gedmo\ReferenceOne(type: 'document', class: Product::class, inversedBy: 'stockItems', identifier: 'productId')]
+    private ?Product $product = null;
 
     /**
      * @ORM\Column(type="string")
      */
-    private $productId;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $productId = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getSku()
+    public function getSku(): ?string
     {
         return $this->sku;
     }
 
-    public function setSku($sku)
+    public function setSku(?string $sku): void
     {
         $this->sku = $sku;
     }
 
-    public function getQuantity()
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
 
-    public function setQuantity($quantity)
+    public function setQuantity(?int $quantity): void
     {
         $this->quantity = $quantity;
     }
 
-    public function setProduct(Product $product)
+    public function setProduct(?Product $product): void
     {
         $this->product = $product;
     }
 
-    public function getProduct()
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
 
-    public function setProductId($productId)
+    public function setProductId(?string $productId): void
     {
         $this->productId = $productId;
     }
 
-    public function getProductId()
+    public function getProductId(): ?string
     {
         return $this->productId;
     }

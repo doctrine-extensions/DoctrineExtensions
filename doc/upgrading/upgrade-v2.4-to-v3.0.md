@@ -9,13 +9,13 @@ Look for "_Applies To_" notes for when you may need to take action.
 ##### Known Issue: Doctrine MongoDB ODM 2.0 Mapping Drivers
 
 ODM 2.0 made significant changes to parts of their mappers. The YAML driver was removed completely, and the
-[XML driver added schema validation](https://github.com/Atlantic18/DoctrineExtensions/issues/2055) that does
+[XML driver added schema validation](https://github.com/doctrine-extensions/DoctrineExtensions/issues/2055) that does
 not allow mixing of native ODM and Extensions elements.
 
 **YAML and XML mapping users may not be able to use Doctrine Extensions 3.0**, which does not attempt to resolve
 these issues at the time.  If you use Annotations or PHP mapping drivers, you should be unaffected.
 
-See [Issue #2055](https://github.com/Atlantic18/DoctrineExtensions/issues/2055) on GitHub for more information.
+See [Issue #2055](https://github.com/doctrine-extensions/DoctrineExtensions/issues/2055) on GitHub for more information.
 Please leave a message if this affects your project.
 
 ## PHP 7.2 Required

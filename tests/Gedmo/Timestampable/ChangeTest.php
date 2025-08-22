@@ -1,27 +1,35 @@
 <?php
 
-namespace Gedmo\Timestampable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Gedmo\AbstractTrackingListener;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+use Gedmo\Tests\Timestampable\Fixture\TitledArticle;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
-use Timestampable\Fixture\TitledArticle;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Ivan Borzenkov <ivan.borzenkov@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ChangeTest extends BaseTestCaseORM
+final class ChangeTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Timestampable\\Fixture\\TitledArticle';
-
+    /**
+     * @var TimestampableListenerStub
+     */
     protected $listener;
 
     protected function setUp(): void
@@ -34,35 +42,35 @@ class ChangeTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testChange()
+    public function testChange(): void
     {
         $test = new TitledArticle();
         $test->setTitle('Test');
         $test->setText('Test');
         $test->setState('Open');
 
-        $currentDate = new \DateTime('now');
+        $currentDate = new \DateTime();
         $this->listener->eventAdapter->setDateValue($currentDate);
 
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $test->setState('Closed');
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
-        $this->assertEquals(
+        // Changed
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
         );
-        $this->assertEquals(
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );
@@ -70,59 +78,68 @@ class ChangeTest extends BaseTestCaseORM
         $anotherDate = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00');
         $this->listener->eventAdapter->setDateValue($anotherDate);
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $test->setState('Open');
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Not Changed
-        $this->assertEquals(
+        // Not Changed
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
         );
-        $this->assertEquals(
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
+        $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setState('Published');
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
-        $this->assertEquals(
+        // Changed
+        static::assertSame(
             $anotherDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::FIXTURE,
+            TitledArticle::class,
         ];
     }
 }
 
-class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
+final class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
 {
-    protected $dateTime;
+    private ?\DateTime $dateTime = null;
 
-    public function setDateValue(\DateTime $dateTime)
+    public function setDateValue(\DateTime $dateTime): void
     {
         $this->dateTime = $dateTime;
     }
 
-    public function getDateValue($meta, $field)
+    /**
+     * @param ClassMetadata<object> $meta
+     */
+    public function getDateValue($meta, $field): ?\DateTime
     {
         return $this->dateTime;
     }
 }
 
-class TimestampableListenerStub extends TimestampableListener
+/**
+ * @phpstan-extends AbstractTrackingListener<array, TimestampableAdapter>
+ */
+final class TimestampableListenerStub extends AbstractTrackingListener
 {
+    /**
+     * @var EventAdapterORMStub
+     */
     public $eventAdapter;
 
     protected function getEventAdapter(EventArgs $args)
@@ -130,5 +147,19 @@ class TimestampableListenerStub extends TimestampableListener
         $this->eventAdapter->setEventArgs($args);
 
         return $this->eventAdapter;
+    }
+
+    /**
+     * @param ClassMetadata<object> $meta
+     * @param EventAdapterORMStub   $eventAdapter
+     */
+    protected function getFieldValue($meta, $field, $eventAdapter)
+    {
+        return $eventAdapter->getDateValue($meta, $field);
+    }
+
+    protected function getNamespace()
+    {
+        return 'Gedmo\Timestampable';
     }
 }

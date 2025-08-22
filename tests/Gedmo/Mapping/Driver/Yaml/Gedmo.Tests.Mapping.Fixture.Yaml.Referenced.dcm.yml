@@ -1,0 +1,12 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\Referenced:
+  type: entity
+  fields:
+    id:
+      type: id
+      id: true
+    referencer:
+      reference: true
+      type: one
+      targetDocument: Gedmo\Mapping\Fixture\Yaml\Referencer
+      inversedBy: referencedDocuments

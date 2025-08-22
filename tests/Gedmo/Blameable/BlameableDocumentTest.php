@@ -1,29 +1,31 @@
 <?php
 
-namespace Gedmo\Blameable;
+declare(strict_types=1);
 
-use Blameable\Fixture\Document\Article;
-use Blameable\Fixture\Document\Type;
-use Blameable\Fixture\Document\User;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Blameable;
+
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Document\Article;
+use Gedmo\Tests\Blameable\Fixture\Document\Type;
+use Gedmo\Tests\Blameable\Fixture\Document\User;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for Blameable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class BlameableDocumentTest extends BaseTestCaseMongoODM
+final class BlameableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const TEST_USERNAME = 'testuser';
-
-    public const TYPE = 'Blameable\Fixture\Document\Type';
-    public const USER = 'Blameable\Fixture\Document\User';
-    public const ARTICLE = 'Blameable\Fixture\Document\Article';
+    private const TEST_USERNAME = 'testuser';
 
     protected function setUp(): void
     {
@@ -38,19 +40,19 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $manager = $this->getMockDocumentManager($evm);
+        $manager = $this->getDefaultDocumentManager($evm);
         $manager->persist($user);
         $this->populate();
         $manager->flush();
     }
 
-    public function testBlameable()
+    public function testBlameable(): void
     {
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
-        $this->assertEquals(self::TEST_USERNAME, $article->getCreated());
-        $this->assertEquals(self::TEST_USERNAME, $article->getUpdated());
+        static::assertSame(self::TEST_USERNAME, $article->getCreated());
+        static::assertSame(self::TEST_USERNAME, $article->getUpdated());
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -63,11 +65,11 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
-        $this->assertEquals(self::TEST_USERNAME, $article->getPublished());
-        $this->assertEquals(self::TEST_USERNAME, $article->getCreator()->getUsername());
+        static::assertSame(self::TEST_USERNAME, $article->getPublished());
+        static::assertSame(self::TEST_USERNAME, $article->getCreator()->getUsername());
     }
 
-    public function testForcedValues()
+    public function testForcedValues(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -77,10 +79,10 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($sport);
         $this->dm->flush();
 
-        $repo = $this->dm->getRepository(self::ARTICLE);
+        $repo = $this->dm->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals(self::TEST_USERNAME, $sport->getCreated());
-        $this->assertEquals(self::TEST_USERNAME, $sport->getUpdated());
+        static::assertSame(self::TEST_USERNAME, $sport->getCreated());
+        static::assertSame(self::TEST_USERNAME, $sport->getUpdated());
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -93,10 +95,10 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals(self::TEST_USERNAME, $sport->getPublished());
+        static::assertSame(self::TEST_USERNAME, $sport->getPublished());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $art0 = new Article();
         $art0->setTitle('Blameable Article');

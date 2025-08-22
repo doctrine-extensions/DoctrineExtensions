@@ -2,8 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Translatable\Fixture\Issue2152;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Gedmo\Tests\Translatable\Fixture\Issue2152;
+
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -11,6 +19,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\Table("entity")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'entity')]
 class EntityWithTranslatableBoolean
 {
     /**
@@ -20,30 +30,34 @@ class EntityWithTranslatableBoolean
      *
      * @var int
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @Gedmo\Translatable
-     * @ORM\Column(type="string", nullable=true)
      *
-     * @var string|null
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $title;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\Translatable]
+    private ?string $title = null;
 
     /**
      * @Gedmo\Translatable
-     * @ORM\Column(type="string", nullable=true)
      *
-     * @var string|null
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $isOperating;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Gedmo\Translatable]
+    private ?string $isOperating = null;
 
     /**
-     * @var string
-     *
-     * @Gedmo\Locale()
+     * @Gedmo\Locale
      */
-    private $locale;
+    #[Gedmo\Locale]
+    private ?string $locale = null;
 
     public function __construct(string $title, string $isOperating = '0')
     {
@@ -72,7 +86,7 @@ class EntityWithTranslatableBoolean
         return $this->isOperating;
     }
 
-    public function getLocale(): string
+    public function getLocale(): ?string
     {
         return $this->locale;
     }

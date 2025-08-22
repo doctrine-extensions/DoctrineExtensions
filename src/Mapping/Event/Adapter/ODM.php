@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Event\Adapter;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -13,46 +22,47 @@ use Gedmo\Mapping\Event\AdapterInterface;
  * event arguments
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ODM implements AdapterInterface
 {
-    /**
-     * @var \Doctrine\Common\EventArgs
-     */
-    private $args;
+    private ?EventArgs $args = null;
 
-    /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
-     */
-    private $dm;
+    private ?DocumentManager $dm = null;
 
-    /**
-     * {@inheritdoc}
-     */
+    public function __call($method, $args)
+    {
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2409',
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.5 and will be removed in version 4.0.',
+            __METHOD__
+        );
+
+        if (null === $this->args) {
+            throw new RuntimeException('Event args must be set before calling its methods');
+        }
+        $method = str_replace('Object', $this->getDomainObjectName(), $method);
+
+        return call_user_func_array([$this->args, $method], $args);
+    }
+
     public function setEventArgs(EventArgs $args)
     {
         $this->args = $args;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainObjectName()
     {
         return 'Document';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getManagerName()
     {
         return 'ODM';
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata<object> $meta
      */
     public function getRootObjectClass($meta)
     {
@@ -61,6 +71,8 @@ class ODM implements AdapterInterface
 
     /**
      * Set the document manager
+     *
+     * @return void
      */
     public function setDocumentManager(DocumentManager $dm)
     {
@@ -68,65 +80,56 @@ class ODM implements AdapterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return DocumentManager
      */
     public function getObjectManager()
     {
-        if (!is_null($this->dm)) {
+        if (null !== $this->dm) {
             return $this->dm;
         }
 
-        return $this->__call('getDocumentManager', []);
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getDocumentManager();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function getObject(): object
+    {
+        if (null === $this->args) {
+            throw new \LogicException(sprintf('Event args must be set before calling "%s()".', __METHOD__));
+        }
+
+        return $this->args->getDocument();
+    }
+
     public function getObjectState($uow, $object)
     {
         return $uow->getDocumentState($object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $args)
-    {
-        if (is_null($this->args)) {
-            throw new RuntimeException('Event args must be set before calling its methods');
-        }
-        $method = str_replace('Object', $this->getDomainObjectName(), $method);
-
-        return call_user_func_array([$this->args, $method], $args);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getObjectChangeSet($uow, $object)
     {
         return $uow->getDocumentChangeSet($object);
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata<object> $meta
      */
     public function getSingleIdentifierFieldName($meta)
     {
-        return $meta->identifier;
+        return $meta->getIdentifier()[0];
     }
 
     /**
-     * {@inheritdoc}
+     * @param ClassMetadata<object> $meta
      */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectUpdates($uow)
     {
         $updates = $uow->getScheduledDocumentUpdates();
@@ -135,48 +138,45 @@ class ODM implements AdapterInterface
         return array_merge($updates, $upserts);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectInsertions($uow)
     {
         return $uow->getScheduledDocumentInsertions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledDocumentDeletions();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOriginalObjectProperty($uow, $oid, $property, $value)
+    public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
-        $uow->setOriginalDocumentProperty($oid, $property, $value);
+        $uow->setOriginalDocumentProperty(spl_object_hash($object), $property, $value);
+    }
+
+    public function clearObjectChangeSet($uow, $object)
+    {
+        $uow->clearDocumentChangeSet(spl_object_hash($object));
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function clearObjectChangeSet($uow, $oid)
-    {
-        $uow->clearDocumentChangeSet($oid);
-    }
-
-    /**
+     * @deprecated to be removed in 4.0, use custom lifecycle event classes instead.
+     *
      * Creates a ODM specific LifecycleEventArgs.
      *
-     * @param object                                $document
-     * @param \Doctrine\ODM\MongoDB\DocumentManager $documentManager
+     * @param object          $document
+     * @param DocumentManager $documentManager
      *
-     * @return \Doctrine\ODM\MongoDB\Event\LifecycleEventArgs
+     * @return LifecycleEventArgs
      */
     public function createLifecycleEventArgsInstance($document, $documentManager)
     {
+        Deprecation::trigger(
+            'gedmo/doctrine-extensions',
+            'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2649',
+            'Using "%s()" method is deprecated since gedmo/doctrine-extensions 3.15 and will be removed in version 4.0.',
+            __METHOD__
+        );
+
         return new LifecycleEventArgs($document, $documentManager);
     }
 }

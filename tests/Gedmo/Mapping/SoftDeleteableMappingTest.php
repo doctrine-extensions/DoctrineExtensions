@@ -1,70 +1,81 @@
 <?php
 
-namespace Gedmo\Mapping;
+declare(strict_types=1);
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
+
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Mapping\Fixture\SoftDeleteable as AnnotatedSoftDeleteable;
+use Gedmo\Tests\Mapping\Fixture\Xml\SoftDeleteable as XmlSoftDeleteable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable as YamlSoftDeleteable;
 
 /**
  * These are mapping tests for SoftDeleteable extension
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeleteableMappingTest extends BaseTestCaseOM
+final class SoftDeleteableMappingTest extends ORMMappingTestCase
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var Gedmo\SoftDeleteable\SoftDeleteableListener
-     */
-    private $softDeleteable;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $reader = new AnnotationReader();
-        $annotationDriver = new AnnotationDriver($reader);
+        $listener = new SoftDeleteableListener();
+        $listener->setCacheItemPool($this->cache);
 
-        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
-
-        $chain = new DriverChain();
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
-
-        $this->softDeleteable = new SoftDeleteableListener();
-        $this->evm = new EventManager();
-        $this->evm->addEventSubscriber($this->softDeleteable);
-
-        $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Yaml\SoftDeleteable',
-            'Mapping\Fixture\SoftDeleteable',
-        ], $chain);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping()
+    /**
+     * @return \Generator<string, array{class-string}>
+     */
+    public static function dataSoftDeleteableObject(): \Generator
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\SoftDeleteable');
-        $config = $this->softDeleteable->getConfiguration($this->em, $meta->name);
+        yield 'Model with XML mapping' => [XmlSoftDeleteable::class];
 
-        $this->assertArrayHasKey('softDeleteable', $config);
-        $this->assertTrue($config['softDeleteable']);
-        $this->assertArrayHasKey('timeAware', $config);
-        $this->assertFalse($config['timeAware']);
-        $this->assertArrayHasKey('fieldName', $config);
-        $this->assertEquals('deletedAt', $config['fieldName']);
+        if (PHP_VERSION_ID >= 80000) {
+            yield 'Model with attributes' => [AnnotatedSoftDeleteable::class];
+        } elseif (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedSoftDeleteable::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlSoftDeleteable::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataSoftDeleteableObject
+     */
+    public function testSoftDeleteableMapping(string $className): void
+    {
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\SoftDeleteable');
+        $config = $this->cache->getItem($cacheId)->get();
+
+        static::assertArrayHasKey('softDeleteable', $config);
+        static::assertTrue($config['softDeleteable']);
+        static::assertArrayHasKey('timeAware', $config);
+        static::assertFalse($config['timeAware']);
+        static::assertArrayHasKey('fieldName', $config);
+        static::assertSame('deletedAt', $config['fieldName']);
     }
 }

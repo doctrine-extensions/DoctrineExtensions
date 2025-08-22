@@ -1,9 +1,19 @@
 <?php
 
-use Composer\Autoload\ClassLoader;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /*
@@ -13,40 +23,21 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Christoph Krämer <cevou@gmx.de>
  * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 define('TESTS_PATH', __DIR__);
-define('TESTS_TEMP_DIR', __DIR__.'/temp');
-define('VENDOR_PATH', realpath(__DIR__.'/../vendor'));
+define('TESTS_TEMP_DIR', sys_get_temp_dir().'/doctrine-extension-tests');
 
-/** @var $loader ClassLoader */
-$loader = require __DIR__.'/../vendor/autoload.php';
+require dirname(__DIR__).'/vendor/autoload.php';
 
-$loader->add('Gedmo\\Mapping\\Mock', __DIR__);
-$loader->add('Tool', __DIR__.'/Gedmo');
-// fixture namespaces
-$loader->add('Translator\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Translatable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Timestampable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Blameable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('IpTraceable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Tree\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Sluggable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Sortable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Mapping\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Loggable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('SoftDeleteable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Uploadable\\Fixture', __DIR__.'/Gedmo');
-$loader->add('Wrapper\\Fixture', __DIR__.'/Gedmo');
-$loader->add('ReferenceIntegrity\\Fixture', __DIR__.'/Gedmo');
-$loader->add('References\\Fixture', __DIR__.'/Gedmo');
-// stubs
-$loader->add('Gedmo\\Uploadable\\Stub', __DIR__);
+if (class_exists(AnnotationReader::class)) {
+    $_ENV['annotation_reader'] = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
+    AnnotationReader::addGlobalIgnoredName('note');
 
-AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-Gedmo\DoctrineExtensions::registerAnnotations();
+    // With ORM 3 and `doctrine/annotations` installed together, have the annotations library ignore the ORM's mapping namespace
+    if (!class_exists(AnnotationDriver::class)) {
+        AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
+    }
+}
 
-$reader = new AnnotationReader();
-$reader = new PsrCachedReader($reader, new ArrayAdapter());
-$_ENV['annotation_reader'] = $reader;
+Type::addType('uuid', UuidType::class);

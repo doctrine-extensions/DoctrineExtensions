@@ -1,81 +1,94 @@
 <?php
 
-namespace Gedmo\Mapping;
+declare(strict_types=1);
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\EventManager;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Mapping;
+
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\Uploadable as AnnotatedUploadable;
+use Gedmo\Tests\Mapping\Fixture\Xml\Uploadable as XmlUploadable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable as YamlUploadable;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\UploadableListener;
-use Tool\BaseTestCaseOM;
 
 /**
  * These are mapping tests for Uploadable extension
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class UploadableMappingTest extends BaseTestCaseOM
+final class UploadableMappingTest extends ORMMappingTestCase
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var Gedmo\SoftDeleteable\UploadableListener
-     */
-    private $listener;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
+        // TODO - This should be reset to default (true) after each test case
         Validator::$enableMimeTypesConfigException = false;
 
-        $reader = new AnnotationReader();
-        $annotationDriver = new AnnotationDriver($reader);
+        $listener = new UploadableListener();
+        $listener->setCacheItemPool($this->cache);
 
-        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
-
-        $chain = new DriverChain();
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
-
-        $this->listener = new UploadableListener();
-        $this->evm = new EventManager();
-        $this->evm->addEventSubscriber($this->listener);
-
-        $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Yaml\Uploadable',
-        ], $chain);
+        $this->em = $this->getBasicEntityManager();
+        $this->em->getEventManager()->addEventSubscriber($listener);
     }
 
-    public function testYamlMapping()
+    /**
+     * @return \Generator<string, array{class-string}>
+     */
+    public static function dataUploadableObject(): \Generator
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Uploadable');
-        $config = $this->listener->getConfiguration($this->em, $meta->name);
+        yield 'Model with XML mapping' => [XmlUploadable::class];
 
-        $this->assertTrue($config['uploadable']);
-        $this->assertTrue($config['allowOverwrite']);
-        $this->assertTrue($config['appendNumber']);
-        $this->assertEquals('/my/path', $config['path']);
-        $this->assertEquals('getPath', $config['pathMethod']);
-        $this->assertEquals('mimeType', $config['fileMimeTypeField']);
-        $this->assertEquals('path', $config['filePathField']);
-        $this->assertEquals('size', $config['fileSizeField']);
-        $this->assertEquals('callbackMethod', $config['callback']);
-        $this->assertEquals('SHA1', $config['filenameGenerator']);
-        $this->assertEquals(1500, $config['maxSize']);
-        $this->assertContains('text/plain', $config['allowedTypes']);
-        $this->assertContains('text/css', $config['allowedTypes']);
-        $this->assertContains('video/jpeg', $config['disallowedTypes']);
-        $this->assertContains('text/html', $config['disallowedTypes']);
+        if (PHP_VERSION_ID >= 80000) {
+            yield 'Model with attributes' => [AnnotatedUploadable::class];
+        } elseif (class_exists(AnnotationDriver::class)) {
+            yield 'Model with annotations' => [AnnotatedUploadable::class];
+        }
+
+        if (class_exists(YamlDriver::class)) {
+            yield 'Model with YAML mapping' => [YamlUploadable::class];
+        }
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider dataUploadableObject
+     */
+    public function testUploadableMapping(string $className): void
+    {
+        // Force metadata class loading.
+        $this->em->getClassMetadata($className);
+        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Uploadable');
+        $config = $this->cache->getItem($cacheId)->get();
+
+        static::assertTrue($config['uploadable']);
+        static::assertTrue($config['allowOverwrite']);
+        static::assertTrue($config['appendNumber']);
+        static::assertSame('/my/path', $config['path']);
+        static::assertSame('getPath', $config['pathMethod']);
+        static::assertSame('mimeType', $config['fileMimeTypeField']);
+        static::assertSame('path', $config['filePathField']);
+        static::assertSame('size', $config['fileSizeField']);
+        static::assertSame('callbackMethod', $config['callback']);
+        static::assertSame(Validator::FILENAME_GENERATOR_SHA1, $config['filenameGenerator']);
+        static::assertSame(1500.0, $config['maxSize']);
+        static::assertContains('text/plain', $config['allowedTypes']);
+        static::assertContains('text/css', $config['allowedTypes']);
+        static::assertContains('video/jpeg', $config['disallowedTypes']);
+        static::assertContains('text/html', $config['disallowedTypes']);
     }
 }

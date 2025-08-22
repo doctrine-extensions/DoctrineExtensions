@@ -1,11 +1,22 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Sluggable\Fixture\Issue449\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Sluggable\Fixture\Issue449\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -13,15 +24,12 @@ use Tool\BaseTestCaseORM;
  * @author Craig Marvelley <craig.marvelley@gmail.com>
  *
  * @see http://marvelley.com
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue449Test extends BaseTestCaseORM
+final class Issue449Test extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Issue449\\Article';
-    public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    private const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
-    private $softDeleteableListener;
+    private SoftDeleteableListener $softDeleteableListener;
 
     protected function setUp(): void
     {
@@ -35,25 +43,15 @@ class Issue449Test extends BaseTestCaseORM
         $this->softDeleteableListener = new SoftDeleteableListener();
         $evm->addEventSubscriber($this->softDeleteableListener);
 
-        $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+        $config = $this->getDefaultConfiguration();
+        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
 
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
+        $this->em = $this->getDefaultMockSqliteEntityManager($evm, $config);
 
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::TARGET,
-        ];
-    }
-
-    /**
-     * @test
-     */
-    public function shouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled()
+    public function testShouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled(): void
     {
         $article = new Article();
         $article->setTitle('the soft title');
@@ -75,6 +73,13 @@ class Issue449Test extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertNotEquals($slug, $article->getSlug());
+        static::assertNotSame($slug, $article->getSlug());
+    }
+
+    protected function getUsedEntityFixtures(): array
+    {
+        return [
+            Article::class,
+        ];
     }
 }

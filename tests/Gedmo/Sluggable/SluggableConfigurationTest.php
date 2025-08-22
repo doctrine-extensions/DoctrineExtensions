@@ -1,25 +1,30 @@
 <?php
 
-namespace Gedmo\Sluggable;
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\ConfigurationArticle;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\Sluggable;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\ConfigurationArticle;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableConfigurationTest extends BaseTestCaseORM
+final class SluggableConfigurationTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Sluggable\\Fixture\\ConfigurationArticle';
-
-    private $articleId;
+    private ?int $articleId = null;
 
     protected function setUp(): void
     {
@@ -28,19 +33,19 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testInsertedNewSlug()
+    public function testInsertedNewSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(ConfigurationArticle::class, $this->articleId);
 
-        $this->assertTrue($article instanceof Sluggable);
-        $this->assertEquals('the-title-my-code', $article->getSlug());
+        static::assertInstanceOf(Sluggable::class, $article);
+        static::assertSame('the-title-my-code', $article->getSlug());
     }
 
-    public function testNonUniqueSlugGeneration()
+    public function testNonUniqueSlugGeneration(): void
     {
         for ($i = 0; $i < 5; ++$i) {
             $article = new ConfigurationArticle();
@@ -50,11 +55,11 @@ class SluggableConfigurationTest extends BaseTestCaseORM
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
-            $this->assertEquals('the-title-my-code', $article->getSlug());
+            static::assertSame('the-title-my-code', $article->getSlug());
         }
     }
 
-    public function testSlugLimit()
+    public function testSlugLimit(): void
     {
         $long = 'the title the title the title the title the';
         $article = new ConfigurationArticle();
@@ -66,28 +71,28 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $shorten = $article->getSlug();
-        $this->assertEquals(32, strlen($shorten));
+        static::assertSame(32, strlen($shorten));
     }
 
-    public function testNonUpdatableSlug()
+    public function testNonUpdatableSlug(): void
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article = $this->em->find(ConfigurationArticle::class, $this->articleId);
         $article->setTitle('the title updated');
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals('the-title-my-code', $article->getSlug());
+        static::assertSame('the-title-my-code', $article->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::ARTICLE,
+            ConfigurationArticle::class,
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new ConfigurationArticle();
         $article->setTitle('the title');

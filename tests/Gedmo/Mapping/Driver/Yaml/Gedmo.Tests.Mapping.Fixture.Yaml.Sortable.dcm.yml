@@ -1,0 +1,32 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\Sortable:
+  type: entity
+  table: sortables
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 32
+    position:
+      type: integer
+      gedmo:
+        - sortablePosition
+    grouping:
+      type: string
+      length: 128
+      gedmo:
+        - sortableGroup
+  manyToOne:
+    sortable_group:
+      targetEntity: Gedmo\Tests\Mapping\Fixture\SortableGroup
+      gedmo:
+        - sortableGroup
+  manyToMany:
+    sortable_groups:
+      targetEntity: Gedmo\Tests\Mapping\Fixture\SortableGroup
+      gedmo:
+        - sortableGroup

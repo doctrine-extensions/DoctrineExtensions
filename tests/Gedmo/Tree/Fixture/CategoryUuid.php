@@ -1,16 +1,34 @@
 <?php
 
-namespace Tree\Fixture;
+declare(strict_types=1);
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Tree\Fixture;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Gedmo\Tree\Node as NodeInterface;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ *
  * @Gedmo\Tree(type="nested")
+ *
  * @ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[Gedmo\Tree(type: 'nested')]
 class CategoryUuid implements NodeInterface
 {
     /**
@@ -18,104 +36,156 @@ class CategoryUuid implements NodeInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: Types::STRING, nullable: false)]
+    private ?string $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
      */
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    private ?string $title = null;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeLeft
+     *
      * @ORM\Column(name="lft", type="integer")
      */
+    #[ORM\Column(name: 'lft', type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeRight
+     *
      * @ORM\Column(name="rgt", type="integer")
      */
+    #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
      * @Gedmo\TreeParent
+     *
      * @ORM\ManyToOne(targetEntity="CategoryUuid", inversedBy="children")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
-    private $parentId;
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
+    private ?CategoryUuid $parentId = null;
 
     /**
+     * @var int|null
+     *
      * @Gedmo\TreeLevel
+     *
      * @ORM\Column(name="lvl", type="integer")
      */
+    #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\TreeRoot
+     *
      * @ORM\Column(name="root", type="string")
      */
+    #[ORM\Column(name: 'root', type: Types::STRING)]
+    #[Gedmo\TreeRoot]
     private $root;
 
     /**
+     * @var Collection<int, self>
+     *
      * @ORM\OneToMany(targetEntity="CategoryUuid", mappedBy="parent")
      */
-    private $children;
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    private Collection $children;
 
     /**
+     * @var Collection<int, Article>
+     *
      * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
      */
-    private $comments;
+    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
+    private Collection $comments;
+
+    private ?NodeInterface $sibling = null;
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
 
     /**
      * Creates a random uuid on persist
      *
-     * @return void
      * @ORM\PrePersist
      */
-    public function createId()
+    #[ORM\PrePersist]
+    public function createId(): void
     {
-        $this->id = bin2hex(pack('N2', mt_rand(), mt_rand()));
+        $this->id = bin2hex(pack('N2', random_int(0, mt_getrandmax()), random_int(0, mt_getrandmax())));
     }
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setParent(CategoryUuid $parent)
+    public function setParent(self $parent): void
     {
         $this->parentId = $parent;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parentId;
     }
 
-    public function getLeft()
+    public function getLeft(): ?int
     {
         return $this->lft;
     }
 
-    public function getRight()
+    public function getRight(): ?int
     {
         return $this->rgt;
     }
 
-    public function getLevel()
+    public function getLevel(): ?int
     {
         return $this->level;
+    }
+
+    public function setSibling(NodeInterface $node): void
+    {
+        $this->sibling = $node;
+    }
+
+    public function getSibling(): ?NodeInterface
+    {
+        return $this->sibling;
     }
 }

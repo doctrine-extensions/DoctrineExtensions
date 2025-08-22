@@ -1,56 +1,69 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Document\MappedSuperclass;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * Gedmo\Translatable\Document\AbstractPersonalTranslation
  *
  * @MongoODM\MappedSuperclass
  */
+#[MongoODM\MappedSuperclass]
 abstract class AbstractPersonalTranslation
 {
     /**
-     * @var int
+     * @var string|null
      *
      * @MongoODM\Id
      */
+    #[MongoODM\Id]
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $locale;
 
     /**
      * Related document with ManyToOne relation
      * must be mapped by user
      *
-     * @var object
+     * @var object|null
      */
     protected $object;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $field;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $content;
 
     /**
      * Get id
      *
-     * @return int $id
+     * @return string|null $id
      */
     public function getId()
     {
@@ -122,7 +135,7 @@ abstract class AbstractPersonalTranslation
     /**
      * Get object related
      *
-     * @return string
+     * @return object
      */
     public function getObject()
     {

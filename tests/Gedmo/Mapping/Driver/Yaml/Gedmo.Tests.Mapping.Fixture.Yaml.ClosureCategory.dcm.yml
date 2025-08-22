@@ -1,0 +1,34 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory:
+  type: entity
+  table: closure_categories
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  gedmo:
+    tree:
+      type: closure
+      closure: Gedmo\Tests\Tree\Fixture\Closure\CategoryClosureWithoutMapping
+  fields:
+    title:
+      type: string
+      length: 64
+    level:
+      type: integer
+      gedmo:
+        - treeLevel
+  manyToOne:
+    parent:
+      targetEntity: Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory
+      inversedBy: children
+      gedmo:
+        - treeParent
+  oneToMany:
+    children:
+      targetEntity: Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory
+      mappedBy: parent
+  indexes:
+    search_idx:
+      columns: title

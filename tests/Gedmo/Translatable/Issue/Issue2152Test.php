@@ -2,23 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Gedmo\Translatable\Issue;
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
 
-class Issue2152Test extends BaseTestCaseORM
+final class Issue2152Test extends BaseTestCaseORM
 {
-    private const TRANSLATION = Translation::class;
-    private const ENTITY = EntityWithTranslatableBoolean::class;
-
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
+    private TranslatableListener $translatableListener;
 
     protected function setUp(): void
     {
@@ -32,24 +33,21 @@ class Issue2152Test extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFindInheritedClassTranslations(): void
+    public function testShouldFindInheritedClassTranslations(): void
     {
-        //Arrange
-        //by default we have English
+        // Arrange
+        // by default we have English
         $title = 'Hello World';
         $isOperating = '1';
 
-        //operating in germany
+        // operating in germany
         $deTitle = 'Hallo Welt';
         $isOperatingInGermany = '0';
 
-        //but in Ukraine not operating, should fallback to default one
+        // but in Ukraine not operating, should fallback to default one
         $uaTitle = null;
         $isOperatingInUkraine = null;
 
@@ -67,24 +65,24 @@ class Issue2152Test extends BaseTestCaseORM
         $this->em->persist($entity);
         $this->em->flush();
 
-        //Act
+        // Act
         $entityInDe = $this->findUsingQueryBuilder('de');
         $entityInUa = $this->findUsingQueryBuilder('ua');
 
-        //Assert
+        // Assert
 
-        $this->assertSame($deTitle, $entityInDe->getTitle());
-        $this->assertEquals($isOperatingInGermany, $entityInDe->isOperating());
+        static::assertSame($deTitle, $entityInDe->getTitle());
+        static::assertSame($isOperatingInGermany, $entityInDe->isOperating());
 
-        $this->assertSame($title, $entityInUa->getTitle(), 'should fallback to default title if null');
-        $this->assertEquals($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
+        static::assertSame($title, $entityInUa->getTitle(), 'should fallback to default title if null');
+        static::assertSame($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
-            self::TRANSLATION,
-            self::ENTITY,
+            Translation::class,
+            EntityWithTranslatableBoolean::class,
         ];
     }
 
@@ -93,7 +91,7 @@ class Issue2152Test extends BaseTestCaseORM
         $this->em->clear();
         $this->translatableListener->setTranslatableLocale($locale);
 
-        $qb = $this->em->createQueryBuilder()->select('e')->from(self::ENTITY, 'e');
+        $qb = $this->em->createQueryBuilder()->select('e')->from(EntityWithTranslatableBoolean::class, 'e');
 
         return $qb->getQuery()->getSingleResult();
     }

@@ -1,0 +1,30 @@
+includes:
+    - phpstan-baseline.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    bootstrapFiles:
+        - tests/bootstrap.php
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        -
+            identifier: trait.unused
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never written, only read\.$#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is never read, only written\.$#'
+        - '#^Property Gedmo\\Tests\\.+\\Fixture\\[^:]+::\$\w+ is unused\.$#'
+        - '#^Method Gedmo\\(?:[^\\]+\\)*Mapping\\Driver[^:]+::readExtendedMetadata\(\) with return type void returns [\w\|<>\s,]+ but should not return anything\.$#'
+        - '#^Result of method Gedmo\\Mapping\\Driver::readExtendedMetadata\(\) \(void\) is used\.$#'
+    excludePaths:
+        # Deprecated and unused class, interface does not exist as of 4.0
+        - src/Tool/Logging/DBAL/QueryAnalyzer.php
+        # Generates non-ignorable errors like " Parameter #1 $method (string) of method Gedmo\Tree\Entity\Repository\NestedTreeRepository::__call() is not contravariant with parameter #1 $method (mixed) of method Doctrine\ORM\EntityRepository::__call()."
+        - src/Tool/ORM/Repository/EntityRepositoryCompat.php
+        # Uses a tracking policy that was removed in ORM 3, PHPStan crashes on this file
+        - tests/Gedmo/Sortable/Fixture/NotifyNode.php
+        # Generates non-ignorable errors regarding covariance due to the internal compat layer
+        - tests/Gedmo/Translatable/Fixture/Type/Custom.php
