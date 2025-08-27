@@ -5,7 +5,6 @@ Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable:
   gedmo:
     soft_deleteable:
       field_name: deletedAt
-      non_deleted_column_value: '0'
   id:
     id:
       type: integer
