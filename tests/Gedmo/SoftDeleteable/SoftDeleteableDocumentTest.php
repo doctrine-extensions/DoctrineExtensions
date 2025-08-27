@@ -16,6 +16,7 @@ use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Document\User;
 use Gedmo\Tests\SoftDeleteable\Fixture\Document\UserTimeAware;
+use Gedmo\Tests\SoftDeleteable\Fixture\Document\UserNonDeletedValue;
 use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithLifecycleEventArgsFromODMTypeListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithoutTypeListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithPreAndPostSoftDeleteEventArgsTypeListener;
@@ -70,6 +71,38 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $user = $repo->findOneBy(['username' => $username]);
 
         static::assertNull($user);
+    }
+
+    public function testShouldBeMarkedAsSoftDeletedWithDifferentNonDeletedValueSet(): void
+    {
+        $repo = $this->dm->getRepository(UserNonDeletedValue::class);
+        $newUser = new UserNonDeletedValue();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+        // '1970-01-01 00:00:00'
+        $date = (new \DateTime())->setTimestamp(0);
+        $newUser->setDeletedAt($date);
+
+        $this->dm->persist($newUser);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(['username' => $username]);
+        static::assertSame($date, $user->getDeletedAt());
+
+        $this->dm->remove($user);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(['username' => $username]);
+        static::assertNull($user, 'User should be filtered out');
+
+        // deactivate filter to fetch softdeleted entity
+        $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
+        static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
+        $filter->disableForDocument(UserNonDeletedValue::class);
+
+        $user = $repo->findOneBy(['username' => $username]);
+        static::assertNotNull($user, 'User should be fetched when filter is disabled');
+        static::assertGreaterThan(0, $user->getDeletedAt()->getTimestamp());
     }
 
     /**

@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  *
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", nonDeletedColumnValue: "0")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", hardDelete: false, nonDeletedColumnValue: '1970-01-01 00:00:00')
  */
 #[ORM\Entity]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', hardDelete: false, nonDeletedColumnValue: '1970-01-01 00:00:00')]
