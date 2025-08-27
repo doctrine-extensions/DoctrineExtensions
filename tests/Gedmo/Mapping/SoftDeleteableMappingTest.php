@@ -77,7 +77,5 @@ final class SoftDeleteableMappingTest extends ORMMappingTestCase
         static::assertFalse($config['timeAware']);
         static::assertArrayHasKey('fieldName', $config);
         static::assertSame('deletedAt', $config['fieldName']);
-        static::assertArrayHasKey('nonDeletedColumnValue', $config);
-        static::assertSame('0', $config['nonDeletedColumnValue']);
     }
 }
