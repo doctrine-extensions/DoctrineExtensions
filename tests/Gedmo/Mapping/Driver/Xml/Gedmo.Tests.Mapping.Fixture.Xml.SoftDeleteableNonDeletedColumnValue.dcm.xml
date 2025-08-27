@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\SoftDeleteableNonDeletedColumnValue" table="soft_deleteables">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="deletedAt" type="datetime" nullable="true"/>
+        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" hard-delete="false" non-deleted-column-value="1970-01-01 00:00:00"/>
+    </entity>
+</doctrine-mapping>
