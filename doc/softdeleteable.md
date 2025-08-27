@@ -185,7 +185,7 @@ class Article
 
         <field name="deletedAt" type="datetime" nullable="true" />
 
-        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" hard-delete="true" non-deleted-column-value="0"/>
+        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" hard-delete="true" non-deleted-column-value="1970-01-01 00:00:00"/>
     </entity>
 
 </doctrine-mapping>
