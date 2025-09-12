@@ -640,12 +640,12 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 
 /**
  * @ORM\Table(name="article_translations", indexes={
- *      @ORM\Index(name="article_translation_idx", columns={"locale", "object_class", "field", "foreign_key"})
+ *      @ORM\Index(name="article_translation_idx", columns={"foreign_key", "locale", "object_class", "field"})
  * })
  * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
  #[ORM\Table(name: 'article_translations')]
- #[ORM\Index(name: 'article_translation_idx', columns: ['locale', 'object_class', 'field', 'foreign_key'])]
+ #[ORM\Index(name: 'article_translation_idx', columns: ['foreign_key', 'locale', 'object_class', 'field'])]
  #[ORM\Entity(repositoryClass: TranslationRepository::class)]
 class ArticleTranslation extends AbstractTranslation
 {
