@@ -38,18 +38,18 @@ class RevisionableWithEmbedded
     /**
      * @ORM\Column(name="title", type="string", length=64)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $title = null;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Mapping\Fixture\Entity\EmbeddedRevisionable")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Embedded(class: EmbeddedRevisionable::class)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?EmbeddedRevisionable $embedded = null;
 }

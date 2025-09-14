@@ -28,10 +28,10 @@ class Geo
      *
      * @ORM\Column(type="decimal", precision=9, scale=6)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private string $latitude;
 
     /**
@@ -39,19 +39,19 @@ class Geo
      *
      * @ORM\Column(type="decimal", precision=9, scale=6)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private string $longitude;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Revisionable\Fixture\Entity\GeoLocation")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Embedded(class: GeoLocation::class)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private GeoLocation $geoLocation;
 
     public function __construct(float $latitude, float $longitude, GeoLocation $geoLocation)

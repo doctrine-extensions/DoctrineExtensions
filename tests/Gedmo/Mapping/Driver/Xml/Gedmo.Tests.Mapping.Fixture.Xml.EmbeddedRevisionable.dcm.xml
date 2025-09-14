@@ -2,7 +2,7 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
     <embeddable name="Gedmo\Tests\Mapping\Fixture\Xml\EmbeddedRevisionable">
         <field name="subtitle" type="string" length="191">
-            <gedmo:versioned/>
+            <gedmo:keep-revisions/>
         </field>
     </embeddable>
 </doctrine-mapping>
