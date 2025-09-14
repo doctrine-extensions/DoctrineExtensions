@@ -4,7 +4,7 @@
         <id name="one" association-key="true"/>
         <id name="two" type="integer" column="two"/>
         <field name="title" type="string" length="64">
-            <gedmo:versioned/>
+            <gedmo:keep-revisions/>
         </field>
         <many-to-one field="one" target-entity="Gedmo\Tests\Mapping\Fixture\Xml\Revisionable"/>
         <gedmo:revisionable/>

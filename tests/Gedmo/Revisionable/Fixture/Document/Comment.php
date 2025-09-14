@@ -34,46 +34,46 @@ class Comment implements Revisionable
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $subject = null;
 
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $message = null;
 
     /**
      * @ODM\Field(type="date_immutable")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::DATE_IMMUTABLE)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?\DateTimeImmutable $writtenAt = null;
 
     /**
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Revisionable\Fixture\Document\RelatedArticle", inversedBy="comments")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\ReferenceOne(targetDocument: RelatedArticle::class, inversedBy: 'comments')]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?RelatedArticle $article = null;
 
     /**
      * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Revisionable\Fixture\Document\Author")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\EmbedOne(targetDocument: Author::class)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?Author $author = null;
 
     public function getId(): ?string

@@ -26,10 +26,10 @@ class GeoLocation
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private string $location;
 
     public function __construct(string $location)

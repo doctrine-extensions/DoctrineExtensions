@@ -38,46 +38,46 @@ class Comment implements Revisionable
     /**
      * @ORM\Column(name="subject", type="string", length=128)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'subject', type: Types::STRING, length: 128)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $subject = null;
 
     /**
      * @ORM\Column(name="message", type="text")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'message', type: Types::TEXT)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $message = null;
 
     /**
      * @ORM\Column(name="written_at", type="datetime_immutable")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'written_at', type: Types::DATETIME_IMMUTABLE)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?\DateTimeImmutable $writtenAt = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Revisionable\Fixture\Entity\RelatedArticle", inversedBy="comments")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\ManyToOne(targetEntity: RelatedArticle::class, inversedBy: 'comments')]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?RelatedArticle $article = null;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Revisionable\Fixture\Entity\Author")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Embedded(class: Author::class)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?Author $author = null;
 
     public function getId(): ?int

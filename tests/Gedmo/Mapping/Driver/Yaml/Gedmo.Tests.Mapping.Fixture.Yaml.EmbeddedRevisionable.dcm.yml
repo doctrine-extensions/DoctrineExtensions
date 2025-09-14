@@ -5,4 +5,4 @@ Gedmo\Tests\Mapping\Fixture\Yaml\EmbeddedRevisionable:
     subtitle:
       type: string
       gedmo:
-        - versioned
+        - keepRevisions

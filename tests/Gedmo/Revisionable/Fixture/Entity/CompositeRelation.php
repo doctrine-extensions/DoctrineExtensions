@@ -41,10 +41,10 @@ class CompositeRelation
     /**
      * @ORM\Column(length=8)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $title = null;
 
     public function __construct(Article $articleOne, Article $articleTwo)

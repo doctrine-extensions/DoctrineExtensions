@@ -67,7 +67,7 @@ final class Yaml extends File
         if (!$meta->isMappedSuperclass && $config) {
             // The revisionable flag must be set, except for embedded models, and the versioned config should be a non-empty array
             if (isset($config['versionedFields']) && !isset($config['revisionable'])) {
-                throw new InvalidMappingException(sprintf("Class '%s' has fields marked as versioned but the class does not have the 'revisionable' configuration.", $meta->getName()));
+                throw new InvalidMappingException(sprintf("Class '%s' has fields marked with the 'keepRevisions' property but the class does not have the 'revisionable' configuration.", $meta->getName()));
             }
         }
 
@@ -140,7 +140,7 @@ final class Yaml extends File
                 continue;
             }
 
-            if (in_array('versioned', $fieldMapping['gedmo'], true)) {
+            if (in_array('keepRevisions', $fieldMapping['gedmo'], true)) {
                 if ($meta->isCollectionValuedAssociation($field)) {
                     throw new InvalidMappingException(sprintf('Cannot version field %s::$%s, collection valued associations are not supported.', $meta->getName(), $field));
                 }

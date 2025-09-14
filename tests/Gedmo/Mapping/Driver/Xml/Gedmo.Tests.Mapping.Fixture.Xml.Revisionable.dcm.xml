@@ -5,7 +5,7 @@
             <generator strategy="AUTO"/>
         </id>
         <field name="title" type="string" length="64">
-            <gedmo:versioned/>
+            <gedmo:keep-revisions/>
         </field>
         <gedmo:revisionable/>
     </entity>

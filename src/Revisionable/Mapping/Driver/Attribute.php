@@ -13,8 +13,8 @@ use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as MongoDBDOMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\KeepRevisions;
 use Gedmo\Mapping\Annotation\Revisionable;
-use Gedmo\Mapping\Annotation\Versioned;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -60,7 +60,7 @@ class Attribute extends AbstractAnnotationDriver
         foreach ($class->getProperties() as $property) {
             $field = $property->getName();
 
-            if ($this->reader->getPropertyAnnotation($property, Versioned::class)) {
+            if ($this->reader->getPropertyAnnotation($property, KeepRevisions::class)) {
                 if ($meta->isCollectionValuedAssociation($field)) {
                     throw new InvalidMappingException(sprintf('Cannot version field %s::$%s, collection valued associations are not supported.', $meta->getName(), $field));
                 }
@@ -103,7 +103,7 @@ class Attribute extends AbstractAnnotationDriver
         if (!$meta->isMappedSuperclass && $config) {
             // The revisionable flag must be set, except for embedded models, and the versioned config should be a non-empty array
             if (isset($config['versionedFields']) && !isset($config['revisionable']) && !$this->isEmbed($meta)) {
-                throw new InvalidMappingException(sprintf('Class "%s" has "%s" annotated fields but is missing the "%s" class annotation.', $meta->getName(), Versioned::class, Revisionable::class));
+                throw new InvalidMappingException(sprintf('Class "%s" has "%s" annotated fields but is missing the "%s" class annotation.', $meta->getName(), KeepRevisions::class, Revisionable::class));
             }
         }
 
@@ -121,7 +121,7 @@ class Attribute extends AbstractAnnotationDriver
     private function inspectEmbeddedForVersioned(string $field, array $config, ORMClassMetadata $meta): array
     {
         foreach ((new \ReflectionClass($meta->embeddedClasses[$field]['class']))->getProperties() as $property) {
-            if ($this->reader->getPropertyAnnotation($property, Versioned::class)) {
+            if ($this->reader->getPropertyAnnotation($property, KeepRevisions::class)) {
                 $embeddedField = $field.'.'.$property->getName();
 
                 if (isset($meta->embeddedClasses[$embeddedField])) {

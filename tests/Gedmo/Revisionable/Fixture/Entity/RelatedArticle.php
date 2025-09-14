@@ -40,19 +40,19 @@ class RelatedArticle implements Revisionable
     /**
      * @ORM\Column(name="title", type="string", length=8)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $title = null;
 
     /**
      * @ORM\Column(name="content", type="text")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'content', type: Types::TEXT)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $content = null;
 
     /**

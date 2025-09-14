@@ -14,4 +14,4 @@ Gedmo\Tests\Mapping\Fixture\Yaml\Revisionable:
       type: string
       length: 64
       gedmo:
-        - versioned
+        - keepRevisions
