@@ -23,9 +23,6 @@ a release.
 ### Fixed
 - SoftDeleteable: Resolved a bug where a soft-deleted object isn't remove from the ObjectManager (#2930)
 
-### Changed
-- Translatable: Reorder article_translation_idx columns to improve performance
-
 ### Added
 - IP address provider for use with extensions with IP address references (#2928)
 
