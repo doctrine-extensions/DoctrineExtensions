@@ -285,10 +285,10 @@ class LoggableListener extends MappedEventSubscriber
      * @param LogEntryInterface $logEntry The LogEntry being persisted
      * @param object            $object   The object being Logged
      *
-     * @return void
-     *
      * @phpstan-param LogEntryInterface<T> $logEntry
      * @phpstan-param T $object
+     *
+     * @return void
      */
     protected function prePersistLogEntry($logEntry, $object)
     {
@@ -306,10 +306,10 @@ class LoggableListener extends MappedEventSubscriber
      * @param object            $object
      * @param LogEntryInterface $logEntry
      *
-     * @return array<string, mixed>
-     *
      * @phpstan-param T $object
      * @phpstan-param LogEntryInterface<T> $logEntry
+     *
+     * @return array<string, mixed>
      */
     protected function getObjectChangeSetData($ea, $object, $logEntry)
     {
@@ -352,10 +352,10 @@ class LoggableListener extends MappedEventSubscriber
      * @param string $action
      * @param object $object
      *
-     * @return LogEntryInterface|null
-     *
      * @phpstan-param LogEntryInterface::ACTION_CREATE|LogEntryInterface::ACTION_UPDATE|LogEntryInterface::ACTION_REMOVE $action
      * @phpstan-param T $object
+     *
+     * @return LogEntryInterface|null
      *
      * @phpstan-return LogEntryInterface<T>|null
      */
