@@ -15,9 +15,9 @@ Gedmo\Tests\Mapping\Fixture\Yaml\RevisionableWithEmbedded:
       type: string
       length: 64
       gedmo:
-        - versioned
+        - keepRevisions
   embedded:
     embedded:
       class: Gedmo\Tests\Mapping\Fixture\Yaml\EmbeddedRevisionable
       gedmo:
-        - versioned
+        - keepRevisions

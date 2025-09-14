@@ -31,10 +31,10 @@ class Revisionable
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $title = null;
 
     public function getId(): ?string

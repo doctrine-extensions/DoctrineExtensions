@@ -13,7 +13,7 @@ use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
- * Versioned annotation for use with the Loggable extension
+ * Versioned annotation for use with the Revisionable extension
  *
  * @Annotation
  *
@@ -24,6 +24,6 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Versioned implements GedmoAnnotation
+final class KeepRevisions implements GedmoAnnotation
 {
 }

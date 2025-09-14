@@ -25,19 +25,19 @@ class Author implements Revisionable
     /**
      * @ORM\Column(name="name", type="string", nullable=true)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'name', type: Types::STRING, nullable: true)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $name = null;
 
     /**
      * @ORM\Column(name="email", type="string", nullable=true)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'email', type: Types::STRING, nullable: true)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $email = null;
 
     public function __toString()
