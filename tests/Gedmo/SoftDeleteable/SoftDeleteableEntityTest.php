@@ -28,6 +28,7 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherComment;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Page;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\User;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNonDeletedValue;
 use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithLifecycleEventArgsFromORMTypeListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithoutTypeListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Listener\WithPreAndPostSoftDeleteEventArgsTypeListener;
@@ -610,6 +611,35 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         static::assertNotNull($user, 'User is still available, hard delete done');
     }
 
+    public function testShouldBeMarkedAsSoftDeletedWithDifferentNonDeletedValueSet(): void
+    {
+        $repo = $this->em->getRepository(UserNonDeletedValue::class);
+        $newUser = new UserNonDeletedValue();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+        // '1970-01-01 00:00:00'
+        $date = (new \DateTime())->setTimestamp(0);
+        $newUser->setDeletedAt($date);
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(['username' => $username]);
+        static::assertSame($date, $user->getDeletedAt());
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(['username' => $username]);
+        static::assertNull($user, 'User should be filtered out');
+
+        // deactivate filter to fetch softdeleted entity
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $user = $repo->findOneBy(['username' => $username]);
+        static::assertNotNull($user, 'User should be fetched when filter is disabled');
+        static::assertGreaterThan(0, $user->getDeletedAt()->getTimestamp());
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [
@@ -623,6 +653,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
             OtherComment::class,
             Child::class,
             UserNoHardDelete::class,
+            UserNonDeletedValue::class,
         ];
     }
 

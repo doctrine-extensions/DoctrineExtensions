@@ -1,0 +1,18 @@
+---
+Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteableNonDeletedColumnValue:
+  type: entity
+  table: soft_deleteables
+  gedmo:
+    soft_deleteable:
+      field_name: deletedAt
+      hard_delete: false
+      non_deleted_column_value: '1970-01-01 00:00:00'
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    deletedAt:
+      type: datetime
+      nullable: true
