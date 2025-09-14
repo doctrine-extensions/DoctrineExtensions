@@ -470,11 +470,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article {}
 ```
 
-#### `#[Gedmo\Mapping\Annotation\Versioned]`
+#### `#[Gedmo\Mapping\Annotation\KeepRevisions]`
 
-The `Versioned` attribute is a property attribute used to identify properties whose changes should be logged.
+The `KeepRevisions` attribute is a property attribute used to identify properties whose changes should be logged.
 This attribute can be set for properties with a single value (i.e. a scalar type or an object such as
-`DateTimeInterface`), but not for collections. Versioned fields can be restored to an earlier version.
+`DateTimeInterface`), but not for collections. Fields with revisions can be restored to an earlier version.
 
 Example:
 
@@ -496,11 +496,11 @@ class Comment
     public ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     public ?Article $article = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     public ?string $body = null;
 }
 ```
