@@ -26,28 +26,28 @@ class Geo
     /**
      * @ODM\Field(type="float")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::FLOAT)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private float $latitude;
 
     /**
      * @ODM\Field(type="float")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::FLOAT)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private float $longitude;
 
     /**
      * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Revisionable\Fixture\Document\GeoLocation")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\EmbedOne(targetDocument: GeoLocation::class)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private GeoLocation $geoLocation;
 
     public function __construct(float $latitude, float $longitude, GeoLocation $geoLocation)

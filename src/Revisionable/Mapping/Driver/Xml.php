@@ -68,7 +68,7 @@ final class Xml extends BaseXml
         if (!$meta->isMappedSuperclass && $config) {
             // The revisionable flag must be set, except for embedded models, and the versioned config should be a non-empty array
             if (isset($config['versionedFields']) && (!$this->isEmbed($meta) && !isset($config['revisionable']))) {
-                throw new InvalidMappingException(sprintf("Class '%s' has fields with the 'gedmo:versioned' element but the class does not have the 'gedmo:revisionable' element.", $meta->getName()));
+                throw new InvalidMappingException(sprintf("Class '%s' has fields with the 'gedmo:keep-revisions' element but the class does not have the 'gedmo:revisionable' element.", $meta->getName()));
             }
         }
 
@@ -127,7 +127,7 @@ final class Xml extends BaseXml
         foreach ($element as $mappingDoctrine) {
             $mapping = $mappingDoctrine->children(self::GEDMO_NAMESPACE_URI);
 
-            if (!isset($mapping->versioned)) {
+            if (!isset($mapping->{'keep-revisions'})) {
                 continue;
             }
 

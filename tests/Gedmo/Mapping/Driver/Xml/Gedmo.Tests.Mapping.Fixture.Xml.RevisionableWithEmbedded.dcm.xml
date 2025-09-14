@@ -5,10 +5,10 @@
             <generator strategy="AUTO"/>
         </id>
         <embedded name="embedded" class="Gedmo\Tests\Mapping\Fixture\Xml\EmbeddedRevisionable">
-            <gedmo:versioned/>
+            <gedmo:keep-revisions/>
         </embedded>
         <field name="title" type="string" length="64">
-            <gedmo:versioned/>
+            <gedmo:keep-revisions/>
         </field>
         <gedmo:revisionable revision-class="Gedmo\Revisionable\Entity\Revision"/>
     </entity>
