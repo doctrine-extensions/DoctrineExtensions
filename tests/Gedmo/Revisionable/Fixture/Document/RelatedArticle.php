@@ -36,19 +36,19 @@ class RelatedArticle implements Revisionable
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $title = null;
 
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $content = null;
 
     /**

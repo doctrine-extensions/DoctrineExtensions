@@ -38,28 +38,28 @@ class Article implements Revisionable
     /**
      * @ORM\Column(name="title", type="string", length=8)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 8)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $title = null;
 
     /**
      * @ORM\Column(name="publish_at", type="datetime_immutable")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'publish_at', type: Types::DATETIME_IMMUTABLE)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?\DateTimeImmutable $publishAt = null;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Revisionable\Fixture\Entity\Author")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Embedded(class: Author::class)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?Author $author = null;
 
     public function __toString()

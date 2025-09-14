@@ -40,28 +40,28 @@ class Address implements Revisionable
     /**
      * @ORM\Column(type="string", length=191)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $street = null;
 
     /**
      * @ORM\Column(type="string", length=191)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(type: Types::STRING, length: 191)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $city = null;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Revisionable\Fixture\Entity\Geo")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Embedded(class: Geo::class)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?Geo $geo = null;
 
     public function getId(): ?int

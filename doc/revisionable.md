@@ -114,7 +114,7 @@ class Article
     public bool $published = false;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     public ?string $title = null;
 }
 ```
@@ -134,7 +134,7 @@ class Article
         <field name="published" type="boolean"/>
 
         <field name="title" type="string">
-            <gedmo:versioned/>
+            <gedmo:keep-revisions/>
         </field>
 
         <gedmo:revisionable/>
@@ -174,7 +174,7 @@ class Article
 
     /**
      * @ORM\Column(type="string")
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     public ?string $title = null;
 }

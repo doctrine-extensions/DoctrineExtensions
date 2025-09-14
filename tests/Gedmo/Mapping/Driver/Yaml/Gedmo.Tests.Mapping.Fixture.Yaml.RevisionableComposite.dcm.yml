@@ -15,4 +15,4 @@ Gedmo\Tests\Mapping\Fixture\Yaml\RevisionableComposite:
       type: string
       length: 64
       gedmo:
-        - versioned
+        - keepRevisions

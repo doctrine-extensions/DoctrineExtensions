@@ -26,10 +26,10 @@ class GeoLocation
     /**
      * @ORM\Column(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(type: Types::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private string $location;
 
     public function __construct(string $location)

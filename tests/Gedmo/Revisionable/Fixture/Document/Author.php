@@ -25,19 +25,19 @@ class Author implements Revisionable
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $name = null;
 
     /**
      * @ODM\Field(type="string")
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ODM\Field(type: Type::STRING)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $email = null;
 
     public function __toString()

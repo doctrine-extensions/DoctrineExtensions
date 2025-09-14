@@ -38,6 +38,7 @@
   <xs:element name="blameable" type="gedmo:blameable"/>
   <xs:element name="ip-traceable" type="gedmo:ip-traceable"/>
   <xs:element name="versioned" type="gedmo:emptyType"/>
+  <xs:element name="keep-revisions" type="gedmo:emptyType"/>
   <xs:element name="tree-left" type="gedmo:emptyType"/>
   <xs:element name="tree-right" type="gedmo:emptyType"/>
   <xs:element name="tree-level" type="gedmo:emptyType"/>

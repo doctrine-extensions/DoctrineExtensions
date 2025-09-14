@@ -35,10 +35,10 @@ class Revisionable
     /**
      * @ORM\Column(name="title", type="string", length=64)
      *
-     * @Gedmo\Versioned
+     * @Gedmo\KeepRevisions
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
-    #[Gedmo\Versioned]
+    #[Gedmo\KeepRevisions]
     private ?string $title = null;
 
     public function getId(): ?int
