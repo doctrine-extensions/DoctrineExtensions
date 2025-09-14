@@ -43,9 +43,9 @@ class LogEntryRepository extends DocumentRepository
      *
      * @param object $document
      *
-     * @return LogEntry[]
-     *
      * @phpstan-param T $document
+     *
+     * @return LogEntry[]
      *
      * @phpstan-return array<array-key, LogEntry<T>>
      */
@@ -71,11 +71,11 @@ class LogEntryRepository extends DocumentRepository
      * @param object $document
      * @param int    $version
      *
+     * @phpstan-param T $document
+     *
      * @throws UnexpectedValueException
      *
      * @return void
-     *
-     * @phpstan-param T $document
      */
     public function revert($document, $version = 1)
     {
@@ -109,9 +109,9 @@ class LogEntryRepository extends DocumentRepository
      * @param object               $document
      * @param array<string, mixed> $data
      *
-     * @return void
-     *
      * @phpstan-param T $document
+     *
+     * @return void
      */
     protected function fillDocument($document, array $data)
     {

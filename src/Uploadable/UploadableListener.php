@@ -405,6 +405,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param bool        $appendNumber
      * @param object      $object
      *
+     * @phpstan-param class-string|false $filenameGeneratorClass
+     *
      * @throws UploadableUploadException
      * @throws UploadableNoFileException
      * @throws UploadableExtensionException
@@ -416,8 +418,6 @@ class UploadableListener extends MappedEventSubscriber
      * @throws UploadableCantWriteException
      *
      * @return array<string, int|string|null>
-     *
-     * @phpstan-param class-string|false $filenameGeneratorClass
      */
     public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false, $object = null)
     {

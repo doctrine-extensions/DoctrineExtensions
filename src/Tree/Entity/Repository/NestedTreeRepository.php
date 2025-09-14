@@ -233,9 +233,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return QueryBuilder QueryBuilder object
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     *
+     * @return QueryBuilder QueryBuilder object
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -309,9 +309,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return Query Query object
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     *
+     * @return Query Query object
      */
     public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -325,9 +325,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array<int, object> List of children
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     *
+     * @return array<int, object> List of children
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -359,11 +359,11 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
+     *
      * @throws InvalidArgumentException if input is not valid
      *
      * @return QueryBuilder
-     *
-     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
      */
     public function getLeafsQueryBuilder($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -415,9 +415,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
-     * @return Query
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
+     *
+     * @return Query
      */
     public function getLeafsQuery($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -431,9 +431,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
-     * @return array<int, object>
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
+     *
+     * @return array<int, object>
      */
     public function getLeafs($root = null, $sortByField = null, $direction = 'ASC')
     {
