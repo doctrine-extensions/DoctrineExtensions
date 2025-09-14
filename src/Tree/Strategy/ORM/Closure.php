@@ -136,7 +136,6 @@ class Closure implements Strategy
 
             if (property_exists($closureMetadata, 'propertyAccessors')) {
                 // ORM 3.4+
-                /** @phpstan-ignore-next-line class.NotFound Class introduced in ORM 3.4 */
                 $closureMetadata->propertyAccessors['ancestor'] = PropertyAccessorFactory::createPropertyAccessor(
                     $closureMetadata->getName(),
                     'ancestor'
@@ -185,7 +184,6 @@ class Closure implements Strategy
 
             if (property_exists($closureMetadata, 'propertyAccessors')) {
                 // ORM 3.4+
-                /** @phpstan-ignore-next-line class.NotFound Class introduced in ORM 3.4 */
                 $closureMetadata->propertyAccessors['descendant'] = PropertyAccessorFactory::createPropertyAccessor(
                     $closureMetadata->getName(),
                     'descendant'
