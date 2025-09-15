@@ -18,11 +18,10 @@ a release.
 ---
 
 ## [Unreleased]
-### Changed
-- Translatable: Optimized database indexes for better performance by reordering unique constraint fields and removing redundant indexes
 
 ### Changed
 - Sluggable: Replaced abandoned `behat/transliterator` with `symfony/string` for default transliteration and urlization steps (#2985)
+- Translatable: Optimized database indexes for better performance by reordering unique constraint fields and removing redundant indexes
 
 ## [3.20.1] - 2025-09-14
 ### Fixed
