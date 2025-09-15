@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <mapped-superclass name="Gedmo\Tests\Mapping\Fixture\Xml\BaseCategory">
+        <field name="left" type="integer">
+            <gedmo:tree-left/>
+        </field>
+        <field name="right" type="integer">
+            <gedmo:tree-right/>
+        </field>
+        <field name="rooted" type="integer">
+            <gedmo:tree-root/>
+        </field>
+        <field name="level" type="integer">
+            <gedmo:tree-level/>
+        </field>
+        <field name="created" type="datetime">
+            <gedmo:timestampable on="create"/>
+        </field>
+        <field name="updated" type="datetime">
+            <gedmo:timestampable on="update"/>
+        </field>
+    </mapped-superclass>
+</doctrine-mapping>
