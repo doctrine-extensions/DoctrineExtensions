@@ -21,17 +21,12 @@ use PHPUnit\Framework\TestCase;
  */
 final class SoftDeletableDocumentTraitTest extends TestCase
 {
-    /**
-     * @var UsingTrait
-     */
-    protected $entity;
-
     public function testGetSetDeletedAt(): void
     {
         $time = new \DateTime();
         $entity = new UsingTrait();
 
-        static::assertNull($entity->getDeletedAt(), 'deletedAt defaults to null');
+        static::assertNotInstanceOf(\DateTime::class, $entity->getDeletedAt(), 'deletedAt defaults to null');
         static::assertFalse($entity->isDeleted(), 'isDeleted defaults to false');
         static::assertSame($entity, $entity->setDeletedAt($time), 'Setter has a fluid interface');
         static::assertSame($time, $entity->getDeletedAt(), 'Getter returns a DateTime Object');

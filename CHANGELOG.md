@@ -20,6 +20,7 @@ a release.
 ## [Unreleased]
 
 ### Changed
+- Dropped support for PHP < 8.1
 - Sluggable: Replaced abandoned `behat/transliterator` with `symfony/string` for default transliteration and urlization steps (#2985)
 
 ## [3.20.1] - 2025-09-14

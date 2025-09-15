@@ -35,7 +35,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
             if ($object instanceof PersistenceProxy) {
                 $id = $om->getUnitOfWork()->getEntityIdentifier($object);
             } else {
-                $meta = $om->getClassMetadata(get_class($object));
+                $meta = $om->getClassMetadata($object::class);
                 $id = [];
                 foreach ($meta->getIdentifier() as $name) {
                     $id[$name] = $meta->getReflectionProperty($name)->getValue($object);
@@ -69,7 +69,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
 
     public function extractIdentifier($om, $object, $single = true)
     {
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         if ($object instanceof GhostObjectInterface) {
             $id = $om->getUnitOfWork()->getDocumentIdentifier($object);
         } else {

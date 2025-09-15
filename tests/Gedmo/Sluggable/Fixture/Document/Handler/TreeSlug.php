@@ -23,12 +23,10 @@ use Gedmo\Sluggable\Handler\TreeSlugHandler;
 class TreeSlug
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @ODM\Field(type="string")
@@ -37,8 +35,6 @@ class TreeSlug
     private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(handlers={
      *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
      *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
@@ -51,7 +47,7 @@ class TreeSlug
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title'])]
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[ODM\Field(type: Type::STRING)]
-    private $alias;
+    private ?string $alias = null;
 
     /**
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sluggable\Fixture\Document\Handler\TreeSlug")

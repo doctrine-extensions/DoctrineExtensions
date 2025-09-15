@@ -25,6 +25,4 @@ use Gedmo\Tests\Loggable\Fixture\Document\Comment as CommentDocument;
  * @phpstan-extends AbstractLogEntry<CommentDocument>
  */
 #[ODM\Document(collection: 'test_comment_log_entries', repositoryClass: LogEntryRepository::class)]
-class Comment extends AbstractLogEntry
-{
-}
+class Comment extends AbstractLogEntry {}

@@ -23,8 +23,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -32,7 +30,7 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string")
@@ -46,7 +44,7 @@ class Article
      * @ORM\OneToMany(targetEntity="File", mappedBy="article", cascade={"persist", "remove"})
      */
     #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'article', cascade: ['persist', 'remove'])]
-    private $files;
+    private Collection $files;
 
     private ?string $filePath = null;
 

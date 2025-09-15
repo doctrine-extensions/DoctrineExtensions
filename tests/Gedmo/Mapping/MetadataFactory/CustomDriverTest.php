@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping\MetadataFactory;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -55,13 +55,9 @@ final class CustomDriverTest extends TestCase
         ];
 
         $evm = new EventManager();
-        $this->timestampable = new TimestampableListener();
 
-        if (PHP_VERSION >= 80000) {
-            $this->timestampable->setAnnotationReader(new AttributeReader());
-        } elseif (class_exists(AnnotationReader::class)) {
-            $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
-        }
+        $this->timestampable = new TimestampableListener();
+        $this->timestampable->setAnnotationReader(new AttributeReader());
 
         $evm->addEventSubscriber($this->timestampable);
         $connection = DriverManager::getConnection($conn, $config);
@@ -81,7 +77,7 @@ final class CustomDriverTest extends TestCase
             $this->em,
             Timestampable::class
         );
-        static::assertTrue(isset($conf['create']));
+        static::assertArrayHasKey('create', $conf);
 
         $test = new Timestampable();
         $this->em->persist($test);
@@ -113,9 +109,7 @@ class CustomDriver implements MappingDriver
             $id['columnName'] = 'id';
             $id['id'] = true;
 
-            $metadata->setIdGeneratorType(
-                constant('Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_AUTO')
-            );
+            $metadata->setIdGeneratorType(ORMClassMetadata::GENERATOR_TYPE_AUTO);
 
             $metadata->mapField($id);
 

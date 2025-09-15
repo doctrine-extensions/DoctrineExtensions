@@ -33,7 +33,7 @@ class Car extends Vehicle
      * @ORM\OneToMany(targetEntity="Car", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
+    protected Collection $children;
 
     /**
      * @Gedmo\TreeParent
@@ -49,48 +49,40 @@ class Car extends Vehicle
     private ?Car $parent = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      *
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      *
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRoot
      *
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $classLevel;
+    private ?int $classLevel = null;
 
     public function __construct()
     {

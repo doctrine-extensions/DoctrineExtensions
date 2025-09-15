@@ -9,30 +9,32 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Translator\Fixture;
+namespace Gedmo\Tests\Mapping\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translator\Entity\Translation;
 
 /**
  * @ORM\Table(
- *     indexes={@ORM\Index(name="pers_translations_lookup_idx", columns={
+ *     indexes={@ORM\Index(name="translations_lookup_idx", columns={
  *         "locale", "translatable_id"
  *     })},
- *     uniqueConstraints={@ORM\UniqueConstraint(name="pers_lookup_unique_idx", columns={
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
  *         "locale", "translatable_id", "property"
  *     })}
  * )
  * @ORM\Entity
  */
 #[ORM\Entity]
-#[ORM\Index(name: 'pers_translations_lookup_idx', columns: ['locale', 'translatable_id'])]
-#[ORM\UniqueConstraint(name: 'pers_lookup_unique_idx', columns: ['locale', 'translatable_id', 'property'])]
-class PersonCustomTranslation extends Translation
+#[ORM\Index(name: 'translations_lookup_idx', columns: ['locale', 'translatable_id'])]
+#[ORM\UniqueConstraint(name: 'lookup_unique_idx', columns: ['locale', 'translatable_id', 'property'])]
+class CategoryTranslation extends Translation
 {
     /**
-     * @ORM\ManyToOne(targetEntity="PersonCustom", inversedBy="translations")
+     * @var Category|null
+     *
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="translations")
      */
-    #[ORM\ManyToOne(targetEntity: PersonCustom::class, inversedBy: 'translations')]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'translations')]
     protected $translatable;
 }

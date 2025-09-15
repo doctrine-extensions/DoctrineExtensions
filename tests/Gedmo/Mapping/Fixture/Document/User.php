@@ -22,12 +22,10 @@ use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 class User
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @Ext\Encode(type="sha1", secret="xxx")

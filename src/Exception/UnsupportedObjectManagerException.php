@@ -18,6 +18,4 @@ use Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class UnsupportedObjectManagerException extends InvalidArgumentException implements Exception
-{
-}
+class UnsupportedObjectManagerException extends InvalidArgumentException implements Exception {}

@@ -35,7 +35,7 @@ final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter, ClockAw
      */
     public function getDateValue($meta, $field)
     {
-        $datetime = $this->clock instanceof ClockInterface ? $this->clock->now() : new \DateTimeImmutable();
+        $datetime = $this->clock?->now() ?? new \DateTimeImmutable();
         $mapping = $meta->getFieldMapping($field);
         $type = $mapping['type'] ?? null;
 

@@ -26,8 +26,6 @@ use Gedmo\Uploadable\Mapping\Validator;
 class FileWithAlphanumericName
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -35,7 +33,7 @@ class FileWithAlphanumericName
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="path", type="string", nullable=true)

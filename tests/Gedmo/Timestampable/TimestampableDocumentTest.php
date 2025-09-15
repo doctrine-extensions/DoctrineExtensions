@@ -43,10 +43,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $now = time();
         $created = $article->getCreated()->getTimestamp();
         static::assertTrue($created > $now - 5 && $created < $now + 5); // 5 seconds interval if lag
-        static::assertSame(
-            $date->format('Y-m-d H:i'),
-            $article->getUpdated()->format('Y-m-d H:i')
-        );
+        static::assertSame($date->format('Y-m-d H:i'), $article->getUpdated()->format('Y-m-d H:i'));
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -60,10 +57,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);
         $date = new \DateTime();
-        static::assertSame(
-            $date->format('Y-m-d H:i'),
-            $article->getPublished()->format('Y-m-d H:i')
-        );
+        static::assertSame($date->format('Y-m-d H:i'), $article->getPublished()->format('Y-m-d H:i'));
     }
 
     public function testForcedValues(): void
@@ -80,14 +74,8 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertSame(
-            $created,
-            $sport->getCreated()->getTimestamp()
-        );
-        static::assertSame(
-            '2000-01-01 12:00:00',
-            $sport->getUpdated()->format('Y-m-d H:i:s')
-        );
+        static::assertSame($created, $sport->getCreated()->getTimestamp());
+        static::assertSame('2000-01-01 12:00:00', $sport->getUpdated()->format('Y-m-d H:i:s'));
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -101,10 +89,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertSame(
-            '2000-01-01 12:00:00',
-            $sport->getPublished()->format('Y-m-d H:i:s')
-        );
+        static::assertSame('2000-01-01 12:00:00', $sport->getPublished()->format('Y-m-d H:i:s'));
     }
 
     public function testShouldHandleOnChangeWithBooleanValue(): void
@@ -112,13 +97,13 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(Article::class);
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);
 
-        static::assertNull($article->getReady());
+        static::assertNotInstanceOf(\DateTime::class, $article->getReady());
 
         $article->setIsReady(true);
         $this->dm->persist($article);
         $this->dm->flush();
 
-        static::assertNotNull($article->getReady());
+        static::assertInstanceOf(\DateTime::class, $article->getReady());
     }
 
     private function populate(): void

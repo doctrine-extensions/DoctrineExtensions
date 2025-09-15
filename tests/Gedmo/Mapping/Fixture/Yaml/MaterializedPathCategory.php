@@ -16,10 +16,7 @@ use Doctrine\Common\Collections\Collection;
 
 class MaterializedPathCategory
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     private ?string $title = null;
 
@@ -30,7 +27,7 @@ class MaterializedPathCategory
     /**
      * @var Collection<int, Category>
      */
-    private $children;
+    private Collection $children;
 
     private ?MaterializedPathCategory $parent = null;
 

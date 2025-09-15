@@ -27,12 +27,10 @@ use Gedmo\Tests\Loggable\Fixture\Document\Log\Comment as CommentLog;
 class Comment implements Loggable
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @Gedmo\Versioned
