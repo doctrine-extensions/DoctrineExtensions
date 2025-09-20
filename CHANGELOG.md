@@ -22,6 +22,7 @@ a release.
 - SoftDeleteable: Add option to enable or disable handling of the `postFlush` event (#2958)
 
 ### Changed
+- Translatable: Optimized database indexes for better performance by reordering unique constraint fields and removing redundant indexes
 - SoftDeleteable: Handling of the `postFlush` event is now disabled by default (#2958)
 
 ### Fixed
