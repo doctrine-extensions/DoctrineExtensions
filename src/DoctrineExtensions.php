@@ -30,7 +30,7 @@ final class DoctrineExtensions
     /**
      * Current version of extensions
      */
-    public const VERSION = '3.20.1';
+    public const VERSION = '3.21.0';
 
     /**
      * Hooks all extension metadata mapping drivers into
