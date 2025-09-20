@@ -21,7 +21,10 @@ a release.
 
 ### Changed
 - Sluggable: Replaced abandoned `behat/transliterator` with `symfony/string` for default transliteration and urlization steps (#2985)
-- Use `getFieldValue` and `setFieldValue` methods to support `doctrine/orm` >= 3.4 (#2966)
+- Use `ClassMetadata::getFieldValue()` and `ClassMetadata::setFieldValue(` methods to support `doctrine/orm` >= 3.4 (#2966)
+
+### Fixed
+- Sluggable: Fix type error when generating slug using embedded properties (#2965)
 
 ## [3.20.1] - 2025-09-14
 ### Fixed
