@@ -49,7 +49,7 @@ class User implements Sluggable
     private ?string $slug = null;
 
     /**
-     * @ORM\Embeddable(class=Address::class)
+     * @ORM\Embedded(class=Address::class)
      */
     #[Embedded(class: Address::class)]
     private Address $address;
