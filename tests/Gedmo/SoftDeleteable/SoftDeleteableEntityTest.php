@@ -19,6 +19,7 @@ use Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\Clock;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Article;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Author;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Child;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Comment;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\MegaPage;
@@ -522,8 +523,10 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         static::assertCount(0, $data);
     }
 
-    public function testSoftDeletedObjectIsRemovedPostFlush(): void
+    public function testSoftDeletedObjectIsRemovedPostFlushWhenEnabled(): void
     {
+        $this->softDeleteableListener->setHandlePostFlushEvent(true);
+
         $repo = $this->em->getRepository(Article::class);
         $commentRepo = $this->em->getRepository(Comment::class);
 
@@ -556,6 +559,44 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         // Now that we've flushed, the Comment should no longer be available and should return null.
         static::assertNull($commentRepo->find($comment->getId()));
+    }
+
+    public function testSoftDeletedEntityIsNotReinsertedPostFlushWhenDisabled(): void
+    {
+        $authorRepo = $this->em->getRepository(Author::class);
+
+        $author = new Author();
+        $firstname = 'first_name';
+        $author->setFirstname($firstname);
+        $lastname = 'last_name';
+        $author->setLastname($lastname);
+
+        $article = new Article();
+        $title = 'Title 1';
+        $article->setTitle($title);
+        $article->setAuthor($author);
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $this->em->clear();
+
+        $author = $authorRepo->findOneBy(['firstname' => $firstname]);
+        $article = $author->getArticles()[0];
+
+        static::assertSame($lastname, $author->getLastname());
+        static::assertNull($author->getDeletedAt());
+        static::assertSame($title, $article->getTitle());
+
+        $this->em->remove($author);
+        $this->em->flush();
+
+        // Flush again
+        $this->em->flush();
+
+        // Check whether the entity was re-inserted
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+        static::assertSame(1, $authorRepo->count(['firstname' => $firstname]));
     }
 
     public function testPostSoftDeleteEventIsDispatched(): void
@@ -614,6 +655,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
     {
         return [
             Article::class,
+            Author::class,
             Page::class,
             MegaPage::class,
             Module::class,

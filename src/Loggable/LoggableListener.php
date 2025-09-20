@@ -173,7 +173,7 @@ class LoggableListener extends MappedEventSubscriber
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
 
             $id = $wrapped->getIdentifier(false, true);
-            $logEntryMeta->getReflectionProperty('objectId')->setValue($logEntry, $id);
+            $logEntryMeta->setFieldValue($logEntry, 'objectId', $id);
             $uow->scheduleExtraUpdate($logEntry, [
                 'objectId' => [null, $id],
             ]);
