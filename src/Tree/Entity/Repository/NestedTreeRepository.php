@@ -801,11 +801,11 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Reorders $node's child nodes,
      * according to the $sortByField and $direction specified
      *
-     * @param object|null $node        node from which to start reordering the tree; null will reorder everything
-     * @param string      $sortByField field name to sort by
-     * @param string      $direction   sort direction : "ASC" or "DESC"
-     * @param bool        $verify      true to verify tree first
-     * @param bool        $recursive   true to also reorder further descendants, not just the direct children
+     * @param object|null          $node        node from which to start reordering the tree; null will reorder everything
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $verify      true to verify tree first
+     * @param bool                 $recursive   true to also reorder further descendants, not just the direct children
      *
      * @return void
      */
@@ -836,9 +836,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Reorders all nodes in the tree according to the $sortByField and $direction specified.
      *
-     * @param string $sortByField field name to sort by
-     * @param string $direction   sort direction : "ASC" or "DESC"
-     * @param bool   $verify      true to verify tree first
+     * @param string|string[]|null $sortByField Field name or array of fields names to sort by
+     * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
+     * @param bool                 $verify      true to verify tree first
      *
      * @return void
      */
