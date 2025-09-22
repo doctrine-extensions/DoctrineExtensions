@@ -38,14 +38,6 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
      */
     protected $sluggable;
 
-    /**
-     * $options = array(
-     *     'relationClass' => 'objectclass',
-     *     'inverseSlugField' => 'slug',
-     *     'mappedBy' => 'relationField'
-     * )
-     * {@inheritdoc}
-     */
     public function __construct(SluggableListener $sluggable)
     {
         $this->sluggable = $sluggable;
@@ -113,10 +105,10 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
                             continue;
                         }
 
-                        $objectSlug = (string) $meta->getReflectionProperty($mappedByConfig['slug'])->getValue($object);
+                        $objectSlug = (string) $meta->getFieldValue($object, $mappedByConfig['slug']);
                         if (preg_match("@^{$oldSlug}@smi", $objectSlug)) {
                             $objectSlug = str_replace($oldSlug, $slug, $objectSlug);
-                            $meta->getReflectionProperty($mappedByConfig['slug'])->setValue($object, $objectSlug);
+                            $meta->setFieldValue($object, $mappedByConfig['slug'], $objectSlug);
                             $ea->setOriginalObjectProperty($uow, $object, $mappedByConfig['slug'], $objectSlug);
                         }
                     }

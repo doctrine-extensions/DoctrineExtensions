@@ -68,7 +68,7 @@ class TranslationRepository extends EntityRepository
         }
         $needsPersist = true;
         if ($locale === $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager())) {
-            $meta->getReflectionProperty($field)->setValue($entity, $value);
+            $meta->setFieldValue($entity, $field, $value);
             $this->getEntityManager()->persist($entity);
         } else {
             if (isset($config['translationClass'])) {
@@ -77,7 +77,7 @@ class TranslationRepository extends EntityRepository
                 $ea = new TranslatableAdapterORM();
                 $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
             }
-            $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
+            $foreignKey = $meta->getFieldValue($entity, $meta->getSingleIdentifierFieldName());
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->getEntityManager()->getClassMetadata($class);
             $trans = $this->findOneBy([
@@ -88,10 +88,10 @@ class TranslationRepository extends EntityRepository
             ]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
-                $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
-                $transMeta->getReflectionProperty('objectClass')->setValue($trans, $objectClass);
-                $transMeta->getReflectionProperty('field')->setValue($trans, $field);
-                $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
+                $transMeta->setFieldValue($trans, 'foreignKey', $foreignKey);
+                $transMeta->setFieldValue($trans, 'objectClass', $objectClass);
+                $transMeta->setFieldValue($trans, 'field', $field);
+                $transMeta->setFieldValue($trans, 'locale', $locale);
             }
             if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager())
                 && $locale === $listener->getDefaultLocale()) {
@@ -99,7 +99,7 @@ class TranslationRepository extends EntityRepository
                 $needsPersist = $listener->getPersistDefaultLocaleTranslation();
             }
             $transformed = $this->getEntityManager()->getConnection()->convertToDatabaseValue($value, $meta->getTypeOfField($field));
-            $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
+            $transMeta->setFieldValue($trans, 'content', $transformed);
             if ($needsPersist) {
                 if ($this->getEntityManager()->getUnitOfWork()->isInIdentityMap($entity)) {
                     $this->getEntityManager()->persist($trans);

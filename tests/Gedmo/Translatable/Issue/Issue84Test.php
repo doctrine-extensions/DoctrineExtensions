@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Translatable\Entity\Translation;
@@ -51,7 +50,7 @@ final class Issue84Test extends BaseTestCaseORM
         $this->em->clear();
 
         $article = $this->em->getReference(Article::class, 1);
-        static::assertInstanceOf(Proxy::class, $article);
+        static::assertTrue($this->em->isUninitializedObject($article));
 
         $trans = $repo->findTranslations($article);
         static::assertCount(1, $trans);

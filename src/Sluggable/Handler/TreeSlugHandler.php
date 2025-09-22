@@ -17,6 +17,8 @@ use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 
+use function Symfony\Component\String\u;
+
 /**
  * Sluggable handler which slugs all parent nodes
  * recursively and synchronizes on updates. For instance
@@ -40,36 +42,24 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
      */
     protected $sluggable;
 
-    /**
-     * @var string
-     */
-    private $prefix;
+    private string $prefix = '';
 
-    /**
-     * @var string
-     */
-    private $suffix;
+    private string $suffix = '';
 
     /**
      * True if node is being inserted
-     *
-     * @var bool
      */
-    private $isInsert = false;
+    private bool $isInsert = false;
 
     /**
      * Transliterated parent slug
-     *
-     * @var string
      */
-    private $parentSlug;
+    private string $parentSlug = '';
 
     /**
      * Used path separator
-     *
-     * @var string
      */
-    private $usedPathSeparator;
+    private string $usedPathSeparator = self::SEPARATOR;
 
     public function __construct(SluggableListener $sluggable)
     {
@@ -106,11 +96,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
 
             // if needed, remove suffix from parentSlug, so we can use it to prepend it to our slug
             if (isset($options['suffix'])) {
-                $suffix = $options['suffix'];
-
-                if (substr($this->parentSlug, -strlen($suffix)) === $suffix) { // endsWith
-                    $this->parentSlug = substr_replace($this->parentSlug, '', -1 * strlen($suffix));
-                }
+                $this->parentSlug = u($this->parentSlug)->trimSuffix($options['suffix'])->toString();
             }
         }
     }
@@ -151,10 +137,10 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
                         continue;
                     }
 
-                    $objectSlug = (string) $meta->getReflectionProperty($config['slug'])->getValue($object);
+                    $objectSlug = (string) $meta->getFieldValue($object, $config['slug']);
                     if (preg_match("@^{$target}{$config['pathSeparator']}@smi", $objectSlug)) {
                         $objectSlug = str_replace($target, $slug, $objectSlug);
-                        $meta->getReflectionProperty($config['slug'])->setValue($object, $objectSlug);
+                        $meta->setFieldValue($object, $config['slug'], $objectSlug);
                         $ea->setOriginalObjectProperty($uow, $object, $config['slug'], $objectSlug);
                     }
                 }

@@ -41,9 +41,9 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param array<string, mixed> $options     Options, see {@see RepositoryUtilsInterface::buildTree()} for supported keys
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array<int|string, object>
-     *
      * @phpstan-param T $node
+     *
+     * @return array<int|string, object>
      *
      * @phpstan-return iterable<int|string, T>
      */
@@ -58,10 +58,10 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return iterable<int|string, object> List of children
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
      * @phpstan-param T|null $node
+     *
+     * @return iterable<int|string, object> List of children
      *
      * @phpstan-return iterable<int|string, T>
      */

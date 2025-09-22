@@ -60,7 +60,7 @@ class TreeObjectHydrator extends ObjectHydrator
     public function setPropertyValue($object, $property, $value)
     {
         $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
-        $meta->getReflectionProperty($property)->setValue($object, $value);
+        $meta->setFieldValue($object, $property, $value);
     }
 
     /**
@@ -298,6 +298,6 @@ class TreeObjectHydrator extends ObjectHydrator
     {
         $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
 
-        return $meta->getReflectionProperty($property)->getValue($object);
+        return $meta->getFieldValue($object, $property);
     }
 }
