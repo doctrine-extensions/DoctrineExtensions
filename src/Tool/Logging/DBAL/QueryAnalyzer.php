@@ -9,7 +9,6 @@
 
 namespace Gedmo\Tool\Logging\DBAL;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
