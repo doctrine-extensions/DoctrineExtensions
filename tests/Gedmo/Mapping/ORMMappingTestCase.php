@@ -43,8 +43,14 @@ abstract class ORMMappingTestCase extends TestCase
         $config = new Configuration();
         $config->setMetadataCache(new ArrayAdapter());
         $config->setQueryCache(new ArrayAdapter());
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Mapping\Proxy');
+
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'enableNativeLazyObjects')) {
+            $config->enableNativeLazyObjects(true);
+        } else {
+            $config->setProxyDir(TESTS_TEMP_DIR);
+            $config->setProxyNamespace('Gedmo\Mapping\Proxy');
+        }
 
         return $config;
     }

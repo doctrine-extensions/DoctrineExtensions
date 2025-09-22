@@ -31,13 +31,13 @@ interface Driver
      * @param ClassMetadata<T>     $meta
      * @param array<string, mixed> $config
      *
-     * @throws InvalidMappingException if the mapping configuration is invalid
-     *
-     * @return void
-     *
      * @template T of object
      *
      * @phpstan-param ClassMetadata<T>&(OdmClassMetadata<T>|OrmClassMetadata<T>) $meta
+     *
+     * @throws InvalidMappingException if the mapping configuration is invalid
+     *
+     * @return void
      */
     public function readExtendedMetadata($meta, array &$config);
 

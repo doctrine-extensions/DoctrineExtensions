@@ -649,9 +649,9 @@ Now the generated slug will be translated by Translatable behavior
 
 There are built-in slug handlers like described in configuration options of slug, but there
 can be also customized slug handlers depending on use cases. Usually the most logic use case
-is for related slug. For instance if user has a **ManyToOne relation to a **Company** we
+is for related slug. For instance if user has a **ManyToOne** relation to a **Company** we
 would like to have a url like `http://example.com/knplabs/gedi` where **KnpLabs**
-is a company and user name is **Gedi**. In this case relation has a path separator **/**
+is a company and user name is **Gedi**. In this case relation has a path separator **/**.
 
 User entity example:
 

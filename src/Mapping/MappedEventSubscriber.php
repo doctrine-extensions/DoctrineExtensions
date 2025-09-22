@@ -307,7 +307,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
         $meta = $manager->getClassMetadata(get_class($object));
         $uow = $manager->getUnitOfWork();
 
-        $meta->getReflectionProperty($field)->setValue($object, $newValue);
+        $meta->setFieldValue($object, $field, $newValue);
         $uow->propertyChanged($object, $field, $oldValue, $newValue);
         $adapter->recomputeSingleObjectChangeSet($uow, $meta, $object);
     }

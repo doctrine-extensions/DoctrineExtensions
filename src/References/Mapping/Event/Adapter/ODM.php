@@ -38,7 +38,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
                 $meta = $om->getClassMetadata(get_class($object));
                 $id = [];
                 foreach ($meta->getIdentifier() as $name) {
-                    $id[$name] = $meta->getReflectionProperty($name)->getValue($object);
+                    $id[$name] = $meta->getFieldValue($object, $name);
                     // return null if one of identifiers is missing
                     if (!$id[$name]) {
                         return null;
@@ -73,7 +73,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
         if ($object instanceof GhostObjectInterface) {
             $id = $om->getUnitOfWork()->getDocumentIdentifier($object);
         } else {
-            $id = $meta->getReflectionProperty($meta->getIdentifier()[0])->getValue($object);
+            $id = $meta->getFieldValue($object, $meta->getIdentifier()[0]);
         }
 
         if ($single || !$id) {

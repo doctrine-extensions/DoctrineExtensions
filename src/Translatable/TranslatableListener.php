@@ -551,7 +551,7 @@ class TranslatableListener extends MappedEventSubscriber
                         $om->getUnitOfWork(),
                         $object,
                         $field,
-                        $meta->getReflectionProperty($field)->getValue($object)
+                        $meta->getFieldValue($object, $field)
                     );
                 }
             }

@@ -18,8 +18,27 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- SoftDeleteable: Add option to enable or disable handling of the `postFlush` event (#2958)
+
+### Changed
+- Translatable: Optimized database indexes for better performance by reordering unique constraint fields and removing redundant indexes
+- SoftDeleteable: Handling of the `postFlush` event is now disabled by default (#2958)
+
 ### Fixed
+- SoftDeleteable: Prevent cascade persist from re-inserting soft-deleted entities still referenced in the identity map (#2958)
+
+### Changed
+- Sluggable: Replaced abandoned `behat/transliterator` with `symfony/string` for default transliteration and urlization steps (#2985)
+- Use `ClassMetadata::getFieldValue()` and `ClassMetadata::setFieldValue(` methods to support `doctrine/orm` >= 3.4 (#2966)
+
+### Fixed
+- Sluggable: Fix type error when generating slug using embedded properties (#2965)
 - SoftDeleteable: Remove dollar sign ($) from the default cache key of soft deleteable metadata - to be compatible with stricter cache key naming conventions (#2978)
+
+## [3.20.1] - 2025-09-14
+### Fixed
+- Compatibility with `doctrine/mongodb-odm` ^2.11 (#2945)
 
 ## [3.20.0] - 2025-04-04
 ### Fixed

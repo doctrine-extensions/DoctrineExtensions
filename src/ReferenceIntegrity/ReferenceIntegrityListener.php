@@ -76,8 +76,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
 
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['referenceIntegrity'] as $property => $action) {
-                $reflProp = $meta->getReflectionProperty($property);
-                $refDoc = $reflProp->getValue($object);
+                $refDoc = $meta->getFieldValue($object, $property);
                 $fieldMapping = $meta->getFieldMapping($property);
 
                 switch ($action) {
@@ -90,19 +89,19 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
 
                         $subMeta = $om->getClassMetadata($fieldMapping->targetDocument ?? $fieldMapping['targetDocument']);
 
-                        if (!$subMeta->hasField($fieldMapping->mappedBy ?? $fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'], $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
-                        }
+                        $mappedByField = $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'];
 
-                        $refReflProp = $subMeta->getReflectionProperty($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']);
+                        if (!$subMeta->hasField($mappedByField)) {
+                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $mappedByField, $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
+                        }
 
                         if ($meta->isCollectionValuedReference($property)) {
                             foreach ($refDoc as $refObj) {
-                                $refReflProp->setValue($refObj, null);
+                                $subMeta->setFieldValue($refObj, $mappedByField, null);
                                 $om->persist($refObj);
                             }
                         } else {
-                            $refReflProp->setValue($refDoc, null);
+                            $subMeta->setFieldValue($refDoc, $mappedByField, null);
                             $om->persist($refDoc);
                         }
 
@@ -116,27 +115,27 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
 
                         $subMeta = $om->getClassMetadata($fieldMapping->targetDocument ?? $fieldMapping['targetDocument']);
 
-                        if (!$subMeta->hasField($fieldMapping->mappedBy ?? $fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'], $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
+                        $mappedByField = $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'];
+
+                        if (!$subMeta->hasField($mappedByField)) {
+                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $mappedByField, $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
                         }
 
-                        if (!$subMeta->isCollectionValuedReference($fieldMapping->mappedBy ?? $fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf('Reference integrity [%s] mapped property in entity - %s should be a Reference Many', $fieldMapping->mappedBy ?? $fieldMapping['mappedBy'], $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
+                        if (!$subMeta->isCollectionValuedReference($mappedByField)) {
+                            throw new InvalidMappingException(sprintf('Reference integrity [%s] mapped property in entity - %s should be a Reference Many', $mappedByField, $fieldMapping->targetDocument ?? $fieldMapping['targetDocument']));
                         }
-
-                        $refReflProp = $subMeta->getReflectionProperty($fieldMapping->mappedBy ?? $fieldMapping['mappedBy']);
 
                         if ($meta->isCollectionValuedReference($property)) {
                             foreach ($refDoc as $refObj) {
-                                $collection = $refReflProp->getValue($refObj);
+                                $collection = $subMeta->getFieldValue($refObj, $mappedByField);
                                 $collection->removeElement($object);
-                                $refReflProp->setValue($refObj, $collection);
+                                $subMeta->setFieldValue($refObj, $mappedByField, $collection);
                                 $om->persist($refObj);
                             }
                         } elseif (is_object($refDoc)) {
-                            $collection = $refReflProp->getValue($refDoc);
+                            $collection = $subMeta->getFieldValue($refDoc, $mappedByField);
                             $collection->removeElement($object);
-                            $refReflProp->setValue($refDoc, $collection);
+                            $subMeta->setFieldValue($refDoc, $mappedByField, $collection);
                             $om->persist($refDoc);
                         }
 

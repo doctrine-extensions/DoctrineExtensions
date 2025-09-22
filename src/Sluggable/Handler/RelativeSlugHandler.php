@@ -45,24 +45,15 @@ class RelativeSlugHandler implements SlugHandlerInterface
      *
      * @var array<string, mixed>
      */
-    private $usedOptions;
+    private array $usedOptions = [];
 
     /**
-     * Callable of original transliterator
-     * which is used by sluggable
+     * Callable of original transliterator which is used by the sluggable listener.
      *
-     * @var callable
+     * @var callable(string, string, object): string
      */
     private $originalTransliterator;
 
-    /**
-     * $options = array(
-     *     'separator' => '/',
-     *     'relationField' => 'something',
-     *     'relationSlugField' => 'slug'
-     * )
-     * {@inheritdoc}
-     */
     public function __construct(SluggableListener $sluggable)
     {
         $this->sluggable = $sluggable;
@@ -120,6 +111,10 @@ class RelativeSlugHandler implements SlugHandlerInterface
             $this->originalTransliterator,
             [$text, $separator, $object]
         );
+        $result = call_user_func_array(
+            $this->sluggable->getUrlizer(),
+            [$result, $separator, $object]
+        );
         $wrapped = AbstractWrapper::wrap($object, $this->om);
         $relation = $wrapped->getPropertyValue($this->usedOptions['relationField']);
         if ($relation) {
@@ -135,6 +130,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
 
             $result = $slug.$this->usedOptions['separator'].$result;
         }
+
         $this->sluggable->setTransliterator($this->originalTransliterator);
 
         return $result;
