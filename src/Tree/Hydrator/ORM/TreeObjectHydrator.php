@@ -249,7 +249,7 @@ class TreeObjectHydrator extends ObjectHydrator
             $associationMapping = $meta->getAssociationMapping($property->getName());
 
             // Make sure the association is mapped by the parent property
-            if ($associationMapping['mappedBy'] !== $this->parentField) {
+            if (!isset($associationMapping['mappedBy']) || $associationMapping['mappedBy'] !== $this->parentField) {
                 continue;
             }
 
