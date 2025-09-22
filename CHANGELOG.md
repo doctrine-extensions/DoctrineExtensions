@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- SoftDeleteable: Remove dollar sign ($) from the default cache key of soft deleteable metadata - to be compatible with stricter cache key naming conventions (#2978)
 
 ## [3.22.0] - 2025-12-13
 ### Added
