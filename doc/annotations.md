@@ -664,6 +664,8 @@ Optional Attributes:
 
 - **hardDelete** - Flag indicating the object supports hard deletes, defaults to `true`
 
+- **nonDeletedColumnValue** - The value that is seen as not deleted, default: null
+
 Examples:
 
 ```php
