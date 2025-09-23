@@ -11,6 +11,7 @@ namespace Gedmo\Loggable\Mapping\Driver;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as ClassMetadataODM;
 use Doctrine\ORM\Mapping\ClassMetadata as ClassMetadataORM;
+use Doctrine\ORM\Mapping\EmbeddedClassMapping;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\Loggable;
@@ -137,7 +138,9 @@ class Attribute extends AbstractAnnotationDriver
      */
     private function inspectEmbeddedForVersioned(string $field, array &$config, ClassMetadataORM $meta): void
     {
-        $class = new \ReflectionClass($meta->embeddedClasses[$field]['class']);
+        /** Remove conditional when ORM 2.x is no longer supported. */
+        $className = ($meta->embeddedClasses[$field] instanceof EmbeddedClassMapping) ? $meta->embeddedClasses[$field]->class : $meta->embeddedClasses[$field]['class'];
+        $class = new \ReflectionClass($className);
 
         // property annotations
         foreach ($class->getProperties() as $property) {

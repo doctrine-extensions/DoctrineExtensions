@@ -20,7 +20,9 @@ use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Handler\SlugHandlerInterface;
 use Gedmo\Sluggable\Handler\SlugHandlerWithUniqueCallbackInterface;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
-use Gedmo\Sluggable\Util\Urlizer;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+
+use function Symfony\Component\String\u;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -60,6 +62,7 @@ use Gedmo\Sluggable\Util\Urlizer;
  *     relationField?: string,
  *     relationSlugField?: string,
  *     separator?: string,
+ *     urilize?: bool,
  *   }>,
  *   uniqueOverTranslations: bool,
  *   useObjectClass?: class-string,
@@ -78,20 +81,16 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Transliteration callback for slugs
      *
-     * @var callable
-     *
-     * @phpstan-var callable(string $text, string $separator, object $object): string
+     * @var callable(string, string, object): string
      */
-    private $transliterator = [Urlizer::class, 'transliterate'];
+    private $transliterator;
 
     /**
      * Urlize callback for slugs
      *
-     * @var callable
-     *
-     * @phpstan-var callable(string $text, string $separator, object $object): string
+     * @var callable(string, string, object): string
      */
-    private $urlizer = [Urlizer::class, 'urlize'];
+    private $urlizer;
 
     /**
      * List of inserted slugs for each object class.
@@ -120,6 +119,28 @@ class SluggableListener extends MappedEventSubscriber
      * @var array<string, array<string, mixed>>
      */
     private array $managedFilters = [];
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setTransliterator(
+            static fn (string $text, string $separator, object $object): string => u($text)->ascii()->toString()
+        );
+
+        /*
+         * Note - Requiring the call to `lower()` in this chain contradicts with the `style` configuration
+         * which doesn't require or enforce lowercase styling by default, but the Behat transliterator applied
+         * this styling so it is used for B/C
+         */
+
+        $this->setUrlizer(
+            static fn (string $text, string $separator, object $object): string => (new AsciiSlugger())
+                ->slug($text, $separator)
+                ->lower()
+                ->toString()
+        );
+    }
 
     /**
      * Specifies the list of events to listen
@@ -257,7 +278,7 @@ class SluggableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['slugs'] as $slugField => $options) {
                 if ($meta->isIdentifier($slugField)) {
-                    $meta->getReflectionProperty($slugField)->setValue($object, uniqid('__sluggable_placeholder__'));
+                    $meta->setFieldValue($object, $slugField, uniqid('__sluggable_placeholder__'));
                 }
             }
         }
@@ -341,7 +362,7 @@ class SluggableListener extends MappedEventSubscriber
             $hasHandlers = [] !== $options['handlers'];
             $options['useObjectClass'] = $config['useObjectClass'];
             // collect the slug from fields
-            $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+            $slug = $meta->getFieldValue($object, $slugField);
 
             // if slug should not be updated, skip it
             if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || 0 === strpos($slug, '__sluggable_placeholder__'))) {
@@ -359,7 +380,7 @@ class SluggableListener extends MappedEventSubscriber
                     if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
                         $needToChangeSlug = true;
                     }
-                    $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
+                    $value = $meta->getFieldValue($object, $sluggableField);
                     $slug .= $value instanceof \DateTimeInterface ? $value->format($options['dateFormat']) : $value;
                     $slug .= ' ';
                 }
@@ -412,25 +433,21 @@ class SluggableListener extends MappedEventSubscriber
                 switch ($options['style']) {
                     case 'camel':
                         $quotedSeparator = preg_quote($options['separator']);
-                        $slug = preg_replace_callback('/^[a-z]|'.$quotedSeparator.'[a-z]/smi', static fn ($m) => strtoupper($m[0]), $slug);
+                        $slug = preg_replace_callback(
+                            '/^[a-z]|'.$quotedSeparator.'[a-z]/smi',
+                            static fn (array $m): string => u($m[0])->upper()->toString(),
+                            $slug
+                        );
 
                         break;
 
                     case 'lower':
-                        if (function_exists('mb_strtolower')) {
-                            $slug = mb_strtolower($slug);
-                        } else {
-                            $slug = strtolower($slug);
-                        }
+                        $slug = u($slug)->lower()->toString();
 
                         break;
 
                     case 'upper':
-                        if (function_exists('mb_strtoupper')) {
-                            $slug = mb_strtoupper($slug);
-                        } else {
-                            $slug = strtoupper($slug);
-                        }
+                        $slug = u($slug)->upper()->toString();
 
                         break;
 
@@ -473,7 +490,7 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // set the final slug
-                $meta->getReflectionProperty($slugField)->setValue($object, $slug);
+                $meta->setFieldValue($object, $slugField, $slug);
                 // recompute changeset
                 $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
                 // overwrite changeset (to set old value)
@@ -496,16 +513,16 @@ class SluggableListener extends MappedEventSubscriber
         $base = false;
 
         if ($config['unique'] && isset($config['unique_base'])) {
-            $base = $meta->getReflectionProperty($config['unique_base'])->getValue($object);
+            $base = $meta->getFieldValue($object, $config['unique_base']);
         }
 
         // collect similar persisted slugs during this flush
         if (isset($this->persisted[$class = $ea->getRootObjectClass($meta)])) {
             foreach ($this->persisted[$class] as $obj) {
-                if (false !== $base && $meta->getReflectionProperty($config['unique_base'])->getValue($obj) !== $base) {
+                if (false !== $base && $meta->getFieldValue($obj, $config['unique_base']) !== $base) {
                     continue; // if unique_base field is not the same, do not take slug as similar
                 }
-                $slug = $meta->getReflectionProperty($config['slug'])->getValue($obj);
+                $slug = $meta->getFieldValue($obj, $config['slug']);
                 $quotedPreferredSlug = preg_quote($preferredSlug);
                 if (preg_match("@^{$quotedPreferredSlug}.*@smi", $slug)) {
                     $similarPersisted[] = [$config['slug'] => $slug];

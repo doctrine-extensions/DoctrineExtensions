@@ -647,7 +647,7 @@ Optional Attributes:
 
 ### Soft Deleteable Extension
 
-The below annotations are used to configure the [Soft Deleteable extension](./softdeleteable.md).
+The below annotations are used to configure the [Soft Deleteable extension](./soft-deleteable.md).
 
 #### `@Gedmo\Mapping\Annotation\SoftDeleteable`
 
@@ -663,6 +663,8 @@ Optional Attributes:
 - **timeAware** - Flag indicating the object supports scheduled soft deletes, defaults to `false`
 
 - **hardDelete** - Flag indicating the object supports hard deletes, defaults to `true`
+
+- **nonDeletedColumnValue** - The value that is seen as not deleted, default: null
 
 Examples:
 

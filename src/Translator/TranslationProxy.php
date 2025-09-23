@@ -49,10 +49,10 @@ class TranslationProxy
      * @param string[] $properties   object properties to translate
      * @param string   $class        translation entity|document class
      *
-     * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
-     *
      * @phpstan-param class-string<TranslationInterface> $class
      * @phpstan-param Collection<int, TranslationInterface> $coll
+     *
+     * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
      */
     public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
     {

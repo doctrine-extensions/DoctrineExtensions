@@ -14,6 +14,7 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\UnitOfWork;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -28,6 +29,8 @@ class ODM implements AdapterInterface
     private ?EventArgs $args = null;
 
     private ?DocumentManager $dm = null;
+
+    private static ?bool $useIntId = null;
 
     public function __call($method, $args)
     {
@@ -150,12 +153,12 @@ class ODM implements AdapterInterface
 
     public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
-        $uow->setOriginalDocumentProperty(spl_object_hash($object), $property, $value);
+        $uow->setOriginalDocumentProperty($this->getOid($uow, $object), $property, $value);
     }
 
     public function clearObjectChangeSet($uow, $object)
     {
-        $uow->clearDocumentChangeSet(spl_object_hash($object));
+        $uow->clearDocumentChangeSet($this->getOid($uow, $object));
     }
 
     /**
@@ -178,5 +181,22 @@ class ODM implements AdapterInterface
         );
 
         return new LifecycleEventArgs($document, $documentManager);
+    }
+
+    /**
+     * @return int|string dependent on the version of `doctrine/mongodb-odm` installed
+     */
+    private function getOid(UnitOfWork $uow, object $object)
+    {
+        if (null === self::$useIntId) {
+            $refl = new \ReflectionClass($uow);
+            $method = $refl->getMethod('setOriginalDocumentProperty');
+            $oidArg = $method->getParameters()[0];
+
+            /** @phpstan-ignore-next-line method.NotFound All supported versions of `doctrine/mongodb-odm` have the first param typehinted */
+            self::$useIntId = 'int' === $oidArg->getType()->getName();
+        }
+
+        return true === self::$useIntId ? spl_object_id($object) : spl_object_hash($object);
     }
 }

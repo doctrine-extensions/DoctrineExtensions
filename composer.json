@@ -41,16 +41,17 @@
     },
     "require": {
         "php": "^7.4 || ^8.0",
-        "behat/transliterator": "^1.2",
         "doctrine/collections": "^1.2 || ^2.0",
         "doctrine/deprecations": "^1.0",
         "doctrine/event-manager": "^1.2 || ^2.0",
         "doctrine/persistence": "^2.2 || ^3.0 || ^4.0",
         "psr/cache": "^1 || ^2 || ^3",
         "psr/clock": "^1",
-        "symfony/cache": "^5.4 || ^6.0 || ^7.0"
+        "symfony/cache": "^5.4 || ^6.0 || ^7.0",
+        "symfony/string": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
+        "behat/transliterator": "^1.2",
         "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/common": "^2.13 || ^3.0",
@@ -67,11 +68,12 @@
         "rector/rector": "^2.0.6",
         "symfony/console": "^5.4 || ^6.0 || ^7.0",
         "symfony/doctrine-bridge": "^5.4 || ^6.0 || ^7.0",
-        "symfony/phpunit-bridge": "^6.0 || ^7.0",
+        "symfony/phpunit-bridge": "^6.4 || ^7.0",
         "symfony/uid": "^5.4 || ^6.0 || ^7.0",
         "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
     },
     "conflict": {
+        "behat/transliterator": "<1.2 || >=2.0",
         "doctrine/annotations": "<1.13 || >=3.0",
         "doctrine/common": "<2.13 || >=4.0",
         "doctrine/dbal": "<3.7 || >=5.0",

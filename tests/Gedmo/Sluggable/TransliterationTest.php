@@ -45,7 +45,7 @@ final class TransliterationTest extends BaseTestCaseORM
         static::assertSame('tova-e-testovo-zaglavie-bg', $bulgarian->getSlug());
 
         $russian = $repo->findOneBy(['code' => 'ru']);
-        static::assertSame('eto-testovyi-zagolovok-ru', $russian->getSlug());
+        static::assertSame('eto-testovyj-zagolovok-ru', $russian->getSlug());
 
         $german = $repo->findOneBy(['code' => 'de']);
         static::assertSame('fuhren-aktivitaten-haglofs-de', $german->getSlug());
