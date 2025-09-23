@@ -34,7 +34,6 @@ a release.
 ### Fixed
 - SoftDeleteable: Prevent cascade persist from re-inserting soft-deleted entities still referenced in the identity map (#2958)
 - Sluggable: Fix type error when generating slug using embedded properties (#2965)
-- SoftDeleteable: Remove dollar sign ($) from the default cache key of soft deleteable metadata - to be compatible with stricter cache key naming conventions (#2978)
 
 ## [3.20.1] - 2025-09-14
 ### Fixed
