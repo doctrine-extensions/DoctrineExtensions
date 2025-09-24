@@ -18,8 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
-### Fixed
-- SoftDeleteable: Remove dollar sign ($) from the default cache key of soft deleteable metadata - to be compatible with stricter cache key naming conventions (see https://www.php-fig.org/psr/psr-6/#definitions) (#2978)
+### Changed
+- All: Removed the dollar sign from the generated cache ID for extension metadata to ensure only characters mandated by [PSR-6](https://www.php-fig.org/psr/psr-6/#definitions) are used, improving compatibility with caching implementations with strict character requirements (#2978)
 
 ## [3.22.0] - 2025-12-13
 ### Added
