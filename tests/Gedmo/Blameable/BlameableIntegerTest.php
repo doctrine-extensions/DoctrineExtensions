@@ -47,7 +47,7 @@ final class BlameableIntegerTest extends BaseTestCaseORM
          * @var CompanyInteger $foundCompany
          */
         $foundCompany = $this->em->getRepository(CompanyInteger::class)->findOneBy(['name' => 'My Name']);
-        $creator      = $foundCompany->getCreator();
+        $creator = $foundCompany->getCreator();
 
         static::assertSame($this->userId, $creator);
     }
