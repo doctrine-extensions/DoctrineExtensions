@@ -21,6 +21,9 @@ a release.
 ### Changed
 - All: Removed the dollar sign from the generated cache ID for extension metadata to ensure only characters mandated by [PSR-6](https://www.php-fig.org/psr/psr-6/#definitions) are used, improving compatibility with caching implementations with strict character requirements (#2978)
 
+### Fixed
+- Blameable: (Re-) Added integer in allowed types list for Blameable fields (#2006)
+
 ## [3.22.0] - 2025-12-13
 ### Added
 - Support for Symfony 8
