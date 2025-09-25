@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Blameable: (Re-) Added integer in allowed types list for Blameable fields (#2006)
 
 ## [3.21.0] - 2025-09-22
 ### Added
