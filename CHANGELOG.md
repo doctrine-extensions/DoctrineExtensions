@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: Fixed inserting multiple root nodes in one flush operation with the nested set strategy in certain circumstances (#2582)
 
 ## [3.20.0] - 2025-04-04
 ### Fixed
