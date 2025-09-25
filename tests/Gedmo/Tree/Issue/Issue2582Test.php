@@ -14,7 +14,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Issue2582\OU;
 use Gedmo\Tree\TreeListener;
 
-class Issue2582Test extends BaseTestCaseORM
+final class Issue2582Test extends BaseTestCaseORM
 {
     private TreeListener $listener;
 
