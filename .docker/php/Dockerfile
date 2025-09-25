@@ -22,7 +22,5 @@ RUN apt-get update \
     && docker-php-ext-install zip \
     && docker-php-ext-install pcntl \
     && docker-php-ext-install bcmath \
-    && pecl install mongodb \
-    && docker-php-ext-enable mongodb \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug
+    && pecl install mongodb xdebug \
+    && docker-php-ext-enable mongodb xdebug
