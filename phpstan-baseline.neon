@@ -355,6 +355,60 @@ parameters:
 			path: src/References/ReferencesListener.php
 
 		-
+			message: '#^Method Gedmo\\Revisionable\\Document\\Revision\:\:createRevision\(\) should return Gedmo\\Revisionable\\Document\\Revision\<T of object\> but returns Gedmo\\Revisionable\\Document\\Revision\<object\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Revisionable/Document/Revision.php
+
+		-
+			message: '#^Unable to resolve the template type T in call to method Doctrine\\ORM\\EntityManagerInterface\:\:getReference\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Revisionable/Entity/Repository/RevisionRepository.php
+
+		-
+			message: '#^Method Gedmo\\Revisionable\\Entity\\Revision\:\:createRevision\(\) should return Gedmo\\Revisionable\\Entity\\Revision\<T of object\> but returns Gedmo\\Revisionable\\Entity\\Revision\<object\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Revisionable/Entity/Revision.php
+
+		-
+			message: '#^Access to offset ''isOwningSide'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Revisionable/Mapping/Driver/Attribute.php
+
+		-
+			message: '#^Access to an undefined property Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:\$associationMappings\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Revisionable/Mapping/Driver/Xml.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Revisionable\\RevisionInterface\<T of object\>\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Revisionable/RevisionableListener.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: src/Revisionable/RevisionableListener.php
+
+		-
+			message: '#^Method Gedmo\\Revisionable\\RevisionableListener\:\:getRevisionClass\(\) should return class\-string\<Gedmo\\Revisionable\\RevisionInterface\<T of object\>\> but returns class\-string\<Gedmo\\Revisionable\\RevisionInterface\<object\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Revisionable/RevisionableListener.php
+
+		-
+			message: '#^Method Gedmo\\Tool\\WrapperInterface\<Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>,object,Doctrine\\Persistence\\ObjectManager\>\:\:getIdentifier\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: src/Revisionable/RevisionableListener.php
+
+		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -1063,6 +1117,150 @@ parameters:
 			path: tests/Gedmo/Mapping/Fixture/Category.php
 
 		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Document\\EmbeddedRevisionable\:\:\$subtitle \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Document/EmbeddedRevisionable.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Document\\Revisionable\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Document/Revisionable.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Document\\RevisionableWithEmbedded\:\:\$embedded \(Gedmo\\Tests\\Mapping\\Fixture\\Document\\EmbeddedRevisionable\|null\) is never assigned Gedmo\\Tests\\Mapping\\Fixture\\Document\\EmbeddedRevisionable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Document/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Document\\RevisionableWithEmbedded\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Document/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Document\\RevisionableWithEmbedded\:\:\$title \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Document/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Entity\\EmbeddedRevisionable\:\:\$subtitle \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Entity/EmbeddedRevisionable.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\EmbeddedRevisionable\:\:\$subtitle \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/EmbeddedRevisionable.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\Revisionable\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/Revisionable.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\RevisionableComposite\:\:\$one \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/RevisionableComposite.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\RevisionableComposite\:\:\$two \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/RevisionableComposite.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\RevisionableCompositeRelation\:\:\$one \(Gedmo\\Tests\\Mapping\\Fixture\\Xml\\Revisionable\|null\) is never assigned Gedmo\\Tests\\Mapping\\Fixture\\Xml\\Revisionable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/RevisionableCompositeRelation.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\RevisionableCompositeRelation\:\:\$two \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/RevisionableCompositeRelation.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\RevisionableWithEmbedded\:\:\$embedded \(Gedmo\\Tests\\Mapping\\Fixture\\Xml\\Embedded\|null\) is never assigned Gedmo\\Tests\\Mapping\\Fixture\\Xml\\Embedded so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\RevisionableWithEmbedded\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\RevisionableWithEmbedded\:\:\$title \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\EmbeddedRevisionable\:\:\$subtitle \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/EmbeddedRevisionable.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\Revisionable\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/Revisionable.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\RevisionableComposite\:\:\$one \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/RevisionableComposite.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\RevisionableComposite\:\:\$two \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/RevisionableComposite.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\RevisionableCompositeRelation\:\:\$one \(Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\Revisionable\|null\) is never assigned Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\Revisionable so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/RevisionableCompositeRelation.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\RevisionableCompositeRelation\:\:\$two \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/RevisionableCompositeRelation.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\RevisionableWithEmbedded\:\:\$embedded \(Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\Embedded\|null\) is never assigned Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\Embedded so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\RevisionableWithEmbedded\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/RevisionableWithEmbedded.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Yaml\\RevisionableWithEmbedded\:\:\$title \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Yaml/RevisionableWithEmbedded.php
+
+		-
 			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
 			identifier: class.notFound
 			count: 2
@@ -1211,6 +1409,66 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/Xml/TranslatableMappingTest.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Revisionable\\Fixture\\Document\\Address\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Document/Address.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Revisionable\\Fixture\\Document\\Article\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Document/Article.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Revisionable\\Fixture\\Document\\Comment\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Document/Comment.php
+
+		-
+			message: '#^Method Gedmo\\Tests\\Revisionable\\Fixture\\Document\\CommentRevision\:\:createRevision\(\) should return Gedmo\\Tests\\Revisionable\\Fixture\\Document\\CommentRevision\<T of Gedmo\\Tests\\Revisionable\\Fixture\\Document\\Comment\> but returns Gedmo\\Tests\\Revisionable\\Fixture\\Document\\CommentRevision\<Gedmo\\Tests\\Revisionable\\Fixture\\Document\\Comment\>\.$#'
+			identifier: return.type
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Document/CommentRevision.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Revisionable\\Fixture\\Document\\RelatedArticle\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Document/RelatedArticle.php
+
+		-
+			message: '#^Method Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\CommentRevision\:\:createRevision\(\) should return Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\CommentRevision\<T of Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\Comment\> but returns Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\CommentRevision\<Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\Comment\>\.$#'
+			identifier: return.type
+			count: 1
+			path: tests/Gedmo/Revisionable/Fixture/Entity/CommentRevision.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\ORM\\EntityRepository\<Gedmo\\Revisionable\\Document\\Revision\>\:\:getRevisions\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Gedmo/Revisionable/RevisionableDocumentTest.php
+
+		-
+			message: '#^Parameter \#1 \$entity of method Gedmo\\Revisionable\\Entity\\Repository\\RevisionRepository\<Gedmo\\Revisionable\\Entity\\Revision\>\:\:getRevisions\(\) expects Gedmo\\Revisionable\\Entity\\Revision, Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\Address given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Gedmo/Revisionable/RevisionableEntityTest.php
+
+		-
+			message: '#^Parameter \#1 \$entity of method Gedmo\\Revisionable\\Entity\\Repository\\RevisionRepository\<Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\CommentRevision\>\:\:getRevisions\(\) expects Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\CommentRevision, Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\Comment given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Gedmo/Revisionable/RevisionableEntityTest.php
+
+		-
+			message: '#^Parameter \#1 \$entity of method Gedmo\\Revisionable\\Entity\\Repository\\RevisionRepository\<Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\CommentRevision\>\:\:revert\(\) expects Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\CommentRevision, Gedmo\\Tests\\Revisionable\\Fixture\\Entity\\Comment given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Gedmo/Revisionable/RevisionableEntityTest.php
 
 		-
 			message: '#^Method Gedmo\\Tests\\Sluggable\\Fixture\\Doctrine\\FakeFilter\:\:addFilterConstraint\(\) has parameter \$targetTableAlias with no type specified\.$#'
