@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" >
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\SeparateDoctrineMapping" table="separate_doctrine_mapping">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="title" type="string"/>
+        <field name="created" type="datetime"/>
+        <field name="updated" type="datetime"/>
+    </entity>
+</doctrine-mapping>
