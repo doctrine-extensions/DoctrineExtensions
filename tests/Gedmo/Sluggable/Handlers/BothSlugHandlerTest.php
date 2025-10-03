@@ -15,6 +15,8 @@ use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Handler\People\Occupation;
 use Gedmo\Tests\Sluggable\Fixture\Handler\People\Person;
+use Gedmo\Tests\Sluggable\Fixture\Handler\People\UrilizedOccupation;
+use Gedmo\Tests\Sluggable\Fixture\Handler\People\UrilizedPerson;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
 
@@ -49,6 +51,17 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
 
         $hurty = $repo->findOneBy(['name' => 'Hurty']);
         static::assertSame('singer/hurty', $hurty->getSlug());
+
+        $repo = $this->em->getRepository(UrilizedPerson::class);
+
+        $herzult = $repo->findOneBy(['name' => 'Herzult']);
+        static::assertSame('web/developer/php/herzult', $herzult->getSlug());
+
+        $gedi = $repo->findOneBy(['name' => 'Gedi']);
+        static::assertSame('web/developer/gedi', $gedi->getSlug());
+
+        $hurty = $repo->findOneBy(['name' => 'Hurty']);
+        static::assertSame('singer/hurty', $hurty->getSlug());
     }
 
     public function testSlugUpdates(): void
@@ -64,6 +77,30 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         static::assertSame('web/developer/upd-gedi', $gedi->getSlug());
 
         $artist = $this->em->getRepository(Occupation::class)->findOneBy(['title' => 'Singer']);
+        $artist->setTitle('Artist');
+
+        $this->em->persist($artist);
+        $this->em->flush();
+
+        $gedi->setOccupation($artist);
+        $this->em->persist($gedi);
+        $this->em->flush();
+
+        static::assertSame('artist/upd-gedi', $gedi->getSlug());
+
+        $hurty = $repo->findOneBy(['name' => 'Hurty']);
+        static::assertSame('artist/hurty', $hurty->getSlug());
+
+        $repo = $this->em->getRepository(UrilizedPerson::class);
+
+        $gedi = $repo->findOneBy(['name' => 'Gedi']);
+        $gedi->setName('Upd Gedi');
+        $this->em->persist($gedi);
+        $this->em->flush();
+
+        static::assertSame('web/developer/upd-gedi', $gedi->getSlug());
+
+        $artist = $this->em->getRepository(UrilizedOccupation::class)->findOneBy(['title' => 'Singer']);
         $artist->setTitle('Artist');
 
         $this->em->persist($artist);
@@ -110,10 +147,20 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         return [
             Occupation::class,
             Person::class,
+            UrilizedOccupation::class,
+            UrilizedPerson::class,
         ];
     }
 
     private function populate(): void
+    {
+        $this->populateEntities();
+        $this->populateUrilizedEntities();
+
+        $this->em->flush();
+    }
+
+    private function populateEntities(): void
     {
         $repo = $this->em->getRepository(Occupation::class);
 
@@ -167,7 +214,61 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         $hurty->setName('Hurty');
         $hurty->setOccupation($singer);
         $this->em->persist($hurty);
+    }
 
-        $this->em->flush();
+    private function populateUrilizedEntities(): void
+    {
+        $repo = $this->em->getRepository(UrilizedOccupation::class);
+
+        $web = new UrilizedOccupation();
+        $web->setTitle('Web');
+
+        $developer = new UrilizedOccupation();
+        $developer->setTitle('Developer');
+
+        $designer = new UrilizedOccupation();
+        $designer->setTitle('Designer');
+
+        $php = new UrilizedOccupation();
+        $php->setTitle('PHP');
+
+        $singer = new UrilizedOccupation();
+        $singer->setTitle('Singer');
+
+        $rock = new UrilizedOccupation();
+        $rock->setTitle('Rock');
+
+        // Singer
+        // > Hurty
+        // -- Rock
+        // Web
+        // -- Designer
+        // -- Developer
+        // -- -- PHP
+        // -- -- > Herzult
+        // -- > Gedi
+        $repo
+            ->persistAsFirstChild($web)
+            ->persistAsFirstChild($singer)
+            ->persistAsFirstChildOf($developer, $web)
+            ->persistAsFirstChildOf($designer, $web)
+            ->persistAsLastChildOf($php, $developer)
+            ->persistAsLastChildOf($rock, $singer)
+        ;
+
+        $herzult = new UrilizedPerson();
+        $herzult->setName('Herzult');
+        $herzult->setOccupation($php);
+        $this->em->persist($herzult);
+
+        $gedi = new UrilizedPerson();
+        $gedi->setName('Gedi');
+        $gedi->setOccupation($developer);
+        $this->em->persist($gedi);
+
+        $hurty = new UrilizedPerson();
+        $hurty->setName('Hurty');
+        $hurty->setOccupation($singer);
+        $this->em->persist($hurty);
     }
 }
