@@ -20,6 +20,4 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
 #[ORM\Entity(repositoryClass: SortableRepository::class)]
-class Node extends AbstractNode
-{
-}
+class Node extends AbstractNode {}

@@ -60,7 +60,7 @@ class TranslationRepository extends EntityRepository
      */
     public function translate($entity, $field, $locale, $value)
     {
-        $meta = $this->getEntityManager()->getClassMetadata(get_class($entity));
+        $meta = $this->getEntityManager()->getClassMetadata($entity::class);
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->getEntityManager(), $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'], true)) {

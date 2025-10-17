@@ -23,8 +23,6 @@ use Gedmo\Sluggable\Sluggable;
 class ArticleWithoutFields implements Sluggable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,7 +30,7 @@ class ArticleWithoutFields implements Sluggable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Slug(separator="-", updatable=true)

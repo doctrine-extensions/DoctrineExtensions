@@ -22,6 +22,4 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @author tiger-seo <tiger.seo@gmail.com>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class UploadableFileName implements GedmoAnnotation
-{
-}
+final class UploadableFileName implements GedmoAnnotation {}

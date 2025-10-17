@@ -19,6 +19,4 @@ use Doctrine\Persistence\ObjectManager;
  *
  * @template-extends LifecycleEventArgs<TObjectManager>
  */
-final class PostSoftDeleteEventArgs extends LifecycleEventArgs
-{
-}
+final class PostSoftDeleteEventArgs extends LifecycleEventArgs {}

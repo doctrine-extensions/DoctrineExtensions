@@ -24,8 +24,6 @@ use Gedmo\Sluggable\Sluggable;
 class Article implements Sluggable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,7 +31,7 @@ class Article implements Sluggable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -48,8 +46,6 @@ class Article implements Sluggable
     private ?string $code = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(handlers={
      *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
      *         @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\ArticleRelativeSlug"),
@@ -63,7 +59,7 @@ class Article implements Sluggable
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['title', 'code'])]
     #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => ArticleRelativeSlug::class, 'mappedBy' => 'article', 'inverseSlugField' => 'slug'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {

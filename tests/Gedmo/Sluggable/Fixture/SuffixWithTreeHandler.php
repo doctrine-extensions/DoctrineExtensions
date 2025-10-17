@@ -30,8 +30,6 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 class SuffixWithTreeHandler implements Sluggable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -39,7 +37,7 @@ class SuffixWithTreeHandler implements Sluggable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)

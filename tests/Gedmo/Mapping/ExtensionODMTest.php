@@ -67,7 +67,6 @@ final class ExtensionODMTest extends BaseTestCaseMongoODM
     {
         $mappedSubscriberClass = new \ReflectionClass(MappedEventSubscriber::class);
         $getEventAdapterMethod = $mappedSubscriberClass->getMethod('getEventAdapter');
-        $getEventAdapterMethod->setAccessible(true);
 
         $loadClassMetadataEventArgs = new LoadClassMetadataEventArgs(
             $this->dm->getClassMetadata(User::class),

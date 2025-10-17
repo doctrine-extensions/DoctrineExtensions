@@ -41,8 +41,8 @@ final class TraitUsageTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        static::assertNotNull($sport->getCreatedAt());
-        static::assertNotNull($sport->getUpdatedAt());
+        static::assertInstanceOf(\DateTime::class, $sport->getCreatedAt());
+        static::assertInstanceOf(\DateTime::class, $sport->getUpdatedAt());
     }
 
     public function testTraitMethodthShouldReturnObject(): void

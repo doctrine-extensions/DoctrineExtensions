@@ -71,12 +71,12 @@ final class SortableTest extends BaseTestCaseORM
 
         for ($i = 0; $i <= 8; ++$i) {
             $node = $repo->findOneBy(['position' => $i]);
-            static::assertNotNull($node);
+            static::assertInstanceOf(Node::class, $node);
             static::assertSame('Node'.($i + 2), $node->getName());
         }
 
         $node = $repo->findOneBy(['position' => 9]);
-        static::assertNotNull($node);
+        static::assertInstanceOf(Node::class, $node);
         static::assertSame('Node1', $node->getName());
     }
 
@@ -140,8 +140,9 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame('Node4', $nodes[2]->getName());
         static::assertSame('Node2', $nodes[3]->getName());
         static::assertSame('Node5', $nodes[4]->getName());
+        $counter = count($nodes);
 
-        for ($i = 0; $i < count($nodes); ++$i) {
+        for ($i = 0; $i < $counter; ++$i) {
             static::assertSame($i, $nodes[$i]->getPosition());
         }
     }
@@ -185,8 +186,9 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame('Node5', $nodes[2]->getName());
         static::assertSame('Node2', $nodes[3]->getName());
         static::assertSame('Node3', $nodes[4]->getName());
+        $counter = count($nodes);
 
-        for ($i = 0; $i < count($nodes); ++$i) {
+        for ($i = 0; $i < $counter; ++$i) {
             static::assertSame($i, $nodes[$i]->getPosition());
         }
     }
@@ -229,8 +231,9 @@ final class SortableTest extends BaseTestCaseORM
         static::assertSame('Node2', $nodes[2]->getName());
         static::assertSame('Node3', $nodes[3]->getName());
         static::assertSame('Node5', $nodes[4]->getName());
+        $counter = count($nodes);
 
-        for ($i = 0; $i < count($nodes); ++$i) {
+        for ($i = 0; $i < $counter; ++$i) {
             static::assertSame($i, $nodes[$i]->getPosition());
         }
     }
@@ -419,7 +422,7 @@ final class SortableTest extends BaseTestCaseORM
             $this->em->flush();
 
             static::fail('Foreign key constraint violation exception not thrown.');
-        } catch (ForeignKeyConstraintViolationException $e) {
+        } catch (ForeignKeyConstraintViolationException) {
             $customerTypes = $repo->findAll();
 
             static::assertCount(3, $customerTypes);

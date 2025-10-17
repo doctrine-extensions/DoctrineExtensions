@@ -41,7 +41,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
     public function getNewVersion($meta, $object)
     {
         $dm = $this->getObjectManager();
-        $objectMeta = $dm->getClassMetadata(get_class($object));
+        $objectMeta = $dm->getClassMetadata($object::class);
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = $objectMeta->getFieldValue($object, $identifierField);
 

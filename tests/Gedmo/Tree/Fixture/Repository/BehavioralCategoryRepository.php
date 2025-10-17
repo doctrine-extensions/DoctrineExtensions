@@ -17,6 +17,4 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 /**
  * @template-extends NestedTreeRepository<BehavioralCategory>
  */
-final class BehavioralCategoryRepository extends NestedTreeRepository
-{
-}
+final class BehavioralCategoryRepository extends NestedTreeRepository {}

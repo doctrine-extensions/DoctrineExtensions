@@ -23,8 +23,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,7 +30,7 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
@@ -46,7 +44,7 @@ class Article
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
-    private $comments;
+    private Collection $comments;
 
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="articles")

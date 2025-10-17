@@ -80,9 +80,6 @@ class BaseCategory
         $this->created = $created;
     }
 
-    /**
-     * @return \DateTime $created
-     */
     public function getCreated(): ?\DateTime
     {
         return $this->created;

@@ -41,7 +41,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     {
         $this->om = $dm;
         $this->object = $document;
-        $this->meta = $dm->getClassMetadata(get_class($this->object));
+        $this->meta = $dm->getClassMetadata($this->object::class);
     }
 
     public function getPropertyValue($property)

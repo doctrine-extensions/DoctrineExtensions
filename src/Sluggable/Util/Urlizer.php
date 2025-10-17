@@ -23,6 +23,4 @@ if (!class_exists(Transliterator::class)) {
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class Urlizer extends Transliterator
-{
-}
+class Urlizer extends Transliterator {}

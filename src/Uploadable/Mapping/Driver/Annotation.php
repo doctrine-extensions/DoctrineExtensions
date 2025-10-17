@@ -21,6 +21,4 @@ use Gedmo\Mapping\Driver\AnnotationDriverInterface;
  *
  * @internal
  */
-class Annotation extends Attribute implements AnnotationDriverInterface
-{
-}
+class Annotation extends Attribute implements AnnotationDriverInterface {}

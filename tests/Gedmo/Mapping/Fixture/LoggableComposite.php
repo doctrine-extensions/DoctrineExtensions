@@ -24,24 +24,20 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class LoggableComposite
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
-    private $one;
+    private ?int $one = null;
 
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
-    private $two;
+    private ?int $two = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)

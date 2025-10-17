@@ -25,16 +25,14 @@ use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
 class Category
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="name", type="string", length=128)

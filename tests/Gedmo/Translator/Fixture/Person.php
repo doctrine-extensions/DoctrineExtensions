@@ -25,32 +25,24 @@ use Gedmo\Translator\TranslationProxy;
 class Person
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="name", type="string", length=128)
      */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 128)]
-    public $name;
+    public ?string $name = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="desc", type="string", length=128)
      */
     #[ORM\Column(name: 'desc', type: Types::STRING, length: 128)]
-    public $description;
+    public ?string $description = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="last_name", type="string", length=128, nullable=true)
      */
     #[ORM\Column(name: 'last_name', type: Types::STRING, length: 128, nullable: true)]
-    public $lastName;
+    public ?string $lastName = null;
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -58,7 +50,7 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var Collection<int, TranslationInterface>
@@ -124,10 +116,7 @@ class Person
         return $this->parent;
     }
 
-    /**
-     * @return self|TranslationProxy
-     */
-    public function translate(string $locale = 'en')
+    public function translate(string $locale = 'en'): self|TranslationProxy
     {
         if ('en' === $locale) {
             return $this;

@@ -43,23 +43,23 @@ class SoftDeleteableFilter extends BsonFilter
      *
      * @phpstan-return array<string, array<int, array<string, array{'$gt': \DateTime}|null>>|null>
      */
-    public function addFilterCriteria(ClassMetadata $targetEntity): array
+    public function addFilterCriteria(ClassMetadata $class): array
     {
-        $class = $targetEntity->getName();
-        if (true === ($this->disabled[$class] ?? false)) {
+        $className = $class->getName();
+        if (true === ($this->disabled[$className] ?? false)) {
             return [];
         }
-        if (true === ($this->disabled[$targetEntity->rootDocumentName] ?? false)) {
+        if (true === ($this->disabled[$class->rootDocumentName] ?? false)) {
             return [];
         }
 
-        $config = $this->getListener()->getConfiguration($this->getDocumentManager(), $targetEntity->name);
+        $config = $this->getListener()->getConfiguration($this->getDocumentManager(), $class->name);
 
         if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
             return [];
         }
 
-        $column = $targetEntity->getFieldMapping($config['fieldName']);
+        $column = $class->getFieldMapping($config['fieldName']);
 
         if (isset($config['timeAware']) && $config['timeAware']) {
             return [

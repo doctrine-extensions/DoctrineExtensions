@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Entity\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -29,7 +30,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Table(name: 'ext_categories')]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[Gedmo\TranslationEntity(class: CategoryTranslation::class)]
-class Category
+class Category implements \Stringable
 {
     /**
      * @ORM\Column(type="integer")
@@ -39,33 +40,27 @@ class Category
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      *
      * @ORM\Column(length=64)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(length: 64)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      *
      * @ORM\Column(type="text", nullable=true)
      */
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private $description;
+    private ?string $description = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"created", "title"})
      *
@@ -74,7 +69,7 @@ class Category
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['created', 'title'])]
     #[ORM\Column(length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @Gedmo\TreeLeft
@@ -83,7 +78,7 @@ class Category
      */
     #[Gedmo\TreeLeft]
     #[ORM\Column(type: Types::INTEGER)]
-    private $lft;
+    private ?int $lft = null;
 
     /**
      * @Gedmo\TreeRight
@@ -92,7 +87,7 @@ class Category
      */
     #[Gedmo\TreeRight]
     #[ORM\Column(type: Types::INTEGER)]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -103,7 +98,7 @@ class Category
     #[Gedmo\TreeParent]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $parent;
+    private ?self $parent = null;
 
     /**
      * @Gedmo\TreeRoot
@@ -112,7 +107,7 @@ class Category
      */
     #[Gedmo\TreeRoot]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private $root;
+    private ?int $root = null;
 
     /**
      * @Gedmo\TreeLevel
@@ -121,9 +116,11 @@ class Category
      */
     #[Gedmo\TreeLevel]
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
-    private $level;
+    private ?int $level = null;
 
     /**
+     * @var Collection<array-key, self>
+     *
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
@@ -136,7 +133,7 @@ class Category
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $created;
+    private ?\DateTime $created = null;
 
     /**
      * @Gedmo\Timestampable(on="update")
@@ -145,7 +142,7 @@ class Category
      */
     #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private $updated;
+    private ?\DateTime $updated = null;
 
     /**
      * @Gedmo\Blameable(on="create")
@@ -154,7 +151,7 @@ class Category
      */
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\Column(type: Types::STRING)]
-    private $createdBy;
+    private ?string $createdBy = null;
 
     /**
      * @Gedmo\Blameable(on="update")
@@ -163,9 +160,11 @@ class Category
      */
     #[Gedmo\Blameable(on: 'update')]
     #[ORM\Column(type: Types::STRING)]
-    private $updatedBy;
+    private ?string $updatedBy = null;
 
     /**
+     * @var Collection<array-key, CategoryTranslation>
+     *
      * @ORM\OneToMany(
      *     targetEntity="CategoryTranslation",
      *     mappedBy="object",
@@ -173,7 +172,7 @@ class Category
      * )
      */
     #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
-    private $translations;
+    private Collection $translations;
 
     public function __construct()
     {
@@ -181,17 +180,20 @@ class Category
         $this->translations = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getTitle();
+        return (string) $this->getTitle();
     }
 
-    public function getTranslations()
+    /**
+     * @return Collection<CategoryTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }
 
-    public function addTranslation(CategoryTranslation $t)
+    public function addTranslation(CategoryTranslation $t): void
     {
         if (!$this->translations->contains($t)) {
             $this->translations[] = $t;
@@ -199,87 +201,90 @@ class Category
         }
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setParent($parent)
+    public function setParent(?self $parent): void
     {
         $this->parent = $parent;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    public function getRoot()
+    public function getRoot(): ?int
     {
         return $this->root;
     }
 
-    public function getLevel()
+    public function getLevel(): ?int
     {
         return $this->level;
     }
 
-    public function getChildren()
+    /**
+     * @return Collection<self>
+     */
+    public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    public function getLeft()
+    public function getLeft(): ?int
     {
         return $this->lft;
     }
 
-    public function getRight()
+    public function getRight(): ?int
     {
         return $this->rgt;
     }
 
-    public function getCreated()
+    public function getCreated(): ?\DateTime
     {
         return $this->created;
     }
 
-    public function getUpdated()
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }
 
-    public function getCreatedBy()
+    public function getCreatedBy(): ?string
     {
         return $this->createdBy;
     }
 
-    public function getUpdatedBy()
+    public function getUpdatedBy(): ?string
     {
         return $this->updatedBy;
     }

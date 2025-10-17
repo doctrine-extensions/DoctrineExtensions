@@ -24,8 +24,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Image
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,7 +31,7 @@ class Image
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Translatable
@@ -50,7 +48,7 @@ class Image
      * @ORM\ManyToMany(targetEntity="Article", mappedBy="images")
      */
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'images')]
-    private $articles;
+    private Collection $articles;
 
     public function __construct()
     {

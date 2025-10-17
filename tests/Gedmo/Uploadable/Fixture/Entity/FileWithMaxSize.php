@@ -24,14 +24,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[Gedmo\Uploadable(allowOverwrite: true, pathMethod: 'getPath', callback: 'callbackMethod', maxSize: '2')]
 class FileWithMaxSize
 {
-    /**
-     * @var bool
-     */
-    public $callbackWasCalled = false;
+    public bool $callbackWasCalled = false;
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -39,7 +34,7 @@ class FileWithMaxSize
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", nullable=true)

@@ -26,8 +26,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Sortable
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -35,48 +33,40 @@ class Sortable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=128)
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer")
      *
      * @Gedmo\SortablePosition
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\SortablePosition]
-    private $position;
+    private ?int $position = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=128)
      *
      * @Gedmo\SortableGroup
      */
     #[ORM\Column(type: Types::STRING, length: 128)]
     #[Gedmo\SortableGroup]
-    private $grouping;
+    private ?string $grouping = null;
 
     /**
-     * @var SortableGroup
-     *
      * @ORM\ManyToOne(targetEntity="Sluggable")
      *
      * @Gedmo\SortableGroup
      */
     #[ORM\ManyToOne(targetEntity: SortableGroup::class)]
     #[Gedmo\SortableGroup]
-    private $sortable_group;
+    private ?SortableGroup $sortable_group = null;
 
     /**
      * @var Collection<int, SortableGroup>

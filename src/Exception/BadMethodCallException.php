@@ -18,6 +18,4 @@ use Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class BadMethodCallException extends \BadMethodCallException implements Exception
-{
-}
+class BadMethodCallException extends \BadMethodCallException implements Exception {}

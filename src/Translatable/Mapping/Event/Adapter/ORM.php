@@ -191,7 +191,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function insertTranslationRecord($translation)
     {
         $em = $this->getObjectManager();
-        $meta = $em->getClassMetadata(get_class($translation));
+        $meta = $em->getClassMetadata($translation::class);
         $data = [];
 
         foreach ($meta->getReflectionProperties() as $fieldName => $reflProp) {
@@ -245,13 +245,9 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $meta = $em->getClassMetadata($className);
         $type = Type::getType($meta->getTypeOfField('foreignKey'));
 
-        switch (Type::lookupName($type)) {
-            case Types::BIGINT:
-            case Types::INTEGER:
-            case Types::SMALLINT:
-                return (int) $key;
-            default:
-                return (string) $key;
-        }
+        return match (Type::lookupName($type)) {
+            Types::BIGINT, Types::INTEGER, Types::SMALLINT => (int) $key,
+            default => (string) $key,
+        };
     }
 }

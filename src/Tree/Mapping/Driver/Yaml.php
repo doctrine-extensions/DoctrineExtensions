@@ -128,7 +128,7 @@ class Yaml extends File implements Driver
                             $separator = '|';
                         }
 
-                        if (strlen($separator) > 1) {
+                        if (strlen((string) $separator) > 1) {
                             throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
                         }
 
@@ -205,7 +205,7 @@ class Yaml extends File implements Driver
                 if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
                     throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->getName()}");
                 }
-                $method = 'validate'.ucfirst($config['strategy']).'TreeMetadata';
+                $method = 'validate'.ucfirst((string) $config['strategy']).'TreeMetadata';
                 $validator->$method($meta, $config);
             } else {
                 throw new InvalidMappingException("Cannot find Tree type for class: {$meta->getName()}");

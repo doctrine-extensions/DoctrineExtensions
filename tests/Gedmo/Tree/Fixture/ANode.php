@@ -22,8 +22,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class ANode
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -31,29 +29,25 @@ class ANode
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      *
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      *
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent

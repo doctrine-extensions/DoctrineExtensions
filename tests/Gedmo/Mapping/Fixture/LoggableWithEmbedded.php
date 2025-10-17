@@ -26,8 +26,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class LoggableWithEmbedded
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -35,27 +33,23 @@ class LoggableWithEmbedded
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="title", type="string")
      *
      * @Gedmo\Versioned
      */
     #[ORM\Column(name: 'title', type: Types::STRING)]
     #[Gedmo\Versioned]
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var Embedded
-     *
      * @ORM\Embedded(class="Gedmo\Tests\Mapping\Fixture\Embedded")
      *
      * @Gedmo\Versioned
      */
     #[ORM\Embedded(class: Embedded::class)]
     #[Gedmo\Versioned]
-    private $embedded;
+    private ?Embedded $embedded = null;
 }

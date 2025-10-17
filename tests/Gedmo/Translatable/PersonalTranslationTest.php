@@ -93,7 +93,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
     public function testShouldCascadeDeletionsByForeignKeyConstraints(): void
     {
         // Uses normalized comparison due to case differences between versions
-        if ('doctrine\dbal\platforms\sqliteplatform' === strtolower(get_class($this->em->getConnection()->getDatabasePlatform()))) {
+        if ('doctrine\dbal\platforms\sqliteplatform' === strtolower($this->em->getConnection()->getDatabasePlatform()::class)) {
             static::markTestSkipped('Foreign key constraints do not map in SQLite.');
         }
 

@@ -42,7 +42,7 @@ class Product
      * @Gedmo\ReferenceMany(type="entity", class="Gedmo\Tests\References\Fixture\ORM\StockItem", mappedBy="product")
      */
     #[Gedmo\ReferenceMany(type: 'entity', class: StockItem::class, mappedBy: 'product')]
-    private $stockItems;
+    private Collection $stockItems;
 
     /**
      * @var Collection<int, Metadata>
@@ -50,7 +50,7 @@ class Product
      * @ODM\EmbedMany(targetDocument="Gedmo\Tests\References\Fixture\ODM\MongoDB\Metadata")
      */
     #[ODM\EmbedMany(targetDocument: Metadata::class)]
-    private $metadatas;
+    private Collection $metadatas;
 
     public function __construct()
     {

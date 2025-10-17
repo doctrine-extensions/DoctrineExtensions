@@ -18,6 +18,4 @@ use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
  * @ORM\Entity
  */
 #[ORM\Entity]
-class CategoryClosureWithoutMapping extends AbstractClosure
-{
-}
+class CategoryClosureWithoutMapping extends AbstractClosure {}

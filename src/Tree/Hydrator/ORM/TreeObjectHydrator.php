@@ -24,6 +24,8 @@ use Gedmo\Tree\TreeListener;
  * @author Ilija Tovilo <ilija.tovilo@me.com>
  *
  * @final since gedmo/doctrine-extensions 3.11
+ *
+ * @phpstan-import-type TreeConfiguration from TreeListener
  */
 class TreeObjectHydrator extends ObjectHydrator
 {
@@ -32,23 +34,16 @@ class TreeObjectHydrator extends ObjectHydrator
 
     /**
      * @var array<string, mixed>
+     *
+     * @phpstan-var TreeConfiguration
      */
-    private $config = [];
+    private array $config = [];
 
-    /**
-     * @var string
-     */
-    private $idField;
+    private string $idField = '';
 
-    /**
-     * @var string
-     */
-    private $parentField;
+    private string $parentField = '';
 
-    /**
-     * @var string
-     */
-    private $childrenField;
+    private string $childrenField = '';
 
     /**
      * @param object $object
@@ -59,7 +54,7 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     public function setPropertyValue($object, $property, $value)
     {
-        $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
+        $meta = $this->getEntityManager()->getClassMetadata($object::class);
         $meta->setFieldValue($object, $property, $value);
     }
 
@@ -285,7 +280,7 @@ class TreeObjectHydrator extends ObjectHydrator
         $firstMappedEntity = array_values($data);
         $firstMappedEntity = $firstMappedEntity[0];
 
-        return $this->getEntityManager()->getClassMetadata(get_class($firstMappedEntity))->rootEntityName;
+        return $this->getEntityManager()->getClassMetadata($firstMappedEntity::class)->rootEntityName;
     }
 
     /**
@@ -296,7 +291,7 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     protected function getPropertyValue($object, $property)
     {
-        $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
+        $meta = $this->getEntityManager()->getClassMetadata($object::class);
 
         return $meta->getFieldValue($object, $property);
     }

@@ -50,7 +50,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     {
         $this->dm->clear();
         $test = $this->dm->getReference(Article::class, $this->articleId);
-        static::assertStringStartsWith('Proxy', get_class($test));
+        static::assertStringStartsWith('Proxy', $test::class);
         static::assertInstanceOf(Article::class, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 

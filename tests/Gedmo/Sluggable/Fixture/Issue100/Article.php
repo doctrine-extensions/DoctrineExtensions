@@ -24,8 +24,6 @@ use Gedmo\Translatable\Translatable;
 class Article implements Sluggable, Translatable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,7 +31,7 @@ class Article implements Sluggable, Translatable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Translatable

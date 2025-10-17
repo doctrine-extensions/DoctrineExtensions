@@ -25,8 +25,6 @@ use Symfony\Component\Uid\UuidV6;
 class Company implements Blameable
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -34,7 +32,7 @@ class Company implements Blameable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="name", type="string", length=128)
@@ -43,15 +41,13 @@ class Company implements Blameable
     private ?string $name = null;
 
     /**
-     * @var UuidV6|string|null
-     *
      * @Gedmo\Blameable(on="create")
      *
      * @ORM\Column(name="created", type="uuid")
      */
     #[ORM\Column(name: 'created', type: 'uuid')]
     #[Gedmo\Blameable(on: 'create')]
-    private $created;
+    private UuidV6|string|null $created = null;
 
     public function getId(): ?int
     {

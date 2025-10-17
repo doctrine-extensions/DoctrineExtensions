@@ -16,6 +16,4 @@ use Gedmo\Exception;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-class RuntimeException extends \RuntimeException implements Exception
-{
-}
+class RuntimeException extends \RuntimeException implements Exception {}

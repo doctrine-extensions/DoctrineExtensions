@@ -24,12 +24,10 @@ use Gedmo\Tests\References\Fixture\ORM\Category;
 class Metadata
 {
     /**
-     * @var string|null
-     *
      * @ODM\Field(type="string")
      */
     #[ODM\Field(type: Type::STRING)]
-    private $name;
+    private ?string $name = null;
 
     /**
      * @Gedmo\ReferenceOne(type="entity", class="Gedmo\Tests\References\Fixture\ORM\Category", identifier="categoryId")

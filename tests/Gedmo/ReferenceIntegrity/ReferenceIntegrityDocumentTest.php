@@ -59,7 +59,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(TypeOneNullify::class)
             ->findOneBy(['title' => 'One Nullify Type']);
 
-        static::assertNotNull($type);
+        static::assertInstanceOf(TypeOneNullify::class, $type);
         static::assertIsObject($type);
 
         $this->dm->remove($type);
@@ -67,12 +67,12 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $type = $this->dm->getRepository(TypeOneNullify::class)
             ->findOneBy(['title' => 'One Nullify Type']);
-        static::assertNull($type);
+        static::assertNotInstanceOf(TypeOneNullify::class, $type);
 
         $article = $this->dm->getRepository(ArticleOneNullify::class)
             ->findOneBy(['title' => 'One Nullify Article']);
 
-        static::assertNull($article->getType());
+        static::assertNotInstanceOf(TypeOneNullify::class, $article->getType());
 
         $this->dm->clear();
     }
@@ -82,7 +82,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(TypeManyNullify::class)
             ->findOneBy(['title' => 'Many Nullify Type']);
 
-        static::assertNotNull($type);
+        static::assertInstanceOf(TypeManyNullify::class, $type);
         static::assertIsObject($type);
 
         $this->dm->remove($type);
@@ -90,12 +90,12 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $type = $this->dm->getRepository(TypeManyNullify::class)
             ->findOneBy(['title' => 'Many Nullify Type']);
-        static::assertNull($type);
+        static::assertNotInstanceOf(TypeManyNullify::class, $type);
 
         $article = $this->dm->getRepository(ArticleManyNullify::class)
             ->findOneBy(['title' => 'Many Nullify Article']);
 
-        static::assertNull($article->getType());
+        static::assertNotInstanceOf(TypeManyNullify::class, $article->getType());
 
         $this->dm->clear();
     }
@@ -107,10 +107,10 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type2 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'One Pull Type 2']);
 
-        static::assertNotNull($type1);
+        static::assertInstanceOf(TypeOnePull::class, $type1);
         static::assertIsObject($type1);
 
-        static::assertNotNull($type2);
+        static::assertInstanceOf(TypeOnePull::class, $type2);
         static::assertIsObject($type2);
 
         $this->dm->remove($type2);
@@ -118,7 +118,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $type2 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'One Pull Type 2']);
-        static::assertNull($type2);
+        static::assertNotInstanceOf(TypeOnePull::class, $type2);
 
         $article = $this->dm->getRepository(ArticleOnePull::class)
             ->findOneBy(['title' => 'One Pull Article']);
@@ -137,10 +137,10 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type2 = $this->dm->getRepository(TypeOnePull::class)
             ->findOneBy(['title' => 'Many Pull Type 2']);
 
-        static::assertNotNull($type1);
+        static::assertInstanceOf(TypeOnePull::class, $type1);
         static::assertIsObject($type1);
 
-        static::assertNotNull($type2);
+        static::assertInstanceOf(TypeOnePull::class, $type2);
         static::assertIsObject($type2);
 
         $this->dm->remove($type2);
@@ -148,7 +148,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $type2 = $this->dm->getRepository(TypeManyPull::class)
             ->findOneBy(['title' => 'Many Pull Type 2']);
-        static::assertNull($type2);
+        static::assertNotInstanceOf(TypeManyPull::class, $type2);
 
         $article = $this->dm->getRepository(ArticleManyPull::class)
             ->findOneBy(['title' => 'Many Pull Article']);
@@ -166,7 +166,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(TypeOneRestrict::class)
             ->findOneBy(['title' => 'One Restrict Type']);
 
-        static::assertNotNull($type);
+        static::assertInstanceOf(TypeOneRestrict::class, $type);
         static::assertIsObject($type);
 
         $this->dm->remove($type);
@@ -179,7 +179,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(Type::class)
             ->findOneBy(['title' => 'Many Restrict Type']);
 
-        static::assertNotNull($type);
+        static::assertInstanceOf(Type::class, $type);
         static::assertIsObject($type);
 
         $this->dm->remove($type);
