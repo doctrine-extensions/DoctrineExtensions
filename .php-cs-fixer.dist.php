@@ -31,9 +31,9 @@ return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRules([
         '@DoctrineAnnotation' => true,
-        '@PHP74Migration' => true,
-        '@PHP74Migration:risky' => true,
-        '@PHPUnit91Migration:risky' => true,
+        '@PHP7x4Migration' => true,
+        '@PHP7x4Migration:risky' => true,
+        '@PHPUnit9x1Migration:risky' => true,
         '@PSR2' => true,
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
