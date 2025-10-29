@@ -112,6 +112,12 @@ abstract class BaseTestCaseMongoODM extends TestCase
     protected function getMockAnnotatedConfig(): Configuration
     {
         $config = new Configuration();
+
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'setUseNativeLazyObject')) {
+            $config->setUseNativeLazyObject(true);
+        }
+
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setHydratorDir(TESTS_TEMP_DIR);
@@ -129,6 +135,12 @@ abstract class BaseTestCaseMongoODM extends TestCase
     protected function getDefaultConfiguration(): Configuration
     {
         $config = new Configuration();
+
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'setUseNativeLazyObject')) {
+            $config->setUseNativeLazyObject(true);
+        }
+
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setHydratorDir(TESTS_TEMP_DIR);
