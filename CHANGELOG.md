@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Support for Symfony 8
 
 ## [3.21.0] - 2025-09-22
 ### Added
