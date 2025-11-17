@@ -47,8 +47,8 @@
         "doctrine/persistence": "^2.2 || ^3.0 || ^4.0",
         "psr/cache": "^1 || ^2 || ^3",
         "psr/clock": "^1",
-        "symfony/cache": "^5.4 || ^6.0 || ^7.0",
-        "symfony/string": "^5.4 || ^6.0 || ^7.0"
+        "symfony/cache": "^5.4 || ^6.4 || ^7.3 || ^8.0",
+        "symfony/string": "^5.4 || ^6.4 || ^7.3 || ^8.0"
     },
     "require-dev": {
         "behat/transliterator": "^1.2",
@@ -66,11 +66,11 @@
         "phpstan/phpstan-phpunit": "^2.0.3",
         "phpunit/phpunit": "^9.6",
         "rector/rector": "^2.2.6",
-        "symfony/console": "^5.4 || ^6.0 || ^7.0",
-        "symfony/doctrine-bridge": "^5.4 || ^6.0 || ^7.0",
-        "symfony/phpunit-bridge": "^6.4 || ^7.0",
-        "symfony/uid": "^5.4 || ^6.0 || ^7.0",
-        "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
+        "symfony/console": "^5.4 || ^6.4 || ^7.3 || ^8.0",
+        "symfony/doctrine-bridge": "^5.4 || ^6.4 || ^7.3 || ^8.0",
+        "symfony/phpunit-bridge": "^6.4 || ^7.3 || ^8.0",
+        "symfony/uid": "^5.4 || ^6.4 || ^7.3 || ^8.0",
+        "symfony/yaml": "^5.4 || ^6.4 || ^7.3 || ^8.0"
     },
     "conflict": {
         "behat/transliterator": "<1.2 || >=2.0",
