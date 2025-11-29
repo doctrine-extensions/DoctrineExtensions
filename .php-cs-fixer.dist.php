@@ -80,6 +80,8 @@ return (new PhpCsFixer\Config())
         'self_accessor' => true,
         'static_lambda' => true,
         'strict_param' => true,
+        // @todo: Change the following rule to `true` when support for PHP < 8 is dropped.
+        'stringable_for_to_string' => false,
         'ternary_to_null_coalescing' => true,
         'trailing_comma_in_multiline' => [
             'elements' => [
