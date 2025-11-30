@@ -127,12 +127,15 @@ class NestedTreeRepository extends AbstractTreeRepository
             ->orderBy('node.'.$config['left'], 'ASC')
         ;
         if ($options['includeNode']) {
-            $qb->where($qb->expr()->lte('node.'.$config['left'], $left))
-               ->andWhere($qb->expr()->gte('node.'.$config['right'], $right));
+            $qb->where($qb->expr()->lte('node.'.$config['left'], ':left'))
+                ->andWhere($qb->expr()->gte('node.'.$config['right'], ':right'));
         } else {
-            $qb->where($qb->expr()->lt('node.'.$config['left'], $left))
-               ->andWhere($qb->expr()->gt('node.'.$config['right'], $right));
+            $qb->where($qb->expr()->lt('node.'.$config['left'], ':left'))
+                ->andWhere($qb->expr()->gt('node.'.$config['right'], ':right'));
         }
+        $qb->setParameter('left', $left);
+        $qb->setParameter('right', $right);
+
         if (isset($config['root'])) {
             $rootId = $wrapped->getPropertyValue($config['root']);
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
@@ -259,8 +262,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $left = $wrapped->getPropertyValue($config['left']);
                     $right = $wrapped->getPropertyValue($config['right']);
                     if ($left && $right) {
-                        $qb->where($qb->expr()->lt('node.'.$config['right'], $right));
-                        $qb->andWhere($qb->expr()->gt('node.'.$config['left'], $left));
+                        $qb->where($qb->expr()->lt('node.'.$config['right'], ':right'));
+                        $qb->andWhere($qb->expr()->gt('node.'.$config['left'], ':left'));
+                        $qb->setParameter('left', $left);
+                        $qb->setParameter('right', $right);
                     }
                 }
                 if (isset($config['root'])) {
@@ -470,11 +475,12 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($includeSelf ?
-                $qb->expr()->gte('node.'.$config['left'], $left) :
-                $qb->expr()->gt('node.'.$config['left'], $left)
+                $qb->expr()->gte('node.'.$config['left'], ':left') :
+                $qb->expr()->gt('node.'.$config['left'], ':left')
             )
             ->orderBy("node.{$config['left']}", 'ASC')
         ;
+        $qb->setParameter('left', $left);
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->getEntityManager());
             $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], ':pid'));
@@ -550,11 +556,12 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($includeSelf ?
-                $qb->expr()->lte('node.'.$config['left'], $left) :
-                $qb->expr()->lt('node.'.$config['left'], $left)
+                $qb->expr()->lte('node.'.$config['left'], ':left') :
+                $qb->expr()->lt('node.'.$config['left'], ':left')
             )
             ->orderBy("node.{$config['left']}", 'ASC')
         ;
+        $qb->setParameter('left', $left);
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->getEntityManager());
             $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], ':pid'));
@@ -923,10 +930,10 @@ class NestedTreeRepository extends AbstractTreeRepository
         $em = $this->getEntityManager();
 
         $updateQb = $em->createQueryBuilder()
-                       ->update($meta->getName(), 'node')
-                       ->set('node.'.$config['left'], ':left')
-                       ->set('node.'.$config['right'], ':right')
-                       ->where('node.id = :id');
+            ->update($meta->getName(), 'node')
+            ->set('node.'.$config['left'], ':left')
+            ->set('node.'.$config['right'], ':right')
+            ->where('node.id = :id');
         if (isset($config['level'])) {
             $updateQb->set('node.'.$config['level'], ':level');
         }
@@ -1223,10 +1230,12 @@ class NestedTreeRepository extends AbstractTreeRepository
             $qb->select($qb->expr()->count('node.'.$identifier))
                 ->from($config['useObjectClass'], 'node')
                 ->where($qb->expr()->orX(
-                    $qb->expr()->eq('node.'.$config['left'], $i),
-                    $qb->expr()->eq('node.'.$config['right'], $i)
+                    $qb->expr()->eq('node.'.$config['left'], ':left'),
+                    $qb->expr()->eq('node.'.$config['right'], ':right')
                 ))
             ;
+            $qb->setParameter('left', $i);
+            $qb->setParameter('right', $i);
             if (isset($config['root'])) {
                 $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
                 $qb->setParameter('rid', $rootId);
@@ -1337,9 +1346,11 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $qb = $this->getQueryBuilder();
                 $qb->select($qb->expr()->count('node.'.$identifier))
                     ->from($config['useObjectClass'], 'node')
-                    ->where($qb->expr()->lt('node.'.$config['left'], $left))
-                    ->andWhere($qb->expr()->gt('node.'.$config['right'], $right))
+                    ->where($qb->expr()->lt('node.'.$config['left'], ':left'))
+                    ->andWhere($qb->expr()->gt('node.'.$config['right'], ':right'))
                 ;
+                $qb->setParameter('left', $left);
+                $qb->setParameter('right', $right);
                 if (isset($config['root'])) {
                     $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
                     $qb->setParameter('rid', $rootId);
