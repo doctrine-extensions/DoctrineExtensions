@@ -365,7 +365,7 @@ class SluggableListener extends MappedEventSubscriber
             $slug = $meta->getFieldValue($object, $slugField);
 
             // if slug should not be updated, skip it
-            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || 0 === strpos($slug, '__sluggable_placeholder__'))) {
+            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || 0 === strpos((string)$slug, '__sluggable_placeholder__'))) {
                 continue;
             }
             // must fetch the old slug from changeset, since $object holds the new version
