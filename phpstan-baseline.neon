@@ -1063,6 +1063,54 @@ parameters:
 			path: tests/Gedmo/Mapping/Fixture/Category.php
 
 		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Referenced\:\:\$referencer \(Gedmo\\Tests\\Mapping\\Fixture\\Referencer\|null\) is never assigned Gedmo\\Tests\\Mapping\\Fixture\\Referencer so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Referenced.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Referencer\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Referencer.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Referencing\:\:\$id \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Referencing.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Referencing\:\:\$referencer \(Gedmo\\Tests\\Mapping\\Fixture\\Referencer\|null\) is never assigned Gedmo\\Tests\\Mapping\\Fixture\\Referencer so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Referencing.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\Category\:\:\$changed \(DateTime\|null\) is never assigned DateTime so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/Category.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\Category\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/Category.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\ClosureCategory\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/ClosureCategory.php
+
+		-
+			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Xml\\MaterializedPathCategory\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/Gedmo/Mapping/Fixture/Xml/MaterializedPathCategory.php
+
+		-
 			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
 			identifier: class.notFound
 			count: 2
@@ -1153,64 +1201,10 @@ parameters:
 			path: tests/Gedmo/Mapping/ORMMappingTestCase.php
 
 		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\ReferenceIntegrityMappingTest\:\:\$dm is never written, only read\.$#'
-			identifier: property.onlyRead
-			count: 1
-			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
-
-		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\ReferenceIntegrityMappingTest\:\:\$referenceIntegrity is never written, only read\.$#'
-			identifier: property.onlyRead
-			count: 1
-			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: tests/Gedmo/Mapping/ReferenceIntegrityMappingTest.php
-
-		-
 			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
 			identifier: class.notFound
 			count: 1
 			path: tests/Gedmo/Mapping/TreeMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\YamlDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/TreeMappingTest.php
-
-		-
-			message: '#^Parameter \#1 \$nestedDriver of method Doctrine\\Persistence\\Mapping\\Driver\\MappingDriverChain\:\:addDriver\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\YamlDriver given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Gedmo/Mapping/TreeMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/ClosureTreeMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/MaterializedPathTreeMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/ReferencesMappingTest.php
-
-		-
-			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/Gedmo/Mapping/Xml/TranslatableMappingTest.php
 
 		-
 			message: '#^Method Gedmo\\Tests\\Sluggable\\Fixture\\Doctrine\\FakeFilter\:\:addFilterConstraint\(\) has parameter \$targetTableAlias with no type specified\.$#'
