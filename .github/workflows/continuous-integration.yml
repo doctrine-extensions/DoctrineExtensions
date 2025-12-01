@@ -30,6 +30,7 @@ jobs:
           - "8.2"
           - "8.3"
           - "8.4"
+          - "8.5"
         deps:
           - "highest"
         no-annotations:
@@ -40,20 +41,20 @@ jobs:
           - deps: "lowest"
             php-version: "7.4"
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
           # Run builds on low and high PHP versions with `doctrine/annotations` removed
           - deps: "highest"
             php-version: "7.4"
             no-annotations: true
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
             no-annotations: true
           # Run builds on high PHP version with `doctrine/orm` version pinned
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
             orm: "^2.14"
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
             orm: "^3.0"
 
     steps:
