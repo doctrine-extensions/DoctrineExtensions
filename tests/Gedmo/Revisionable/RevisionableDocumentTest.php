@@ -1,0 +1,277 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Gedmo\Tests\Revisionable;
+
+use Doctrine\Common\EventManager;
+use Gedmo\Revisionable\Document\Repository\RevisionRepository;
+use Gedmo\Revisionable\Document\Revision;
+use Gedmo\Revisionable\RevisionableListener;
+use Gedmo\Revisionable\RevisionInterface;
+use Gedmo\Tests\Revisionable\Fixture\Document\Address;
+use Gedmo\Tests\Revisionable\Fixture\Document\Article;
+use Gedmo\Tests\Revisionable\Fixture\Document\Author;
+use Gedmo\Tests\Revisionable\Fixture\Document\Comment;
+use Gedmo\Tests\Revisionable\Fixture\Document\CommentRevision;
+use Gedmo\Tests\Revisionable\Fixture\Document\Geo;
+use Gedmo\Tests\Revisionable\Fixture\Document\GeoLocation;
+use Gedmo\Tests\Revisionable\Fixture\Document\RelatedArticle;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use MongoDB\BSON\UTCDateTime;
+
+/**
+ * Functional tests for the revsionable extension with the Doctrine MongoDB ODM
+ *
+ * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ */
+final class RevisionableDocumentTest extends BaseTestCaseMongoODM
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $evm = new EventManager();
+
+        $listener = new RevisionableListener();
+        $listener->setUsername('jules');
+
+        $evm->addEventSubscriber($listener);
+
+        $this->getDefaultDocumentManager($evm);
+    }
+
+    public function testRevisionableLifecycle(): void
+    {
+        $revisionRepository = $this->dm->getRepository(Revision::class);
+
+        static::assertCount(0, $revisionRepository->findAll());
+
+        $articleRepository = $this->dm->getRepository(Article::class);
+
+        $art0 = new Article();
+        $art0->setTitle('Title');
+        $art0->setPublishAt(new \DateTimeImmutable('2024-06-24 23:00:00', new \DateTimeZone('UTC')));
+
+        $author = new Author();
+        $author->setName('John Doe');
+        $author->setEmail('john@doe.com');
+
+        $art0->setAuthor($author);
+
+        $this->dm->persist($art0);
+        $this->dm->flush();
+
+        $articleId = $art0->getId();
+
+        $revision = $revisionRepository->findOneBy(['revisionableId' => $articleId]);
+
+        static::assertNotNull($revision);
+        static::assertSame(RevisionInterface::ACTION_CREATE, $revision->getAction());
+        static::assertSame(get_class($art0), $revision->getRevisionableClass());
+        static::assertSame('jules', $revision->getUsername());
+        static::assertSame(1, $revision->getVersion());
+
+        $data = $revision->getData();
+
+        static::assertCount(3, $data);
+        static::assertArrayHasKey('title', $data);
+        static::assertSame('Title', $data['title']);
+        static::assertArrayHasKey('publishAt', $data);
+        static::assertInstanceOf(UTCDateTime::class, $data['publishAt']);
+        static::assertArrayHasKey('author', $data);
+        static::assertSame(['name' => 'John Doe', 'email' => 'john@doe.com'], $data['author']);
+
+        // test update
+        $article = $articleRepository->findOneBy(['title' => 'Title']);
+        $article->setTitle('New');
+        $this->dm->persist($article);
+        $this->dm->flush();
+        $this->dm->clear();
+
+        $revision = $revisionRepository->findOneBy(['version' => 2, 'revisionableId' => $articleId]);
+
+        static::assertSame(RevisionInterface::ACTION_UPDATE, $revision->getAction());
+
+        // test delete
+        $article = $articleRepository->findOneBy(['title' => 'New']);
+        $this->dm->remove($article);
+        $this->dm->flush();
+        $this->dm->clear();
+
+        $revision = $revisionRepository->findOneBy(['version' => 3, 'revisionableId' => $articleId]);
+
+        static::assertSame(RevisionInterface::ACTION_REMOVE, $revision->getAction());
+        static::assertEmpty($revision->getData());
+    }
+
+    public function testVersionLifecycle(): void
+    {
+        $this->populate();
+
+        $commentRevisionRepository = $this->dm->getRepository(CommentRevision::class);
+
+        $commentRepository = $this->dm->getRepository(Comment::class);
+
+        static::assertInstanceOf(RevisionRepository::class, $commentRevisionRepository);
+
+        $comment = $commentRepository->findOneBy(['message' => 'm-v7']);
+
+        static::assertInstanceOf(Comment::class, $comment);
+        static::assertSame('m-v7', $comment->getMessage());
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('2024-06-24 23:30:00', $comment->getWrittenAt()->format('Y-m-d H:i:s'));
+        static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());
+        static::assertSame('Jane Doe', $comment->getAuthor()->getName());
+        static::assertSame('jane@doe.com', $comment->getAuthor()->getEmail());
+
+        // test revert single version
+        $commentRevisionRepository->revert($comment, 6);
+
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('m-v6', $comment->getMessage());
+        static::assertSame('2024-06-24 23:30:00', $comment->getWrittenAt()->format('Y-m-d H:i:s'));
+        static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());
+        static::assertNull($comment->getAuthor());
+
+        // test revert multiple versions
+        $commentRevisionRepository->revert($comment, 3);
+
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('m-v2', $comment->getMessage());
+        static::assertSame('2024-06-24 23:30:00', $comment->getWrittenAt()->format('Y-m-d H:i:s'));
+        static::assertSame('a1-t-v1', $comment->getArticle()->getTitle());
+        static::assertNotNull($comment->getAuthor());
+        static::assertSame('John Doe', $comment->getAuthor()->getName());
+        static::assertSame('john@doe.com', $comment->getAuthor()->getEmail());
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // test fetch revisions
+        $revisions = $commentRevisionRepository->getRevisions($comment);
+
+        static::assertCount(8, $revisions);
+
+        $latest = array_shift($revisions);
+
+        static::assertSame(RevisionInterface::ACTION_UPDATE, $latest->getAction());
+    }
+
+    public function testLogsRevisionsOfEmbeddedDocuments(): void
+    {
+        $address = new Address();
+        $address->setCity('city-v1');
+        $address->setStreet('street-v1');
+        $address->setGeo(new Geo(1.0000, 1.0000, new GeoLocation('Online')));
+
+        $this->dm->persist($address);
+        $this->dm->flush();
+
+        $address->setGeo(new Geo(2.0000, 2.0000, new GeoLocation('Offline')));
+
+        $this->dm->persist($address);
+        $this->dm->flush();
+
+        $address->getGeo()->setLatitude(3.0000);
+        $address->getGeo()->setLongitude(3.0000);
+
+        $this->dm->persist($address);
+        $this->dm->flush();
+
+        $address->setStreet('street-v2');
+
+        $this->dm->persist($address);
+        $this->dm->flush();
+
+        $revisionRepository = $this->dm->getRepository(Revision::class);
+
+        $revisions = $revisionRepository->getRevisions($address);
+
+        static::assertCount(4, $revisions);
+        static::assertCount(1, $revisions[0]->getData());
+        static::assertCount(1, $revisions[1]->getData());
+        static::assertCount(1, $revisions[2]->getData());
+        static::assertCount(3, $revisions[3]->getData());
+    }
+
+    private function populate(): void
+    {
+        $article = new RelatedArticle();
+        $article->setTitle('a1-t-v1');
+        $article->setContent('a1-c-v1');
+
+        $author = new Author();
+        $author->setName('John Doe');
+        $author->setEmail('john@doe.com');
+
+        // version 1
+        $comment = new Comment();
+        $comment->setArticle($article);
+        $comment->setAuthor($author);
+        $comment->setMessage('m-v1');
+        $comment->setSubject('s-v1');
+        $comment->setWrittenAt(new \DateTimeImmutable('2024-06-24 23:30:00', new \DateTimeZone('UTC')));
+
+        $this->dm->persist($article);
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // version 2
+        $comment->setMessage('m-v2');
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // version 3
+        $comment->setSubject('s-v3');
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        $article2 = new RelatedArticle();
+        $article2->setTitle('a2-t-v1');
+        $article2->setContent('a2-c-v1');
+
+        $author2 = new Author();
+        $author2->setName('Jane Doe');
+        $author2->setEmail('jane@doe.com');
+
+        // version 4
+        $comment->setAuthor($author2);
+        $comment->setArticle($article2);
+
+        $this->dm->persist($article2);
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // version 5
+        $comment->setMessage('m-v5');
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // version 6
+        $comment->setMessage('m-v6');
+        $comment->setAuthor(null);
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+
+        // version 7
+        $comment->setMessage('m-v7');
+        $comment->setAuthor($author2);
+
+        $this->dm->persist($comment);
+        $this->dm->flush();
+        $this->dm->clear();
+    }
+}

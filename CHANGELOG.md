@@ -20,6 +20,7 @@ a release.
 ## [Unreleased]
 ### Added
 - Support for Symfony 8
+- Introduced the `Revisionable` extension as a modern replacement to the `Loggable` extension (#2825)
 
 ## [3.21.0] - 2025-09-22
 ### Added
