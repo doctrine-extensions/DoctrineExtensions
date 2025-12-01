@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Introduced the `Revisionable` extension as a modern replacement to the `Loggable` extension (#2825)
 
 ## [3.22.0] - 2025-12-13
 ### Added
@@ -46,7 +48,6 @@ a release.
 - SoftDeleteable: Resolved a bug where a soft-deleted object isn't remove from the ObjectManager (#2930)
 
 ### Added
-- Introduced the `Revisionable` extension as a modern replacement to the `Loggable` extension (#2825)
 - IP address provider for use with extensions with IP address references (#2928)
 
 ## [3.19.0] - 2025-02-24
