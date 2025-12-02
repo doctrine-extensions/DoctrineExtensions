@@ -101,7 +101,7 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
     /**
      * @param ClassMetadata<object> $meta
      *
-     * @return \ReflectionClass<object>
+     * @return \ReflectionClass<covariant object>
      */
     public function getMetaReflectionClass($meta)
     {

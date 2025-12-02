@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG PHP_VERSION=8.4-cli
+ARG PHP_VERSION=8.5-cli
 
 FROM composer:2 AS composer
 

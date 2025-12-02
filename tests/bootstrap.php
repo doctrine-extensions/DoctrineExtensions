@@ -12,6 +12,7 @@ declare(strict_types=1);
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Symfony\Bridge\Doctrine\Types\DatePointType;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -47,3 +48,8 @@ if (class_exists(AnnotationReader::class)) {
 
 Type::addType('uuid', UuidType::class);
 Type::addType('date_point', DatePointType::class);
+
+// Ignore unfixable deprecations
+Deprecation::ignoreDeprecations(
+    'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2772', // Ignore annotations deprecations from self
+);

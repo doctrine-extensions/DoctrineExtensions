@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.3.0
@@ -28,10 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build containers with Docker Compose
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Build "php" container
-        uses: isbang/compose-action@v2.3.0
+        uses: isbang/compose-action@v2.4.1
         with:
           compose-file: "./compose.yaml"
           services: |
