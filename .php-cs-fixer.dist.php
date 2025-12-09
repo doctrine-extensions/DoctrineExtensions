@@ -31,9 +31,9 @@ return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRules([
         '@DoctrineAnnotation' => true,
-        '@PHP74Migration' => true,
-        '@PHP74Migration:risky' => true,
-        '@PHPUnit91Migration:risky' => true,
+        '@PHP7x4Migration' => true,
+        '@PHP7x4Migration:risky' => true,
+        '@PHPUnit9x1Migration:risky' => true,
         '@PSR2' => true,
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -80,6 +80,8 @@ return (new PhpCsFixer\Config())
         'self_accessor' => true,
         'static_lambda' => true,
         'strict_param' => true,
+        // @todo: Change the following rule to `true` when support for PHP < 8 is dropped.
+        'stringable_for_to_string' => false,
         'ternary_to_null_coalescing' => true,
         'trailing_comma_in_multiline' => [
             'elements' => [

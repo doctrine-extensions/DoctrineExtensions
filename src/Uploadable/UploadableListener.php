@@ -339,7 +339,10 @@ class UploadableListener extends MappedEventSubscriber
 
         if ('' !== $config['callback']) {
             $callbackMethod = $refl->getMethod($config['callback']);
-            $callbackMethod->setAccessible(true);
+
+            if (PHP_VERSION_ID < 80100) {
+                $callbackMethod->setAccessible(true);
+            }
 
             $callbackMethod->invokeArgs($object, [$info]);
         }
