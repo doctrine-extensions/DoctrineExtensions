@@ -15,6 +15,8 @@ use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Handler\Article;
 use Gedmo\Tests\Sluggable\Fixture\Handler\ArticleRelativeSlug;
+use Gedmo\Tests\Sluggable\Fixture\Handler\UrilizedArticle;
+use Gedmo\Tests\Sluggable\Fixture\Handler\UrilizedArticleRelativeSlug;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -38,6 +40,20 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
     {
         $this->populate();
         $repo = $this->em->getRepository(ArticleRelativeSlug::class);
+
+        $thomas = $repo->findOneBy(['title' => 'Thomas']);
+        static::assertSame('sport-test/thomas', $thomas->getSlug());
+
+        $jen = $repo->findOneBy(['title' => 'Jen']);
+        static::assertSame('sport-test/jen', $jen->getSlug());
+
+        $john = $repo->findOneBy(['title' => 'John']);
+        static::assertSame('cars-code/john', $john->getSlug());
+
+        $single = $repo->findOneBy(['title' => 'Single']);
+        static::assertSame('single', $single->getSlug());
+
+        $repo = $this->em->getRepository(UrilizedArticleRelativeSlug::class);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
         static::assertSame('sport-test/thomas', $thomas->getSlug());
@@ -82,6 +98,34 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         $this->em->flush();
 
         static::assertSame('cars-code/jen', $jen->getSlug());
+
+        $repo = $this->em->getRepository(UrilizedArticleRelativeSlug::class);
+
+        $thomas = $repo->findOneBy(['title' => 'Thomas']);
+        $thomas->setTitle('Ninja');
+        $this->em->persist($thomas);
+        $this->em->flush();
+
+        static::assertSame('sport-test/ninja', $thomas->getSlug());
+
+        $sport = $this->em->getRepository(UrilizedArticle::class)->findOneBy(['title' => 'Sport']);
+        $sport->setTitle('Martial Arts');
+
+        $this->em->persist($sport);
+        $this->em->flush();
+
+        static::assertSame('martial-arts-test/ninja', $thomas->getSlug());
+
+        $jen = $repo->findOneBy(['title' => 'Jen']);
+        static::assertSame('martial-arts-test/jen', $jen->getSlug());
+
+        $cars = $this->em->getRepository(UrilizedArticle::class)->findOneBy(['title' => 'Cars']);
+        $jen->setArticle($cars);
+
+        $this->em->persist($jen);
+        $this->em->flush();
+
+        static::assertSame('cars-code/jen', $jen->getSlug());
     }
 
     protected function getUsedEntityFixtures(): array
@@ -89,10 +133,20 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         return [
             ArticleRelativeSlug::class,
             Article::class,
+            UrilizedArticleRelativeSlug::class,
+            UrilizedArticle::class,
         ];
     }
 
     private function populate(): void
+    {
+        $this->populateArticles();
+        $this->populateUrilizedArticles();
+
+        $this->em->flush();
+    }
+
+    private function populateArticles(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -122,7 +176,37 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         $single = new ArticleRelativeSlug();
         $single->setTitle('Single');
         $this->em->persist($single);
+    }
 
-        $this->em->flush();
+    private function populateUrilizedArticles(): void
+    {
+        $sport = new UrilizedArticle();
+        $sport->setTitle('Sport');
+        $sport->setCode('test');
+        $this->em->persist($sport);
+
+        $cars = new UrilizedArticle();
+        $cars->setTitle('Cars');
+        $cars->setCode('code');
+        $this->em->persist($cars);
+
+        $thomas = new UrilizedArticleRelativeSlug();
+        $thomas->setTitle('Thomas');
+        $thomas->setArticle($sport);
+        $this->em->persist($thomas);
+
+        $jen = new UrilizedArticleRelativeSlug();
+        $jen->setTitle('Jen');
+        $jen->setArticle($sport);
+        $this->em->persist($jen);
+
+        $john = new UrilizedArticleRelativeSlug();
+        $john->setTitle('John');
+        $john->setArticle($cars);
+        $this->em->persist($john);
+
+        $single = new UrilizedArticleRelativeSlug();
+        $single->setTitle('Single');
+        $this->em->persist($single);
     }
 }
