@@ -20,6 +20,8 @@ a release.
 ## [Unreleased]
 ### Added
 - Support for Symfony 8
+- SoftDeleteable: Add support for `date_point` type (#3013)
+- Timestampable: Add support for `date_point` type (#3013)
 
 ## [3.21.0] - 2025-09-22
 ### Added
