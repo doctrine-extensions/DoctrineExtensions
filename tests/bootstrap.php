@@ -47,9 +47,12 @@ if (class_exists(AnnotationReader::class)) {
 }
 
 Type::addType('uuid', UuidType::class);
-Type::addType('date_point', DatePointType::class);
 
 // Ignore unfixable deprecations
 Deprecation::ignoreDeprecations(
     'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2772', // Ignore annotations deprecations from self
 );
+
+if (class_exists(DatePointType::class)) {
+    Type::addType('date_point', DatePointType::class);
+}

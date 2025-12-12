@@ -27,6 +27,10 @@ final class DatePointTest extends BaseTestCaseORM
 
     protected function setUp(): void
     {
+        if (!DoctrineType::hasType('date_point')) {
+            static::markTestSkipped('The date_point type is not registered.');
+        }
+
         parent::setUp();
 
         $evm = new EventManager();
