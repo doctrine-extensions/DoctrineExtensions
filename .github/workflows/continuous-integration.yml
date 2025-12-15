@@ -93,7 +93,7 @@ jobs:
         run: "vendor/bin/phpunit --coverage-clover coverage.xml"
 
       - name: "Upload coverage file"
-        uses: "actions/upload-artifact@v5"
+        uses: "actions/upload-artifact@v6"
         with:
           name: "${{ github.job }}-${{ matrix.php-version }}-${{ matrix.deps }}-${{ matrix.no-annotations == true && 'no-annotations' || 'with-annotations' }}${{ matrix.orm != '' && format('-orm-{0}', matrix.orm) || '' }}-coverage"
           path: "coverage.xml"
