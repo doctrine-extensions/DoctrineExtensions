@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: Optimize DQL cache usage and prevent memory leaks by using parameterized queries in NestedTreeRepository
 
 ## [3.22.0] - 2025-12-13
 ### Added
