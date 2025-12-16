@@ -126,6 +126,10 @@ class RelativeSlugHandler implements SlugHandlerInterface
                     $this->originalTransliterator,
                     [$slug, $separator, $object]
                 );
+                $slug = call_user_func_array(
+                    $this->sluggable->getUrlizer(),
+                    [$slug, $separator, $object]
+                );
             }
 
             $result = $slug.$this->usedOptions['separator'].$result;
