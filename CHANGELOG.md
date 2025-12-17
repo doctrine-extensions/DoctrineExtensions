@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Introduced the `Revisionable` extension as a modern replacement to the `Loggable` extension (#2825)
 
 ## [3.22.0] - 2025-12-13
 ### Added
