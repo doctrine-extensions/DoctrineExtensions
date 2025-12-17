@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Sluggable: Make sure the parameter to `strpos` is always a string (#2995)
 
 ## [3.22.0] - 2025-12-13
 ### Added
