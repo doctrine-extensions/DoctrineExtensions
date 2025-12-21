@@ -50,6 +50,9 @@ a release.
 ### Added
 - IP address provider for use with extensions with IP address references (#2928)
 
+## Added
+- Support for blameable on `remove` event (#2929)
+
 ## [3.19.0] - 2025-02-24
 ### Added
 - Actor provider for use with extensions with user references (#2914)
