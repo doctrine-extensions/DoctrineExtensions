@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Category as AnnotatedCategory;
-use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
+use Gedmo\Tests\Mapping\Fixture\Xml\Category as XmlCategory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category as YamlCategory;
 use Gedmo\Timestampable\TimestampableListener;
 
@@ -47,6 +47,8 @@ final class TimestampableMappingTest extends ORMMappingTestCase
      */
     public static function dataTimestampableObject(): \Generator
     {
+        yield 'Model with XML mapping' => [XmlCategory::class];
+
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedCategory::class];
         } elseif (class_exists(AnnotationDriver::class)) {
@@ -80,26 +82,5 @@ final class TimestampableMappingTest extends ORMMappingTestCase
         static::assertSame('changed', $onChange['field']);
         static::assertSame('title', $onChange['trackedField']);
         static::assertSame('Test', $onChange['value']);
-    }
-
-    public function testTimestampableXmlMapping(): void
-    {
-        $className = Timestampable::class;
-
-        // Force metadata class loading.
-        $this->em->getClassMetadata($className);
-        $cacheId = ExtensionMetadataFactory::getCacheId($className, 'Gedmo\Timestampable');
-        $config = $this->cache->getItem($cacheId)->get();
-
-        static::assertArrayHasKey('create', $config);
-        static::assertSame('created', $config['create'][0]);
-        static::assertArrayHasKey('update', $config);
-        static::assertSame('updated', $config['update'][0]);
-        static::assertArrayHasKey('change', $config);
-        $onChange = $config['change'][0];
-
-        static::assertSame('published', $onChange['field']);
-        static::assertSame('status.title', $onChange['trackedField']);
-        static::assertSame('Published', $onChange['value']);
     }
 }
