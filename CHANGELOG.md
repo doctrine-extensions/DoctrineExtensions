@@ -49,6 +49,7 @@ a release.
 
 ### Added
 - IP address provider for use with extensions with IP address references (#2928)
+- Mapping Driver: Added option `forceUseAttributeReader`, force the use of AttributeReader for Gedmo attributes ( ignore default XML driver for all  namespaces) (#2613)
 
 ## [3.19.0] - 2025-02-24
 ### Added
