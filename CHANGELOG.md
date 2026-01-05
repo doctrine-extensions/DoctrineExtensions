@@ -67,6 +67,10 @@ a release.
 ### Deprecated
 - Sluggable: Annotation-specific mapping parameters (#2837)
 
+### Changed
+- Allow `string[]` as `$sortByField` and `$direction` parameter in  `\Gedmo\Tree\Entity\Repository\NestedTreeRepository::reorder()` and `\Gedmo\Tree\Entity\Repository\NestedTreeRepository::reorderAll()`
+
+
 ### Fixed
 - Fix regression with `doctrine/dbal` >= 4.0 that caused MariaDB to improperly attempt LONGTEXT casting in `TranslationWalker` (issue #2887)
 - Tree: allow usage of UuidV4 as path source with the materialized path strategy
