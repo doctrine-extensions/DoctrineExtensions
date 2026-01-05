@@ -299,3 +299,26 @@ assert($found !== null); // Found because deletion time is in the future
 By default, the soft deleteable extension allows soft deleted records to be "hard deleted" (fully removed from the database)
 by deleting them a second time. However, by setting the `hardDelete` parameter in the configuration to `false`, you can
 prevent soft deleted records from being deleted at all.
+
+## Setting the non-deleted value  
+
+By default a record set to null will be seen as not (yet) soft-deleted.  
+This can be overwritten by setting `nonDeletedColumnValue` on the specified entity
+
+```php
+#[ORM\Entity]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', hardDelete: false, nonDeletedColumnValue: '1970-01-01 00:00:00')]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
+
+    #[ORM\Column(type: Types::STRING)]
+    public ?string $title = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?\DateTimeImmutable $deletedAt = null;
+}
+```

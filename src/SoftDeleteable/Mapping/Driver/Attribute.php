@@ -62,6 +62,14 @@ class Attribute extends AbstractAnnotationDriver
 
                 $config['hardDelete'] = $annot->hardDelete;
             }
+
+            if (isset($annot->nonDeletedColumnValue)) {
+                if (!is_string($annot->nonDeletedColumnValue)) {
+                    throw new InvalidMappingException('nonDeletedColumnValue must be string. '.gettype($annot->nonDeletedColumnValue).' provided.');
+                }
+
+                $config['nonDeletedColumnValue'] = $annot->nonDeletedColumnValue;
+            }
         }
 
         $this->validateFullMetadata($meta, $config);
