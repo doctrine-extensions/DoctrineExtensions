@@ -14,6 +14,7 @@ For more detailed usage of each extension, refer to the extension's documentatio
 - [Loggable Extension](#loggable-extension)
 - [Reference Integrity Extension](#reference-integrity-extension)
 - [References Extension](#references-extension)
+- [Revisionable Extension](#revisionable-extension)
 - [Sluggable Extension](#sluggable-extension)
 - [Soft Deleteable Extension](#soft-deleteable-extension)
 - [Sortable Extension](#sortable-extension)
@@ -437,6 +438,70 @@ class Article
     {
         $this->comments = new ArrayCollection();
     }
+}
+```
+
+### Revisionable Extension
+
+The below attributes are used to configure the [Revisionable extension](./revisionable.md).
+
+#### `#[Gedmo\Mapping\Annotation\Revisionable]`
+
+The `Revisionable` attribute is a class attribute used to identify objects which can have changes logged,
+all revisionable objects **MUST** have this attribute.
+
+Required Parameters:
+
+- **revisionClass** - A custom model class implementing `Gedmo\Revisionable\RevisionInterface` to use for logging changes;
+  defaults to `Gedmo\Revisionable\Entity\Revision` for Doctrine ORM users or
+  `Gedmo\Revisionable\Document\Revision` for Doctrine MongoDB ODM users
+
+Example:
+
+```php
+<?php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+#[ORM\Entity]
+#[Gedmo\Revisionable(revisionClass: ArticleRevision::class)]
+class Article {}
+```
+
+#### `#[Gedmo\Mapping\Annotation\KeepRevisions]`
+
+The `KeepRevisions` attribute is a property attribute used to identify properties whose changes should be logged.
+This attribute can be set for properties with a single value (i.e. a scalar type or an object such as
+`DateTimeInterface`), but not for collections. Fields with revisions can be restored to an earlier version.
+
+Example:
+
+```php
+<?php
+namespace App\Entity;
+
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+#[ORM\Entity]
+#[Gedmo\Revisionable]
+class Comment
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    public ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
+    #[Gedmo\KeepRevisions]
+    public ?Article $article = null;
+
+    #[ORM\Column(type: Types::STRING)]
+    #[Gedmo\KeepRevisions]
+    public ?string $body = null;
 }
 ```
 
