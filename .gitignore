@@ -6,3 +6,4 @@ coverage.xml
 phpstan.neon
 .phpunit.result.cache
 phpunit.xml
+.idea
