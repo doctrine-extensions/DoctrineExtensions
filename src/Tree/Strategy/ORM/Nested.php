@@ -10,6 +10,7 @@
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -472,12 +473,12 @@ class Nested implements Strategy
                 $newRoot = $node->$method();
                 $repo = $em->getRepository($config['useObjectClass']);
 
-                $criteria = new Criteria();
+                $criteria = Criteria::create(true);
                 $criteria->andWhere(Criteria::expr()->notIn($wrapped->getMetadata()->getIdentifier()[0], [$wrapped->getIdentifier()]));
                 $criteria->andWhere(Criteria::expr()->eq($config['root'], $node->$method()));
                 $criteria->andWhere(Criteria::expr()->isNull($config['parent']));
                 $criteria->andWhere(Criteria::expr()->eq($config['level'], 0));
-                $criteria->orderBy([$config['right'] => Criteria::ASC]);
+                $criteria->orderBy([$config['right'] => function_exists('enum_exists') && enum_exists(Order::class) ? Order::Ascending : Criteria::ASC]);
                 $roots = $repo->matching($criteria)->toArray();
                 $last = array_pop($roots);
 
