@@ -136,6 +136,15 @@ The blameable extension supports the following field types for a blameable field
   [`symfony/doctrine-bridge`](https://github.com/symfony/doctrine-bridge))
 - A many-to-one association (ORM) or reference many reference (MongoDB ODM)
 
+### Supported Events
+
+The blameable extension supports the following events:
+
+- `#[Blameable(on: 'create')]` - The blameable field is updated when the object is created
+- `#[Blameable(on: 'update')]` - The blameable field is updated when the object is updated
+- `#[Blameable(on: 'change')]` - The blameable field is updated when a specific field or value is changed
+- `#[Blameable(on: 'remove')]` - The blameable field is updated when the object is removed/deleted (works in conjunction with soft-delete)
+
 ## Using Traits
 
 The blameable extension provides traits which can be used to quickly add fields, and optionally the mapping configuration,
@@ -150,7 +159,7 @@ provided as a convenience for a common configuration, for other use cases it is 
 
 ## Logging Changes For Specific Actions
 
-In addition to supporting logging the user for general create and update actions, the extension can also be configured to
+In addition to supporting logging the user for general create, update, and remove actions, the extension can also be configured to
 log the user who made a change for specific fields or values.
 
 ### Single Field Changed To Specific Value
@@ -178,14 +187,14 @@ class Article
     public bool $published = false;
 
     /**
-     * Field to track the user who last made any change to this article. 
+     * Field to track the user who last made any change to this article.
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Blameable]
     public ?string $updatedBy = null;
 
     /**
-     * Field to track the user who published this article. 
+     * Field to track the user who published this article.
      */
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'published', value: true)]
@@ -216,14 +225,14 @@ class Article
     public ?Category $category = null;
 
     /**
-     * Field to track the user who last made any change to this article. 
+     * Field to track the user who last made any change to this article.
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Blameable]
     public ?string $updatedBy = null;
 
     /**
-     * Field to track the user who archived this article. 
+     * Field to track the user who archived this article.
      */
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'category.archived', value: true)]
@@ -262,14 +271,14 @@ class Article
     public ?string $metaKeywords = null;
 
     /**
-     * Field to track the user who last made any change to this article. 
+     * Field to track the user who last made any change to this article.
      */
     #[ORM\Column(type: Types::STRING)]
     #[Gedmo\Blameable]
     public ?string $updatedBy = null;
 
     /**
-     * Field to track the user who last modified this article's SEO metadata. 
+     * Field to track the user who last modified this article's SEO metadata.
      */
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: ['metaDescription', 'metaKeywords', 'category.metaDescription', 'category.metaKeywords'])]
