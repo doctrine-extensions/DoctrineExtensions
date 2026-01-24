@@ -1,9 +1,15 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 6
+			path: src/AbstractTrackingListener.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
 			path: src/AbstractTrackingListener.php
 
 		-
@@ -73,13 +79,13 @@ parameters:
 			path: src/Loggable/Entity/Repository/LogEntryRepository.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Loggable\\LogEntryInterface\<T of object\>\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Loggable\\LogEntryInterface\<T of object\>\>\:\:newInstance\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Loggable/LoggableListener.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Loggable\\LogEntryInterface\<T of object\>\>\:\:newInstance\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Loggable\\LogEntryInterface\<T of object\>\>\:\:setFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Loggable/LoggableListener.php
@@ -205,7 +211,7 @@ parameters:
 			path: src/Mapping/ExtensionMetadataFactory.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Mapping/MappedEventSubscriber.php
@@ -235,7 +241,7 @@ parameters:
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 3
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
@@ -253,13 +259,19 @@ parameters:
 			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
 
 		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: src/ReferenceIntegrity/ReferenceIntegrityListener.php
+
+		-
 			message: '#^Access to offset ''inherited'' on an unknown class Doctrine\\ODM\\MongoDB\\Mapping\\AssociationFieldMapping\.$#'
 			identifier: class.notFound
 			count: 1
 			path: src/References/Mapping/Driver/Attribute.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/References/Mapping/Event/Adapter/ODM.php
@@ -283,7 +295,7 @@ parameters:
 			path: src/References/Mapping/Event/Adapter/ODM.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 2
 			path: src/References/Mapping/Event/Adapter/ORM.php
@@ -343,9 +355,15 @@ parameters:
 			path: src/References/ReferencesListener.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
+			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
 			path: src/Sluggable/Handler/InversedRelativeSlugHandler.php
 
 		-
@@ -361,9 +379,15 @@ parameters:
 			path: src/Sluggable/Handler/RelativeSlugHandler.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
+			path: src/Sluggable/Handler/TreeSlugHandler.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
 			path: src/Sluggable/Handler/TreeSlugHandler.php
 
 		-
@@ -421,9 +445,15 @@ parameters:
 			path: src/Sluggable/SluggableListener.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
-			count: 7
+			count: 5
+			path: src/Sluggable/SluggableListener.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 2
 			path: src/Sluggable/SluggableListener.php
 
 		-
@@ -493,9 +523,15 @@ parameters:
 			path: src/Sortable/Mapping/Driver/Yaml.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
-			count: 9
+			count: 8
+			path: src/Sortable/SortableListener.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
 			path: src/Sortable/SortableListener.php
 
 		-
@@ -539,12 +575,6 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: src/Timestampable/Mapping/Driver/Yaml.php
-
-		-
-			message: '#^Access to an undefined property ProxyManager\\Proxy\\GhostObjectInterface&TObject of object\:\:\$identifier\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
 		-
 			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator\) and ''_em'' will always evaluate to false\.$#'
@@ -637,7 +667,7 @@ parameters:
 			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Translatable/TranslatableListener.php
@@ -859,21 +889,27 @@ parameters:
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 8
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getIdentifierValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
-			identifier: method.notFound
-			count: 10
-			path: src/Tree/Strategy/AbstractMaterializedPath.php
-
-		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getSingleIdentifierFieldName\(\)\.$#'
 			identifier: method.notFound
 			count: 1
+			path: src/Tree/Strategy/AbstractMaterializedPath.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 4
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
@@ -979,7 +1015,13 @@ parameters:
 			path: src/Uploadable/MimeType/MimeTypeGuesser.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Uploadable/UploadableListener.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:setFieldValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Uploadable/UploadableListener.php

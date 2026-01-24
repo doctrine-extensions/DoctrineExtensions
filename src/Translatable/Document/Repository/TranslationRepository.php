@@ -74,7 +74,7 @@ class TranslationRepository extends DocumentRepository
             || $listener->getTranslatableLocale($document, $meta, $this->getDocumentManager()) === $locale
         ;
         if ($modRecordValue) {
-            $meta->getReflectionProperty($field)->setValue($document, $value);
+            $meta->setFieldValue($document, $field, $value);
             $this->dm->persist($document);
         } else {
             if (isset($config['translationClass'])) {
@@ -83,7 +83,7 @@ class TranslationRepository extends DocumentRepository
                 $ea = new TranslatableAdapterODM();
                 $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
             }
-            $foreignKey = $meta->getReflectionProperty($meta->getIdentifier()[0])->getValue($document);
+            $foreignKey = $meta->getFieldValue($document, $meta->getIdentifier()[0]);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->dm->getClassMetadata($class);
             $trans = $this->findOneBy([
@@ -94,15 +94,15 @@ class TranslationRepository extends DocumentRepository
             ]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
-                $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
-                $transMeta->getReflectionProperty('objectClass')->setValue($trans, $objectClass);
-                $transMeta->getReflectionProperty('field')->setValue($trans, $field);
-                $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
+                $transMeta->setFieldValue($trans, 'foreignKey', $foreignKey);
+                $transMeta->setFieldValue($trans, 'objectClass', $objectClass);
+                $transMeta->setFieldValue($trans, 'field', $field);
+                $transMeta->setFieldValue($trans, 'locale', $locale);
             }
             $mapping = $meta->getFieldMapping($field);
             $type = $this->getType($mapping['type']);
             $transformed = $type->convertToDatabaseValue($value);
-            $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
+            $transMeta->setFieldValue($trans, 'content', $transformed);
             if ($this->dm->getUnitOfWork()->isInIdentityMap($document)) {
                 $this->dm->persist($trans);
             } else {

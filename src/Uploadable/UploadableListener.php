@@ -339,7 +339,10 @@ class UploadableListener extends MappedEventSubscriber
 
         if ('' !== $config['callback']) {
             $callbackMethod = $refl->getMethod($config['callback']);
-            $callbackMethod->setAccessible(true);
+
+            if (PHP_VERSION_ID < 80100) {
+                $callbackMethod->setAccessible(true);
+            }
 
             $callbackMethod->invokeArgs($object, [$info]);
         }
@@ -405,6 +408,8 @@ class UploadableListener extends MappedEventSubscriber
      * @param bool        $appendNumber
      * @param object      $object
      *
+     * @phpstan-param class-string|false $filenameGeneratorClass
+     *
      * @throws UploadableUploadException
      * @throws UploadableNoFileException
      * @throws UploadableExtensionException
@@ -416,8 +421,6 @@ class UploadableListener extends MappedEventSubscriber
      * @throws UploadableCantWriteException
      *
      * @return array<string, int|string|null>
-     *
-     * @phpstan-param class-string|false $filenameGeneratorClass
      */
     public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false, $object = null)
     {
@@ -791,9 +794,8 @@ class UploadableListener extends MappedEventSubscriber
      */
     protected function updateField($object, $uow, AdapterInterface $ea, ClassMetadata $meta, $field, $value, $notifyPropertyChanged = true)
     {
-        $property = $meta->getReflectionProperty($field);
-        $oldValue = $property->getValue($object);
-        $property->setValue($object, $value);
+        $oldValue = $meta->getFieldValue($object, $field);
+        $meta->setFieldValue($object, $field, $value);
 
         if ($notifyPropertyChanged && $object instanceof NotifyPropertyChanged) {
             $uow = $ea->getObjectManager()->getUnitOfWork();

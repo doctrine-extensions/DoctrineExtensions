@@ -52,6 +52,25 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public const POST_SOFT_DELETE = 'postSoftDelete';
 
     /**
+     * Whether the postFlush event should be handled.
+     */
+    private bool $handlePostFlushEvent;
+
+    /**
+     * Objects soft-deleted on flush.
+     *
+     * @var array<object>
+     */
+    private array $softDeletedObjects = [];
+
+    public function __construct(bool $handlePostFlushEvent = false)
+    {
+        parent::__construct();
+
+        $this->handlePostFlushEvent = $handlePostFlushEvent;
+    }
+
+    /**
      * @return string[]
      */
     public function getSubscribedEvents()
@@ -59,6 +78,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
         return [
             'loadClassMetadata',
             'onFlush',
+            'postFlush',
         ];
     }
 
@@ -86,8 +106,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
             $config = $this->getConfiguration($om, $meta->getName());
 
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
-                $reflProp = $meta->getReflectionProperty($config['fieldName']);
-                $oldValue = $reflProp->getValue($object);
+                $oldValue = $meta->getFieldValue($object, $config['fieldName']);
                 $date = $ea->getDateValue($meta, $config['fieldName']);
 
                 if (isset($config['hardDelete']) && $config['hardDelete'] && $oldValue instanceof \DateTimeInterface && $oldValue <= $date) {
@@ -102,11 +121,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                     $evm->dispatchEvent(
                         self::PRE_SOFT_DELETE,
-                        $preSoftDeleteEventArgs
+                        $preSoftDeleteEventArgs,
                     );
                 }
 
-                $reflProp->setValue($object, $date);
+                $meta->setFieldValue($object, $config['fieldName'], $date);
 
                 $om->persist($object);
                 $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
@@ -129,7 +148,30 @@ class SoftDeleteableListener extends MappedEventSubscriber
                         $postSoftDeleteEventArgs
                     );
                 }
+
+                if ($this->handlePostFlushEvent) {
+                    $this->softDeletedObjects[] = $object;
+                }
             }
+        }
+    }
+
+    /**
+     * Detach soft-deleted objects from object manager.
+     *
+     * @return void
+     */
+    public function postFlush(EventArgs $args)
+    {
+        if (!$this->handlePostFlushEvent) {
+            return;
+        }
+
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        foreach ($this->softDeletedObjects as $index => $object) {
+            $om->detach($object);
+            unset($this->softDeletedObjects[$index]);
         }
     }
 
@@ -145,6 +187,16 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $this->loadMetadataForObjectClass($eventArgs->getObjectManager(), $eventArgs->getClassMetadata());
+    }
+
+    public function setHandlePostFlushEvent(bool $handlePostFlushEvent): void
+    {
+        $this->handlePostFlushEvent = $handlePostFlushEvent;
+    }
+
+    public function shouldHandlePostFlushEvent(): bool
+    {
+        return $this->handlePostFlushEvent;
     }
 
     protected function getNamespace()

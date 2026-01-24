@@ -135,7 +135,7 @@ class SortableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->getName())) {
-                $position = $meta->getReflectionProperty($config['position'])->getValue($object);
+                $position = $meta->getFieldValue($object, $config['position']);
                 $updateValues[$position] = [$ea, $config, $meta, $object];
             }
         }
@@ -278,12 +278,12 @@ class SortableListener extends MappedEventSubscriber
                         }
 
                         $oid = spl_object_id($object);
-                        $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
+                        $pos = $meta->getFieldValue($object, $config['position']);
                         $matches = $pos >= $delta['start'];
                         $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
                         $value = reset($relocation['groups']);
                         while ($matches && ($group = key($relocation['groups']))) {
-                            $gr = $meta->getReflectionProperty($group)->getValue($object);
+                            $gr = $meta->getFieldValue($object, $group);
                             if (null === $value) {
                                 $matches = null === $gr;
                             } elseif (is_object($gr) && is_object($value) && $gr !== $value) {
@@ -326,7 +326,7 @@ class SortableListener extends MappedEventSubscriber
                             }
                             $updatedObjects[$oid]['newValue'] = $pos + $delta['delta'];
 
-                            $meta->getReflectionProperty($config['position'])->setValue($object, $updatedObjects[$oid]['newValue']);
+                            $meta->setFieldValue($object, $config['position'], $updatedObjects[$oid]['newValue']);
                         }
                     }
                 }
@@ -355,8 +355,8 @@ class SortableListener extends MappedEventSubscriber
      */
     protected function processInsert(SortableAdapter $ea, array $config, $meta, $object)
     {
-        $old = $meta->getReflectionProperty($config['position'])->getValue($object);
-        $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
+        $old = $meta->getFieldValue($object, $config['position']);
+        $newPosition = $meta->getFieldValue($object, $config['position']);
 
         if (null === $newPosition) {
             $newPosition = -1;
@@ -451,7 +451,7 @@ class SortableListener extends MappedEventSubscriber
             if (array_key_exists($config['position'], $changeSet)) {
                 $oldPosition = $changeSet[$config['position']][0];
             } else {
-                $oldPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
+                $oldPosition = $meta->getFieldValue($object, $config['position']);
             }
             $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $oldPosition + 1, $this->maxPositions[$oldHash] + 1, -1);
             $groupHasChanged = true;
@@ -557,7 +557,7 @@ class SortableListener extends MappedEventSubscriber
      */
     protected function processDeletion(SortableAdapter $ea, array $config, $meta, $object)
     {
-        $position = $meta->getReflectionProperty($config['position'])->getValue($object);
+        $position = $meta->getFieldValue($object, $config['position']);
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
@@ -724,7 +724,7 @@ class SortableListener extends MappedEventSubscriber
         $groups = [];
         if (isset($config['groups'])) {
             foreach ($config['groups'] as $group) {
-                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+                $groups[$group] = $meta->getFieldValue($object, $group);
             }
         }
 

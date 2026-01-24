@@ -149,7 +149,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                                 }
                                 $objectMeta = $om->getClassMetadata(get_class($changingObject));
                                 $om->initializeObject($changingObject);
-                                $value = $objectMeta->getReflectionProperty($trackedChild)->getValue($changingObject);
+                                $value = $objectMeta->getFieldValue($changingObject, $trackedChild);
                             } else {
                                 $value = $changes[1];
                             }
@@ -189,14 +189,14 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
-                    if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
+                    if (null === $meta->getFieldValue($object, $field)) { // let manual values
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
             }
             if (isset($config['create'])) {
                 foreach ($config['create'] as $field) {
-                    if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
+                    if (null === $meta->getFieldValue($object, $field)) { // let manual values
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
@@ -260,8 +260,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      */
     protected function updateField($object, $eventAdapter, $meta, $field)
     {
-        $property = $meta->getReflectionProperty($field);
-        $oldValue = $property->getValue($object);
+        $oldValue = $meta->getFieldValue($object, $field);
         $newValue = $this->getFieldValue($meta, $field, $eventAdapter);
 
         // if field value is reference, persist object
@@ -274,7 +273,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             }
         }
 
-        $property->setValue($object, $newValue);
+        $meta->setFieldValue($object, $field, $newValue);
 
         if ($object instanceof NotifyPropertyChanged) {
             $uow = $eventAdapter->getObjectManager()->getUnitOfWork();

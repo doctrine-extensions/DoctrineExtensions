@@ -30,6 +30,8 @@ class TreeObjectHydrator extends ObjectHydrator
     use EntityManagerRetriever;
     use HydratorCompat;
 
+    private const NO_PARENT_ID = '__no-parent__';
+
     /**
      * @var array<string, mixed>
      */
@@ -60,7 +62,7 @@ class TreeObjectHydrator extends ObjectHydrator
     public function setPropertyValue($object, $property, $value)
     {
         $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
-        $meta->getReflectionProperty($property)->setValue($object, $value);
+        $meta->setFieldValue($object, $property, $value);
     }
 
     /**
@@ -108,7 +110,7 @@ class TreeObjectHydrator extends ObjectHydrator
 
         foreach ($nodes as $node) {
             $parentProxy = $this->getPropertyValue($node, $this->config['parent']);
-            $parentId = null;
+            $parentId = self::NO_PARENT_ID;
 
             if (null !== $parentProxy) {
                 $parentId = $this->getPropertyValue($parentProxy, $this->idField);
@@ -166,13 +168,13 @@ class TreeObjectHydrator extends ObjectHydrator
 
         foreach ($nodes as $node) {
             $parentProxy = $this->getPropertyValue($node, $this->config['parent']);
-            $parentId = null;
+            $parentId = self::NO_PARENT_ID;
 
             if (null !== $parentProxy) {
                 $parentId = $this->getPropertyValue($parentProxy, $this->idField);
             }
 
-            if (null === $parentId || !array_key_exists($parentId, $idHashmap)) {
+            if (self::NO_PARENT_ID === $parentId || !array_key_exists($parentId, $idHashmap)) {
                 $rootNodes[] = $node;
             }
         }
@@ -298,6 +300,6 @@ class TreeObjectHydrator extends ObjectHydrator
     {
         $meta = $this->getEntityManager()->getClassMetadata(get_class($object));
 
-        return $meta->getReflectionProperty($property)->getValue($object);
+        return $meta->getFieldValue($object, $property);
     }
 }

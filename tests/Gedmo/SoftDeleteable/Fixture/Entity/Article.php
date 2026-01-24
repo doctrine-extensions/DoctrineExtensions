@@ -58,6 +58,12 @@ class Article
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article', cascade: ['persist', 'remove'])]
     private $comments;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Author", cascade={"persist"}, inversedBy="articles")
+     */
+    #[ORM\ManyToOne(targetEntity: Author::class, cascade: ['persist'], inversedBy: 'articles')]
+    private ?Author $author = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -91,5 +97,23 @@ class Article
     public function addComment(Comment $comment): void
     {
         $this->comments[] = $comment;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function setAuthor(?Author $author): void
+    {
+        $this->author = $author;
+    }
+
+    public function getAuthor(): ?Author
+    {
+        return $this->author;
     }
 }

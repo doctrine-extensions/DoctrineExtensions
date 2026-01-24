@@ -128,15 +128,15 @@ class Nested implements Strategy
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->getName());
 
-        $meta->getReflectionProperty($config['left'])->setValue($node, 0);
-        $meta->getReflectionProperty($config['right'])->setValue($node, 0);
+        $meta->setFieldValue($node, $config['left'], 0);
+        $meta->setFieldValue($node, $config['right'], 0);
         if (isset($config['level'])) {
-            $meta->getReflectionProperty($config['level'])->setValue($node, 0);
+            $meta->setFieldValue($node, $config['level'], 0);
         }
         if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !isset($config['rootIdentifierMethod'])) {
-            $meta->getReflectionProperty($config['root'])->setValue($node, 0);
-        } elseif (isset($config['rootIdentifierMethod']) && null === $meta->getReflectionProperty($config['root'])->getValue($node)) {
-            $meta->getReflectionProperty($config['root'])->setValue($node, 0);
+            $meta->setFieldValue($node, $config['root'], 0);
+        } elseif (isset($config['rootIdentifierMethod']) && null === $meta->getFieldValue($node, $config['root'])) {
+            $meta->setFieldValue($node, $config['root'], 0);
         }
     }
 
@@ -189,7 +189,7 @@ class Nested implements Strategy
         $meta = $em->getClassMetadata(get_class($node));
 
         $config = $this->listener->getConfiguration($em, $meta->getName());
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $parent = $meta->getFieldValue($node, $config['parent']);
         $this->updateNode($em, $node, $parent, self::LAST_CHILD);
     }
 
@@ -626,20 +626,29 @@ class Nested implements Strategy
 
                 $nodeMeta = $em->getClassMetadata(get_class($node));
 
-                if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
-                    continue;
+                /** @phpstan-ignore-next-line function.alreadyNarrowedType Property introduced in ORM 3.4 */
+                if (property_exists($nodeMeta, 'propertyAccessors')) {
+                    // ORM 3.4+
+                    if (!array_key_exists($config['left'], $nodeMeta->getPropertyAccessors())) {
+                        continue;
+                    }
+                } else {
+                    // ORM 3.3-
+                    if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
+                        continue;
+                    }
                 }
 
                 $oid = spl_object_id($node);
-                $left = $meta->getReflectionProperty($config['left'])->getValue($node);
-                $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
+                $left = $meta->getFieldValue($node, $config['left']);
+                $currentRoot = isset($config['root']) ? $meta->getFieldValue($node, $config['root']) : null;
                 if ($currentRoot === $root && $left >= $first) {
-                    $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);
+                    $meta->setFieldValue($node, $config['left'], $left + $delta);
                     $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['left'], $left + $delta);
                 }
-                $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+                $right = $meta->getFieldValue($node, $config['right']);
                 if ($currentRoot === $root && $right >= $first) {
-                    $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
+                    $meta->setFieldValue($node, $config['right'], $right + $delta);
                     $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['right'], $right + $delta);
                 }
             }
@@ -717,28 +726,37 @@ class Nested implements Strategy
 
                 $nodeMeta = $em->getClassMetadata(get_class($node));
 
-                if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
-                    continue;
+                /** @phpstan-ignore-next-line function.alreadyNarrowedType Property introduced in ORM 3.4 */
+                if (property_exists($nodeMeta, 'propertyAccessors')) {
+                    // ORM 3.4+
+                    if (!array_key_exists($config['left'], $nodeMeta->getPropertyAccessors())) {
+                        continue;
+                    }
+                } else {
+                    // ORM 3.3-
+                    if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
+                        continue;
+                    }
                 }
 
-                $left = $meta->getReflectionProperty($config['left'])->getValue($node);
-                $right = $meta->getReflectionProperty($config['right'])->getValue($node);
-                $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
+                $left = $meta->getFieldValue($node, $config['left']);
+                $right = $meta->getFieldValue($node, $config['right']);
+                $currentRoot = isset($config['root']) ? $meta->getFieldValue($node, $config['root']) : null;
                 if ($currentRoot === $root && $left >= $first && $right <= $last) {
                     $oid = spl_object_id($node);
                     $uow = $em->getUnitOfWork();
 
-                    $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);
+                    $meta->setFieldValue($node, $config['left'], $left + $delta);
                     $uow->setOriginalEntityProperty($oid, $config['left'], $left + $delta);
-                    $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
+                    $meta->setFieldValue($node, $config['right'], $right + $delta);
                     $uow->setOriginalEntityProperty($oid, $config['right'], $right + $delta);
                     if (isset($config['root'])) {
-                        $meta->getReflectionProperty($config['root'])->setValue($node, $destRoot);
+                        $meta->setFieldValue($node, $config['root'], $destRoot);
                         $uow->setOriginalEntityProperty($oid, $config['root'], $destRoot);
                     }
                     if (isset($config['level'])) {
-                        $level = $meta->getReflectionProperty($config['level'])->getValue($node);
-                        $meta->getReflectionProperty($config['level'])->setValue($node, $level + $levelDelta);
+                        $level = $meta->getFieldValue($node, $config['level']);
+                        $meta->setFieldValue($node, $config['level'], $level + $levelDelta);
                         $uow->setOriginalEntityProperty($oid, $config['level'], $level + $levelDelta);
                     }
                 }

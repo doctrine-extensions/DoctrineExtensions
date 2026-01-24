@@ -233,9 +233,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return QueryBuilder QueryBuilder object
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     *
+     * @return QueryBuilder QueryBuilder object
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -309,9 +309,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Include the root node in results?
      *
-     * @return Query Query object
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     *
+     * @return Query Query object
      */
     public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -325,9 +325,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string|string[]      $direction   Sort order ('asc'|'desc'|'ASC'|'DESC'). If $sortByField is an array, this may also be an array with matching number of elements
      * @param bool                 $includeNode Flag indicating whether the given node should be included in the results
      *
-     * @return array<int, object> List of children
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC'|array<int, 'asc'|'desc'|'ASC'|'DESC'> $direction
+     *
+     * @return array<int, object> List of children
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -359,11 +359,11 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
+     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
+     *
      * @throws InvalidArgumentException if input is not valid
      *
      * @return QueryBuilder
-     *
-     * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
      */
     public function getLeafsQueryBuilder($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -415,9 +415,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
-     * @return Query
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
+     *
+     * @return Query
      */
     public function getLeafsQuery($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -431,9 +431,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField field name to sort by
      * @param string $direction   sort direction : "ASC" or "DESC"
      *
-     * @return array<int, object>
-     *
      * @phpstan-param 'asc'|'desc'|'ASC'|'DESC' $direction
+     *
+     * @return array<int, object>
      */
     public function getLeafs($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -1023,10 +1023,11 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $doRecover($child, $count, $depth);
             }
             $right = $count++;
-            $meta->getReflectionProperty($config['left'])->setValue($root, $left);
-            $meta->getReflectionProperty($config['right'])->setValue($root, $right);
+
+            $meta->setFieldValue($root, $config['left'], $left);
+            $meta->setFieldValue($root, $config['right'], $right);
             if (isset($config['level'])) {
-                $meta->getReflectionProperty($config['level'])->setValue($root, $lvl);
+                $meta->setFieldValue($root, $config['level'], $lvl);
             }
             $em->persist($root);
         };
@@ -1197,10 +1198,10 @@ class NestedTreeRepository extends AbstractTreeRepository
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->getName());
 
         $identifier = $meta->getSingleIdentifierFieldName();
-        if (isset($config['root'])) {
-            $rootId = $meta->getReflectionProperty($config['root'])->getValue($root);
+        if ($root && isset($config['root'])) {
+            $rootId = $meta->getFieldValue($root, $config['root']);
             if (is_object($rootId)) {
-                $rootId = $meta->getReflectionProperty($identifier)->getValue($rootId);
+                $rootId = $meta->getFieldValue($rootId, $identifier);
             }
         } else {
             $rootId = null;
@@ -1294,10 +1295,10 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
 
         foreach ($qb->getQuery()->toIterable() as $node) {
-            $right = $meta->getReflectionProperty($config['right'])->getValue($node);
-            $left = $meta->getReflectionProperty($config['left'])->getValue($node);
-            $id = $meta->getReflectionProperty($identifier)->getValue($node);
-            $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+            $right = $meta->getFieldValue($node, $config['right']);
+            $left = $meta->getFieldValue($node, $config['left']);
+            $id = $meta->getFieldValue($node, $identifier);
+            $parent = $meta->getFieldValue($node, $config['parent']);
             if (!$right || !$left) {
                 $errors[] = "node [{$id}] has invalid left or right values";
             } elseif ($right == $left) {
@@ -1306,9 +1307,9 @@ class NestedTreeRepository extends AbstractTreeRepository
                 if ($parent instanceof Proxy && !$parent->__isInitialized()) {
                     $this->getEntityManager()->refresh($parent);
                 }
-                $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);
-                $parentLeft = $meta->getReflectionProperty($config['left'])->getValue($parent);
-                $parentId = $meta->getReflectionProperty($identifier)->getValue($parent);
+                $parentRight = $meta->getFieldValue($parent, $config['right']);
+                $parentLeft = $meta->getFieldValue($parent, $config['left']);
+                $parentId = $meta->getFieldValue($parent, $identifier);
                 if ($left < $parentLeft) {
                     $errors[] = "node [{$id}] left is less than parent`s [{$parentId}] left value";
                 } elseif ($right > $parentRight) {
@@ -1316,8 +1317,8 @@ class NestedTreeRepository extends AbstractTreeRepository
                 }
                 // check that level of node is exactly after its parent's level
                 if (isset($config['level'])) {
-                    $parentLevel = $meta->getReflectionProperty($config['level'])->getValue($parent);
-                    $level = $meta->getReflectionProperty($config['level'])->getValue($node);
+                    $parentLevel = $meta->getFieldValue($parent, $config['level']);
+                    $level = $meta->getFieldValue($node, $config['level']);
                     if ($level !== $parentLevel + 1) {
                         $errors[] = "node [{$id}] should be on the level right after its parent`s [{$parentId}] level";
                     }
@@ -1326,7 +1327,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 // check that level of the root node is the base level defined
                 if (isset($config['level'])) {
                     $baseLevel = $config['level_base'] ?? 0;
-                    $level = $meta->getReflectionProperty($config['level'])->getValue($node);
+                    $level = $meta->getFieldValue($node, $config['level']);
                     if ($level !== $baseLevel) {
                         $errors[] = "node [{$id}] should be on level {$baseLevel}, not {$level}";
                     }

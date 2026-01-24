@@ -9,6 +9,7 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
+use Doctrine\ORM\Mapping\EmbeddedClassMapping;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\Language;
 use Gedmo\Mapping\Annotation\Locale;
@@ -118,7 +119,9 @@ class Attribute extends AbstractAnnotationDriver
                     continue;
                 }
 
-                $embeddedClass = new \ReflectionClass($embeddedClassInfo['class']);
+                /** Remove conditional when ORM 2.x is no longer supported. */
+                $className = ($embeddedClassInfo instanceof EmbeddedClassMapping) ? $embeddedClassInfo->class : $embeddedClassInfo['class'];
+                $embeddedClass = new \ReflectionClass($className);
 
                 foreach ($embeddedClass->getProperties() as $embeddedProperty) {
                     if ($translatable = $this->reader->getPropertyAnnotation($embeddedProperty, self::TRANSLATABLE)) {

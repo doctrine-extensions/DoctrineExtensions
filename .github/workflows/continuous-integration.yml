@@ -30,6 +30,7 @@ jobs:
           - "8.2"
           - "8.3"
           - "8.4"
+          - "8.5"
         deps:
           - "highest"
         no-annotations:
@@ -40,25 +41,25 @@ jobs:
           - deps: "lowest"
             php-version: "7.4"
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
           # Run builds on low and high PHP versions with `doctrine/annotations` removed
           - deps: "highest"
             php-version: "7.4"
             no-annotations: true
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
             no-annotations: true
           # Run builds on high PHP version with `doctrine/orm` version pinned
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
             orm: "^2.14"
           - deps: "highest"
-            php-version: "8.4"
+            php-version: "8.5"
             orm: "^3.0"
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v6"
         with:
           fetch-depth: 2
 
@@ -92,7 +93,7 @@ jobs:
         run: "vendor/bin/phpunit --coverage-clover coverage.xml"
 
       - name: "Upload coverage file"
-        uses: "actions/upload-artifact@v4"
+        uses: "actions/upload-artifact@v6"
         with:
           name: "${{ github.job }}-${{ matrix.php-version }}-${{ matrix.deps }}-${{ matrix.no-annotations == true && 'no-annotations' || 'with-annotations' }}${{ matrix.orm != '' && format('-orm-{0}', matrix.orm) || '' }}-coverage"
           path: "coverage.xml"
@@ -104,7 +105,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
@@ -131,12 +132,12 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v6"
         with:
           fetch-depth: 2
 
       - name: "Download coverage files"
-        uses: "actions/download-artifact@v4"
+        uses: "actions/download-artifact@v7"
         with:
           path: "reports"
 

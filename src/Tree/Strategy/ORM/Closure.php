@@ -14,6 +14,7 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\ClassMetadata as ORMClassMetadata;
+use Doctrine\ORM\Mapping\PropertyAccessors\PropertyAccessorFactory;
 use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
@@ -132,10 +133,20 @@ class Closure implements Strategy
                 'fetch' => ORMClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($ancestorMapping);
-            $closureMetadata->reflFields['ancestor'] = $cmf
-                ->getReflectionService()
-                ->getAccessibleProperty($closureMetadata->getName(), 'ancestor')
-            ;
+
+            if (property_exists($closureMetadata, 'propertyAccessors')) {
+                // ORM 3.4+
+                $closureMetadata->propertyAccessors['ancestor'] = PropertyAccessorFactory::createPropertyAccessor(
+                    $closureMetadata->getName(),
+                    'ancestor'
+                );
+            } else {
+                // ORM 3.3-
+                $closureMetadata->reflFields['ancestor'] = $cmf
+                    ->getReflectionService()
+                    ->getAccessibleProperty($closureMetadata->getName(), 'ancestor')
+                ;
+            }
         }
 
         if (!$closureMetadata->hasAssociation('descendant')) {
@@ -170,10 +181,20 @@ class Closure implements Strategy
                 'fetch' => ORMClassMetadata::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($descendantMapping);
-            $closureMetadata->reflFields['descendant'] = $cmf
-                ->getReflectionService()
-                ->getAccessibleProperty($closureMetadata->getName(), 'descendant')
-            ;
+
+            if (property_exists($closureMetadata, 'propertyAccessors')) {
+                // ORM 3.4+
+                $closureMetadata->propertyAccessors['descendant'] = PropertyAccessorFactory::createPropertyAccessor(
+                    $closureMetadata->getName(),
+                    'descendant'
+                );
+            } else {
+                // ORM 3.3-
+                $closureMetadata->reflFields['descendant'] = $cmf
+                    ->getReflectionService()
+                    ->getAccessibleProperty($closureMetadata->getName(), 'descendant')
+                ;
+            }
         }
 
         if (!$this->hasClosureTableUniqueConstraint($closureMetadata)) {
@@ -291,8 +312,8 @@ class Closure implements Strategy
             $config = $this->listener->getConfiguration($em, $meta->getName());
 
             $identifier = $meta->getSingleIdentifierFieldName();
-            $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
-            $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+            $nodeId = $meta->getFieldValue($node, $identifier);
+            $parent = $meta->getFieldValue($node, $config['parent']);
 
             $closureClass = $config['closure'];
             $closureMeta = $em->getClassMetadata($closureClass);
@@ -345,8 +366,7 @@ class Closure implements Strategy
             } elseif (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, [$config['level'] => [null, 1]]);
                 $ea->setOriginalObjectProperty($uow, $node, $config['level'], 1);
-                $levelProp = $meta->getReflectionProperty($config['level']);
-                $levelProp->setValue($node, 1);
+                $meta->setFieldValue($node, $config['level'], 1);
             }
 
             foreach ($entries as $closure) {
@@ -548,14 +568,13 @@ class Closure implements Strategy
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
                 // Update new level
                 $level = $levels[$nodeId];
-                $levelProp = $meta->getReflectionProperty($config['level']);
                 $uow->scheduleExtraUpdate(
                     $node,
                     [$config['level'] => [
-                        $levelProp->getValue($node), $level,
+                        $meta->getFieldValue($node, $config['level']), $level,
                     ]]
                 );
-                $levelProp->setValue($node, $level);
+                $meta->setFieldValue($node, $config['level'], $level);
                 $uow->setOriginalEntityProperty(spl_object_id($node), $config['level'], $level);
             }
 

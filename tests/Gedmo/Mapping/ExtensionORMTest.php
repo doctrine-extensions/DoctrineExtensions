@@ -68,7 +68,10 @@ final class ExtensionORMTest extends BaseTestCaseORM
     {
         $mappedSubscriberClass = new \ReflectionClass(MappedEventSubscriber::class);
         $getEventAdapterMethod = $mappedSubscriberClass->getMethod('getEventAdapter');
-        $getEventAdapterMethod->setAccessible(true);
+
+        if (PHP_VERSION_ID < 80100) {
+            $getEventAdapterMethod->setAccessible(true);
+        }
 
         $loadClassMetadataEventArgs = new LoadClassMetadataEventArgs(
             $this->em->getClassMetadata(User::class),

@@ -30,8 +30,6 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 class Occupation
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -39,7 +37,7 @@ class Occupation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(length=64)
@@ -48,8 +46,6 @@ class Occupation
     private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(handlers={
      *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
      *         @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
@@ -68,7 +64,7 @@ class Occupation
     #[Gedmo\SlugHandler(class: TreeSlugHandler::class, options: ['parentRelationField' => 'parent', 'separator' => '/'])]
     #[Gedmo\SlugHandler(class: InversedRelativeSlugHandler::class, options: ['relationClass' => Person::class, 'mappedBy' => 'occupation', 'inverseSlugField' => 'slug'])]
     #[ORM\Column(length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @Gedmo\TreeParent
@@ -87,48 +83,40 @@ class Occupation
     private Collection $children;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRoot
      *
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Gedmo\TreeRoot]
-    private $root;
+    private ?int $root = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     public function __construct()
     {

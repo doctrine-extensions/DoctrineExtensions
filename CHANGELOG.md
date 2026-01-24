@@ -18,6 +18,35 @@ a release.
 ---
 
 ## [Unreleased]
+### Changed
+- All: Removed the dollar sign from the generated cache ID for extension metadata to ensure only characters mandated by [PSR-6](https://www.php-fig.org/psr/psr-6/#definitions) are used, improving compatibility with caching implementations with strict character requirements (#2978)
+
+## [3.22.0] - 2025-12-13
+### Added
+- Support for Symfony 8
+
+## [3.21.0] - 2025-09-22
+### Added
+- SoftDeleteable: `$handlePostFlushEvent` parameter to `SoftDeleteableListener::__construct()` to enable or disable handling of the `postFlush` event (#2958)
+
+### Changed
+- Translatable: Optimized database indexes for better performance by reordering unique constraint fields and removing redundant indexes
+- SoftDeleteable: Handling of the `postFlush` event is disabled by default (#2958)
+- Sluggable: Replaced abandoned `behat/transliterator` with `symfony/string` for default transliteration and urlization steps (#2985)
+- Use `ClassMetadata::getFieldValue()` and `ClassMetadata::setFieldValue()` methods to support `doctrine/orm` >= 3.4 (#2966)
+
+### Fixed
+- SoftDeleteable: Prevent cascade persist from re-inserting soft-deleted entities still referenced in the identity map (#2958)
+- Sluggable: Fix type error when generating slug using embedded properties (#2965)
+
+## [3.20.1] - 2025-09-14
+### Fixed
+- Compatibility with `doctrine/mongodb-odm` ^2.11 (#2945)
+
+## [3.20.0] - 2025-04-04
+### Fixed
+- SoftDeleteable: Resolved a bug where a soft-deleted object isn't remove from the ObjectManager (#2930)
+
 ### Added
 - IP address provider for use with extensions with IP address references (#2928)
 
