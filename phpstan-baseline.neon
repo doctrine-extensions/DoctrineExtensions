@@ -577,12 +577,6 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
-			message: '#^Call to function method_exists\(\) with ''Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadata'' and ''getPropertyAccessor'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Tool/ORM/Entity/Meta.php
-
-		-
 			message: '#^Call to function property_exists\(\) with \$this\(Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator\) and ''_em'' will always evaluate to false\.$#'
 			identifier: function.impossibleType
 			count: 1

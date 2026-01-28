@@ -9,20 +9,26 @@
 
 namespace Gedmo\Tool\ORM\Entity;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\PropertyAccessors\PropertyAccessor;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 
 class Meta
 {
     /**
      * @param ClassMetadata<object> $meta
+     *
+     * @return \ReflectionProperty|PropertyAccessor|null
      */
-    public static function getProperty(ClassMetadata $meta, string $propertyName): \ReflectionProperty|PropertyAccessor|null
+    public static function getProperty(ClassMetadata $meta, string $propertyName)
     {
-        if (method_exists(ClassMetadata::class, 'getPropertyAccessor')) {
+        if (method_exists($meta, 'getPropertyAccessor')) {
             return $meta->getPropertyAccessor($propertyName);
         }
 
-        return $meta->getReflectionProperty($propertyName);
+        if (method_exists($meta, 'getReflectionProperty')) {
+            return $meta->getReflectionProperty($propertyName);
+        }
+
+        throw new \RuntimeException('Unable to determine property accessor for class '.get_class($meta));
     }
 }
