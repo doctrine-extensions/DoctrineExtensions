@@ -23,6 +23,7 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Tool\ORM\Entity\Meta;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -87,11 +88,8 @@ final class CustomDriverTest extends TestCase
         $this->em->persist($test);
         $this->em->flush();
 
-        $id = $this->em
-            ->getClassMetadata(Timestampable::class)
-            ->getReflectionProperty('id')
-            ->getValue($test)
-        ;
+        $meta = $this->em->getClassMetadata(Timestampable::class);
+        $id = Meta::getProperty($meta, 'id')->getValue($test);
         static::assertNotEmpty($id);
     }
 }

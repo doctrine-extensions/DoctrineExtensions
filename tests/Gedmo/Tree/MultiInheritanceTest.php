@@ -15,6 +15,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\ANode;
 use Gedmo\Tests\Tree\Fixture\BaseNode;
 use Gedmo\Tests\Tree\Fixture\Node;
+use Gedmo\Tool\ORM\Entity\Meta;
 use Gedmo\Translatable\Entity\Translation;
 
 /**
@@ -38,7 +39,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(Node::class);
 
         $food = $repo->findOneBy(['identifier' => 'food']);
-        $left = $meta->getReflectionProperty('lft')->getValue($food);
+        $left = Meta::getProperty($meta, 'lft')->getValue($food);
 
         static::assertSame(1, $left);
         static::assertNotNull($food->getCreated());

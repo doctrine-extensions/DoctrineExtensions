@@ -18,6 +18,7 @@ use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Tool\ORM\Entity\Meta;
 
 /**
  * @phpstan-extends MappedEventSubscriber<array, AdapterInterface>
@@ -84,10 +85,10 @@ class EncoderListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
         foreach ($config['encode'] as $field => $options) {
-            $value = $meta->getReflectionProperty($field)->getValue($object);
+            $value = Meta::getProperty($meta, $field)->getValue($object);
             $method = $options['type'];
             $encoded = $method($options['secret'].$value);
-            $meta->getReflectionProperty($field)->setValue($object, $encoded);
+            Meta::getProperty($meta, $field)->setValue($object, $encoded);
         }
         // recalculate changeset
         $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
