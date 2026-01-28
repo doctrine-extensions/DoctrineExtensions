@@ -12,6 +12,9 @@ namespace Gedmo\Tool\ORM\Entity;
 use Doctrine\ORM\Mapping\PropertyAccessors\PropertyAccessor;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 
+/**
+ * @interal
+ */
 class Meta
 {
     /**
