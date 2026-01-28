@@ -15,6 +15,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Position;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tool\ORM\Entity\Meta;
 
 /**
  * These are tests for Sluggable behavior
@@ -40,7 +41,7 @@ final class SluggablePositionTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(Position::class);
 
         $object = $repo->find(1);
-        $slug = $meta->getReflectionProperty('slug')->getValue($object);
+        $slug = Meta::getProperty($meta, 'slug')->getValue($object);
         static::assertSame('code-other-title-prop', $slug);
     }
 
@@ -55,10 +56,10 @@ final class SluggablePositionTest extends BaseTestCaseORM
     {
         $meta = $this->em->getClassMetadata(Position::class);
         $object = new Position();
-        $meta->getReflectionProperty('title')->setValue($object, 'title');
-        $meta->getReflectionProperty('prop')->setValue($object, 'prop');
-        $meta->getReflectionProperty('code')->setValue($object, 'code');
-        $meta->getReflectionProperty('other')->setValue($object, 'other');
+        Meta::getProperty($meta, 'title')->setValue($object, 'title');
+        Meta::getProperty($meta, 'prop')->setValue($object, 'prop');
+        Meta::getProperty($meta, 'code')->setValue($object, 'code');
+        Meta::getProperty($meta, 'other')->setValue($object, 'other');
 
         $this->em->persist($object);
         $this->em->flush();

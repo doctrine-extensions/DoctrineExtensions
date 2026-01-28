@@ -14,6 +14,7 @@ namespace Gedmo\Tests\Tree;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tool\ORM\Entity\Meta;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -64,29 +65,29 @@ final class InMemoryUpdatesTest extends BaseTestCaseORM
         $this->em->clear();
 
         $node = $repo->find(2);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = Meta::getProperty($meta, 'lft')->getValue($node);
+        $right = Meta::getProperty($meta, 'rgt')->getValue($node);
         static::assertSame(2, $left);
         static::assertSame(5, $right);
 
         $node = $repo->find(3);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = Meta::getProperty($meta, 'lft')->getValue($node);
+        $right = Meta::getProperty($meta, 'rgt')->getValue($node);
         static::assertSame(6, $left);
         static::assertSame(7, $right);
 
         $node = $repo->find(4);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = Meta::getProperty($meta, 'lft')->getValue($node);
+        $right = Meta::getProperty($meta, 'rgt')->getValue($node);
         static::assertSame(3, $left);
         static::assertSame(4, $right);
 
         /*print "Tree:\n";
         for ($i=1; $i < 5; $i++) {
             $node = $this->em->getRepository(Category::class)->find($i);
-            $left = $meta->getReflectionProperty('lft')->getValue($node);
-            $right = $meta->getReflectionProperty('rgt')->getValue($node);
-            $level = $meta->getReflectionProperty('level')->getValue($node);
+            $left = Meta::getProperty($meta, 'lft')->getValue($node);
+            $right = Meta::getProperty($meta, 'rgt')->getValue($node);
+            $level = Meta::getProperty($meta, 'level')->getValue($node);
             print $node->getTitle()." - $left - $right - $level\n";
         }
         print "\n\n";*/

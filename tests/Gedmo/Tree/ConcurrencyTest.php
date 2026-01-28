@@ -16,6 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Article;
 use Gedmo\Tests\Tree\Fixture\Category;
 use Gedmo\Tests\Tree\Fixture\Comment;
+use Gedmo\Tool\ORM\Entity\Meta;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -78,15 +79,15 @@ final class ConcurrencyTest extends BaseTestCaseORM
 
         $meta = $this->em->getClassMetadata(Category::class);
         $sport = $repo->findOneBy(['title' => 'Sport']);
-        $left = $meta->getReflectionProperty('lft')->getValue($sport);
-        $right = $meta->getReflectionProperty('rgt')->getValue($sport);
+        $left = Meta::getProperty($meta, 'lft')->getValue($sport);
+        $right = Meta::getProperty($meta, 'rgt')->getValue($sport);
 
         static::assertSame(9, $left);
         static::assertSame(16, $right);
 
         $skiing = $repo->findOneBy(['title' => 'Skiing']);
-        $left = $meta->getReflectionProperty('lft')->getValue($skiing);
-        $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
+        $left = Meta::getProperty($meta, 'lft')->getValue($skiing);
+        $right = Meta::getProperty($meta, 'rgt')->getValue($skiing);
 
         static::assertSame(10, $left);
         static::assertSame(13, $right);
