@@ -89,8 +89,7 @@ final class CustomDriverTest extends TestCase
 
         $id = $this->em
             ->getClassMetadata(Timestampable::class)
-            ->getReflectionProperty('id')
-            ->getValue($test)
+            ->getFieldValue($test, 'id')
         ;
         static::assertNotEmpty($id);
     }
