@@ -177,8 +177,8 @@ final class RepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(Category::class);
         $meta = $this->em->getClassMetadata(Category::class);
 
-        $left = $meta->getReflectionProperty('lft')->getValue($onions);
-        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        $left = $meta->getFieldValue($onions, 'lft');
+        $right = $meta->getFieldValue($onions, 'rgt');
 
         static::assertSame(11, $left);
         static::assertSame(12, $right);
@@ -187,8 +187,8 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $repo->moveUp($onions, 1);
 
-        $left = $meta->getReflectionProperty('lft')->getValue($onions);
-        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        $left = $meta->getFieldValue($onions, 'lft');
+        $right = $meta->getFieldValue($onions, 'rgt');
 
         static::assertSame(9, $left);
         static::assertSame(10, $right);
@@ -196,8 +196,8 @@ final class RepositoryTest extends BaseTestCaseORM
         // move down onions by one position
         $repo->moveDown($onions, 1);
 
-        $left = $meta->getReflectionProperty('lft')->getValue($onions);
-        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        $left = $meta->getFieldValue($onions, 'lft');
+        $right = $meta->getFieldValue($onions, 'rgt');
 
         static::assertSame(11, $left);
         static::assertSame(12, $right);
@@ -206,8 +206,8 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $repo->moveUp($onions, true);
 
-        $left = $meta->getReflectionProperty('lft')->getValue($onions);
-        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        $left = $meta->getFieldValue($onions, 'lft');
+        $right = $meta->getFieldValue($onions, 'rgt');
 
         static::assertSame(5, $left);
         static::assertSame(6, $right);
@@ -220,32 +220,32 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $node = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Cabbages']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(5, $left);
         static::assertSame(6, $right);
 
         $node = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Carrots']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(7, $left);
         static::assertSame(8, $right);
 
         $node = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Onions']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(9, $left);
         static::assertSame(10, $right);
 
         $node = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Potatoes']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(11, $left);
         static::assertSame(12, $right);
@@ -266,8 +266,8 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $node = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Fruits']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(2, $left);
         static::assertSame(3, $right);
@@ -275,8 +275,8 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $node = $this->em->getRepository(Category::class)
             ->findOneBy(['title' => 'Cabbages']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(4, $left);
         static::assertSame(5, $right);
@@ -297,16 +297,16 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertNull($food);
 
         $node = $repo->findOneBy(['title' => 'Fruits']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(1, $left);
         static::assertSame(2, $right);
         static::assertNull($node->getParent());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
-        $left = $meta->getReflectionProperty('lft')->getValue($node);
-        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        $left = $meta->getFieldValue($node, 'lft');
+        $right = $meta->getFieldValue($node, 'rgt');
 
         static::assertSame(3, $left);
         static::assertSame(12, $right);
@@ -367,8 +367,8 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $meta = $this->em->getClassMetadata(Category::class);
 
-        $left = $meta->getReflectionProperty('lft')->getValue($food);
-        $right = $meta->getReflectionProperty('rgt')->getValue($food);
+        $left = $meta->getFieldValue($food, 'lft');
+        $right = $meta->getFieldValue($food, 'rgt');
 
         static::assertSame(3, $left);
         static::assertSame(12, $right);
