@@ -1039,24 +1039,6 @@ parameters:
 			path: tests/Gedmo/DoctrineExtensionsTest.php
 
 		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$title \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
-
-		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$titleFallbackFalse \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
-
-		-
-			message: '#^Property Gedmo\\Tests\\Mapping\\Fixture\\Attribute\\TranslatableModel\:\:\$titleFallbackTrue \(string\|null\) is never assigned string so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: tests/Gedmo/Mapping/Fixture/Attribute/TranslatableModel.php
-
-		-
 			message: '#^Class Gedmo\\Tests\\Translatable\\Fixture\\CategoryTranslation not found\.$#'
 			identifier: class.notFound
 			count: 1
@@ -1115,12 +1097,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: tests/Gedmo/Mapping/MetadataFactory/ForcedMetadataTest.php
-
-		-
-			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getReflectionProperty\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: tests/Gedmo/Mapping/Mock/Extension/Encoder/EncoderListener.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'

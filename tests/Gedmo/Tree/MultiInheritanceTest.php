@@ -38,7 +38,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(Node::class);
 
         $food = $repo->findOneBy(['identifier' => 'food']);
-        $left = $meta->getReflectionProperty('lft')->getValue($food);
+        $left = $meta->getFieldValue($food, 'lft');
 
         static::assertSame(1, $left);
         static::assertNotNull($food->getCreated());

@@ -78,15 +78,15 @@ final class ConcurrencyTest extends BaseTestCaseORM
 
         $meta = $this->em->getClassMetadata(Category::class);
         $sport = $repo->findOneBy(['title' => 'Sport']);
-        $left = $meta->getReflectionProperty('lft')->getValue($sport);
-        $right = $meta->getReflectionProperty('rgt')->getValue($sport);
+        $left = $meta->getFieldValue($sport, 'lft');
+        $right = $meta->getFieldValue($sport, 'rgt');
 
         static::assertSame(9, $left);
         static::assertSame(16, $right);
 
         $skiing = $repo->findOneBy(['title' => 'Skiing']);
-        $left = $meta->getReflectionProperty('lft')->getValue($skiing);
-        $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
+        $left = $meta->getFieldValue($skiing, 'lft');
+        $right = $meta->getFieldValue($skiing, 'rgt');
 
         static::assertSame(10, $left);
         static::assertSame(13, $right);
