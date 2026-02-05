@@ -562,6 +562,18 @@ class SortableListener extends MappedEventSubscriber
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
 
+        // Check if any group entities are scheduled for deletion
+        // If the parent entity is being deleted, there's no point in reorganizing positions
+        // and it would cause errors trying to bind entities without identifiers
+        $em = $ea->getObjectManager();
+        $uow = $em->getUnitOfWork();
+        foreach ($groups as $group => $value) {
+            if (is_object($value) && $uow->isScheduledForDelete($value)) {
+                // Skip relocation - parent entity is being deleted anyway
+                return;
+            }
+        }
+
         // Get hash
         $hash = $this->getHash($groups, $config);
 
@@ -654,8 +666,10 @@ class SortableListener extends MappedEventSubscriber
         // Check for groups that are associations. If the value is an object and is
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226
+        // Also check if the group entity is scheduled for deletion - if so, we should
+        // skip position updates as the parent and all children are being deleted
         foreach ($groups as $val) {
-            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && $uow::STATE_MANAGED !== $ea->getObjectState($uow, $val))) {
+            if (is_object($val) && ($uow->isScheduledForInsert($val) || $uow->isScheduledForDelete($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && $uow::STATE_MANAGED !== $ea->getObjectState($uow, $val))) {
                 return -1;
             }
         }
