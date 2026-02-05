@@ -567,8 +567,8 @@ class SortableListener extends MappedEventSubscriber
         // and it would cause errors trying to bind entities without identifiers
         $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
-        foreach ($groups as $group => $value) {
-            if (is_object($value) && $uow->isScheduledForDelete($value)) {
+        foreach ($groups as $val) {
+            if (is_object($val) && $uow->isScheduledForDelete($val)) {
                 // Skip relocation - parent entity is being deleted anyway
                 return;
             }
