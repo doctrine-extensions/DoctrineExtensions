@@ -22,6 +22,8 @@ a release.
 - SoftDeleteable: Resolve the event manager listeners from the object manager to support `doctrine/persistence` >= 4.0 and
   `doctrine/event-manager` >= 2.1
 - Loggable: Fix PHPDoc template bounds to support Symfony TypeInfo (#3044)
+- Tree: Fix TreeObjectHydrator compatibility with ORM 3 when parent property is defined before children property in entity (#3041)
+
 
 ## [3.22.1] - 2026-08-01
 ### Changed

@@ -16,6 +16,7 @@ use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Category;
 use Gedmo\Tests\Tree\Fixture\RootCategory;
+use Gedmo\Tests\Tree\Fixture\RootCategoryReversed;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator;
 use Gedmo\Tree\TreeListener;
@@ -166,11 +167,52 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(2, $this->queryLogger->queries);
     }
 
+    public function testFullTreeHydrationWithReversedFieldOrder(): void
+    {
+        $this->populateReversed();
+        $this->em->clear();
+
+        $this->queryLogger->reset();
+
+        $repo = $this->em->getRepository(RootCategoryReversed::class);
+
+        $result = $repo->createQueryBuilder('node')
+            ->orderBy('node.lft', 'ASC')
+            ->getQuery()
+            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->getResult('tree');
+
+        static::assertCount(1, $result);
+
+        $food = $result[0];
+        static::assertSame('Food', $food->getTitle());
+        static::assertCount(2, $food->getChildren());
+
+        $fruits = $food->getChildren()->get(0);
+        static::assertSame('Fruits', $fruits->getTitle());
+        static::assertCount(2, $fruits->getChildren());
+
+        $vegetables = $food->getChildren()->get(1);
+        static::assertSame('Vegetables', $vegetables->getTitle());
+        static::assertCount(0, $vegetables->getChildren());
+
+        $oranges = $fruits->getChildren()->get(0);
+        static::assertSame('Oranges', $oranges->getTitle());
+        static::assertCount(0, $oranges->getChildren());
+
+        $citrons = $fruits->getChildren()->get(1);
+        static::assertSame('Citrons', $citrons->getTitle());
+        static::assertCount(0, $citrons->getChildren());
+
+        static::assertCount(1, $this->queryLogger->queries);
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [
             Category::class,
             RootCategory::class,
+            RootCategoryReversed::class,
         ];
     }
 
@@ -205,6 +247,35 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
             ->persistAsLastChildOf($vegetables, $food)
             ->persistAsLastChildOf($milk, $food)
             ->persistAsLastChildOf($meat, $food)
+            ->persistAsLastChildOf($oranges, $fruits)
+            ->persistAsLastChildOf($citrons, $fruits);
+
+        $this->em->flush();
+    }
+
+    private function populateReversed(): void
+    {
+        $repo = $this->em->getRepository(RootCategoryReversed::class);
+
+        $food = new RootCategoryReversed();
+        $food->setTitle('Food');
+
+        $fruits = new RootCategoryReversed();
+        $fruits->setTitle('Fruits');
+
+        $vegetables = new RootCategoryReversed();
+        $vegetables->setTitle('Vegetables');
+
+        $oranges = new RootCategoryReversed();
+        $oranges->setTitle('Oranges');
+
+        $citrons = new RootCategoryReversed();
+        $citrons->setTitle('Citrons');
+
+        $repo
+            ->persistAsFirstChild($food)
+            ->persistAsLastChildOf($fruits, $food)
+            ->persistAsLastChildOf($vegetables, $food)
             ->persistAsLastChildOf($oranges, $fruits)
             ->persistAsLastChildOf($citrons, $fruits);
 
