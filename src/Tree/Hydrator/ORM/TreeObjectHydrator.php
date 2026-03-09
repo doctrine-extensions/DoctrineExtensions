@@ -12,6 +12,7 @@ namespace Gedmo\Tree\Hydrator\ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
+use Doctrine\ORM\Mapping\OneToManyAssociationMapping;
 use Doctrine\ORM\PersistentCollection;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Tool\ORM\Hydration\EntityManagerRetriever;
@@ -249,6 +250,18 @@ class TreeObjectHydrator extends ObjectHydrator
             }
 
             $associationMapping = $meta->getAssociationMapping($property->getName());
+
+            if ($associationMapping instanceof OneToManyAssociationMapping) {
+                if ($associationMapping->mappedBy !== $this->parentField) {
+                    continue;
+                }
+
+                return $associationMapping->fieldName;
+            }
+
+            if (!isset($associationMapping['mappedBy'])) {
+                continue;
+            }
 
             // Make sure the association is mapped by the parent property
             if ($associationMapping['mappedBy'] !== $this->parentField) {
