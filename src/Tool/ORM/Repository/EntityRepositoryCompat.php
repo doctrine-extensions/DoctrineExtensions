@@ -34,9 +34,9 @@ if ((new \ReflectionClass(EntityRepository::class))->getMethod('__call')->hasRet
          * @param string $method
          * @param array  $args
          *
-         * @return mixed
-         *
          * @phpstan-param list<mixed> $args
+         *
+         * @return mixed
          */
         abstract protected function doCallWithCompat($method, $args);
     }
@@ -55,9 +55,9 @@ if ((new \ReflectionClass(EntityRepository::class))->getMethod('__call')->hasRet
          * @param string $method
          * @param array  $args
          *
-         * @return mixed
-         *
          * @phpstan-param list<mixed> $args
+         *
+         * @return mixed
          */
         public function __call($method, $args)
         {
@@ -68,9 +68,9 @@ if ((new \ReflectionClass(EntityRepository::class))->getMethod('__call')->hasRet
          * @param string $method
          * @param array  $args
          *
-         * @return mixed
-         *
          * @phpstan-param list<mixed> $args
+         *
+         * @return mixed
          */
         abstract protected function doCallWithCompat($method, $args);
     }

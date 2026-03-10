@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Wrapper;
 
 use Doctrine\Common\EventManager;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Wrapper\Fixture\Entity\Article;
 use Gedmo\Tests\Wrapper\Fixture\Entity\Composite;
@@ -51,7 +50,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
     {
         $this->em->clear();
         $test = $this->em->getReference(Article::class, ['id' => 1]);
-        static::assertInstanceOf(Proxy::class, $test);
+        static::assertTrue($this->em->isUninitializedObject($test));
         $wrapped = new EntityWrapper($test, $this->em);
 
         $id = $wrapped->getIdentifier(false);
@@ -139,7 +138,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         $this->em->clear();
         $art1 = $this->em->getReference(Article::class, ['id' => 1]);
         $test = $this->em->getReference(CompositeRelation::class, ['article' => $art1->getId(), 'status' => 2]);
-        static::assertInstanceOf(Proxy::class, $test);
+        static::assertTrue($this->em->isUninitializedObject($test));
         $wrapped = new EntityWrapper($test, $this->em);
 
         static::assertSame('1 2', $wrapped->getIdentifier(false, true));

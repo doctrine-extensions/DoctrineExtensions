@@ -101,7 +101,7 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
     /**
      * @param ClassMetadata<object> $meta
      *
-     * @return \ReflectionClass<object>
+     * @return \ReflectionClass<covariant object>
      */
     public function getMetaReflectionClass($meta)
     {
@@ -139,9 +139,9 @@ abstract class AbstractAnnotationDriver implements AttributeDriverInterface
      * @param ClassMetadata<object> $metadata the mapped class metadata
      * @param string                $name     the related object class name
      *
-     * @return string related class name or empty string if does not exist
-     *
      * @phpstan-param class-string|string $name
+     *
+     * @return string related class name or empty string if does not exist
      *
      * @phpstan-return class-string|''
      */

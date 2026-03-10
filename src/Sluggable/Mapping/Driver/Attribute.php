@@ -9,6 +9,7 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
+use Doctrine\ORM\Mapping\EmbeddedClassMapping;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\Slug;
@@ -82,7 +83,9 @@ class Attribute extends AbstractAnnotationDriver
         // Embedded entity
         if (property_exists($meta, 'embeddedClasses') && $meta->embeddedClasses) {
             foreach ($meta->embeddedClasses as $propertyName => $embeddedClassInfo) {
-                $embeddedClass = new \ReflectionClass($embeddedClassInfo['class']);
+                /** Remove conditional when ORM 2.x is no longer supported. */
+                $className = ($embeddedClassInfo instanceof EmbeddedClassMapping) ? $embeddedClassInfo->class : $embeddedClassInfo['class'];
+                $embeddedClass = new \ReflectionClass($className);
 
                 foreach ($embeddedClass->getProperties() as $embeddedProperty) {
                     $config = $this->retrieveSlug($meta, $config, $embeddedProperty, $propertyName);

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Clock;
 use Gedmo\Tests\Timestampable\Fixture\Article;
 use Gedmo\Tests\Timestampable\Fixture\Author;
@@ -230,7 +229,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $type = $this->em->getReference(Type::class, $type->getId());
-        static::assertInstanceOf(Proxy::class, $type);
+        static::assertTrue($this->em->isUninitializedObject($type));
 
         $art = new Article();
         $art->setTitle('Art');

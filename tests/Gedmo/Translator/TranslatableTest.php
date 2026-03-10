@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translator;
 
 use Doctrine\Common\EventManager;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translator\Fixture\Person;
 use Gedmo\Tests\Translator\Fixture\PersonCustom;
@@ -114,7 +113,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $person = $this->em->getRepository(Person::class)->findOneBy(['name' => 'Jen']);
         static::assertSame('Женя', $person->translate('ru')->getName());
         $parent = $person->getParent();
-        static::assertInstanceOf(Proxy::class, $parent);
+        static::assertTrue($this->em->isUninitializedObject($parent));
         static::assertInstanceOf(Person::class, $parent);
         static::assertSame('Женя starshai', $parent->translate('ru')->getName());
         static::assertSame('zenia', $parent->translate('fr')->getName());
@@ -133,7 +132,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $personProxy = $this->em->getReference(Person::class, ['id' => 1]);
-        static::assertInstanceOf(Proxy::class, $personProxy);
+        static::assertTrue($this->em->isUninitializedObject($personProxy));
         $name = $personProxy->translate('ru_RU')->getName();
         static::assertSame('Женя', $name);
     }
@@ -153,7 +152,7 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $personProxy = $this->em->getReference(Person::class, ['id' => 1]);
-        static::assertInstanceOf(Proxy::class, $personProxy);
+        static::assertTrue($this->em->isUninitializedObject($personProxy));
         $name = $personProxy->translate('ru_RU')->getName();
         static::assertSame('Женя', $name);
         $lastName = $personProxy->translate('ru_RU')->getLastName();

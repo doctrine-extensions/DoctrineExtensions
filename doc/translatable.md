@@ -506,6 +506,11 @@ $query->setHint(
     \Gedmo\Translatable\TranslatableListener::HINT_FALLBACK,
     1 // fallback to default values in case if record is not translated
 );
+// refresh entities
+$query->setHint(
+    \Doctrine\ORM\Query::HINT_REFRESH,
+    true // update entity with correct locale if it was already loaded before
+);
 
 $articles = $query->getResult(); // object hydration
 ```
@@ -640,12 +645,12 @@ use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 
 /**
  * @ORM\Table(name="article_translations", indexes={
- *      @ORM\Index(name="article_translation_idx", columns={"locale", "object_class", "field", "foreign_key"})
+ *      @ORM\Index(name="article_translation_idx", columns={"foreign_key", "locale", "object_class", "field"})
  * })
  * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
  #[ORM\Table(name: 'article_translations')]
- #[ORM\Index(name: 'article_translation_idx', columns: ['locale', 'object_class', 'field', 'foreign_key'])]
+ #[ORM\Index(name: 'article_translation_idx', columns: ['foreign_key', 'locale', 'object_class', 'field'])]
  #[ORM\Entity(repositoryClass: TranslationRepository::class)]
 class ArticleTranslation extends AbstractTranslation
 {

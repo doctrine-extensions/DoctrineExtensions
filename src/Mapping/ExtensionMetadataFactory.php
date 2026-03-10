@@ -181,7 +181,7 @@ class ExtensionMetadataFactory
      */
     public static function getCacheId($className, $extensionNamespace)
     {
-        return str_replace('\\', '_', $className).'_$'.strtoupper(str_replace('\\', '_', $extensionNamespace)).'_CLASSMETADATA';
+        return str_replace('\\', '_', $className).'__'.strtoupper(str_replace('\\', '_', $extensionNamespace)).'_CLASSMETADATA';
     }
 
     /**

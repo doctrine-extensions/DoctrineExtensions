@@ -93,7 +93,11 @@ class ReferencesListener extends MappedEventSubscriber
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
                 $property = $meta->reflClass->getProperty($mapping['field']);
-                $property->setAccessible(true);
+
+                if (PHP_VERSION_ID < 80100) {
+                    $property->setAccessible(true);
+                }
+
                 if (isset($mapping['identifier'])) {
                     $referencedObjectId = $meta->getFieldValue($object, $mapping['identifier']);
                     if (null !== $referencedObjectId) {
@@ -113,7 +117,11 @@ class ReferencesListener extends MappedEventSubscriber
         if (isset($config['referenceMany'])) {
             foreach ($config['referenceMany'] as $mapping) {
                 $property = $meta->reflClass->getProperty($mapping['field']);
-                $property->setAccessible(true);
+
+                if (PHP_VERSION_ID < 80100) {
+                    $property->setAccessible(true);
+                }
+
                 if (isset($mapping['mappedBy'])) {
                     $id = $ea->extractIdentifier($om, $object);
                     $manager = $this->getManager($mapping['type']);
@@ -218,7 +226,10 @@ class ReferencesListener extends MappedEventSubscriber
         if (isset($config['referenceManyEmbed'])) {
             foreach ($config['referenceManyEmbed'] as $mapping) {
                 $property = $meta->reflClass->getProperty($mapping['field']);
-                $property->setAccessible(true);
+
+                if (PHP_VERSION_ID < 80100) {
+                    $property->setAccessible(true);
+                }
 
                 $id = $ea->extractIdentifier($om, $object);
                 $manager = $this->getManager('document');
@@ -266,7 +277,11 @@ class ReferencesListener extends MappedEventSubscriber
             foreach ($config['referenceOne'] as $mapping) {
                 if (isset($mapping['identifier'])) {
                     $property = $meta->reflClass->getProperty($mapping['field']);
-                    $property->setAccessible(true);
+
+                    if (PHP_VERSION_ID < 80100) {
+                        $property->setAccessible(true);
+                    }
+
                     $referencedObject = $property->getValue($object);
 
                     if (is_object($referencedObject)) {

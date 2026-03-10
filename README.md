@@ -52,7 +52,7 @@ flushed in a behavioral way.
 #### ORM Only
 
 - [**IpTraceable**](/doc/ip_traceable.md) - inherited from Timestampable, sets IP address instead of timestamp
-- [**SoftDeleteable**](/doc/softdeleteable.md) - allows to implicitly remove records
+- [**SoftDeleteable**](/doc/soft-deleteable.md) - allows to implicitly remove records
 - [**Sortable**](/doc/sortable.md) - makes any document or entity sortable
 - [**Uploadable**](/doc/uploadable.md) - provides file upload handling in entity fields
 

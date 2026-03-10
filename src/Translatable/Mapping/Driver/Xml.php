@@ -9,6 +9,7 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
+use Doctrine\ORM\Mapping\EmbeddedClassMapping;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
@@ -61,7 +62,10 @@ class Xml extends BaseXml
                 if ($meta->isInheritedEmbeddedClass($propertyName)) {
                     continue;
                 }
-                $xmlEmbeddedClass = $this->_getMapping($embeddedClassInfo['class']);
+
+                /** Remove conditional when ORM 2.x is no longer supported. */
+                $className = ($embeddedClassInfo instanceof EmbeddedClassMapping) ? $embeddedClassInfo->class : $embeddedClassInfo['class'];
+                $xmlEmbeddedClass = $this->_getMapping($className);
                 $config = $this->inspectElementsForTranslatableFields($xmlEmbeddedClass, $config, $propertyName);
             }
         }

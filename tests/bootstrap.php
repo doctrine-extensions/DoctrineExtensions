@@ -12,6 +12,7 @@ declare(strict_types=1);
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -28,6 +29,10 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', sys_get_temp_dir().'/doctrine-extension-tests');
 
+if (!is_dir(TESTS_TEMP_DIR)) {
+    mkdir(TESTS_TEMP_DIR, 0755, true);
+}
+
 require dirname(__DIR__).'/vendor/autoload.php';
 
 if (class_exists(AnnotationReader::class)) {
@@ -41,3 +46,8 @@ if (class_exists(AnnotationReader::class)) {
 }
 
 Type::addType('uuid', UuidType::class);
+
+// Ignore unfixable deprecations
+Deprecation::ignoreDeprecations(
+    'https://github.com/doctrine-extensions/DoctrineExtensions/pull/2772', // Ignore annotations deprecations from self
+);

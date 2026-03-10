@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\MPCategory;
@@ -332,8 +331,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $newNode = $this->createCategory();
         $parent = $node->getParent();
 
-        static::assertInstanceOf(Proxy::class, $parent);
-        static::assertFalse($parent->__isInitialized());
+        static::assertTrue($this->em->isUninitializedObject($parent));
 
         $newNode->setTitle('New Node');
         $newNode->setParent($parent);

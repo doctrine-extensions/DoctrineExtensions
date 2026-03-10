@@ -96,8 +96,15 @@ abstract class BaseTestCaseORM extends TestCase
     protected function getDefaultConfiguration(): Configuration
     {
         $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Proxy');
+
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'enableNativeLazyObjects')) {
+            $config->enableNativeLazyObjects(true);
+        } else {
+            $config->setProxyDir(TESTS_TEMP_DIR);
+            $config->setProxyNamespace('Gedmo\Mapping\Proxy');
+        }
+
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
         $config->setMiddlewares([
             new Middleware($this->queryLogger),

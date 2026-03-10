@@ -23,8 +23,6 @@ use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 class Person
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,7 +30,7 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(length=64)
@@ -41,8 +39,6 @@ class Person
     private ?string $name = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Slug(handlers={
      *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
      *         @Gedmo\SlugHandlerOption(name="relationField", value="occupation"),
@@ -56,7 +52,7 @@ class Person
     #[Gedmo\Slug(separator: '-', updatable: true, fields: ['name'])]
     #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: ['relationField' => 'occupation', 'relationSlugField' => 'slug', 'separator' => '/'])]
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 64, unique: true)]
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Occupation")

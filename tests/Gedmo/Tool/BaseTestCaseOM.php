@@ -170,7 +170,14 @@ abstract class BaseTestCaseOM extends TestCase
         if (null === $mappingDriver) {
             $mappingDriver = $this->getMongoDBDriver();
         }
+
         $config = new Configuration();
+
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'setUseNativeLazyObject')) {
+            $config->setUseNativeLazyObject(true);
+        }
+
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setHydratorDir(TESTS_TEMP_DIR);
@@ -191,10 +198,17 @@ abstract class BaseTestCaseOM extends TestCase
     private function getMockORMConfig(?MappingDriver $mappingDriver = null): \Doctrine\ORM\Configuration
     {
         $config = new \Doctrine\ORM\Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Proxy');
+
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'enableNativeLazyObjects')) {
+            $config->enableNativeLazyObjects(true);
+        } else {
+            $config->setProxyDir(TESTS_TEMP_DIR);
+            $config->setProxyNamespace('Proxy');
+            $config->setAutoGenerateProxyClasses(true);
+        }
+
         $config->setDefaultQueryHints([]);
-        $config->setAutoGenerateProxyClasses(true);
         $config->setClassMetadataFactoryName(ClassMetadataFactory::class);
         $config->setDefaultRepositoryClassName(EntityRepository::class);
         $config->setQuoteStrategy(new DefaultQuoteStrategy());
