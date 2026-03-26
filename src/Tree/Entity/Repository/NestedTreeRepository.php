@@ -879,12 +879,10 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->getName());
         if (isset($config['root'])) {
-            $trees = $this->getRootNodes();
+            $trees = null !== $options['treeRootNode']
+                ? [$options['treeRootNode']] // if a root node is specified, verify only it
+                : $this->getRootNodes();
             foreach ($trees as $tree) {
-                // if a root node is specified, verify only it
-                if (null !== $options['treeRootNode'] && $options['treeRootNode'] !== $tree) {
-                    continue;
-                }
                 $this->verifyTree($errors, $tree);
             }
         } else {
