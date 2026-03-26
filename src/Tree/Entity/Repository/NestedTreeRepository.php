@@ -1034,29 +1034,20 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         // if it's a forest
         if (isset($config['root'])) {
-            foreach ($this->getRootNodes($options['sortByField'], $options['sortDirection']) as $root) {
-                // if a root node is specified, recover only it
-                if (null !== $options['treeRootNode'] && $options['treeRootNode'] !== $root) {
-                    continue;
-                }
-
-                $count = 1; // reset on every root node
-                $lvl = $config['level_base'] ?? 0;
-                $doRecover($root, $count, $lvl);
-
-                if ($options['flush']) {
-                    $em->flush();
-                }
-            }
+            $roots = null !== $options['treeRootNode']
+                ? [$options['treeRootNode']]
+                : $this->getRootNodes($options['sortByField'], $options['sortDirection']);
         } else {
+            $roots = $this->getChildren(null, true, $options['sortByField'], $options['sortDirection']);
+        }
+
+        foreach ($roots as $root) {
             $count = 1;
             $lvl = $config['level_base'] ?? 0;
-            foreach ($this->getChildren(null, true, $options['sortByField'], $options['sortDirection']) as $root) {
-                $doRecover($root, $count, $lvl);
+            $doRecover($root, $count, $lvl);
 
-                if ($options['flush']) {
-                    $em->flush();
-                }
+            if ($options['flush']) {
+                $em->flush();
             }
         }
     }
