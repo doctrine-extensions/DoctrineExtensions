@@ -20,6 +20,12 @@ a release.
 ## [Unreleased]
 ### Fixed
 - Sluggable: Make sure the parameter to `strpos` is always a string (#2995)
+### Changed
+- All: Removed the dollar sign from the generated cache ID for extension metadata to ensure only characters mandated by [PSR-6](https://www.php-fig.org/psr/psr-6/#definitions) are used, improving compatibility with caching implementations with strict character requirements (#2978)
+
+## [3.22.0] - 2025-12-13
+### Added
+- Support for Symfony 8
 
 ## [3.21.0] - 2025-09-22
 ### Added

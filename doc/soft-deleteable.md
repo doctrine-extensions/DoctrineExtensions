@@ -27,6 +27,22 @@ $listener = new SoftDeleteableListener();
 $om->getEventManager()->addEventSubscriber($listener);
 ```
 
+### Removing Soft-Deleted Entities from the Identity Map
+
+When an entity is soft-deleted, it remains managed by Doctrine and can still be queried by its primary key as it stays
+in the identity map.
+To automatically remove such entities after a flush, enable the `$handlePostFlushEvent` option:
+
+```php
+$listener = new SoftDeleteableListener(true);
+```
+
+This detaches soft-deleted entities from the identity map but may cause issues if a deleted entity is still referenced
+by another managed entity with cascade persist, as later `flush()` calls may treat it as new and attempt to re-insert
+it.
+
+Enable this option only if you need deleted entities to be fully detached after flushing.
+
 ### Configuring Filters
 
 To automatically filter out soft-deleted records from all queries, you need to register and enable the appropriate filter for your object manager.
