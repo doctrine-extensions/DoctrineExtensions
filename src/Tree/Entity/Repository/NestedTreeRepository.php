@@ -1194,7 +1194,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @throws InvalidArgumentException if input is invalid
      */
-    public function getNextNodesQueryBuilder($root, $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): QueryBuilder
+    private function getNextNodesQueryBuilder(object $root, ?object $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): QueryBuilder
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->getName());
@@ -1246,7 +1246,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
      * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
      */
-    public function getNextNodesQuery($root, $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): Query
+    public function getNextNodesQuery(object $root, ?object $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): Query
     {
         return $this->getNextNodesQueryBuilder($root, $node, $limit, $traversalStrategy)->getQuery();
     }
@@ -1256,7 +1256,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object|null       $node              Current node. If null, first node will be returned
      * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
      */
-    public function getNextNode($root, $node = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): ?object
+    public function getNextNode(object $root, ?object $node = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): ?object
     {
         return $this->getNextNodesQuery($root, $node, 1, $traversalStrategy)->getOneOrNullResult();
     }
