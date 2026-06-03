@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Tree: Add pre-order and level-order traversals (#2498). Add `getNextNode()` and `getNextNodes()` methods to traverse the tree
+
 ### Changed
 - All: Removed the dollar sign from the generated cache ID for extension metadata to ensure only characters mandated by [PSR-6](https://www.php-fig.org/psr/psr-6/#definitions) are used, improving compatibility with caching implementations with strict character requirements (#2978)
 
@@ -181,7 +184,6 @@ a release.
 
 ### Added
 - Tree: Add `Nested::ALLOWED_NODE_POSITIONS` constant in order to expose the available node positions
-- Tree: Add pre-order and level-order traversals (#2498). Add `getNextNode()` and `getNextNodes()` methods to traverse the tree
 - Support for `doctrine/collections` 2.0
 - Support for `doctrine/event-manager` 2.0
 - Loggable: Add `LogEntryInterface` interface in order to be implemented by log entry models
