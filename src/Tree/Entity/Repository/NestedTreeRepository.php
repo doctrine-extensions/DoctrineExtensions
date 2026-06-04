@@ -1090,6 +1090,40 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
+     * @param object            $root              Root node of the parsed tree
+     * @param object|null       $node              Current node. If null, first node will be returned
+     * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
+     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
+     */
+    public function getNextNodesQuery(object $root, ?object $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): Query
+    {
+        return $this->getNextNodesQueryBuilder($root, $node, $limit, $traversalStrategy)->getQuery();
+    }
+
+    /**
+     * @param object            $root              Root node of the parsed tree
+     * @param object|null       $node              Current node. If null, first node will be returned
+     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
+     */
+    public function getNextNode(object $root, ?object $node = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): ?object
+    {
+        return $this->getNextNodesQuery($root, $node, 1, $traversalStrategy)->getOneOrNullResult();
+    }
+
+    /**
+     * @param object            $root              Root node of the parsed tree
+     * @param object|null       $node              Current node. If null, first node will be returned
+     * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
+     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
+     *
+     * @return array<object>
+     */
+    public function getNextNodes($root, $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): array
+    {
+        return $this->getNextNodesQuery($root, $node, $limit, $traversalStrategy)->getArrayResult();
+    }
+
+    /**
      * Allows the following 'virtual' methods:
      * - persistAsFirstChild($node)
      * - persistAsFirstChildOf($node, $parent)
@@ -1185,6 +1219,11 @@ class NestedTreeRepository extends AbstractTreeRepository
         return parent::__call($method, $args);
     }
 
+    protected function validate()
+    {
+        return Strategy::NESTED === $this->listener->getStrategy($this->getEntityManager(), $this->getClassMetadata()->name)->getName();
+    }
+
     /**
      * @param object      $root              Root node of the parsed tree
      * @param object|null $node              Current node. If null, first node will be returned
@@ -1239,45 +1278,6 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
 
         return $qb;
-    }
-
-    /**
-     * @param object            $root              Root node of the parsed tree
-     * @param object|null       $node              Current node. If null, first node will be returned
-     * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
-     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
-     */
-    public function getNextNodesQuery(object $root, ?object $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): Query
-    {
-        return $this->getNextNodesQueryBuilder($root, $node, $limit, $traversalStrategy)->getQuery();
-    }
-
-    /**
-     * @param object            $root              Root node of the parsed tree
-     * @param object|null       $node              Current node. If null, first node will be returned
-     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
-     */
-    public function getNextNode(object $root, ?object $node = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): ?object
-    {
-        return $this->getNextNodesQuery($root, $node, 1, $traversalStrategy)->getOneOrNullResult();
-    }
-
-    /**
-     * @param object            $root              Root node of the parsed tree
-     * @param object|null       $node              Current node. If null, first node will be returned
-     * @param int|null          $limit             Maximum nodes to return. If null, all nodes will be returned
-     * @param self::TRAVERSAL_* $traversalStrategy Strategy to use to traverse tree
-     *
-     * @return array<object>
-     */
-    public function getNextNodes($root, $node = null, ?int $limit = null, string $traversalStrategy = self::TRAVERSAL_PRE_ORDER): array
-    {
-        return $this->getNextNodesQuery($root, $node, $limit, $traversalStrategy)->getArrayResult();
-    }
-
-    protected function validate()
-    {
-        return Strategy::NESTED === $this->listener->getStrategy($this->getEntityManager(), $this->getClassMetadata()->name)->getName();
     }
 
     /**
