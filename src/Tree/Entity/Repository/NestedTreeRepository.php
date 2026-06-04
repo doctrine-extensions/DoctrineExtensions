@@ -15,6 +15,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tool\ORM\Repository\EntityRepositoryCompat;
@@ -1210,7 +1211,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             }
         } elseif (self::TRAVERSAL_LEVEL_ORDER === $traversalStrategy) {
             if (!isset($config['level'])) {
-                throw new \InvalidArgumentException('TreeLevel must be set to use level order traversal.');
+                throw new InvalidMappingException('Tree level must be set to use level order traversal.');
             }
             $qb = $this->childrenQueryBuilder($root, false, [$config['level'], $config['left']], ['DESC', 'ASC'], true);
             if (null !== $node) {
