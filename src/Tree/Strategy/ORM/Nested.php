@@ -13,7 +13,6 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -618,7 +617,7 @@ class Nested implements Strategy
                 continue;
             }
             foreach ($nodes as $node) {
-                if ($node instanceof Proxy && !$node->__isInitialized()) {
+                if ($em->isUninitializedObject($node)) {
                     continue;
                 }
 
@@ -718,7 +717,7 @@ class Nested implements Strategy
                 continue;
             }
             foreach ($nodes as $node) {
-                if ($node instanceof Proxy && !$node->__isInitialized()) {
+                if ($em->isUninitializedObject($node)) {
                     continue;
                 }
 
