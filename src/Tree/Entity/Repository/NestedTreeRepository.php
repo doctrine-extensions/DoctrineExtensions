@@ -13,7 +13,6 @@ use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
@@ -1304,7 +1303,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             } elseif ($right == $left) {
                 $errors[] = "node [{$id}] has identical left and right values";
             } elseif ($parent) {
-                if ($parent instanceof Proxy && !$parent->__isInitialized()) {
+                if ($this->getEntityManager()->isUninitializedObject($parent)) {
                     $this->getEntityManager()->refresh($parent);
                 }
                 $parentRight = $meta->getFieldValue($parent, $config['right']);
