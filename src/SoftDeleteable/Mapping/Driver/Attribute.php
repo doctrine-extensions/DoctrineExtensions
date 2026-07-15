@@ -45,7 +45,7 @@ class Attribute extends AbstractAnnotationDriver
 
             $config['timeAware'] = false;
 
-            if (isset($annot->timeAware)) {
+            if (isset($annot->timeAware)) { // @phpstan-ignore-line
                 if (!is_bool($annot->timeAware)) {
                     throw new InvalidMappingException('timeAware must be boolean. '.gettype($annot->timeAware).' provided.');
                 }
@@ -55,7 +55,7 @@ class Attribute extends AbstractAnnotationDriver
 
             $config['hardDelete'] = true;
 
-            if (isset($annot->hardDelete)) {
+            if (isset($annot->hardDelete)) { // @phpstan-ignore-line
                 if (!is_bool($annot->hardDelete)) {
                     throw new InvalidMappingException('hardDelete must be boolean. '.gettype($annot->hardDelete).' provided.');
                 }

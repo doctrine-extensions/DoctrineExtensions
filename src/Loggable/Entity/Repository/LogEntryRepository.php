@@ -156,7 +156,9 @@ class LogEntryRepository extends EntityRepository
         }
 
         $mapping = $objectMeta->getAssociationMapping($field);
-        $value = $value ? $this->getEntityManager()->getReference($mapping->targetEntity ?? $mapping['targetEntity'], $value) : null;
+        // @phpstan-ignore-next-line BC layer for doctrine/ORM
+        $targetEntity = $mapping->targetEntity ?? $mapping['targetEntity'];
+        $value = $value ? $this->getEntityManager()->getReference($targetEntity, $value) : null;
     }
 
     /**
