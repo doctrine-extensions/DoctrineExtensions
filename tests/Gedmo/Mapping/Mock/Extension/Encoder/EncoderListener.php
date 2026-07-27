@@ -15,13 +15,10 @@ use Doctrine\Common\EventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
-use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
-/**
- * @phpstan-extends MappedEventSubscriber<array, AdapterInterface>
- */
+/** @phpstan-extends MappedEventSubscriber<array, EventAdapterInterface> */
 class EncoderListener extends MappedEventSubscriber
 {
     public function getSubscribedEvents(): array

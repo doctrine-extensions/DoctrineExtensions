@@ -44,6 +44,7 @@ use Gedmo\Blameable\BlameableListener;
 use Gedmo\IpTraceable\IpTraceableListener;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Mapping\Driver\AttributeReader;
+use Gedmo\Revisionable\RevisionableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Sortable\SortableListener;
@@ -77,6 +78,14 @@ return [
             },
             'gedmo.listener.loggable' => function (ContainerInterface $container, string $requestedName): LoggableListener {
                 $listener = new LoggableListener();
+
+                // This call configures the listener to use the attribute driver service created above; if using annotations, you will need to provide the appropriate service instead
+                $listener->setAnnotationReader($container->get('gedmo.mapping.driver.attribute'));
+
+                return $listener;
+            },
+            'gedmo.listener.revisionable' => function (ContainerInterface $container, string $requestedName): RevisionableListener {
+                $listener = new RevisionableListener();
 
                 // This call configures the listener to use the attribute driver service created above; if using annotations, you will need to provide the appropriate service instead
                 $listener->setAnnotationReader($container->get('gedmo.mapping.driver.attribute'));
@@ -141,6 +150,7 @@ return [
                     'gedmo.listener.blameable',
                     'gedmo.listener.ip_traceable',
                     'gedmo.listener.loggable',
+                    'gedmo.listener.revisionable',
                     'gedmo.listener.sluggable',
                     'gedmo.listener.soft_deleteable',
                     'gedmo.listener.sortable',
@@ -232,8 +242,8 @@ return [
 
 ## Registering Mapping Configuration
 
-When using the [Loggable](../loggable.md), [Translatable](../translatable.md), or [Tree](../tree.md) extensions, you will
-need to register the mappings for these extensions to your object managers.
+When using the [Loggable](../loggable.md), [Revisionable](../revisionable.md), [Translatable](../translatable.md),
+or [Tree](../tree.md) extensions, you will need to register the mappings for these extensions to your object managers.
 
 > [!NOTE]
 > These extensions only provide mappings through annotations or attributes, with support for annotations being deprecated. If using annotations, you will need to ensure the [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library is installed and configured.
@@ -258,6 +268,7 @@ return [
                 'class' => AttributeDriver::class, // If your application is using annotations, use the AnnotationDriver class instead
                 'paths' => [
                     '/path/to/vendor/gedmo/doctrine-extensions/src/Loggable/Document',
+                    '/path/to/vendor/gedmo/doctrine-extensions/src/Revisionable/Document',
                     '/path/to/vendor/gedmo/doctrine-extensions/src/Translatable/Document',
                 ],
             ],
@@ -288,6 +299,7 @@ return [
                 'class' => AttributeDriver::class, // If your application is using annotations, use the AnnotationDriver class instead
                 'paths' => [
                     '/path/to/vendor/gedmo/doctrine-extensions/src/Loggable/Entity',
+                    '/path/to/vendor/gedmo/doctrine-extensions/src/Revisionable/Entity',
                     '/path/to/vendor/gedmo/doctrine-extensions/src/Translatable/Entity',
                     '/path/to/vendor/gedmo/doctrine-extensions/src/Tree/Entity',
                 ],
@@ -310,6 +322,8 @@ $ vendor/bin/doctrine-module orm:info
 
  [OK]   Gedmo\Loggable\Entity\LogEntry
  [OK]   Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry
+ [OK]   Gedmo\Revisionable\Entity\Revision
+ [OK]   Gedmo\Revisionable\Entity\MappedSuperclass\AbstractRevision
  [OK]   Gedmo\Translatable\Entity\Translation
  [OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation
  [OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation
@@ -374,9 +388,9 @@ return [
 
 ## Configuring Extensions via Event Listeners
 
-When using the [Blameable](../blameable.md), [IP Traceable](../ip_traceable.md), [Loggable](../loggable.md), or
-[Translatable](../translatable.md) extensions, to work correctly, they require extra information that must be set
-at runtime.
+When using the [Blameable](../blameable.md), [IP Traceable](../ip_traceable.md), [Loggable](../loggable.md),
+[Revisionable](../revisionable.md), or [Translatable](../translatable.md) extensions, to work correctly,
+they require extra information that must be set at runtime.
 
 **Help Improve This Documentation**
 

@@ -143,14 +143,7 @@ class LogEntryRepository extends DocumentRepository
                 $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
             }
             $wrapped->setPropertyValue($field, $value);
-            unset($fields[$field]);
         }
-
-        /*
-        if (count($fields)) {
-            throw new \Gedmo\Exception\UnexpectedValueException('Cound not fully revert the document to version: '.$version);
-        }
-        */
     }
 
     /**
