@@ -10,6 +10,7 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Persistence\Event\ManagerEventArgs;
@@ -398,6 +399,7 @@ class SluggableListener extends MappedEventSubscriber
             }
             // if slug is changed, do further processing
             if ($needToChangeSlug) {
+                /** @var FieldMapping|array<mixed> $mapping */
                 $mapping = $meta->getFieldMapping($slugField);
                 // notify slug handlers --> postSlugBuild
                 $urlized = false;
@@ -457,12 +459,17 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // cut slug if exceeded in length
-                $length = $mapping->length ?? $mapping['length'] ?? null;
+                $length = \is_object($mapping)
+                    ? $mapping->length
+                    : ($mapping['length'] ?? null);
                 if (null !== $length && strlen($slug) > $length) {
                     $slug = substr($slug, 0, $length);
                 }
 
-                if (($mapping->nullable ?? $mapping['nullable'] ?? false) && 0 === strlen($slug)) {
+                $nullable = \is_object($mapping)
+                    ? ($mapping->nullable ?? false)
+                    : ($mapping['nullable'] ?? false);
+                if ($nullable && 0 === strlen($slug)) {
                     $slug = null;
                 }
 
@@ -564,7 +571,9 @@ class SluggableListener extends MappedEventSubscriber
             }
 
             $mapping = $meta->getFieldMapping($config['slug']);
-            $length = $mapping->length ?? $mapping['length'] ?? null;
+            $length = \is_object($mapping)
+                ? $mapping->length
+                : ($mapping['length'] ?? null);
             if (null !== $length && strlen($generatedSlug) > $length) {
                 $generatedSlug = substr(
                     $generatedSlug,
