@@ -85,7 +85,7 @@ jobs:
         run: "composer require --dev --no-update doctrine/orm:${{ matrix.orm }}"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "${{ matrix.deps }}"
 
@@ -114,7 +114,7 @@ jobs:
           extensions: mongodb
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "highest"
 
