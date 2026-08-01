@@ -614,6 +614,49 @@ $translatableListener->setPersistDefaultLocaleTranslation(true); // default is f
 This would always store translations in all locales, also keeping original record
 translated field values in default locale set.
 
+#### Mirroring the default-locale personal translation back onto the entity
+
+When using **personal translation tables** together with
+`setPersistDefaultLocaleTranslation(true)`, the main entity's field is normally
+treated as the source of truth for the default locale. This means consumers
+have to keep the entity field manually in sync with the default-locale
+translation, e.g.:
+
+``` php
+<?php
+$article->setTitle($translationsFromAdminUi[$defaultLocale] ?? '');
+$article->setTranslations($translationsFromAdminUi);
+```
+
+To flip the direction so that the explicitly-supplied default-locale personal
+translation is the source of truth and its `content` is automatically mirrored
+back onto the main entity's translatable field, enable:
+
+``` php
+<?php
+$translatableListener->setPersistDefaultLocaleTranslation(true);
+$translatableListener->setPreferPersonalTranslationContent(true); // default is false
+```
+
+Preconditions for this setting to take effect:
+
+- the entity uses a **personal translation** class
+  (`@Gedmo\TranslationEntity` pointing at a class extending
+  `AbstractPersonalTranslation`),
+- `setPersistDefaultLocaleTranslation(true)` is also enabled.
+
+With this enabled, persisting bulk translations from e.g. an admin UI
+simplifies to:
+
+``` php
+<?php
+$article->setTranslations($translationsFromAdminUi);
+$em->flush();
+```
+
+The default-locale personal translation's `content` will be written into the
+main entity's field automatically on both inserts and updates.
+
 To set a default translation value upon a missing translation:
 
 ``` php

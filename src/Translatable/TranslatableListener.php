@@ -122,6 +122,14 @@ class TranslatableListener extends MappedEventSubscriber
     private bool $persistDefaultLocaleTranslation = false;
 
     /**
+     * Treat the user-authored default-locale personal translation as the
+     * source of truth, mirroring its content back onto the entity's field
+     * instead of letting the entity field win. Effective only together with
+     * personal translations and {@see self::$persistDefaultLocaleTranslation}.
+     */
+    private bool $preferPersonalTranslationContent = false;
+
+    /**
      * Tracks translation object for default locale
      *
      * @var array<int, array<string, object|Translatable>>
@@ -187,6 +195,23 @@ class TranslatableListener extends MappedEventSubscriber
     public function getPersistDefaultLocaleTranslation()
     {
         return (bool) $this->persistDefaultLocaleTranslation;
+    }
+
+    /**
+     * @see self::$preferPersonalTranslationContent
+     *
+     * @return static
+     */
+    public function setPreferPersonalTranslationContent(bool $bool): self
+    {
+        $this->preferPersonalTranslationContent = $bool;
+
+        return $this;
+    }
+
+    public function getPreferPersonalTranslationContent(): bool
+    {
+        return $this->preferPersonalTranslationContent;
     }
 
     /**
@@ -428,6 +453,21 @@ class TranslatableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
+        // Sync-back: if only a default-locale personal translation row was
+        // modified, its owner entity is not yet scheduled. Schedule it so the
+        // loop below visits it and mirrors the translation onto its column.
+        if ($this->preferPersonalTranslationContent && $this->persistDefaultLocaleTranslation) {
+            foreach (array_merge($ea->getScheduledObjectInsertions($uow), $ea->getScheduledObjectUpdates($uow)) as $trans) {
+                if ($ea->usesPersonalTranslation(get_class($trans))
+                    && $trans->getLocale() === $this->defaultLocale
+                    && ($entity = $trans->getObject()) !== null
+                    && !$uow->isScheduledForInsert($entity)
+                    && !$uow->isScheduledForUpdate($entity)
+                ) {
+                    $uow->scheduleForUpdate($entity);
+                }
+            }
+        }
         // check all scheduled inserts for Translatable objects
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
@@ -630,7 +670,21 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * Creates the translation for object being flushed
+     * Creates the translation for object being flushed.
+     *
+     * Sync-back mode (gated by $shouldSyncBackPersonal below) treats the
+     * user-authored default-locale personal translation as the source of
+     * truth and mirrors its content onto the entity's field on both inserts
+     * and updates. It is implemented as three coordinated additions to the
+     * default flow:
+     *  1) The per-field tracking loops capture the default-locale row from
+     *     scheduledObjectInsertions AND scheduledObjectUpdates regardless of
+     *     the current locale.
+     *  2) The $useTranslationAsSourceOfTruth variable keeps any
+     *     user-authored translation row's content intact instead of
+     *     overwriting it with the entity's field value.
+     *  3) The final mirror block at the end of each iteration runs for updates and inserts.
+     * @see self::$preferPersonalTranslationContent
      *
      * @throws \UnexpectedValueException if locale is not valid, or
      *                                   primary key is composite, missing or invalid
@@ -654,16 +708,16 @@ class TranslatableListener extends MappedEventSubscriber
         $oid = spl_object_id($object);
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $translatableFields = $config['fields'];
+        $shouldSyncBackPersonal = $this->preferPersonalTranslationContent
+            && $this->persistDefaultLocaleTranslation
+            && $ea->usesPersonalTranslation($translationClass);
         foreach ($translatableFields as $field) {
             $wasPersistedSeparetely = false;
-            $skip = isset($this->translatedInLocale[$oid]) && $locale === $this->translatedInLocale[$oid];
-            $skip = $skip && !isset($changeSet[$field]) && !$this->getTranslationInDefaultLocale($oid, $field);
-            if ($skip) {
-                continue; // locale is same and nothing changed
-            }
-            $translation = null;
+            // Tracking runs BEFORE the skip check so the latter sees the result
+            // via getTranslationInDefaultLocale() and doesn't short-circuit
+            // entities forced into scheduledObjectUpdates purely by sync-back.
             foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
-                if ($locale !== $this->defaultLocale
+                if (($locale !== $this->defaultLocale || $shouldSyncBackPersonal)
                     && get_class($trans) === $translationClass
                     && $trans->getLocale() === $this->defaultLocale
                     && $trans->getField() === $field
@@ -673,6 +727,26 @@ class TranslatableListener extends MappedEventSubscriber
                     break;
                 }
             }
+
+            if ($shouldSyncBackPersonal && null === $this->getTranslationInDefaultLocale($oid, $field)) {
+                foreach ($ea->getScheduledObjectUpdates($uow) as $trans) {
+                    if (get_class($trans) === $translationClass
+                        && $trans->getLocale() === $this->defaultLocale
+                        && $trans->getField() === $field
+                        && $this->belongsToObject($ea, $trans, $object)) {
+                        $this->setTranslationInDefaultLocale($oid, $field, $trans);
+
+                        break;
+                    }
+                }
+            }
+
+            $skip = isset($this->translatedInLocale[$oid]) && $locale === $this->translatedInLocale[$oid];
+            $skip = $skip && !isset($changeSet[$field]) && !$this->getTranslationInDefaultLocale($oid, $field);
+            if ($skip) {
+                continue; // locale is same and nothing changed
+            }
+            $translation = null;
 
             // lookup persisted translations
             foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
@@ -693,6 +767,23 @@ class TranslatableListener extends MappedEventSubscriber
                     $translation = $trans;
 
                     break;
+                }
+            }
+
+            // Sync-back: also accept a user-modified existing translation row
+            // (scheduledObjectUpdates) for the current locale, so its content
+            // wins over the entity field instead of being clobbered.
+            if ($shouldSyncBackPersonal && null === $translation) {
+                foreach ($ea->getScheduledObjectUpdates($uow) as $trans) {
+                    if (get_class($trans) === $translationClass
+                        && $trans->getLocale() === $locale
+                        && $trans->getField() === $field
+                        && $this->belongsToObject($ea, $trans, $object)) {
+                        $translation = $trans;
+                        $wasPersistedSeparetely = true;
+
+                        break;
+                    }
                 }
             }
 
@@ -726,9 +817,21 @@ class TranslatableListener extends MappedEventSubscriber
             }
 
             if ($translation) {
-                // set the translated field, take value using reflection
-                $content = $ea->getTranslationValue($object, $field);
-                $translation->setContent($content);
+                $defaultLocaleTrans = $this->getTranslationInDefaultLocale($oid, $field);
+                // Sync-back: keep the user-authored translation row's content
+                // intact. Either the user persisted the row for the current
+                // locale themselves, or we tracked it as the default-locale row
+                // (e.g. picked up from the identity map on update).
+                $useTranslationAsSourceOfTruth = $shouldSyncBackPersonal
+                    && ($wasPersistedSeparetely || $translation === $defaultLocaleTrans);
+
+                if ($useTranslationAsSourceOfTruth) {
+                    $content = $translation->getContent();
+                } else {
+                    // set the translated field, take value using reflection
+                    $content = $ea->getTranslationValue($object, $field);
+                    $translation->setContent($content);
+                }
                 // check if need to update in database
                 $transWrapper = AbstractWrapper::wrap($translation, $om);
                 if (((null === $content && !$isInsert) || is_bool($content) || is_int($content) || is_string($content) || !empty($content)) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
@@ -748,7 +851,15 @@ class TranslatableListener extends MappedEventSubscriber
                 }
             }
 
-            if ($isInsert && null !== $this->getTranslationInDefaultLocale($oid, $field)) {
+            // Inner mirror block. For sync-back updates in a non-default
+            // locale we deliberately skip it: the trailing block below
+            // (locale !== defaultLocale path) already has the machinery to
+            // apply tracked default-locale content to the entity AFTER the
+            // changeset cleanup, which would otherwise wipe this mirror.
+            if (
+                ($isInsert || ($shouldSyncBackPersonal && $locale === $this->defaultLocale))
+                && null !== $this->getTranslationInDefaultLocale($oid, $field)
+            ) {
                 // We can't rely on object field value which is created in non-default locale.
                 // If we provide translation for default locale as well, the latter is considered to be trusted
                 // and object content should be overridden.
