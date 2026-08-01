@@ -37,6 +37,7 @@ class Validator
         'datetimetz',
         'datetimetz_immutable',
         'timestamp',
+        'date_point',
     ];
 
     /**

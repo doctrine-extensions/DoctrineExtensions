@@ -47,6 +47,7 @@ class Attribute extends AbstractAnnotationDriver
         'timestamp',
         'vardatetime',
         'integer',
+        'date_point',
     ];
 
     public function readExtendedMetadata($meta, array &$config)

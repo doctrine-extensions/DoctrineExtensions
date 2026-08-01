@@ -43,6 +43,7 @@ class Xml extends BaseXml
         'timestamp',
         'vardatetime',
         'integer',
+        'date_point',
     ];
 
     public function readExtendedMetadata($meta, array &$config)

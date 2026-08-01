@@ -61,7 +61,7 @@ final class ORM extends BaseAdapterORM implements SoftDeleteableAdapter, ClockAw
             return (int) $datetime->format('U');
         }
 
-        if (in_array($type, ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'], true)) {
+        if (in_array($type, ['date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable', 'date_point'], true)) {
             return $datetime;
         }
 
