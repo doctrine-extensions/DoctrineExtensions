@@ -74,7 +74,7 @@ class Attribute extends AbstractAnnotationDriver
                     }
                 }
 
-                if (!in_array($blameable->on, ['update', 'create', 'change'], true)) {
+                if (!in_array($blameable->on, ['update', 'create', 'change', 'remove'], true)) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
 
