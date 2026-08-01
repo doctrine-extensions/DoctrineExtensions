@@ -533,6 +533,54 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
+    public function testShouldVerifyTreeWhenParentIsAnUninitializedProxy(): void
+    {
+        /** @var NestedTreeRepository<RootCategory> $repo */
+        $repo = $this->em->getRepository(RootCategory::class);
+
+        // Move "Carrots" under "Potatoes", so that the child row is iterated during
+        // verification before its parent has been hydrated.
+        $carrots = $repo->findOneBy(['title' => 'Carrots']);
+        $potatoes = $repo->findOneBy(['title' => 'Potatoes']);
+
+        $repo->persistAsFirstChildOf($carrots, $potatoes);
+        $this->em->flush();
+
+        // clear, so that parents are loaded as uninitialized proxies during verification
+        $this->em->clear();
+
+        static::assertTrue($repo->verify());
+    }
+
+    public function testShouldNotTouchUninitializedProxiesWhenShiftingNodes(): void
+    {
+        /** @var NestedTreeRepository<RootCategory> $repo */
+        $repo = $this->em->getRepository(RootCategory::class);
+
+        $potatoesId = $repo->findOneBy(['title' => 'Potatoes'])->getId();
+        $this->em->clear();
+
+        $food = $repo->findOneBy(['title' => 'Food']);
+        // an uninitialized proxy in the identity map, its lft/rgt are affected by the shift below
+        $potatoes = $this->em->getReference(RootCategory::class, $potatoesId);
+
+        // insert a new first child of "Food", shifting "Potatoes" from 7/8 to 9/10
+        $bread = new RootCategory();
+        $bread->setTitle('Bread');
+
+        $repo->persistAsFirstChildOf($bread, $food);
+        $this->em->flush();
+
+        // the in-memory update of shifted nodes must skip uninitialized proxies
+        static::assertTrue($this->em->isUninitializedObject($potatoes));
+
+        // initializing the proxy now must yield the shifted values from the database
+        static::assertSame(9, $potatoes->getLeft());
+        static::assertSame(10, $potatoes->getRight());
+
+        static::assertTrue($repo->verify());
+    }
+
     public function testShouldRemoveTreeLeafFromTree(): void
     {
         $this->populateMore();
