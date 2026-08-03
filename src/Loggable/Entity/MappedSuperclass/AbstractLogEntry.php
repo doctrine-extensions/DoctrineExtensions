@@ -15,7 +15,7 @@ use Gedmo\Loggable\LogEntryInterface;
 use Gedmo\Loggable\Loggable;
 
 /**
- * @phpstan-template T of Loggable|object
+ * @phpstan-template T of object
  *
  * @phpstan-implements LogEntryInterface<T>
  *
