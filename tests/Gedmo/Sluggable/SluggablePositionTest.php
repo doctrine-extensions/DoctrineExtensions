@@ -40,7 +40,7 @@ final class SluggablePositionTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(Position::class);
 
         $object = $repo->find(1);
-        $slug = $meta->getReflectionProperty('slug')->getValue($object);
+        $slug = $meta->getFieldValue($object, 'slug');
         static::assertSame('code-other-title-prop', $slug);
     }
 
@@ -55,10 +55,10 @@ final class SluggablePositionTest extends BaseTestCaseORM
     {
         $meta = $this->em->getClassMetadata(Position::class);
         $object = new Position();
-        $meta->getReflectionProperty('title')->setValue($object, 'title');
-        $meta->getReflectionProperty('prop')->setValue($object, 'prop');
-        $meta->getReflectionProperty('code')->setValue($object, 'code');
-        $meta->getReflectionProperty('other')->setValue($object, 'other');
+        $meta->setFieldValue($object, 'title', 'title');
+        $meta->setFieldValue($object, 'prop', 'prop');
+        $meta->setFieldValue($object, 'code', 'code');
+        $meta->setFieldValue($object, 'other', 'other');
 
         $this->em->persist($object);
         $this->em->flush();

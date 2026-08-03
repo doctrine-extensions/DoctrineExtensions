@@ -83,11 +83,16 @@ class EncoderListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
+
+        if (!method_exists($meta, 'getFieldValue') || !method_exists($meta, 'setFieldValue')) {
+            throw new \RuntimeException('ClassMetadata does not have (get|set)FieldValue() methods: '.get_class($meta));
+        }
+
         foreach ($config['encode'] as $field => $options) {
-            $value = $meta->getReflectionProperty($field)->getValue($object);
+            $value = $meta->getFieldValue($object, $field);
             $method = $options['type'];
             $encoded = $method($options['secret'].$value);
-            $meta->getReflectionProperty($field)->setValue($object, $encoded);
+            $meta->setFieldValue($object, $field, $encoded);
         }
         // recalculate changeset
         $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
