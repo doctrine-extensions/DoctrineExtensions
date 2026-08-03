@@ -539,8 +539,11 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $sports = $repo->findOneBy(['title' => 'Sports']);
 
-        $dql = 'UPDATE '.RootCategory::class.' node SET node.rgt = 5 WHERE node.id = '.$sports->getId();
-        $this->em->createQuery($dql)->getSingleScalarResult();
+        $dql = 'UPDATE '.RootCategory::class.' node SET node.rgt = :rgt WHERE node.id = :id';
+        $this->em->createQuery($dql)
+            ->setParameter('rgt', 5)
+            ->setParameter('id', $sports->getId())
+            ->execute();
         $this->em->clear();
 
         $food = $repo->findOneBy(['title' => 'Food']);
