@@ -22,6 +22,7 @@ a release.
 ## [3.22.1] - 2026-08-01
 ### Changed
 - All: Removed the dollar sign from the generated cache ID for extension metadata to ensure only characters mandated by [PSR-6](https://www.php-fig.org/psr/psr-6/#definitions) are used, improving compatibility with caching implementations with strict character requirements (#2978)
+- Loggable: Added script to migrate serialized data to JSON field (required for DBAL 4.0)
 
 ## [3.22.0] - 2025-12-13
 ### Added
