@@ -73,12 +73,6 @@ parameters:
 			path: src/Loggable/Entity/Repository/LogEntryRepository.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method Doctrine\\ORM\\EntityManagerInterface\:\:getReference\(\)$#'
-			identifier: argument.templateType
-			count: 1
-			path: src/Loggable/Entity/Repository/LogEntryRepository.php
-
-		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<Gedmo\\Loggable\\LogEntryInterface\<T of object\>\>\:\:newInstance\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -1289,4 +1283,3 @@ parameters:
 			identifier: deadCode.unreachable
 			count: 1
 			path: tests/Gedmo/Tree/MaterializedPathODMMongoDBTreeLockingTest.php
-

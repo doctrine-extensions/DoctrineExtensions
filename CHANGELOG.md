@@ -21,6 +21,7 @@ a release.
 ### Fixed
 - Tree: Fix `NestedTreeRepository::recover()` not forwarding `treeRootNode` to `verify()`, causing unscoped verification of the entire forest when recovering a single tree
 
+## [3.22.1] - 2026-08-01
 ### Changed
 - All: Removed the dollar sign from the generated cache ID for extension metadata to ensure only characters mandated by [PSR-6](https://www.php-fig.org/psr/psr-6/#definitions) are used, improving compatibility with caching implementations with strict character requirements (#2978)
 

@@ -11,7 +11,6 @@ namespace Gedmo\Loggable\Mapping\Driver;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
-use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
 
 /**

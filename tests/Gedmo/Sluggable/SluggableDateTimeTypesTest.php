@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Sluggable\Sluggable;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\DateTimeTypes\ArticleDate;
 use Gedmo\Tests\Sluggable\Fixture\DateTimeTypes\ArticleDateImmutable;
