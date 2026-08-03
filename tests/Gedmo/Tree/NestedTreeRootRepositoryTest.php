@@ -533,6 +533,38 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
+    public function testRecoverWithTreeRootNodeScopesVerifyToSpecifiedTree(): void
+    {
+        $repo = $this->em->getRepository(RootCategory::class);
+
+        $sports = $repo->findOneBy(['title' => 'Sports']);
+
+        $dql = 'UPDATE '.RootCategory::class.' node SET node.rgt = :rgt WHERE node.id = :id';
+        $this->em->createQuery($dql)
+            ->setParameter('rgt', 5)
+            ->setParameter('id', $sports->getId())
+            ->execute();
+        $this->em->clear();
+
+        $food = $repo->findOneBy(['title' => 'Food']);
+
+        // Food's tree is valid; the full forest has errors due to the corrupted Sports tree
+        static::assertTrue($repo->verify(['treeRootNode' => $food]));
+        static::assertIsArray($repo->verify());
+
+        $repo->recover([
+            'treeRootNode' => $food,
+            'sortByField' => 'title',
+            'sortDirection' => 'DESC',
+            'flush' => true,
+        ]);
+
+        $this->em->clear();
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
+
+        static::assertSame(2, $fruits->getLeft());
+    }
+
     public function testShouldRemoveTreeLeafFromTree(): void
     {
         $this->populateMore();
