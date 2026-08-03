@@ -85,12 +85,15 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(Article::class);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $createdField = $sport->getCreated();
-        if ($createdField instanceof Timestamp) {
-            $createdField = $createdField->getTimestamp();
+        $sportCreated = $sport->getCreated();
+        if ($sportCreated instanceof Timestamp) {
+            $sportCreated = $sportCreated->getTimestamp();
         }
 
-        static::assertSame($created, $createdField);
+        static::assertSame(
+            $created,
+            $sportCreated
+        );
         static::assertSame(
             '2000-01-01 12:00:00',
             $sport->getUpdated()->format('Y-m-d H:i:s')

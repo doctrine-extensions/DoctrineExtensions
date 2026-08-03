@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree\Fixture\Mock;
 
 use Doctrine\Persistence\ObjectManager;
-use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
 
 /**

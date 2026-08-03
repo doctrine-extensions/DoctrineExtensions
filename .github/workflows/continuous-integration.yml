@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
         with:
           fetch-depth: 2
 
@@ -85,7 +85,7 @@ jobs:
         run: "composer require --dev --no-update doctrine/orm:${{ matrix.orm }}"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "${{ matrix.deps }}"
 
@@ -93,7 +93,7 @@ jobs:
         run: "vendor/bin/phpunit --coverage-clover coverage.xml"
 
       - name: "Upload coverage file"
-        uses: "actions/upload-artifact@v6"
+        uses: "actions/upload-artifact@v7"
         with:
           name: "${{ github.job }}-${{ matrix.php-version }}-${{ matrix.deps }}-${{ matrix.no-annotations == true && 'no-annotations' || 'with-annotations' }}${{ matrix.orm != '' && format('-orm-{0}', matrix.orm) || '' }}-coverage"
           path: "coverage.xml"
@@ -105,7 +105,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
@@ -114,7 +114,7 @@ jobs:
           extensions: mongodb
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "highest"
 
@@ -132,17 +132,17 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
         with:
           fetch-depth: 2
 
       - name: "Download coverage files"
-        uses: "actions/download-artifact@v7"
+        uses: "actions/download-artifact@v8"
         with:
           path: "reports"
 
       - name: "Upload to Codecov"
-        uses: "codecov/codecov-action@v5"
+        uses: "codecov/codecov-action@v7"
         with:
           directory: reports
           token: "${{ secrets.CODECOV_TOKEN }}"

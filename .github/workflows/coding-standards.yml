@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
 
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
@@ -22,7 +22,7 @@ jobs:
           php-version: "8.5"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "highest"
 
@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
 
       - name: "Install PHP"
         uses: shivammathur/setup-php@v2
@@ -47,7 +47,7 @@ jobs:
           tools: "composer:v2"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "highest"
           composer-options: "--prefer-dist --prefer-stable"
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
@@ -83,7 +83,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install required dependencies
         run: sudo apt-get update && sudo apt-get install libxml2-utils
@@ -98,7 +98,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Ruby 3.0
         uses: ruby/setup-ruby@v1
