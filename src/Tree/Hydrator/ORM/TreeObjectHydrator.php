@@ -250,6 +250,13 @@ class TreeObjectHydrator extends ObjectHydrator
 
             $associationMapping = $meta->getAssociationMapping($property->getName());
 
+            // ORM 3 mapping objects implement ArrayAccess, so both ORM 2 arrays
+            // and ORM 3 objects go through the same path. Owning-side mappings (the parent
+            // ManyToOne) have no `mappedBy`, hence the isset() guard.
+            if (!isset($associationMapping['mappedBy'])) {
+                continue;
+            }
+
             // Make sure the association is mapped by the parent property
             if ($associationMapping['mappedBy'] !== $this->parentField) {
                 continue;
