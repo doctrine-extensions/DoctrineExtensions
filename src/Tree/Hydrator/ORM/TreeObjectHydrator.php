@@ -12,7 +12,6 @@ namespace Gedmo\Tree\Hydrator\ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
-use Doctrine\ORM\Mapping\OneToManyAssociationMapping;
 use Doctrine\ORM\PersistentCollection;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Tool\ORM\Hydration\EntityManagerRetriever;
@@ -251,14 +250,9 @@ class TreeObjectHydrator extends ObjectHydrator
 
             $associationMapping = $meta->getAssociationMapping($property->getName());
 
-            if ($associationMapping instanceof OneToManyAssociationMapping) {
-                if ($associationMapping->mappedBy !== $this->parentField) {
-                    continue;
-                }
-
-                return $associationMapping->fieldName;
-            }
-
+            // ORM 3 mapping objects implement ArrayAccess, so both ORM 2 arrays
+            // and ORM 3 objects go through the same path. Owning-side mappings (the parent
+            // ManyToOne) have no `mappedBy`, hence the isset() guard.
             if (!isset($associationMapping['mappedBy'])) {
                 continue;
             }

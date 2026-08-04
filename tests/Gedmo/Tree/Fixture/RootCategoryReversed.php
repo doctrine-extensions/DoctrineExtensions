@@ -29,13 +29,6 @@ use Gedmo\Tree\Node;
 class RootCategoryReversed implements Node
 {
     /**
-     * @var Collection<int, self>
-     *
-     * @ORM\OneToMany(targetEntity="RootCategoryReversed", mappedBy="parent")
-     */
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    protected $children;
-    /**
      * @Gedmo\TreeParent
      *
      * @ORM\ManyToOne(targetEntity="RootCategoryReversed", inversedBy="children")
@@ -47,6 +40,14 @@ class RootCategoryReversed implements Node
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
     private ?RootCategoryReversed $parent = null;
+
+    /**
+     * @var Collection<int, self>
+     *
+     * @ORM\OneToMany(targetEntity="RootCategoryReversed", mappedBy="parent")
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    private $children;
 
     /**
      * @var int|null
