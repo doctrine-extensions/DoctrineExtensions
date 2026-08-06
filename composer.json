@@ -41,7 +41,7 @@
     },
     "require": {
         "php": "^7.4 || ^8.0",
-        "doctrine/collections": "^1.2 || ^2.0",
+        "doctrine/collections": "^1.2 || ^2.0 || ^3.0",
         "doctrine/deprecations": "^1.0",
         "doctrine/event-manager": "^1.2 || ^2.0",
         "doctrine/persistence": "^2.2 || ^3.0 || ^4.0",
