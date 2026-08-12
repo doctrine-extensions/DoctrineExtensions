@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: Fix `NestedTreeRepository::recover()` not forwarding `treeRootNode` to `verify()`, causing unscoped verification of the entire forest when recovering a single tree
 
 ## [3.22.1] - 2026-08-01
 ### Changed
