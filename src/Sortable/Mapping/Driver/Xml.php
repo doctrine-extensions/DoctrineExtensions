@@ -105,9 +105,7 @@ class Xml extends BaseXml
 
             $field = $this->_getAttribute($mappingDoctrine, $fieldAttr);
             if (isset($map->{'sortable-group'})) {
-                if (!isset($config['groups'])) {
-                    $config['groups'] = [];
-                }
+                $config['groups'] ??= [];
                 $config['groups'][] = $field;
             }
         }

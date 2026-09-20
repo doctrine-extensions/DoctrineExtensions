@@ -64,9 +64,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
         $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
         $this->usedOptions = $config['handlers'][static::class];
-        if (!isset($this->usedOptions['separator'])) {
-            $this->usedOptions['separator'] = self::SEPARATOR;
-        }
+        $this->usedOptions['separator'] ??= self::SEPARATOR;
         if (!$isInsert && !$needToChangeSlug) {
             $changeSet = $ea->getObjectChangeSet($this->om->getUnitOfWork(), $object);
             if (isset($changeSet[$this->usedOptions['relationField']])) {

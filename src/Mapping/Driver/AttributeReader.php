@@ -81,9 +81,7 @@ final class AttributeReader
             assert($instance instanceof Annotation);
 
             if ($this->isRepeatable($attributeName)) {
-                if (!isset($instances[$attributeName])) {
-                    $instances[$attributeName] = [];
-                }
+                $instances[$attributeName] ??= [];
 
                 $instances[$attributeName][] = $instance;
             } else {

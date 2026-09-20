@@ -177,9 +177,7 @@ class SortableListener extends MappedEventSubscriber
             $hash = $this->getHash($groups, $config);
 
             // Get max position
-            if (!isset($this->maxPositions[$hash])) {
-                $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
-            }
+            $this->maxPositions[$hash] ??= $this->getMaxPosition($ea, $meta, $config, $object);
         }
     }
 
@@ -317,13 +315,11 @@ class SortableListener extends MappedEventSubscriber
                             // We cannot use `$this->setFieldValue()` here, because it will create a change set, that will
                             // prevent from other relocations being executed on this object.
                             // We just update the object value and will create the change set later.
-                            if (!isset($updatedObjects[$oid])) {
-                                $updatedObjects[$oid] = [
-                                    'object' => $object,
-                                    'field' => $config['position'],
-                                    'oldValue' => $pos,
-                                ];
-                            }
+                            $updatedObjects[$oid] ??= [
+                                'object' => $object,
+                                'field' => $config['position'],
+                                'oldValue' => $pos,
+                            ];
                             $updatedObjects[$oid]['newValue'] = $pos + $delta['delta'];
 
                             $meta->setFieldValue($object, $config['position'], $updatedObjects[$oid]['newValue']);
@@ -358,9 +354,7 @@ class SortableListener extends MappedEventSubscriber
         $old = $meta->getFieldValue($object, $config['position']);
         $newPosition = $meta->getFieldValue($object, $config['position']);
 
-        if (null === $newPosition) {
-            $newPosition = -1;
-        }
+        $newPosition ??= -1;
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
@@ -369,9 +363,7 @@ class SortableListener extends MappedEventSubscriber
         $hash = $this->getHash($groups, $config);
 
         // Get max position
-        if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
-        }
+        $this->maxPositions[$hash] ??= $this->getMaxPosition($ea, $meta, $config, $object);
 
         // Compute position if it is negative
         if ($newPosition < 0) {
@@ -461,9 +453,7 @@ class SortableListener extends MappedEventSubscriber
         $hash = $this->getHash($groups, $config);
 
         // Get max position
-        if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
-        }
+        $this->maxPositions[$hash] ??= $this->getMaxPosition($ea, $meta, $config, $object);
 
         if (array_key_exists($config['position'], $changeSet)) {
             if ($changed && -1 === $this->maxPositions[$hash]) {
@@ -566,9 +556,7 @@ class SortableListener extends MappedEventSubscriber
         $hash = $this->getHash($groups, $config);
 
         // Get max position
-        if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
-        }
+        $this->maxPositions[$hash] ??= $this->getMaxPosition($ea, $meta, $config, $object);
 
         // Add relocation
         $this->addRelocation($hash, $config['useObjectClass'], $groups, $position, -1, -1);
@@ -661,9 +649,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         $maxPos = $ea->getMaxPosition($config, $meta, $groups);
-        if (null === $maxPos) {
-            $maxPos = -1;
-        }
+        $maxPos ??= -1;
 
         return (int) $maxPos;
     }
