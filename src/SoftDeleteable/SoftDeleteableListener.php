@@ -10,7 +10,6 @@
 namespace Gedmo\SoftDeleteable;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\Common\EventManager;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
@@ -115,7 +114,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 if ($evm->hasListeners(self::PRE_SOFT_DELETE)) {
                     // @todo: in the next major remove check and only instantiate the event
-                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($om, $evm, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class)
+                    $preSoftDeleteEventArgs = $this->hasToDispatchNewEvent($om, self::PRE_SOFT_DELETE, PreSoftDeleteEventArgs::class)
                         ? new PreSoftDeleteEventArgs($object, $om)
                         : $ea->createLifecycleEventArgsInstance($object, $om);
 
@@ -139,7 +138,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 if ($evm->hasListeners(self::POST_SOFT_DELETE)) {
                     // @todo: in the next major remove check and only instantiate the event
-                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($om, $evm, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class)
+                    $postSoftDeleteEventArgs = $this->hasToDispatchNewEvent($om, self::POST_SOFT_DELETE, PostSoftDeleteEventArgs::class)
                         ? new PostSoftDeleteEventArgs($object, $om)
                         : $ea->createLifecycleEventArgsInstance($object, $om);
 
@@ -204,14 +203,18 @@ class SoftDeleteableListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
-    /** @param class-string $eventClass */
-    private function hasToDispatchNewEvent(ObjectManager $objectManager, EventManager $eventManager, string $eventName, string $eventClass): bool
+    /**
+     * @param class-string $eventClass
+     *
+     * @phpstan-param EntityManagerInterface|DocumentManager $objectManager
+     */
+    private function hasToDispatchNewEvent(ObjectManager $objectManager, string $eventName, string $eventClass): bool
     {
         if ($objectManager instanceof EntityManagerInterface && !class_exists(LifecycleEventArgs::class)) {
             return true;
         }
 
-        foreach ($eventManager->getListeners($eventName) as $listener) {
+        foreach ($objectManager->getEventManager()->getListeners($eventName) as $listener) {
             $reflMethod = new \ReflectionMethod($listener, $eventName);
 
             $parameters = $reflMethod->getParameters();

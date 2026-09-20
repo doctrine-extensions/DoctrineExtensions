@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- SoftDeleteable: Resolve the event manager listeners from the object manager to support `doctrine/persistence` >= 4.0 and
+  `doctrine/event-manager` >= 2.1
 
 ## [3.22.1] - 2026-08-01
 ### Changed
