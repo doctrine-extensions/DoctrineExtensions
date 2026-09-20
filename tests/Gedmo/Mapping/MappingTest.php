@@ -51,8 +51,10 @@ final class MappingTest extends TestCase
 
         if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));
-        } else {
+        } elseif (isset($_ENV['annotation_reader'])) {
             $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
+        } else {
+            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
         }
 
         $conn = [

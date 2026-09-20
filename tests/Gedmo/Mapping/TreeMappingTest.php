@@ -55,8 +55,10 @@ final class TreeMappingTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             $annotationOrAttributeDriver = new AttributeDriver([]);
-        } else {
+        } elseif (class_exists(AnnotationReader::class)) {
             $annotationOrAttributeDriver = new AnnotationDriver(new AnnotationReader());
+        } else {
+            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
         }
 
         $chain->addDriver($annotationOrAttributeDriver, 'Gedmo\Tests\Tree\Fixture');

@@ -37,6 +37,10 @@ abstract class BasePropertyAnnotationTestCase extends TestCase
      */
     public function testLoadFromDoctrineAnnotation(string $annotationProperty, string $classProperty, $expectedReturn): void
     {
+        if (!class_exists(AnnotationReader::class)) {
+            static::markTestSkipped('Test requires the doctrine/annotations package.');
+        }
+
         $annotation = $this->getMethodAnnotation($classProperty, false);
         static::assertSame($annotation->$annotationProperty, $expectedReturn);
     }

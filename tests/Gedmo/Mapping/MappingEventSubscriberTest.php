@@ -35,8 +35,10 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));
-        } else {
+        } elseif (class_exists(AnnotationReader::class)) {
             $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+        } else {
+            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
         }
 
         $this->em = $this->getBasicEntityManager($config);
@@ -89,8 +91,10 @@ final class MappingEventSubscriberTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             $config->setMetadataDriverImpl(new AttributeDriver([]));
-        } else {
+        } elseif (class_exists(AnnotationReader::class)) {
             $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+        } else {
+            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
         }
 
         $this->em = $this->getBasicEntityManager($config);

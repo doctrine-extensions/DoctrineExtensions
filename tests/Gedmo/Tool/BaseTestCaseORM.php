@@ -81,6 +81,10 @@ abstract class BaseTestCaseORM extends TestCase
             return new AttributeDriver([]);
         }
 
+        if (!isset($_ENV['annotation_reader'])) {
+            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
+        }
+
         return new AnnotationDriver($_ENV['annotation_reader']);
     }
 

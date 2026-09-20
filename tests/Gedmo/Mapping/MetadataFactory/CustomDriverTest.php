@@ -57,7 +57,7 @@ final class CustomDriverTest extends TestCase
         $evm = new EventManager();
         $this->timestampable = new TimestampableListener();
 
-        if (PHP_VERSION >= 80000) {
+        if (PHP_VERSION_ID >= 80000) {
             $this->timestampable->setAnnotationReader(new AttributeReader());
         } elseif (class_exists(AnnotationReader::class)) {
             $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);

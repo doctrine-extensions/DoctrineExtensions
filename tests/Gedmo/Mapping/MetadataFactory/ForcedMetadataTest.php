@@ -40,6 +40,10 @@ final class ForcedMetadataTest extends TestCase
 
     protected function setUp(): void
     {
+        if (PHP_VERSION_ID < 80000 && !isset($_ENV['annotation_reader'])) {
+            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
+        }
+
         $config = new Configuration();
 
         /** @phpstan-ignore-next-line function.alreadyNarrowedType */
