@@ -1059,6 +1059,18 @@ parameters:
 		-
 			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
 			identifier: class.notFound
+			count: 1
+			path: tests/Gedmo/Mapping/ExtensionMetadataFactoryReaderTest.php
+
+		-
+			message: '#^Parameter \#1 \$driverImpl of method Doctrine\\ORM\\Configuration\:\:setMetadataDriverImpl\(\) expects Doctrine\\Persistence\\Mapping\\Driver\\MappingDriver, Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Gedmo/Mapping/ExtensionMetadataFactoryReaderTest.php
+
+		-
+			message: '#^Instantiated class Doctrine\\ORM\\Mapping\\Driver\\AnnotationDriver not found\.$#'
+			identifier: class.notFound
 			count: 2
 			path: tests/Gedmo/Mapping/MappingEventSubscriberTest.php
 

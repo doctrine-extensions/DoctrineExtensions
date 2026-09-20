@@ -11,7 +11,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.no-annotations == true && ' - Without Annotations' || '' }}${{ matrix.orm != '' && format(' - ORM {0}', matrix.orm) || '' }}"
+    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.no-annotations == true && ' - Without Annotations' || '' }}${{ matrix.orm != '' && format(' - ORM {0}', matrix.orm) || '' }}${{ matrix.mongodb-odm != '' && format(' - MongoDB ODM {0}', matrix.mongodb-odm) || '' }}"
     runs-on: "ubuntu-latest"
 
     services:
@@ -37,6 +37,8 @@ jobs:
           - false
         orm:
           - ""
+        mongodb-odm:
+          - ""
         include:
           - deps: "lowest"
             php-version: "7.4"
@@ -56,6 +58,17 @@ jobs:
           - deps: "highest"
             php-version: "8.5"
             orm: "^3.0"
+          # Guarantee support for the last MongoDB ODM stack that runs on PHP < 8.1.
+          # doctrine/mongodb-odm < 2.6 and mongodb/mongodb < 1.21 are the only ODM releases
+          # installable on PHP 7.4/8.0. They carry security advisories, but the MongoDB ODM
+          # integration is a core feature of this library and these combinations worked in
+          # previous releases; dropping them in a minor version would be a BC break for users
+          # who cannot upgrade PHP immediately. This leg installs that legacy stack (with
+          # advisory blocking disabled only here) and runs the full test suite, including ODM.
+          # @todo: Remove when support for PHP < 8.1 is dropped.
+          - deps: "highest"
+            php-version: "7.4"
+            mongodb-odm: "legacy"
 
     steps:
       - name: "Checkout"
@@ -84,18 +97,60 @@ jobs:
         if: "${{ matrix.orm }}"
         run: "composer require --dev --no-update doctrine/orm:${{ matrix.orm }}"
 
+      # Pin the last MongoDB ODM stack that runs on PHP < 8.1 for the legacy ODM leg.
+      # See the "mongodb-odm: legacy" matrix member for the rationale.
+      # @todo: Remove when support for PHP < 8.1 is dropped.
+      - name: "Pin legacy MongoDB ODM stack"
+        if: "${{ matrix.mongodb-odm == 'legacy' }}"
+        run: "composer require --dev --no-update 'doctrine/mongodb-odm:>=2.3 <2.6' 'mongodb/mongodb:>=1.10 <1.21'"
+
+      # Remove the MongoDB ODM integration on PHP < 8.1, except on the legacy ODM leg.
+      # doctrine/mongodb-odm >= 2.6 and mongodb/mongodb >= 1.21 require PHP ^8.1, and every
+      # earlier (PHP 7.4/8.0-compatible) release is blocked by security advisories, so the ODM
+      # stack cannot be installed on these legs by default. ODM coverage on PHP < 8.1 is instead
+      # provided by the dedicated "mongodb-odm: legacy" leg; on the remaining PHP < 8.1 legs the
+      # ODM integration is removed and its test suites are excluded via phpunit.no-odm.xml.dist.
+      # Full modern ODM coverage is retained on the PHP >= 8.1 legs.
+      # @todo: Remove when support for PHP < 8.1 is dropped.
+      - name: "Remove MongoDB ODM for PHP < 8.1"
+        if: "${{ (matrix.php-version == '7.4' || matrix.php-version == '8.0') && matrix.mongodb-odm != 'legacy' }}"
+        run: "composer remove --dev --no-update doctrine/mongodb-odm"
+
       - name: "Install dependencies with Composer"
+        if: "${{ matrix.mongodb-odm != 'legacy' }}"
         uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "${{ matrix.deps }}"
 
+      # Install for the legacy ODM leg with security-advisory blocking disabled, so the
+      # advisory-flagged (but still supported) legacy MongoDB stack can be installed.
+      # @todo: Remove when support for PHP < 8.1 is dropped.
+      - name: "Install dependencies with Composer (legacy MongoDB ODM)"
+        if: "${{ matrix.mongodb-odm == 'legacy' }}"
+        uses: "ramsey/composer-install@v4"
+        with:
+          dependency-versions: "${{ matrix.deps }}"
+        env:
+          COMPOSER_NO_SECURITY_BLOCKING: "1"
+
+      # Run the full test suite (including the MongoDB ODM tests) on PHP >= 8.1 and on the
+      # legacy ODM leg, where the MongoDB ODM stack is installed.
+      # @todo: Simplify the condition to only exclude PHP < 8.1 when support for PHP < 8.1 is dropped.
       - name: "Run PHPUnit"
+        if: "${{ (matrix.php-version != '7.4' && matrix.php-version != '8.0') || matrix.mongodb-odm == 'legacy' }}"
         run: "vendor/bin/phpunit --coverage-clover coverage.xml"
+
+      # Run the suite without the MongoDB ODM tests on the PHP < 8.1 legs that do not install
+      # the ODM stack.
+      # @todo: Remove when support for PHP < 8.1 is dropped.
+      - name: "Run PHPUnit (without MongoDB ODM)"
+        if: "${{ (matrix.php-version == '7.4' || matrix.php-version == '8.0') && matrix.mongodb-odm != 'legacy' }}"
+        run: "vendor/bin/phpunit --configuration phpunit.no-odm.xml.dist --coverage-clover coverage.xml"
 
       - name: "Upload coverage file"
         uses: "actions/upload-artifact@v7"
         with:
-          name: "${{ github.job }}-${{ matrix.php-version }}-${{ matrix.deps }}-${{ matrix.no-annotations == true && 'no-annotations' || 'with-annotations' }}${{ matrix.orm != '' && format('-orm-{0}', matrix.orm) || '' }}-coverage"
+          name: "${{ github.job }}-${{ matrix.php-version }}-${{ matrix.deps }}-${{ matrix.no-annotations == true && 'no-annotations' || 'with-annotations' }}${{ matrix.orm != '' && format('-orm-{0}', matrix.orm) || '' }}${{ matrix.mongodb-odm != '' && format('-mongodb-odm-{0}', matrix.mongodb-odm) || '' }}-coverage"
           path: "coverage.xml"
 
   lint-doctrine-xml-schema:
