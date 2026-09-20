@@ -573,9 +573,7 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function setTranslationInDefaultLocale($oid, $field, $trans)
     {
-        if (!isset($this->translationInDefaultLocale[$oid])) {
-            $this->translationInDefaultLocale[$oid] = [];
-        }
+        $this->translationInDefaultLocale[$oid] ??= [];
         $this->translationInDefaultLocale[$oid][$field] = $trans;
     }
 

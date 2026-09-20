@@ -167,9 +167,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     private function getMockODMMongoDBConfig(string $dbName, ?MappingDriver $mappingDriver = null): Configuration
     {
-        if (null === $mappingDriver) {
-            $mappingDriver = $this->getMongoDBDriver();
-        }
+        $mappingDriver ??= $this->getMongoDBDriver();
 
         $config = new Configuration();
 

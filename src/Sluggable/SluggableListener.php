@@ -340,9 +340,7 @@ class SluggableListener extends MappedEventSubscriber
      */
     private function getHandler(string $class): SlugHandlerInterface
     {
-        if (!isset($this->handlers[$class])) {
-            $this->handlers[$class] = new $class($this);
-        }
+        $this->handlers[$class] ??= new $class($this);
 
         return $this->handlers[$class];
     }
