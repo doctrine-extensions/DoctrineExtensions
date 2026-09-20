@@ -38,6 +38,10 @@ final class CustomDriverTest extends TestCase
 
     protected function setUp(): void
     {
+        if (PHP_VERSION_ID < 80000 && !class_exists(AnnotationReader::class)) {
+            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
+        }
+
         $config = new Configuration();
         $config->setMetadataDriverImpl(new CustomDriver());
 

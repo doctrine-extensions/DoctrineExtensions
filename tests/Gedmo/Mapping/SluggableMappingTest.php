@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Sluggable\Handler\RelativeSlugHandler;
@@ -51,7 +51,7 @@ final class SluggableMappingTest extends ORMMappingTestCase
 
         if (PHP_VERSION_ID >= 80000) {
             yield 'Model with attributes' => [AnnotatedSluggable::class];
-        } elseif (class_exists(AnnotationDriver::class)) {
+        } elseif (class_exists(AnnotationReader::class)) {
             yield 'Model with annotations' => [AnnotatedSluggable::class];
         }
     }
