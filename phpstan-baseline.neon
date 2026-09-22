@@ -925,6 +925,18 @@ parameters:
 			path: src/Tree/Strategy/ORM/Closure.php
 
 		-
+			message: '#^Access to undefined constant Doctrine\\Common\\Collections\\Criteria\:\:ASC\.$#'
+			identifier: classConstant.notFound
+			count: 1
+			path: src/Tree/Strategy/ORM/Nested.php
+
+		-
+			message: '#^Call to function enum_exists\(\) with ''Doctrine\\\\Common\\\\Collections\\\\Criteria'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Tree/Strategy/ORM/Nested.php
+
+		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
 			identifier: method.notFound
 			count: 1
