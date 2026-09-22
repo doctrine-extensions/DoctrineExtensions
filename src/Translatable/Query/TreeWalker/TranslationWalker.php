@@ -82,6 +82,13 @@ class TranslationWalker extends SqlOutputWalker
     public const HYDRATE_SIMPLE_OBJECT_TRANSLATION = '__gedmo.translatable.simple_object.hydrator';
 
     /**
+     * Name for "only fields" hint
+     *
+     * @internal
+     */
+    const HINT_ONLY_FIELDS = '__gedmo.translatable.only_fields';
+
+    /**
      * Stores all component references from select clause
      *
      * @var array<string, array<string, mixed>>
@@ -287,6 +294,7 @@ class TranslationWalker extends SqlOutputWalker
         $ea->setEntityManager($em);
         $quoteStrategy = $em->getConfiguration()->getQuoteStrategy();
         $joinStrategy = $q->getHint(TranslatableListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
+        $onlyFields = $q->getHint(self::HINT_ONLY_FIELDS);
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
             /** @var ClassMetadata<object> $meta */
@@ -296,6 +304,13 @@ class TranslationWalker extends SqlOutputWalker
             $transMeta = $em->getClassMetadata($transClass);
             $transTable = $quoteStrategy->getTableName($transMeta, $this->platform);
             foreach ($config['fields'] as $field) {
+                if ($onlyFields) {
+                    $checkField = $dqlAlias.'.'.$field;
+                    if (!\in_array($checkField, $onlyFields, true)) {
+                        continue;
+                    }
+                }
+
                 $compTblAlias = $this->walkIdentificationVariable($dqlAlias, $field);
                 $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
                 $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
