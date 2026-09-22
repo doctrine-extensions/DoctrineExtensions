@@ -22,12 +22,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @ODM\Field(type="string")

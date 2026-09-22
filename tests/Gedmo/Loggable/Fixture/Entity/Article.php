@@ -26,16 +26,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Article implements Loggable
 {
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
-    #[ORM\Column(name: 'id', type: Types::INTEGER)]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
     /**
      * @Gedmo\Versioned

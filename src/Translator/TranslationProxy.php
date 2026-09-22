@@ -19,23 +19,10 @@ use Doctrine\Common\Collections\Collection;
 class TranslationProxy
 {
     /**
-     * @var string
-     */
-    protected $locale;
-    /**
-     * @var object
-     */
-    protected $translatable;
-    /**
      * @var string[]
      */
     protected $properties = [];
-    /**
-     * @var string
-     *
-     * @phpstan-var class-string<TranslationInterface>
-     */
-    protected $class;
+
     /**
      * @var Collection<int, TranslationInterface>
      */
@@ -54,16 +41,18 @@ class TranslationProxy
      *
      * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
      */
-    public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
-    {
-        $this->translatable = $translatable;
-        $this->locale = $locale;
+    public function __construct(
+        protected $translatable,
+        protected $locale,
+        array $properties,
+        protected $class,
+        Collection $coll
+    ) {
         $this->properties = $properties;
-        $this->class = $class;
         $this->coll = $coll;
 
-        if (!is_subclass_of($class, TranslationInterface::class)) {
-            throw new \InvalidArgumentException(sprintf('Translation class should implement %s, "%s" given', TranslationInterface::class, $class));
+        if (!is_subclass_of($this->class, TranslationInterface::class)) {
+            throw new \InvalidArgumentException(sprintf('Translation class should implement %s, "%s" given', TranslationInterface::class, $this->class));
         }
     }
 

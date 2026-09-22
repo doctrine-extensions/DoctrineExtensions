@@ -407,7 +407,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             && isset($options['childSort']['field'], $options['childSort']['dir'])) {
             $q->addOrderBy(
                 'node.'.$options['childSort']['field'],
-                'asc' === strtolower($options['childSort']['dir']) ? 'asc' : 'desc'
+                'asc' === strtolower((string) $options['childSort']['dir']) ? 'asc' : 'desc'
             );
         }
 

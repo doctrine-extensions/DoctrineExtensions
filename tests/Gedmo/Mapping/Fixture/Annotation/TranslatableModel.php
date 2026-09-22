@@ -16,23 +16,17 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class TranslatableModel
 {
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      */
-    private $title;
+    private ?string $title = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable(fallback=true)
      */
-    private $titleFallbackTrue;
+    private ?string $titleFallbackTrue = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable(fallback=false)
      */
-    private $titleFallbackFalse;
+    private ?string $titleFallbackFalse = null;
 }

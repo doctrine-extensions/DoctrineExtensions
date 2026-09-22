@@ -22,6 +22,4 @@ use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
  * @Target("PROPERTY")
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class SortableGroup implements GedmoAnnotation
-{
-}
+final class SortableGroup implements GedmoAnnotation {}

@@ -50,7 +50,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $result = $this->repo->getRootNodes('title');
 
         static::assertInstanceOf(Iterator::class, $result);
-        static::assertSame(3, \iterator_count($result));
+        static::assertCount(3, $result);
         $result->rewind();
 
         static::assertSame('Drinks', $result->current()->getTitle());
@@ -68,7 +68,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
 
         static::assertInstanceOf(Iterator::class, $result);
-        static::assertSame(5, \iterator_count($result));
+        static::assertCount(5, $result);
         $result->rewind();
 
         static::assertSame('Carrots', $result->current()->getTitle());
@@ -85,7 +85,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $result = $this->repo->getChildren($root, false, 'title', 'asc', false);
 
         static::assertInstanceOf(Iterator::class, $result);
-        static::assertSame(4, \iterator_count($result));
+        static::assertCount(4, $result);
         $result->rewind();
         static::assertSame('Carrots', $result->current()->getTitle());
         $result->next();
@@ -99,7 +99,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
 
         static::assertInstanceOf(Iterator::class, $result);
-        static::assertSame(3, \iterator_count($result));
+        static::assertCount(3, $result);
         $result->rewind();
         static::assertSame('Food', $result->current()->getTitle());
         $result->next();
@@ -111,7 +111,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $result = $this->repo->getChildren($root, true, 'title', 'asc', false);
         static::assertInstanceOf(Iterator::class, $result);
 
-        static::assertSame(2, \iterator_count($result));
+        static::assertCount(2, $result);
         $result->rewind();
         static::assertSame('Fruits', $result->current()->getTitle());
         $result->next();
@@ -121,7 +121,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $result = $this->repo->getChildren(null, false, 'title');
         static::assertInstanceOf(Iterator::class, $result);
 
-        static::assertSame(9, \iterator_count($result));
+        static::assertCount(9, $result);
         $result->rewind();
         static::assertSame('Best Whisky', $result->current()->getTitle());
         $result->next();
@@ -145,7 +145,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $result = $this->repo->getChildren(null, true, 'title');
         static::assertInstanceOf(Iterator::class, $result);
 
-        static::assertSame(3, \iterator_count($result));
+        static::assertCount(3, $result);
         $result->rewind();
         static::assertSame('Drinks', $result->current()->getTitle());
         $result->next();
@@ -158,7 +158,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     {
         $tree = $this->repo->getTree();
 
-        static::assertSame(9, \iterator_count($tree));
+        static::assertCount(9, $tree);
         $tree->rewind();
         static::assertSame('Drinks', $tree->current()->getTitle());
         $tree->next();
@@ -183,7 +183,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertInstanceOf(Iterator::class, $roots);
         $tree = $this->repo->getTree($roots->current());
 
-        static::assertSame(3, \iterator_count($tree));
+        static::assertCount(3, $tree);
         $tree->rewind();
         static::assertSame('Drinks', $tree->current()->getTitle());
         $tree->next();

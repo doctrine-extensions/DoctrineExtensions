@@ -13,13 +13,7 @@ namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class SoftDeleteable
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $deletedAt;
+    private ?\DateTime $deletedAt = null;
 }

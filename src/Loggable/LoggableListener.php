@@ -170,7 +170,7 @@ class LoggableListener extends MappedEventSubscriber
             $wrapped = AbstractWrapper::wrap($object, $om);
 
             $logEntry = $this->pendingLogEntryInserts[$oid];
-            $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
+            $logEntryMeta = $om->getClassMetadata($logEntry::class);
 
             $id = $wrapped->getIdentifier(false, true);
             $logEntryMeta->setFieldValue($logEntry, 'objectId', $id);
@@ -185,7 +185,7 @@ class LoggableListener extends MappedEventSubscriber
             $identifiers = $wrapped->getIdentifier(false);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
-                $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
+                $logEntryMeta = $om->getClassMetadata($logEntry::class);
                 $oldData = $data = $logEntry->getData();
                 $data[$props['field']] = $identifiers;
 
@@ -272,7 +272,7 @@ class LoggableListener extends MappedEventSubscriber
                 return $actor->__toString();
             }
 
-            throw new UnexpectedValueException(\sprintf('The loggable extension requires the actor provider to return a string or an object implementing the "getUserIdentifier()", "getUsername()", or "__toString()" methods. "%s" cannot be used as an actor.', get_class($actor)));
+            throw new UnexpectedValueException(\sprintf('The loggable extension requires the actor provider to return a string or an object implementing the "getUserIdentifier()", "getUsername()", or "__toString()" methods. "%s" cannot be used as an actor.', $actor::class));
         }
 
         return $this->username;
@@ -290,9 +290,7 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @return void
      */
-    protected function prePersistLogEntry($logEntry, $object)
-    {
-    }
+    protected function prePersistLogEntry($logEntry, $object) {}
 
     protected function getNamespace()
     {

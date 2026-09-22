@@ -30,8 +30,6 @@ use Gedmo\Tree\Entity\Repository\ClosureTreeRepository;
 class Category
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -39,7 +37,7 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="title", type="string", length=64)
@@ -70,7 +68,7 @@ class Category
     /**
      * @var Collection<int, CategoryClosure>
      */
-    private $closures;
+    private Collection $closures;
 
     public function __construct()
     {

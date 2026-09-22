@@ -11,18 +11,9 @@ namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class LoggableComposite
 {
-    /**
-     * @var int
-     */
-    private $one;
+    private ?int $one = null;
 
-    /**
-     * @var int
-     */
-    private $two;
+    private ?int $two = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 }

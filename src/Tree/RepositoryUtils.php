@@ -27,14 +27,8 @@ class RepositoryUtils implements RepositoryUtilsInterface
     /** @var ClassMetadata<T> */
     protected $meta;
 
-    /** @var TreeListener */
-    protected $listener;
-
     /** @var ObjectManager&(DocumentManager|EntityManagerInterface) */
     protected $om;
-
-    /** @var RepositoryInterface<T> */
-    protected $repo;
 
     /**
      * This index is used to hold the children of a node
@@ -50,12 +44,10 @@ class RepositoryUtils implements RepositoryUtilsInterface
      * @param TreeListener                                           $listener
      * @param RepositoryInterface<T>                                 $repo
      */
-    public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
+    public function __construct(ObjectManager $om, ClassMetadata $meta, protected $listener, protected $repo)
     {
         $this->om = $om;
         $this->meta = $meta;
-        $this->listener = $listener;
-        $this->repo = $repo;
     }
 
     /**

@@ -23,7 +23,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as AttributeDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -47,10 +46,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  */
 abstract class BaseTestCaseOM extends TestCase
 {
-    /**
-     * @var EventManager
-     */
-    protected $evm;
+    protected ?EventManager $evm = null;
 
     /**
      * Initialized document managers
@@ -59,9 +55,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     private array $dms = [];
 
-    protected function setUp(): void
-    {
-    }
+    protected function setUp(): void {}
 
     protected function tearDown(): void
     {
@@ -77,7 +71,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     protected function getMongoDBDriver(array $paths = []): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (class_exists(AttributeDriver::class)) {
             return new AttributeDriver($paths);
         }
 
@@ -93,15 +87,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     protected function getORMDriver(array $paths = []): MappingDriver
     {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriverORM($paths);
-        }
-
-        if (!isset($_ENV['annotation_reader'])) {
-            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
-        }
-
-        return new AnnotationDriverORM($_ENV['annotation_reader'], $paths);
+        return new AttributeDriverORM($paths);
     }
 
     /**
@@ -115,7 +101,7 @@ abstract class BaseTestCaseOM extends TestCase
         }
 
         $client = new Client($_ENV['MONGODB_SERVER'], [], ['typeMap' => DocumentManager::CLIENT_TYPEMAP]);
-        $config = $this->getMockODMMongoDBConfig($dbName, $mappingDriver);
+        $config = $this->getMockODMMongoDBConfig($mappingDriver);
 
         return DocumentManager::create($client, $config, $this->getEventManager());
     }
@@ -158,7 +144,7 @@ abstract class BaseTestCaseOM extends TestCase
      */
     private function getEventManager(): EventManager
     {
-        if (null === $this->evm) {
+        if (!$this->evm instanceof EventManager) {
             $this->evm = new EventManager();
             $this->evm->addEventSubscriber(new TreeListener());
             $this->evm->addEventSubscriber(new SluggableListener());
@@ -173,10 +159,8 @@ abstract class BaseTestCaseOM extends TestCase
     /**
      * Get annotation mapping configuration
      */
-    private function getMockODMMongoDBConfig(string $dbName, ?MappingDriver $mappingDriver = null): Configuration
+    private function getMockODMMongoDBConfig(?MappingDriver $mappingDriver = null): Configuration
     {
-        $mappingDriver ??= $this->getMongoDBDriver();
-
         $config = new Configuration();
 
         /** @phpstan-ignore-next-line function.alreadyNarrowedType */
@@ -192,7 +176,7 @@ abstract class BaseTestCaseOM extends TestCase
         $config->setDefaultDB('gedmo_extensions_test');
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
-        $config->setMetadataDriverImpl($mappingDriver);
+        $config->setMetadataDriverImpl($mappingDriver ?? $this->getMongoDBDriver());
         $config->setMetadataCache(new ArrayAdapter());
 
         return $config;

@@ -76,7 +76,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
-        $this->sluggable->setTransliterator([$this, 'transliterate']);
+        $this->sluggable->setTransliterator($this->transliterate(...));
     }
 
     /**
@@ -89,9 +89,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
         }
     }
 
-    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
-    {
-    }
+    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug) {}
 
     /**
      * Transliterates the slug and prefixes the slug

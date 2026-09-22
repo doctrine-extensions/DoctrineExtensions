@@ -18,6 +18,4 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
  *
  * @author David Buchmann <mail@davidbu.ch>
  */
-final class ORM extends BaseAdapterORM implements BlameableAdapter
-{
-}
+final class ORM extends BaseAdapterORM implements BlameableAdapter {}

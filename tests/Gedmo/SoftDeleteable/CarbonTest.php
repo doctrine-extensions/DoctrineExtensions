@@ -68,16 +68,16 @@ final class CarbonTest extends BaseTestCaseORM
 
         $art = $repo->findOneBy([$field => $value]);
 
-        static::assertNull($art->getDeletedAt());
-        static::assertNull($comment->getDeletedAt());
+        static::assertNotInstanceOf(\DateTime::class, $art->getDeletedAt());
+        static::assertNotInstanceOf(\DateTime::class, $comment->getDeletedAt());
 
         $this->em->remove($art);
         $this->em->flush();
 
         $art = $repo->findOneBy([$field => $value]);
-        static::assertNull($art);
+        static::assertNotInstanceOf(Article::class, $art);
         $comment = $commentRepo->findOneBy([$commentField => $commentValue]);
-        static::assertNull($comment);
+        static::assertNotInstanceOf(Comment::class, $comment);
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);

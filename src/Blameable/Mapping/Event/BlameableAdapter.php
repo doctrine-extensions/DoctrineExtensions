@@ -16,6 +16,4 @@ use Gedmo\Mapping\Event\AdapterInterface;
  *
  * @author David Buchmann <mail@davidbu.ch>
  */
-interface BlameableAdapter extends AdapterInterface
-{
-}
+interface BlameableAdapter extends AdapterInterface {}

@@ -49,11 +49,11 @@ class ArticleCarbon implements Timestampable
     private ?string $body = null;
 
     /**
-     * @var Collection<int, Comment>
+     * @var Collection<int, CommentCarbon>
      *
-     * @ORM\OneToMany(targetEntity="Gedmo\Tests\Timestampable\Fixture\Comment", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Gedmo\Tests\Timestampable\Fixture\CommentCarbon", mappedBy="article")
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
+    #[ORM\OneToMany(targetEntity: CommentCarbon::class, mappedBy: 'article')]
     private Collection $comments;
 
     /**
@@ -63,55 +63,47 @@ class ArticleCarbon implements Timestampable
     private ?Author $author = null;
 
     /**
-     * @var \DateTime|Carbon|null
-     *
      * @Gedmo\Timestampable(on="create")
      *
      * @ORM\Column(name="created", type="date")
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(name: 'created', type: Types::DATE_MUTABLE)]
-    private $created;
+    private ?Carbon $created = null;
 
     /**
-     * @var \DateTime|CarbonImmutable|null
-     *
-     * @ORM\Column(name="updated", type="datetime")
+     * @ORM\Column(name="updated", type="datetime_immutable")
      *
      * @Gedmo\Timestampable
      */
-    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable]
-    private $updated;
+    private ?CarbonImmutable $updated = null;
 
     /**
-     * @var \DateTime|CarbonImmutable|null
-     *
-     * @ORM\Column(name="published", type="datetime", nullable=true)
+     * @ORM\Column(name="published", type="datetime_immutable", nullable=true)
      *
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
-    #[ORM\Column(name: 'published', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'published', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'type.title', value: 'Published')]
-    private $published;
+    private ?CarbonImmutable $published = null;
 
     /**
-     * @var \DateTime|CarbonImmutable|null
-     *
-     * @ORM\Column(name="content_changed", type="datetime", nullable=true)
+     * @ORM\Column(name="content_changed", type="datetime_immutable", nullable=true)
      *
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
-    #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'content_changed', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
-    private $contentChanged;
+    private ?CarbonImmutable $contentChanged = null;
 
     /**
-     * @ORM\Column(name="author_changed", type="datetime", nullable=true)
+     * @ORM\Column(name="author_changed", type="datetime_immutable", nullable=true)
      *
      * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
      */
-    #[ORM\Column(name: 'author_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'author_changed', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: ['author.name', 'author.email'])]
     private ?CarbonImmutable $authorChanged = null;
 
@@ -136,7 +128,7 @@ class ArticleCarbon implements Timestampable
      */
     #[ORM\Column(name: 'reached_relevant_level', type: Types::DATE_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'level', value: '10')]
-    private ?\DateTimeInterface $reachedRelevantLevel = null;
+    private ?Carbon $reachedRelevantLevel = null;
 
     public function __construct()
     {
@@ -173,14 +165,14 @@ class ArticleCarbon implements Timestampable
         return $this->body;
     }
 
-    public function addComment(Comment $comment): void
+    public function addComment(CommentCarbon $comment): void
     {
         $comment->setArticle($this);
         $this->comments[] = $comment;
     }
 
     /**
-     * @return Collection<int, Comment>
+     * @return Collection<int, CommentCarbon>
      */
     public function getComments(): Collection
     {
@@ -202,8 +194,7 @@ class ArticleCarbon implements Timestampable
         return $this->created;
     }
 
-    /** @param CarbonImmutable|\DateTime $created */
-    public function setCreated($created): void
+    public function setCreated(Carbon $created): void
     {
         $this->created = $created;
     }
@@ -213,8 +204,7 @@ class ArticleCarbon implements Timestampable
         return $this->published;
     }
 
-    /** @param CarbonImmutable|\DateTime $published */
-    public function setPublished($published): void
+    public function setPublished(CarbonImmutable $published): void
     {
         $this->published = $published;
     }
@@ -224,14 +214,12 @@ class ArticleCarbon implements Timestampable
         return $this->updated;
     }
 
-    /** @param CarbonImmutable|\DateTime $updated */
-    public function setUpdated($updated): void
+    public function setUpdated(CarbonImmutable $updated): void
     {
         $this->updated = $updated;
     }
 
-    /** @param CarbonImmutable|\DateTime $contentChanged */
-    public function setContentChanged($contentChanged): void
+    public function setContentChanged(CarbonImmutable $contentChanged): void
     {
         $this->contentChanged = $contentChanged;
     }
@@ -256,7 +244,7 @@ class ArticleCarbon implements Timestampable
         return $this->level;
     }
 
-    public function getReachedRelevantLevel(): ?\DateTimeInterface
+    public function getReachedRelevantLevel(): ?Carbon
     {
         return $this->reachedRelevantLevel;
     }

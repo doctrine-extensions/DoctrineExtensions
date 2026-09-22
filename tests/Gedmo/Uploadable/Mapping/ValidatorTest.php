@@ -29,9 +29,9 @@ use PHPUnit\Framework\TestCase;
 final class ValidatorTest extends TestCase
 {
     /**
-     * @var ClassMetadata<object>&MockObject
+     * @var MockObject&ClassMetadata<object>
      */
-    protected $meta;
+    protected MockObject&ClassMetadata $meta;
 
     protected function setUp(): void
     {
@@ -52,7 +52,7 @@ final class ValidatorTest extends TestCase
         $this->expectException(InvalidMappingException::class);
         $this->meta->expects(static::once())
             ->method('getFieldMapping')
-            ->willReturnCallback(static function (string $fieldName) {
+            ->willReturnCallback(static function (string $fieldName): FieldMapping|array {
                 if (class_exists(FieldMapping::class)) {
                     return FieldMapping::fromMappingArray(['type' => 'someType', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
                 }
@@ -129,7 +129,7 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturnCallback(static function (string $fieldName) {
+            ->willReturnCallback(static function (string $fieldName): FieldMapping|array {
                 if (class_exists(FieldMapping::class)) {
                     return FieldMapping::fromMappingArray(['type' => 'someType', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
                 }
@@ -164,7 +164,7 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturnCallback(static function (string $fieldName) {
+            ->willReturnCallback(static function (string $fieldName): FieldMapping|array {
                 if (class_exists(FieldMapping::class)) {
                     return FieldMapping::fromMappingArray(['type' => 'someType', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
                 }
@@ -198,7 +198,7 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturnCallback(static function (string $fieldName) {
+            ->willReturnCallback(static function (string $fieldName): FieldMapping|array {
                 if (class_exists(FieldMapping::class)) {
                     return FieldMapping::fromMappingArray(['type' => 'string', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
                 }
@@ -232,7 +232,7 @@ final class ValidatorTest extends TestCase
             ->willReturn(new \ReflectionClass(new FakeEntity()));
         $this->meta
             ->method('getFieldMapping')
-            ->willReturnCallback(static function (string $fieldName) {
+            ->willReturnCallback(static function (string $fieldName): FieldMapping|array {
                 if (class_exists(FieldMapping::class)) {
                     return FieldMapping::fromMappingArray(['type' => 'string', 'fieldName' => $fieldName, 'columnName' => $fieldName]);
                 }
@@ -310,6 +310,4 @@ final class ValidatorTest extends TestCase
     }
 }
 
-class FakeEntity
-{
-}
+class FakeEntity {}

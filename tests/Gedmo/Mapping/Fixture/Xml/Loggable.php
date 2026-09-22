@@ -13,18 +13,9 @@ namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class Loggable
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var Status
-     */
-    private $status;
+    private ?Status $status = null;
 }

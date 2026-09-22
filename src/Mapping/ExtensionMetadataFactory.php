@@ -68,15 +68,17 @@ class ExtensionMetadataFactory
      */
     protected $annotationReader;
 
-    private ?CacheItemPoolInterface $cacheItemPool = null;
-
     /**
      * @param Reader|AttributeReader|object|null $annotationReader
      *
      * @note Providing any object as the third argument is deprecated, as of 4.0 an {@see AttributeReader} will be required
      */
-    public function __construct(ObjectManager $objectManager, string $extensionNamespace, ?object $annotationReader = null, ?CacheItemPoolInterface $cacheItemPool = null)
-    {
+    public function __construct(
+        ObjectManager $objectManager,
+        string $extensionNamespace,
+        ?object $annotationReader = null,
+        private readonly ?CacheItemPoolInterface $cacheItemPool = null
+    ) {
         if (null !== $annotationReader) {
             if ($annotationReader instanceof Reader) {
                 Deprecation::trigger(
@@ -103,7 +105,6 @@ class ExtensionMetadataFactory
         $this->extensionNamespace = $extensionNamespace;
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
         $this->driver = $this->getDriver($omDriver);
-        $this->cacheItemPool = $cacheItemPool;
     }
 
     /**
@@ -201,7 +202,7 @@ class ExtensionMetadataFactory
         }
 
         $driver = null;
-        $className = get_class($omDriver);
+        $className = $omDriver::class;
         $driverName = substr($className, strrpos($className, '\\') + 1);
         if ($omDriver instanceof MappingDriverChain || 'DriverChain' === $driverName) {
             $driver = new Chain();
@@ -214,7 +215,7 @@ class ExtensionMetadataFactory
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
             $isSimplified = false;
-            if ('Simplified' === substr($driverName, 0, 10)) {
+            if (str_starts_with($driverName, 'Simplified')) {
                 // support for simplified file drivers
                 $driverName = substr($driverName, 10);
                 $isSimplified = true;
@@ -227,7 +228,7 @@ class ExtensionMetadataFactory
                 // try to fall back to either an annotation or attribute driver depending on the available dependencies
                 if (interface_exists(Reader::class)) {
                     $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Annotation';
-                } elseif (\PHP_VERSION_ID >= 80000) {
+                } else {
                     $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Attribute';
                 }
 

@@ -66,14 +66,8 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Changed
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getChtitle()->format('Y-m-d H:i:s')
-        );
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getClosed()->format('Y-m-d H:i:s')
-        );
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getChtitle()->format('Y-m-d H:i:s'));
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getClosed()->format('Y-m-d H:i:s'));
 
         $anotherDate = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00');
         $this->listener->eventAdapter->setDateValue($anotherDate);
@@ -85,14 +79,8 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Not Changed
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getChtitle()->format('Y-m-d H:i:s')
-        );
-        static::assertSame(
-            $currentDate->format('Y-m-d H:i:s'),
-            $test->getClosed()->format('Y-m-d H:i:s')
-        );
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getChtitle()->format('Y-m-d H:i:s'));
+        static::assertSame($currentDate->format('Y-m-d H:i:s'), $test->getClosed()->format('Y-m-d H:i:s'));
 
         $test = $this->em->getRepository(TitledArticle::class)->findOneBy(['title' => 'New Title']);
         $test->setState('Published');
@@ -100,10 +88,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Changed
-        static::assertSame(
-            $anotherDate->format('Y-m-d H:i:s'),
-            $test->getClosed()->format('Y-m-d H:i:s')
-        );
+        static::assertSame($anotherDate->format('Y-m-d H:i:s'), $test->getClosed()->format('Y-m-d H:i:s'));
     }
 
     protected function getUsedEntityFixtures(): array
@@ -137,13 +122,12 @@ final class EventAdapterORMStub extends BaseAdapterORM implements TimestampableA
  */
 final class TimestampableListenerStub extends AbstractTrackingListener
 {
-    /**
-     * @var EventAdapterORMStub
-     */
-    public $eventAdapter;
+    public ?EventAdapterORMStub $eventAdapter = null;
 
     protected function getEventAdapter(EventArgs $args)
     {
+        \assert($this->eventAdapter instanceof EventAdapterORMStub);
+
         $this->eventAdapter->setEventArgs($args);
 
         return $this->eventAdapter;
@@ -153,12 +137,12 @@ final class TimestampableListenerStub extends AbstractTrackingListener
      * @param ClassMetadata<object> $meta
      * @param EventAdapterORMStub   $eventAdapter
      */
-    protected function getFieldValue($meta, $field, $eventAdapter)
+    protected function getFieldValue($meta, $field, $eventAdapter): ?\DateTime
     {
         return $eventAdapter->getDateValue($meta, $field);
     }
 
-    protected function getNamespace()
+    protected function getNamespace(): string
     {
         return 'Gedmo\Timestampable';
     }

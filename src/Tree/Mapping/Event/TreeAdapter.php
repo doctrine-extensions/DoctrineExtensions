@@ -16,6 +16,4 @@ use Gedmo\Mapping\Event\AdapterInterface;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-interface TreeAdapter extends AdapterInterface
-{
-}
+interface TreeAdapter extends AdapterInterface {}

@@ -19,7 +19,6 @@ use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 use Gedmo\Sluggable\Handler\TreeSlugHandler;
-use Gedmo\Tests\Translatable\Fixture\CategoryTranslation;
 
 /**
  * @ORM\Entity
@@ -37,8 +36,6 @@ use Gedmo\Tests\Translatable\Fixture\CategoryTranslation;
 class Category extends BaseCategory
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -46,7 +43,7 @@ class Category extends BaseCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -89,7 +86,7 @@ class Category extends BaseCategory
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Mapping\Fixture\Category", mappedBy="parent")
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    private $children;
+    private Collection $children;
 
     /**
      * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Mapping\Fixture\Category", inversedBy="children")
@@ -98,27 +95,22 @@ class Category extends BaseCategory
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[Gedmo\TreeParent]
-    private ?Category $parent = null;
+    private ?self $parent = null;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="date")
      *
      * @Gedmo\Timestampable(on="change", field="title", value="Test")
      */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Gedmo\Timestampable(on: 'change', field: 'title', value: 'Test')]
-    private $changed;
+    private ?\DateTime $changed = null;
 
     public function __construct()
     {
         $this->children = new ArrayCollection();
     }
 
-    /**
-     * @return int $id
-     */
     public function getId(): int
     {
         return $this->id;
@@ -139,9 +131,6 @@ class Category extends BaseCategory
         $this->slug = $slug;
     }
 
-    /**
-     * @return string $slug
-     */
     public function getSlug(): string
     {
         return $this->slug;
@@ -153,9 +142,9 @@ class Category extends BaseCategory
     }
 
     /**
-     * @return Collection<int, self> $children
+     * @return Collection<int, self>
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -165,9 +154,6 @@ class Category extends BaseCategory
         $this->parent = $parent;
     }
 
-    /**
-     * @return self $parent
-     */
     public function getParent(): self
     {
         return $this->parent;

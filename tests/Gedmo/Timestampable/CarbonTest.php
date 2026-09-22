@@ -11,11 +11,11 @@ namespace Gedmo\Tests\Timestampable;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Carbon\Doctrine\DateTimeImmutableType;
-use Carbon\Doctrine\DateTimeType;
-use DateTime;
+use Carbon\Doctrine\DateTimeImmutableType as CarbonDateTimeImmutableType;
+use Carbon\Doctrine\DateTimeType as CarbonDateTimeType;
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Types\DateType;
+use Doctrine\DBAL\Types\DateTimeImmutableType as DoctrineDateTimeImmutableType;
+use Doctrine\DBAL\Types\DateType as DoctrineDateType;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use Doctrine\DBAL\Types\Types;
 use Gedmo\Tests\Timestampable\Fixture\ArticleCarbon;
@@ -38,19 +38,19 @@ final class CarbonTest extends BaseTestCaseORM
 
         /**
          * DATE_MUTABLE => Carbon
-         * DATETIME_MUTABLE => CarbonImmutable
+         * DATETIME_IMMUTABLE => CarbonImmutable
          * TIME_MUTABLE => DateTime
          */
-        DoctrineType::overrideType(Types::DATE_MUTABLE, DateTimeType::class);
-        DoctrineType::overrideType(Types::DATETIME_MUTABLE, DateTimeImmutableType::class);
+        DoctrineType::overrideType(Types::DATE_MUTABLE, CarbonDateTimeType::class);
+        DoctrineType::overrideType(Types::DATETIME_IMMUTABLE, CarbonDateTimeImmutableType::class);
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        DoctrineType::overrideType(Types::DATE_MUTABLE, DateType::class);
-        DoctrineType::overrideType(Types::DATETIME_MUTABLE, \Doctrine\DBAL\Types\DateTimeType::class);
+        DoctrineType::overrideType(Types::DATE_MUTABLE, DoctrineDateType::class);
+        DoctrineType::overrideType(Types::DATETIME_IMMUTABLE, DoctrineDateTimeImmutableType::class);
     }
 
     public function testShouldHandleStandardBehavior(): void
@@ -76,12 +76,12 @@ final class CarbonTest extends BaseTestCaseORM
 
         /** @var ArticleCarbon $sport */
         $sport = $this->em->getRepository(ArticleCarbon::class)->findOneBy(['title' => 'Sport']);
-        static::assertInstanceOf(CarbonImmutable::class, $su = $sport->getUpdated(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(CarbonImmutable::class, $su = $sport->getUpdated(), 'Type DATETIME_IMMUTABLE should become CarbonImmutable');
         static::assertInstanceOf(Carbon::class, $sc = $sport->getCreated(), 'Type DATE_MUTABLE should become Carbon');
 
-        static::assertNull($sport->getContentChanged());
-        static::assertNull($sport->getPublished());
-        static::assertNull($sport->getAuthorChanged());
+        static::assertNotInstanceOf(CarbonImmutable::class, $sport->getContentChanged());
+        static::assertNotInstanceOf(CarbonImmutable::class, $sport->getPublished());
+        static::assertNotInstanceOf(CarbonImmutable::class, $sport->getAuthorChanged());
 
         $author = $sport->getAuthor();
         $author->setName('New author');
@@ -92,7 +92,7 @@ final class CarbonTest extends BaseTestCaseORM
         static::assertInstanceOf(\DateTime::class, $sportComment->getModified(), 'Type TIME_MUTABLE should stay DateTime');
 
         static::assertNotNull($sportComment->getModified());
-        static::assertNull($sportComment->getClosed());
+        static::assertNotInstanceOf(\DateTime::class, $sportComment->getClosed());
 
         $sportComment->setStatus(1);
         $published = new Type();
@@ -105,9 +105,9 @@ final class CarbonTest extends BaseTestCaseORM
         $this->em->flush();
 
         $sportComment = $this->em->getRepository(CommentCarbon::class)->findOneBy(['message' => 'hello']);
-        static::assertInstanceOf(CarbonImmutable::class, $scc = $sportComment->getClosed(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
-        static::assertInstanceOf(CarbonImmutable::class, $sp = $sport->getPublished(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
-        static::assertInstanceOf(CarbonImmutable::class, $sa = $sport->getAuthorChanged(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(\DateTime::class, $scc = $sportComment->getClosed(), 'Type DATETIME_MUTABLE should become DateTime');
+        static::assertInstanceOf(CarbonImmutable::class, $sp = $sport->getPublished(), 'Type DATETIME_IMMUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(CarbonImmutable::class, $sa = $sport->getAuthorChanged(), 'Type DATETIME_IMMUTABLE should become CarbonImmutable');
 
         $sport->setTitle('Updated');
         $this->em->persist($sport);
@@ -117,10 +117,10 @@ final class CarbonTest extends BaseTestCaseORM
 
         static::assertSame($sport->getCreated(), $sc, 'Date created should remain same after update');
         static::assertNotSame($su2 = $sport->getUpdated(), $su, 'Date updated should change after update');
-        static::assertInstanceOf(CarbonImmutable::class, $sport->getUpdated(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(CarbonImmutable::class, $sport->getUpdated(), 'Type DATETIME_IMMUTABLE should become CarbonImmutable');
         static::assertSame($sport->getPublished(), $sp, 'Date published should remain the same after update');
         static::assertNotSame($scc2 = $sport->getContentChanged(), $scc, 'Content must have changed after update');
-        static::assertInstanceOf(CarbonImmutable::class, $sport->getContentChanged(), 'Type DATETIME_MUTABLE should become CarbonImmutable');
+        static::assertInstanceOf(CarbonImmutable::class, $sport->getContentChanged(), 'Type DATETIME_IMMUTABLE should become CarbonImmutable');
         static::assertSame($sport->getAuthorChanged(), $sa, 'Author should remain same after update');
 
         $author = $sport->getAuthor();

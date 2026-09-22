@@ -28,8 +28,6 @@ use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 class MPFeaturesCategory
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -37,7 +35,7 @@ class MPFeaturesCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\TreePath(appendId=false, startsWithSeparator=true, endsWithSeparator=false)
@@ -49,15 +47,13 @@ class MPFeaturesCategory
     private ?string $path = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\TreePathHash
      *
      * @ORM\Column(name="pathhash", type="string", length=32, nullable=true)
      */
     #[ORM\Column(name: 'pathhash', type: Types::STRING, length: 32, nullable: true)]
     #[Gedmo\TreePathHash]
-    private $pathHash;
+    private ?string $pathHash = null;
 
     /**
      * @Gedmo\TreePathSource
@@ -82,26 +78,22 @@ class MPFeaturesCategory
     private ?MPFeaturesCategory $parentId = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLevel
      *
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLevel]
-    private $level;
+    private ?int $level = null;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\TreeRoot
      *
      * @ORM\Column(name="tree_root_value", type="string", nullable=true)
      */
     #[ORM\Column(name: 'tree_root_value', type: Types::STRING, nullable: true)]
     #[Gedmo\TreeRoot]
-    private $treeRootValue;
+    private ?string $treeRootValue = null;
 
     /**
      * @var Collection<int, self>

@@ -19,6 +19,4 @@ use Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class FeatureNotImplementedException extends \RuntimeException implements Exception
-{
-}
+class FeatureNotImplementedException extends \RuntimeException implements Exception {}

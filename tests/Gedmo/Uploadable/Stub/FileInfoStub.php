@@ -15,32 +15,32 @@ use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 
 final class FileInfoStub implements FileInfoInterface
 {
-    public function getTmpName()
+    public function getTmpName(): never
     {
         throw new \BadMethodCallException('Not implemented.');
     }
 
-    public function getName()
+    public function getName(): never
     {
         throw new \BadMethodCallException('Not implemented.');
     }
 
-    public function getSize()
+    public function getSize(): never
     {
         throw new \BadMethodCallException('Not implemented.');
     }
 
-    public function getType()
+    public function getType(): never
     {
         throw new \BadMethodCallException('Not implemented.');
     }
 
-    public function getError()
+    public function getError(): never
     {
         throw new \BadMethodCallException('Not implemented.');
     }
 
-    public function isUploadedFile()
+    public function isUploadedFile(): never
     {
         throw new \BadMethodCallException('Not implemented.');
     }

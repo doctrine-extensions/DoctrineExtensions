@@ -23,8 +23,6 @@ use Gedmo\Translatable\TranslatableListener;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @requires PHP >= 8.0
  */
 final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
 {

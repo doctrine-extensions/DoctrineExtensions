@@ -126,7 +126,7 @@ class Nested implements Strategy
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
         /** @var ClassMetadata<object> $meta */
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
 
         $meta->setFieldValue($node, $config['left'], 0);
@@ -146,7 +146,7 @@ class Nested implements Strategy
      */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
@@ -187,7 +187,7 @@ class Nested implements Strategy
      */
     public function processPostPersist($em, $node, AdapterInterface $ea)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
 
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $parent = $meta->getFieldValue($node, $config['parent']);
@@ -199,7 +199,7 @@ class Nested implements Strategy
      */
     public function processScheduledDelete($em, $node)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $meta = $em->getClassMetadata($node::class);
         $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
@@ -239,29 +239,17 @@ class Nested implements Strategy
         $this->treeEdges = [];
     }
 
-    public function processPreRemove($em, $node)
-    {
-    }
+    public function processPreRemove($em, $node) {}
 
-    public function processPrePersist($em, $node)
-    {
-    }
+    public function processPrePersist($em, $node) {}
 
-    public function processPreUpdate($em, $node)
-    {
-    }
+    public function processPreUpdate($em, $node) {}
 
-    public function processMetadataLoad($em, $meta)
-    {
-    }
+    public function processMetadataLoad($em, $meta) {}
 
-    public function processPostUpdate($em, $entity, AdapterInterface $ea)
-    {
-    }
+    public function processPostUpdate($em, $entity, AdapterInterface $ea) {}
 
-    public function processPostRemove($em, $entity, AdapterInterface $ea)
-    {
-    }
+    public function processPostRemove($em, $entity, AdapterInterface $ea) {}
 
     /**
      * Update the $node with a different $parent destination
@@ -621,7 +609,7 @@ class Nested implements Strategy
 
                 assert(null !== $node);
 
-                $nodeMeta = $em->getClassMetadata(get_class($node));
+                $nodeMeta = $em->getClassMetadata($node::class);
 
                 /** @phpstan-ignore-next-line function.alreadyNarrowedType Property introduced in ORM 3.4 */
                 if (property_exists($nodeMeta, 'propertyAccessors')) {
@@ -721,7 +709,7 @@ class Nested implements Strategy
 
                 assert(null !== $node);
 
-                $nodeMeta = $em->getClassMetadata(get_class($node));
+                $nodeMeta = $em->getClassMetadata($node::class);
 
                 /** @phpstan-ignore-next-line function.alreadyNarrowedType Property introduced in ORM 3.4 */
                 if (property_exists($nodeMeta, 'propertyAccessors')) {

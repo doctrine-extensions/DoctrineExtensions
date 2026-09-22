@@ -13,6 +13,8 @@ namespace Gedmo\Tests\Translatable\Fixture\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ArrayType;
+use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Types\Exception\ValueNotConvertible;
 use Doctrine\DBAL\Types\Type;
 
 if (class_exists(ArrayType::class)) {
@@ -26,30 +28,24 @@ if (class_exists(ArrayType::class)) {
     {
         /**
          * @param array<string, mixed> $column
-         *
-         * @return string
          */
-        public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+        public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
         {
             return $this->doGetSQLDeclaration($column, $platform);
         }
 
         /**
          * @param mixed $value
-         *
-         * @return mixed
          */
-        public function convertToDatabaseValue($value, AbstractPlatform $platform)
+        public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
         {
             return $this->doConvertToDatabaseValue($value, $platform);
         }
 
         /**
          * @param mixed $value
-         *
-         * @return mixed
          */
-        public function convertToPHPValue($value, AbstractPlatform $platform)
+        public function convertToPHPValue($value, AbstractPlatform $platform): mixed
         {
             return $this->doConvertToPHPValue($value, $platform);
         }
@@ -59,19 +55,9 @@ if (class_exists(ArrayType::class)) {
          */
         abstract protected function doGetSQLDeclaration(array $column, AbstractPlatform $platform): string;
 
-        /**
-         * @param mixed $value
-         *
-         * @return mixed
-         */
-        abstract protected function doConvertToDatabaseValue($value, AbstractPlatform $platform);
+        abstract protected function doConvertToDatabaseValue(mixed $value, AbstractPlatform $platform): mixed;
 
-        /**
-         * @param mixed $value
-         *
-         * @return mixed
-         */
-        abstract protected function doConvertToPHPValue($value, AbstractPlatform $platform);
+        abstract protected function doConvertToPHPValue(mixed $value, AbstractPlatform $platform): mixed;
     }
 } else {
     // DBAL 4.x
@@ -105,19 +91,9 @@ if (class_exists(ArrayType::class)) {
          */
         abstract protected function doGetSQLDeclaration(array $column, AbstractPlatform $platform): string;
 
-        /**
-         * @param mixed $value
-         *
-         * @return mixed
-         */
-        abstract protected function doConvertToDatabaseValue($value, AbstractPlatform $platform);
+        abstract protected function doConvertToDatabaseValue(mixed $value, AbstractPlatform $platform): mixed;
 
-        /**
-         * @param mixed $value
-         *
-         * @return mixed
-         */
-        abstract protected function doConvertToPHPValue($value, AbstractPlatform $platform);
+        abstract protected function doConvertToPHPValue(mixed $value, AbstractPlatform $platform): mixed;
     }
 }
 
@@ -138,22 +114,12 @@ class Custom extends CompatType
         return $platform->getClobTypeDeclarationSQL($column);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    protected function doConvertToDatabaseValue($value, AbstractPlatform $platform)
+    protected function doConvertToDatabaseValue(mixed $value, AbstractPlatform $platform): string
     {
         return serialize($value);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    protected function doConvertToPHPValue($value, AbstractPlatform $platform)
+    protected function doConvertToPHPValue(mixed $value, AbstractPlatform $platform): mixed
     {
         if (null === $value) {
             return null;
@@ -162,7 +128,11 @@ class Custom extends CompatType
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
         $val = unserialize($value);
         if (false === $val && 'b:0;' !== $value) {
-            throw new \Exception('Conversion failed');
+            if (!class_exists(ValueNotConvertible::class)) {
+                throw ConversionException::conversionFailed($value, $this->getName());
+            }
+
+            throw ValueNotConvertible::new($value, $this->getName());
         }
 
         return $val;

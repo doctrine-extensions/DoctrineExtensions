@@ -17,6 +17,4 @@ namespace Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class TreeLockingException extends RuntimeException
-{
-}
+class TreeLockingException extends RuntimeException {}

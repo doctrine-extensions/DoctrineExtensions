@@ -15,18 +15,12 @@ use Gedmo\Tests\Mapping\Fixture\Document\User;
 
 class References
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var User[]
      */
-    private $users;
+    private array $users = [];
 }

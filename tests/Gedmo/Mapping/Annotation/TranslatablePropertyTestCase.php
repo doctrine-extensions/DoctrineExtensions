@@ -17,13 +17,11 @@ use Gedmo\Tests\Mapping\Fixture\Attribute\TranslatableModel as AttributeTranslat
 
 final class TranslatablePropertyTestCase extends BasePropertyAnnotationTestCase
 {
-    public function getValidParameters(): iterable
+    public static function getValidParameters(): \Generator
     {
-        return [
-            ['fallback', 'title', null],
-            ['fallback', 'titleFallbackTrue', true],
-            ['fallback', 'titleFallbackFalse', false],
-        ];
+        yield ['fallback', 'title', null];
+        yield ['fallback', 'titleFallbackTrue', true];
+        yield ['fallback', 'titleFallbackFalse', false];
     }
 
     protected function getAnnotationClass(): string

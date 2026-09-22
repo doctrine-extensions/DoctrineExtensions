@@ -21,6 +21,4 @@ use Gedmo\Exception;
  *
  * @final since gedmo/doctrine-extensions 3.11
  */
-class InvalidMappingException extends InvalidArgumentException implements Exception
-{
-}
+class InvalidMappingException extends InvalidArgumentException implements Exception {}

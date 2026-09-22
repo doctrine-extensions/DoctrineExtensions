@@ -23,15 +23,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 #[ODM\Document(collection: 'articles')]
 #[Gedmo\Loggable]
-class Article implements Loggable
+class Article implements Loggable, \Stringable
 {
     /**
-     * @var string|null
-     *
      * @ODM\Id
      */
     #[ODM\Id]
-    private $id;
+    private ?string $id = null;
 
     /**
      * @Gedmo\Versioned
@@ -51,9 +49,9 @@ class Article implements Loggable
     #[Gedmo\Versioned]
     private ?Author $author = null;
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function getId(): ?string

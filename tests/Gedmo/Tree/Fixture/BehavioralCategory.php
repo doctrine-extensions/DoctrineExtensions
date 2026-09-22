@@ -28,8 +28,6 @@ use Gedmo\Tests\Tree\Fixture\Repository\BehavioralCategoryRepository;
 class BehavioralCategory
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -37,7 +35,7 @@ class BehavioralCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Gedmo\Translatable
@@ -49,26 +47,22 @@ class BehavioralCategory
     private ?string $title = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeLeft
      *
      * @ORM\Column(name="lft", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeLeft]
-    private $lft;
+    private ?int $lft = null;
 
     /**
-     * @var int|null
-     *
      * @Gedmo\TreeRight
      *
      * @ORM\Column(name="rgt", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER, nullable: true)]
     #[Gedmo\TreeRight]
-    private $rgt;
+    private ?int $rgt = null;
 
     /**
      * @Gedmo\TreeParent
@@ -92,8 +86,6 @@ class BehavioralCategory
     private Collection $children;
 
     /**
-     * @var string|null
-     *
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title"})
      *
@@ -102,7 +94,7 @@ class BehavioralCategory
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128, unique: true)]
     #[Gedmo\Translatable]
     #[Gedmo\Slug(fields: ['title'])]
-    private $slug;
+    private ?string $slug = null;
 
     public function __construct()
     {

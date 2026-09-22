@@ -24,6 +24,4 @@ use Gedmo\Tests\Loggable\Fixture\Document\Comment as CommentEntity;
  */
 #[ORM\Table(name: 'test_comment_log_entries')]
 #[ORM\Entity(repositoryClass: LogEntryRepository::class)]
-class Comment extends AbstractLogEntry
-{
-}
+class Comment extends AbstractLogEntry {}

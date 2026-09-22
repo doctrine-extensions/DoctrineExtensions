@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -53,13 +51,7 @@ final class TreeMappingTest extends ORMMappingTestCase
         // TODO - The ORM's YAML mapping is deprecated and removed in 3.0
         $chain->addDriver(new YamlDriver(__DIR__.'/Driver/Yaml'), 'Gedmo\Tests\Mapping\Fixture\Yaml');
 
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationOrAttributeDriver = new AttributeDriver([]);
-        } elseif (class_exists(AnnotationReader::class)) {
-            $annotationOrAttributeDriver = new AnnotationDriver(new AnnotationReader());
-        } else {
-            static::markTestSkipped('Test requires either PHP >= 8.0 for attribute mapping or the doctrine/annotations package.');
-        }
+        $annotationOrAttributeDriver = new AttributeDriver([]);
 
         $chain->addDriver($annotationOrAttributeDriver, 'Gedmo\Tests\Tree\Fixture');
         $chain->addDriver($annotationOrAttributeDriver, 'Gedmo\Tree');

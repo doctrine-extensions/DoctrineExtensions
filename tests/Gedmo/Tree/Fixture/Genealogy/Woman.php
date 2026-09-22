@@ -18,6 +18,4 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
-class Woman extends Person
-{
-}
+class Woman extends Person {}

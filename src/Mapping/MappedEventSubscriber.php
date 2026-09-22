@@ -83,19 +83,13 @@ abstract class MappedEventSubscriber implements EventSubscriber
     /**
      * Custom annotation reader
      *
-     * @var Reader|AttributeReader|object|false|null
+     * @var Reader|AttributeReader|object|false
      */
-    private $annotationReader = false;
+    private object|false $annotationReader = false;
 
-    /**
-     * @var Reader|AttributeReader|false|null
-     */
-    private static $defaultAnnotationReader = false;
+    private static Reader|AttributeReader|false $defaultAnnotationReader = false;
 
-    /**
-     * @var CacheItemPoolInterface|null
-     */
-    private $cacheItemPool;
+    private ?CacheItemPoolInterface $cacheItemPool = null;
 
     private ?ClockInterface $clock = null;
 
@@ -240,7 +234,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
         try {
             $config = $factory->getExtensionMetadata($metadata);
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
             // entity\document generator is running
             $config = []; // will not store a cached version, to remap later
         }
@@ -261,7 +255,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     protected function getEventAdapter(EventArgs $args)
     {
-        $class = get_class($args);
+        $class = $args::class;
         if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], ['ODM', 'ORM'], true)) {
             if (!isset($this->adapters[$m[1]])) {
                 $adapterClass = $this->getNamespace().'\\Mapping\\Event\\Adapter\\'.$m[1];
@@ -304,7 +298,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     protected function setFieldValue(AdapterInterface $adapter, $object, $field, $oldValue, $newValue)
     {
         $manager = $adapter->getObjectManager();
-        $meta = $manager->getClassMetadata(get_class($object));
+        $meta = $manager->getClassMetadata($object::class);
         $uow = $manager->getUnitOfWork();
 
         $meta->setFieldValue($object, $field, $newValue);
@@ -317,18 +311,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * If a reader cannot be created due to missing requirements, no default will be set as the reader is only required for annotation or attribute metadata,
      * and the {@see ExtensionMetadataFactory} can handle raising an error if it tries to create a mapping driver that requires this reader.
-     *
-     * @return Reader|AttributeReader|null
      */
-    private function getDefaultAnnotationReader()
+    private function getDefaultAnnotationReader(): Reader|AttributeReader
     {
         if (false === self::$defaultAnnotationReader) {
             if (class_exists(PsrCachedReader::class)) {
                 self::$defaultAnnotationReader = new PsrCachedReader(new AnnotationReader(), new ArrayAdapter());
-            } elseif (\PHP_VERSION_ID >= 80000) {
-                self::$defaultAnnotationReader = new AttributeReader();
             } else {
-                self::$defaultAnnotationReader = null;
+                self::$defaultAnnotationReader = new AttributeReader();
             }
         }
 
@@ -347,7 +337,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
         if ($objectManager instanceof EntityManagerInterface || $objectManager instanceof DocumentManager) {
             $metadataFactory = $objectManager->getMetadataFactory();
-            $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, \get_class($metadataFactory));
+            $getCache = \Closure::bind(static fn (AbstractClassMetadataFactory $metadataFactory): ?CacheItemPoolInterface => $metadataFactory->getCache(), null, $metadataFactory::class);
 
             $metadataCache = $getCache($metadataFactory);
 

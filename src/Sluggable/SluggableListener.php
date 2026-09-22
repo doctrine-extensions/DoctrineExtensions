@@ -274,7 +274,7 @@ class SluggableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
 
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['slugs'] as $slugField => $options) {
@@ -308,7 +308,7 @@ class SluggableListener extends MappedEventSubscriber
         // of prePersist in case if record will be changed before flushing this will
         // ensure correct result. No additional overhead is encountered
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($this->getConfiguration($om, $meta->getName())) {
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($ea, $object);
@@ -318,7 +318,7 @@ class SluggableListener extends MappedEventSubscriber
         // we use onFlush and not preUpdate event to let other
         // event listeners be nested together
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $meta = $om->getClassMetadata($object::class);
             if ($this->getConfiguration($om, $meta->getName()) && !$uow->isScheduledForInsert($object)) {
                 $this->generateSlug($ea, $object);
                 $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
@@ -351,7 +351,7 @@ class SluggableListener extends MappedEventSubscriber
     private function generateSlug(SluggableAdapter $ea, object $object): void
     {
         $om = $ea->getObjectManager();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $isInsert = $uow->isScheduledForInsert($object);
@@ -364,7 +364,7 @@ class SluggableListener extends MappedEventSubscriber
             $slug = $meta->getFieldValue($object, $slugField);
 
             // if slug should not be updated, skip it
-            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || 0 === strpos($slug, '__sluggable_placeholder__'))) {
+            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || str_starts_with((string) $slug, '__sluggable_placeholder__'))) {
                 continue;
             }
             // must fetch the old slug from changeset, since $object holds the new version
@@ -372,7 +372,7 @@ class SluggableListener extends MappedEventSubscriber
             $needToChangeSlug = false;
 
             // if slug is null, regenerate it, or needs an update
-            if (null === $slug || 0 === strpos($slug, '__sluggable_placeholder__') || !isset($changeSet[$slugField])) {
+            if (null === $slug || str_starts_with($slug, '__sluggable_placeholder__') || !isset($changeSet[$slugField])) {
                 $slug = '';
 
                 foreach ($options['fields'] as $sluggableField) {
@@ -507,12 +507,12 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Generates the unique slug
      *
-     * @param SlugConfiguration $config
+     * @phpstan-param SlugConfiguration $config
      */
     private function makeUniqueSlug(SluggableAdapter $ea, object $object, string $preferredSlug, bool $recursing, array $config): string
     {
         $om = $ea->getObjectManager();
-        $meta = $om->getClassMetadata(get_class($object));
+        $meta = $om->getClassMetadata($object::class);
         $similarPersisted = [];
         // extract unique base
         $base = false;
@@ -529,7 +529,7 @@ class SluggableListener extends MappedEventSubscriber
                 }
                 $slug = $meta->getFieldValue($obj, $config['slug']);
                 $quotedPreferredSlug = preg_quote($preferredSlug);
-                if (preg_match("@^{$quotedPreferredSlug}.*@smi", $slug)) {
+                if (preg_match("@^{$quotedPreferredSlug}.*@smi", (string) $slug)) {
                     $similarPersisted[] = [$config['slug'] => $slug];
                 }
             }
@@ -545,7 +545,7 @@ class SluggableListener extends MappedEventSubscriber
             $quotedSeparator = preg_quote($config['separator']);
             $quotedPreferredSlug = preg_quote($preferredSlug);
             foreach ($result as $key => $similar) {
-                if (!preg_match("@{$quotedPreferredSlug}($|{$quotedSeparator}[\d]+$)@smi", $similar[$config['slug']])) {
+                if (!preg_match("@{$quotedPreferredSlug}($|{$quotedSeparator}[\d]+$)@smi", (string) $similar[$config['slug']])) {
                     unset($result[$key]);
                 }
             }
@@ -579,7 +579,7 @@ class SluggableListener extends MappedEventSubscriber
                     $length - (strlen($uniqueSuffix) + strlen($config['separator']))
                 );
                 $this->exponent = strlen($uniqueSuffix) - 1;
-                if (substr($generatedSlug, -strlen($config['separator'])) == $config['separator']) {
+                if (str_ends_with($generatedSlug, $config['separator'])) {
                     $generatedSlug = substr($generatedSlug, 0, strlen($generatedSlug) - strlen($config['separator']));
                 }
                 $generatedSlug = $this->makeUniqueSlug($ea, $object, $generatedSlug, true, $config);

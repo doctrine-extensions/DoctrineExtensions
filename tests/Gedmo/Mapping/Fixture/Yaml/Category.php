@@ -16,10 +16,7 @@ use Doctrine\Common\Collections\Collection;
 
 class Category extends BaseCategory
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     private ?string $title = null;
 
@@ -28,24 +25,18 @@ class Category extends BaseCategory
     /**
      * @var Collection<int, self>
      */
-    private $children;
+    private Collection $children;
 
-    private ?Category $parent = null;
+    private ?self $parent = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $changed;
+    private ?\DateTime $changed = null;
 
     public function __construct()
     {
         $this->children = new ArrayCollection();
     }
 
-    /**
-     * @return int $id
-     */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -65,9 +56,6 @@ class Category extends BaseCategory
         $this->slug = $slug;
     }
 
-    /**
-     * @return string $slug
-     */
     public function getSlug(): string
     {
         return $this->slug;
@@ -81,7 +69,7 @@ class Category extends BaseCategory
     /**
      * @return Collection<int, self> $children
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -91,9 +79,6 @@ class Category extends BaseCategory
         $this->parent = $parent;
     }
 
-    /**
-     * @return self $parent
-     */
     public function getParent(): self
     {
         return $this->parent;
