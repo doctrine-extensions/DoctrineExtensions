@@ -12,10 +12,9 @@ namespace Gedmo\Loggable\Entity\MappedSuperclass;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\LogEntryInterface;
-use Gedmo\Loggable\Loggable;
 
 /**
- * @phpstan-template T of Loggable|object
+ * @phpstan-template T of object
  *
  * @phpstan-implements LogEntryInterface<T>
  *
