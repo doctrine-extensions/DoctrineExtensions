@@ -36,6 +36,7 @@ class Attribute extends AbstractAnnotationDriver
         'one',
         'string',
         'int',
+        'integer',
         'ulid',
         'uuid',
         'ascii_string',
@@ -65,12 +66,12 @@ class Attribute extends AbstractAnnotationDriver
 
                 if ($meta->hasField($field)) {
                     if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a one-to-many relation in class - {$meta->getName()}");
+                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string', 'integer' or a one-to-many relation in class - {$meta->getName()}");
                     }
                 } else {
                     // association
                     if (!$meta->isSingleValuedAssociation($field)) {
-                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->getName()}");
+                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string or integer field - {$meta->getName()}");
                     }
                 }
 
