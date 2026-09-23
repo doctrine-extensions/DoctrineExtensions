@@ -111,6 +111,30 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
+     * Converts a given value to its database representation.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function convertToDatabaseValue($value, string $type)
+    {
+        return $this->om->getConnection()->convertToDatabaseValue($value, $type);
+    }
+
+    /**
+     * Converts a given value to its PHP representation.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function convertToPHPValue($value, string $type)
+    {
+        return $this->om->getConnection()->convertToPHPValue($value, $type);
+    }
+
+    /**
      * Initialize the entity if it is proxy
      * required when is detached or not initialized
      *

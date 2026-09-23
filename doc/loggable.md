@@ -2,8 +2,11 @@
 
 The **Loggable** behavior adds support for logging changes to and restoring prior versions of your Doctrine objects.
 
+> [!IMPORTANT]
+> The Loggable extension is **NOT** compatible with `doctrine/dbal` >=4.0. If your project needs this extension, you will need to use the latest `doctrine/dbal` 3.x release.
+
 > [!NOTE]
-> The Loggable extension is NOT compatible with `doctrine/dbal` 4.0 or later
+> We recommend that new projects use the [Revisionable](./revisionable.md) extension instead of the Loggable extension.
 
 ## Index
 

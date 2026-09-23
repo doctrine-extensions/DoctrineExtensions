@@ -85,6 +85,19 @@ services:
             # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
 
+    # Gedmo Revisionable Extension Listener
+    gedmo.listener.revisionable:
+        class: Gedmo\Revisionable\RevisionableListener
+        tags:
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
+            - { name: doctrine.event_listener, event: 'postPersist' }
+        calls:
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+            # - [ setAnnotationReader, [ '@gedmo.mapping.driver.attribute' ] ]
+            # The `annotation_reader` service was deprecated in Symfony 6.4 and removed in Symfony 7.0
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
     # Gedmo Sluggable Extension Listener
     gedmo.listener.sluggable:
         class: Gedmo\Sluggable\SluggableListener
@@ -238,8 +251,8 @@ services:
 
 ## Registering Mapping Configuration
 
-When using the [Loggable](../loggable.md), [Translatable](../translatable.md), or [Tree](../tree.md) extensions, you will
-need to register the mappings for these extensions to your object managers.
+When using the [Loggable](../loggable.md), [Revisionable](../revisionable.md), [Translatable](../translatable.md),
+or [Tree](../tree.md) extensions, you will need to register the mappings for these extensions to your object managers.
 
 > [!NOTE]
 > These extensions only provide mappings through annotations or attributes, with support for annotations being deprecated. If using annotations, you will need to ensure the [`doctrine/annotations`](https://www.doctrine-project.org/projects/annotations.html) library is installed and configured.
@@ -262,6 +275,12 @@ doctrine_mongodb:
                     prefix: Gedmo\Loggable\Document
                     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Loggable/Document"
                     is_bundle: false
+                revisionable:
+                    type: attribute # or annotation
+                    alias: GedmoRevisionable
+                    prefix: Gedmo\Revisionable\Document
+                    dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Revisionable/Document"
+                    is_bundle: false
                 translatable:
                     type: attribute # or annotation
                     alias: GedmoTranslatable
@@ -277,6 +296,8 @@ $ bin/console doctrine:mongodb:mapping:info
  Found X documents mapped in document manager default:
  [OK]   Gedmo\Loggable\Document\LogEntry
  [OK]   Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry
+ [OK]   Gedmo\Revisionable\Document\Revision
+ [OK]   Gedmo\Revisionable\Document\MappedSuperclass\AbstractRevision
  [OK]   Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation
  [OK]   Gedmo\Translatable\Document\MappedSuperclass\AbstractTranslation
  [OK]   Gedmo\Translatable\Document\Translation
@@ -296,6 +317,12 @@ doctrine:
                     alias: GedmoLoggable
                     prefix: Gedmo\Loggable\Entity
                     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
+                    is_bundle: false
+                revisionable:
+                    type: attribute # or annotation
+                    alias: GedmoRevisionable
+                    prefix: Gedmo\Revisionable\Entity
+                    dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Revisionable/Entity"
                     is_bundle: false
                 translatable:
                     type: attribute # or annotation
@@ -318,6 +345,8 @@ $ bin/console doctrine:mapping:info
  Found X mapped entities:
  [OK]   Gedmo\Loggable\Entity\LogEntry
  [OK]   Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry
+ [OK]   Gedmo\Revisionable\Entity\Revision
+ [OK]   Gedmo\Revisionable\Entity\MappedSuperclass\AbstractRevision
  [OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation
  [OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation
  [OK]   Gedmo\Translatable\Entity\Translation
@@ -364,10 +393,10 @@ doctrine:
 
 ## Configuring Extensions via Event Subscribers
 
-When using the [Blameable](../blameable.md), [IP Traceable](../ip_traceable.md), [Loggable](../loggable.md), or
-[Translatable](../translatable.md) extensions, to work correctly, they require extra information that must be set
-at runtime, typically during the `kernel.request` event. The below example is an event subscriber class which configures
-all of these extensions.
+When using the [Blameable](../blameable.md), [IP Traceable](../ip_traceable.md), [Loggable](../loggable.md),
+[Revisionable](../revisionable.md), or [Translatable](../translatable.md) extensions, to work correctly,
+they require extra information that must be set at runtime, typically during the `kernel.request` event.
+The below example is an event subscriber class which configures all of these extensions.
 
 ```php
 <?php
@@ -376,6 +405,7 @@ namespace App\EventListener;
 use Gedmo\Blameable\BlameableListener;
 use Gedmo\IpTraceable\IpTraceableListener;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Revisionable\RevisionableListener;
 use Gedmo\Translatable\TranslatableListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -389,6 +419,7 @@ final class GedmoExtensionsEventSubscriber implements EventSubscriberInterface
         private BlameableListener $blameableListener,
         private IpTraceableListener $ipTraceableListener,
         private LoggableListener $loggableListener,
+        private RevisionableListener $revisionableListener,
         private TranslatableListener $translatableListener,
         private ?AuthorizationCheckerInterface $authorizationChecker = null,
         private ?TokenStorageInterface $tokenStorage = null,
@@ -401,6 +432,7 @@ final class GedmoExtensionsEventSubscriber implements EventSubscriberInterface
                 ['configureBlameableListener'], // Must run after the user is authenticated
                 ['configureIpTraceableListener', 512], // Runs early since this only requires the Request object
                 ['configureLoggableListener'], // Must run after the user is authenticated
+                ['configureRevisionableListener'], // Must run after the user is authenticated
                 ['configureTranslatableListener'], // Must run after the locale is configured
             ],
         ];
@@ -467,6 +499,29 @@ final class GedmoExtensionsEventSubscriber implements EventSubscriberInterface
         // Only set the user information if there is a token in storage and it represents an authenticated user
         if (null !== $token && $this->authorizationChecker->isGranted('IS_AUTHENTICATED')) {
             $this->loggableListener->setUsername($token->getUser());
+        }
+    }
+
+    /**
+     * Configures the revisionable listener using the currently authenticated user
+     */
+    public function configureRevisionableListener(RequestEvent $event): void
+    {
+        // Only applies to the main request
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
+        // If the required security component services weren't provided, there's nothing we can do
+        if (null === $this->authorizationChecker || null === $this->tokenStorage) {
+            return;
+        }
+
+        $token = $this->tokenStorage->getToken();
+
+        // Only set the user information if there is a token in storage and it represents an authenticated user
+        if (null !== $token && $this->authorizationChecker->isGranted('IS_AUTHENTICATED')) {
+            $this->revisionableListener->setUsername($token->getUser());
         }
     }
 
