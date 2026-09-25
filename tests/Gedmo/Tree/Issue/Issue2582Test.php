@@ -12,6 +12,7 @@ namespace Gedmo\Tests\Tree\Issue;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Issue2582\OU;
+use Gedmo\Tests\Tree\Fixture\Issue2582\OUWithRoot;
 use Gedmo\Tree\TreeListener;
 
 final class Issue2582Test extends BaseTestCaseORM
@@ -51,18 +52,7 @@ final class Issue2582Test extends BaseTestCaseORM
             ['00000000-0000-0000-0000-000000000002', null, 5, 0, 8],
             ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
         ];
-        foreach ($this->fetchAllOUs() as $i => $a) {
-            static::assertSame(
-                $expected[$i],
-                [
-                    $a->getId(),
-                    $a->getParent() ? $a->getParent()->getId() : null,
-                    $a->getLeft(),
-                    $a->getLevel(),
-                    $a->getRight(),
-                ],
-            );
-        }
+        $this->assertSameOuTree($expected);
     }
 
     public function testInsertTwoRootsInOneFlushRootsFirst(): void
@@ -86,18 +76,7 @@ final class Issue2582Test extends BaseTestCaseORM
             ['00000000-0000-0000-0000-000000000002', null, 5, 0, 8],
             ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
         ];
-        foreach ($this->fetchAllOUs() as $i => $a) {
-            static::assertSame(
-                $expected[$i],
-                [
-                    $a->getId(),
-                    $a->getParent() ? $a->getParent()->getId() : null,
-                    $a->getLeft(),
-                    $a->getLevel(),
-                    $a->getRight(),
-                ],
-            );
-        }
+        $this->assertSameOuTree($expected);
     }
 
     public function testInsertTwoRootsInTwoFlushes(): void
@@ -122,35 +101,121 @@ final class Issue2582Test extends BaseTestCaseORM
             ['00000000-0000-0000-0000-000000000002', null, 5, 0, 8],
             ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
         ];
-        foreach ($this->fetchAllOUs() as $i => $a) {
-            static::assertSame(
-                $expected[$i],
-                [
-                    $a->getId(),
-                    $a->getParent() ? $a->getParent()->getId() : null,
-                    $a->getLeft(),
-                    $a->getLevel(),
-                    $a->getRight(),
-                ],
-            );
+        $this->assertSameOuTree($expected);
+    }
+
+    public function testInsertNonRootBeforeRootInOneFlush(): void
+    {
+        $ou1 = new OU('00000000-0000-0000-0000-000000000001', null);
+        $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
+        $this->em->persist($ou1);
+        $this->em->persist($ou11);
+        $this->em->flush();
+        $this->em->clear();
+
+        $expected = [
+            ['00000000-0000-0000-0000-000000000001', null, 1, 0, 4],
+            ['00000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000001', 2, 1, 3],
+        ];
+        $this->assertSameOuTree($expected);
+
+        $ou11 = $this->em->getRepository(OU::class)->find('00000000-0000-0000-0000-000000000011');
+        $ou111 = new OU('00000000-0000-0000-0000-000000000111', $ou11);
+        $ou2  = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
+
+        $this->em->persist($ou111);
+        $this->em->persist($ou2);
+        $this->em->persist($ou21);
+        $this->em->flush();
+
+        $this->em->clear();
+
+        $expected = [
+            ['00000000-0000-0000-0000-000000000001', null, 1, 0, 6],
+            ['00000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000001', 2, 1, 5],
+            ['00000000-0000-0000-0000-000000000111', '00000000-0000-0000-0000-000000000011', 3, 2, 4],
+            ['00000000-0000-0000-0000-000000000002', null, 5, 0, 8],
+            ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
+        ];
+        $this->assertSameOuTree($expected);
+    }
+
+    public function testInsertTwoRootsInOneFlushWithTreeRoot(): void
+    {
+        $ou1  = new OUWithRoot('00000000-0000-0000-0000-000000000001', null);
+        $ou11 = new OUWithRoot('00000000-0000-0000-0000-000000000011', $ou1);
+        $ou2  = new OUWithRoot('00000000-0000-0000-0000-000000000002', null);
+        $ou21 = new OUWithRoot('00000000-0000-0000-0000-000000000021', $ou2);
+
+        $this->em->persist($ou1);
+        $this->em->persist($ou11);
+        $this->em->persist($ou2);
+        $this->em->persist($ou21);
+        $this->em->flush();
+
+        $this->em->clear();
+
+        $expected = [
+            ['00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', null, 1, 0, 4],
+            ['00000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 2, 1, 3],
+            ['00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', null, 1, 0, 4],
+            ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', 2, 1, 3],
+        ];
+
+        $actual = [];
+        foreach ($this->fetchAllOUs(OUWithRoot::class, [['root', 'ASC'], ['left', 'ASC']]) as $i => $a) {
+            $actual[$i] = [
+                $a->getId(),
+                $a->getRoot() ? $a->getRoot()->getId() : null,
+                $a->getParent() ? $a->getParent()->getId() : null,
+                $a->getLeft(),
+                $a->getLevel(),
+                $a->getRight(),
+            ];
         }
+        static::assertSame($expected, $actual);
     }
 
     protected function getUsedEntityFixtures(): array
     {
-        return [OU::class];
+        return [OU::class, OUWithRoot::class];
     }
 
     /**
-     * @return list<OU>
+     * @param list<array{string, string|null, int, int, int}> $expected
      */
-    private function fetchAllOUs(): array
+    private function assertSameOuTree(array $expected): void
     {
-        $categoryRepo = $this->em->getRepository(OU::class);
+        $actual = [];
+        foreach ($this->fetchAllOUs(OU::class, [['left', 'ASC']]) as $i => $a) {
+            $actual[$i] = [
+                $a->getId(),
+                $a->getParent() ? $a->getParent()->getId() : null,
+                $a->getLeft(),
+                $a->getLevel(),
+                $a->getRight(),
+            ];
 
-        return $categoryRepo
-            ->createQueryBuilder('ou')
-            ->orderBy('ou.left', 'ASC')
+        }
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * @template T
+     * @param class-string<T> $entityClass
+     * @param list<array{string, string}> $orderBy
+     *
+     * @return list<T>
+     */
+    private function fetchAllOUs(string $entityClass, array $orderBy): array
+    {
+        $categoryRepo = $this->em->getRepository($entityClass);
+        $qb = $categoryRepo->createQueryBuilder('ou');
+        foreach ($orderBy as $field) {
+            $qb->addOrderBy('ou.' . $field[0], $field[1]);
+        }
+        return $qb
             ->getQuery()
             ->getResult();
     }
