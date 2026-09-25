@@ -150,6 +150,144 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         static::assertSame('content lt', $translations['lt_lt']['content']);
     }
 
+    public function testShouldRemoveAllTranslations(): void
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(Translation::class);
+        $sport = $this->em->getRepository(Article::class)->find(1);
+        $repo
+            ->translate($sport, 'title', 'lt_lt', 'sport lt')
+            ->translate($sport, 'content', 'lt_lt', 'content lt')
+            ->translate($sport, 'title', 'ru_ru', 'sport ru change')
+            ->translate($sport, 'content', 'ru_ru', 'content ru change')
+            ->translate($sport, 'title', 'en_us', 'sport en update')
+            ->translate($sport, 'content', 'en_us', 'content en update')
+        ;
+        $this->em->flush();
+        $repo->removeTranslations($sport);
+
+        $translations = $repo->findTranslations($sport);
+        static::assertCount(0, $translations);
+    }
+
+    public function testShouldRemoveTitleTranslations(): void
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(Translation::class);
+        $sport = $this->em->getRepository(Article::class)->find(1);
+        $repo
+            ->translate($sport, 'title', 'lt_lt', 'sport lt')
+            ->translate($sport, 'content', 'lt_lt', 'content lt')
+            ->translate($sport, 'title', 'ru_ru', 'sport ru change')
+            ->translate($sport, 'content', 'ru_ru', 'content ru change')
+            ->translate($sport, 'title', 'en_us', 'sport en update')
+            ->translate($sport, 'content', 'en_us', 'content en update')
+        ;
+        $this->em->flush();
+        $repo->removeTranslations($sport, 'title');
+
+        $translations = $repo->findTranslations($sport);
+        static::assertCount(3, $translations);
+
+        static::assertArrayHasKey('de_de', $translations);
+        static::assertArrayNotHasKey('title', $translations['de_de']);
+        static::assertArrayHasKey('content', $translations['de_de']);
+        static::assertSame('sport de', $translations['de_de']['title']);
+        static::assertSame('content de', $translations['de_de']['content']);
+
+        static::assertArrayHasKey('ru_ru', $translations);
+        static::assertArrayNotHasKey('title', $translations['ru_ru']);
+        static::assertArrayHasKey('content', $translations['ru_ru']);
+        static::assertSame('sport ru change', $translations['ru_ru']['title']);
+        static::assertSame('content ru change', $translations['ru_ru']['content']);
+
+        static::assertArrayHasKey('lt_lt', $translations);
+        static::assertArrayNotHasKey('title', $translations['lt_lt']);
+        static::assertArrayHasKey('content', $translations['lt_lt']);
+        static::assertSame('sport lt', $translations['lt_lt']['title']);
+        static::assertSame('content lt', $translations['lt_lt']['content']);
+    }
+
+    public function testShouldRemoveLocaleTranslations(): void
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(Translation::class);
+        $sport = $this->em->getRepository(Article::class)->find(1);
+        $repo
+            ->translate($sport, 'title', 'lt_lt', 'sport lt')
+            ->translate($sport, 'content', 'lt_lt', 'content lt')
+            ->translate($sport, 'title', 'ru_ru', 'sport ru change')
+            ->translate($sport, 'content', 'ru_ru', 'content ru change')
+            ->translate($sport, 'title', 'en_us', 'sport en update')
+            ->translate($sport, 'content', 'en_us', 'content en update')
+        ;
+        $this->em->flush();
+
+        $translations = $repo->findTranslations($sport);
+        static::assertCount(3, $translations);
+
+        $repo->removeTranslations($sport, null, 'lt_lt');
+
+        $translations = $repo->findTranslations($sport);
+        static::assertCount(2, $translations);
+
+        static::assertArrayHasKey('de_de', $translations);
+        static::assertArrayNotHasKey('title', $translations['de_de']);
+        static::assertArrayHasKey('content', $translations['de_de']);
+        static::assertSame('sport de', $translations['de_de']['title']);
+        static::assertSame('content de', $translations['de_de']['content']);
+
+        static::assertArrayHasKey('ru_ru', $translations);
+        static::assertArrayNotHasKey('title', $translations['ru_ru']);
+        static::assertArrayHasKey('content', $translations['ru_ru']);
+        static::assertSame('sport ru change', $translations['ru_ru']['title']);
+        static::assertSame('content ru change', $translations['ru_ru']['content']);
+
+        static::assertArrayNotHasKey('lt_lt', $translations);
+    }
+
+    public function testShouldRemoveFieldAndLocaleTranslations(): void
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(Translation::class);
+        $sport = $this->em->getRepository(Article::class)->find(1);
+        $repo
+            ->translate($sport, 'title', 'lt_lt', 'sport lt')
+            ->translate($sport, 'content', 'lt_lt', 'content lt')
+            ->translate($sport, 'title', 'ru_ru', 'sport ru change')
+            ->translate($sport, 'content', 'ru_ru', 'content ru change')
+            ->translate($sport, 'title', 'en_us', 'sport en update')
+            ->translate($sport, 'content', 'en_us', 'content en update')
+        ;
+        $this->em->flush();
+
+        $translations = $repo->findTranslations($sport);
+        static::assertCount(3, $translations);
+
+        $repo->removeTranslations($sport, 'title', 'lt_lt');
+
+        $translations = $repo->findTranslations($sport);
+        static::assertCount(3, $translations);
+
+        static::assertArrayHasKey('de_de', $translations);
+        static::assertArrayHasKey('title', $translations['de_de']);
+        static::assertArrayHasKey('content', $translations['de_de']);
+        static::assertSame('sport de', $translations['de_de']['title']);
+        static::assertSame('content de', $translations['de_de']['content']);
+
+        static::assertArrayHasKey('ru_ru', $translations);
+        static::assertArrayHasKey('title', $translations['ru_ru']);
+        static::assertArrayHasKey('content', $translations['ru_ru']);
+        static::assertSame('sport ru change', $translations['ru_ru']['title']);
+        static::assertSame('content ru change', $translations['ru_ru']['content']);
+
+        static::assertArrayHasKey('lt_lt', $translations);
+        static::assertArrayNotHasKey('title', $translations['lt_lt']);
+        static::assertArrayHasKey('content', $translations['lt_lt']);
+        static::assertSame('sport lt', $translations['lt_lt']['title']);
+        static::assertSame('content lt', $translations['lt_lt']['content']);
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [
