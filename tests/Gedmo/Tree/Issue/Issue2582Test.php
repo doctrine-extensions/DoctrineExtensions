@@ -118,7 +118,7 @@ final class Issue2582Test extends BaseTestCaseORM
 
         $ou1 = $this->em->getRepository(OU::class)->find('00000000-0000-0000-0000-000000000001');
         $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
-        $ou2  = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
 
         $this->em->persist($ou11);
@@ -139,9 +139,9 @@ final class Issue2582Test extends BaseTestCaseORM
 
     public function testInsertTwoRootsInOneFlushWithTreeRoot(): void
     {
-        $ou1  = new OUWithRoot('00000000-0000-0000-0000-000000000001', null);
+        $ou1 = new OUWithRoot('00000000-0000-0000-0000-000000000001', null);
         $ou11 = new OUWithRoot('00000000-0000-0000-0000-000000000011', $ou1);
-        $ou2  = new OUWithRoot('00000000-0000-0000-0000-000000000002', null);
+        $ou2 = new OUWithRoot('00000000-0000-0000-0000-000000000002', null);
         $ou21 = new OUWithRoot('00000000-0000-0000-0000-000000000021', $ou2);
 
         $this->em->persist($ou1);
@@ -192,14 +192,14 @@ final class Issue2582Test extends BaseTestCaseORM
                 $a->getLevel(),
                 $a->getRight(),
             ];
-
         }
         static::assertSame($expected, $actual);
     }
 
     /**
      * @template T
-     * @param class-string<T> $entityClass
+     *
+     * @param class-string<T>             $entityClass
      * @param list<array{string, string}> $orderBy
      *
      * @return list<T>
@@ -209,8 +209,9 @@ final class Issue2582Test extends BaseTestCaseORM
         $categoryRepo = $this->em->getRepository($entityClass);
         $qb = $categoryRepo->createQueryBuilder('ou');
         foreach ($orderBy as $field) {
-            $qb->addOrderBy('ou.' . $field[0], $field[1]);
+            $qb->addOrderBy('ou.'.$field[0], $field[1]);
         }
+
         return $qb
             ->getQuery()
             ->getResult();
