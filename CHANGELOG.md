@@ -23,7 +23,7 @@ a release.
   `doctrine/event-manager` >= 2.1
 - Loggable: Fix PHPDoc template bounds to support Symfony TypeInfo (#3044)
 - Tree: Fix TreeObjectHydrator compatibility with ORM 3 when parent property is defined before children property in entity (#3041)
-- Blameable: Restored missing support for `integer` type(s) in allowed types list for `Blameable` field (#2006)
+- Blameable: Restored missing support for `integer`, `bigint` and `smallint` types in allowed types list for `Blameable` field (#2006)
 
 ## [3.22.1] - 2026-08-01
 ### Changed
