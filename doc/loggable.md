@@ -3,7 +3,7 @@
 The **Loggable** behavior adds support for logging changes to and restoring prior versions of your Doctrine objects.
 
 > [!NOTE]
-> The Loggable extension is NOT compatible with `doctrine/dbal` 4.0 or later
+> The `data` column in the log entry table was changed from PHP's `serialize()` format to JSON in order to be compatible with `doctrine/dbal` 4.0 or later. If you are upgrading from an older version, see [Migrating existing serialized data to JSON](#migrating-existing-serialized-data-to-json) below.
 
 ## Index
 
@@ -13,6 +13,7 @@ The **Loggable** behavior adds support for logging changes to and restoring prio
 - [Object Repositories](#object-repositories)
     - [Fetching a Model's Log Entries](#fetching-a-models-log-entries)
     - [Revert a Model to a Previous Version](#revert-a-model-to-a-previous-version)
+- [Migrating Existing Serialized Data to JSON](#migrating-existing-serialized-data-to-json)
 
 ## Getting Started
 
@@ -247,3 +248,77 @@ $repo = $em->getRepository(LogEntry::class);
 // We are now able to revert to an older version
 $repo->revert($article, 2);
 ```
+
+## Migrating Existing Serialized Data to JSON
+
+If you have an existing `ext_log_entries` table (or custom ORM log entry tables) with data stored in the old
+PHP `serialize()` format, you need to migrate it to JSON before using `doctrine/dbal` 4.0 or later.
+
+The project provides a Symfony console command for this migration. The command:
+
+1. Renames the existing `data` column to `data_serialized` (so no existing data is lost).
+2. Adds a new `data` column with a JSON-compatible type.
+3. Reads each row, calls `unserialize()` on the old value and `json_encode()` on the result, and writes it into the new column.
+4. Optionally drops the `data_serialized` backup column automatically when `--drop-legacy` is passed. Without this flag the column is kept so you can verify the migration manually before dropping it.
+
+### Usage (Symfony command)
+
+```bash
+php bin/console gedmo:loggable:migrate-data-to-json \
+    [--batch-size=500] \
+    [--drop-legacy]
+```
+
+The command uses the injected Doctrine DBAL connection and resolves the mapped ORM log entry table(s)
+from Doctrine metadata, so you do not need to pass credentials or table names on the command line.
+
+> [!NOTE]
+> Symfony does not automatically discover command services from vendor packages by the `#[AsCommand]` attribute alone.
+> If you integrate this library directly, register the command as a service yourself or use a Symfony bundle/recipe that imports vendor services for you. For example:
+>
+> ```yaml
+> services:
+>     Gedmo\Loggable\Command\MigrateDataToJsonCommand: ~
+> ```
+
+| Option | Description |
+|---|---|
+| `--batch-size` | Number of rows to process per database round-trip (default: `500`). |
+| `--drop-legacy` | Drop the `data_serialized` backup column automatically after a successful migration. Omit this flag if you want to keep the backup column for manual verification first. |
+
+> [!NOTE]
+> Run this script **before** updating the entity mapping to use the `json` type and before upgrading to DBAL 4.
+> Make a database backup before running the migration.
+
+### Manual migration approach
+
+If you prefer to handle the migration yourself, the steps are:
+
+1. **Rename** the `data` column to `data_serialized`:
+   ```sql
+   ALTER TABLE ext_log_entries RENAME COLUMN data TO data_serialized;
+   ```
+
+2. **Add** a new `data` column (use `LONGTEXT` for MySQL/MariaDB or `TEXT` for SQLite/PostgreSQL):
+   ```sql
+   ALTER TABLE ext_log_entries ADD COLUMN data LONGTEXT DEFAULT NULL;
+   ```
+
+3. **Convert** each row using PHP (the `unserialize()` → `json_encode()` round-trip):
+
+   ```php
+   $rows = $connection->fetchAllAssociative('SELECT id, data_serialized FROM ext_log_entries WHERE data_serialized IS NOT NULL');
+   foreach ($rows as $row) {
+       $deserialized = unserialize($row['data_serialized'], ['allowed_classes' => false]);
+       $json = json_encode($deserialized, JSON_THROW_ON_ERROR);
+       $connection->executeStatement(
+           'UPDATE ext_log_entries SET data = ? WHERE id = ?',
+           [$json, $row['id']]
+       );
+   }
+   ```
+
+4. **Drop** the legacy column once you have verified the migration:
+   ```sql
+   ALTER TABLE ext_log_entries DROP COLUMN data_serialized;
+   ```
