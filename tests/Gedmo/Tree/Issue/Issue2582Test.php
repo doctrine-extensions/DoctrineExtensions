@@ -137,6 +137,42 @@ final class Issue2582Test extends BaseTestCaseORM
         $this->assertSameOuTree($expected);
     }
 
+    public function testInsertTwoWideRootsInOneFlush(): void
+    {
+        // First root: a child that itself has two children (treeSize 6).
+        $ou1 = new OU('00000000-0000-0000-0000-000000000001', null);
+        $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
+        $ou111 = new OU('00000000-0000-0000-0000-000000000111', $ou11);
+        $ou112 = new OU('00000000-0000-0000-0000-000000000112', $ou11);
+
+        // Second root: two children (treeSize 6).
+        $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
+        $ou22 = new OU('00000000-0000-0000-0000-000000000022', $ou2);
+
+        $this->em->persist($ou1);
+        $this->em->persist($ou11);
+        $this->em->persist($ou111);
+        $this->em->persist($ou112);
+        $this->em->persist($ou2);
+        $this->em->persist($ou21);
+        $this->em->persist($ou22);
+        $this->em->flush();
+
+        $this->em->clear();
+
+        $expected = [
+            ['00000000-0000-0000-0000-000000000001', null, 1, 0, 8],
+            ['00000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000001', 2, 1, 7],
+            ['00000000-0000-0000-0000-000000000111', '00000000-0000-0000-0000-000000000011', 3, 2, 4],
+            ['00000000-0000-0000-0000-000000000112', '00000000-0000-0000-0000-000000000011', 5, 2, 6],
+            ['00000000-0000-0000-0000-000000000002', null, 9, 0, 14],
+            ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 10, 1, 11],
+            ['00000000-0000-0000-0000-000000000022', '00000000-0000-0000-0000-000000000002', 12, 1, 13],
+        ];
+        $this->assertSameOuTree($expected);
+    }
+
     public function testInsertTwoRootsInOneFlushWithTreeRoot(): void
     {
         $ou1 = new OUWithRoot('00000000-0000-0000-0000-000000000001', null);
