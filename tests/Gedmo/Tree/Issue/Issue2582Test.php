@@ -173,6 +173,99 @@ final class Issue2582Test extends BaseTestCaseORM
         $this->assertSameOuTree($expected);
     }
 
+    public function testInsertFourRootsInOneFlush(): void
+    {
+        $ou1 = new OU('00000000-0000-0000-0000-000000000001', null);
+        $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
+        $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
+        $ou3 = new OU('00000000-0000-0000-0000-000000000003', null);
+        $ou31 = new OU('00000000-0000-0000-0000-000000000031', $ou3);
+        $ou4 = new OU('00000000-0000-0000-0000-000000000004', null);
+        $ou41 = new OU('00000000-0000-0000-0000-000000000041', $ou4);
+
+        $this->em->persist($ou1);
+        $this->em->persist($ou11);
+        $this->em->persist($ou2);
+        $this->em->persist($ou21);
+        $this->em->persist($ou3);
+        $this->em->persist($ou31);
+        $this->em->persist($ou4);
+        $this->em->persist($ou41);
+        $this->em->flush();
+
+        $this->em->clear();
+
+        $expected = [
+            ['00000000-0000-0000-0000-000000000001', null, 1, 0, 4],
+            ['00000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000001', 2, 1, 3],
+            ['00000000-0000-0000-0000-000000000002', null, 5, 0, 8],
+            ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
+            ['00000000-0000-0000-0000-000000000003', null, 9, 0, 12],
+            ['00000000-0000-0000-0000-000000000031', '00000000-0000-0000-0000-000000000003', 10, 1, 11],
+            ['00000000-0000-0000-0000-000000000004', null, 13, 0, 16],
+            ['00000000-0000-0000-0000-000000000041', '00000000-0000-0000-0000-000000000004', 14, 1, 15],
+        ];
+        $this->assertSameOuTree($expected);
+    }
+
+    public function testRelocateExistingNodeToRootAndInsertNewRootInOneFlush(): void
+    {
+        $ou1 = new OU('00000000-0000-0000-0000-000000000001', null);
+        $ou11 = new OU('00000000-0000-0000-0000-000000000011', $ou1);
+        $this->em->persist($ou1);
+        $this->em->persist($ou11);
+        $this->em->flush();
+        $this->em->clear();
+
+        $expected = [
+            ['00000000-0000-0000-0000-000000000001', null, 1, 0, 4],
+            ['00000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000001', 2, 1, 3],
+        ];
+        $this->assertSameOuTree($expected);
+
+        $ou11 = $this->em->getRepository(OU::class)->find('00000000-0000-0000-0000-000000000011');
+        $ou11->setParent(null);
+        $ou2 = new OU('00000000-0000-0000-0000-000000000002', null);
+        $ou21 = new OU('00000000-0000-0000-0000-000000000021', $ou2);
+
+        $this->em->persist($ou2);
+        $this->em->persist($ou21);
+        $this->em->flush();
+
+        $this->em->clear();
+
+        $expected = [
+            ['00000000-0000-0000-0000-000000000011', null, 1, 0, 2],
+            ['00000000-0000-0000-0000-000000000001', null, 3, 0, 4],
+            ['00000000-0000-0000-0000-000000000002', null, 5, 0, 8],
+            ['00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000002', 6, 1, 7],
+        ];
+        $this->assertSameOuTree($expected);
+    }
+
+    public function testSetParentKeepsBidirectionalAssociationConsistent(): void
+    {
+        $rootA = new OU('00000000-0000-0000-0000-0000000000a1', null);
+        $rootB = new OU('00000000-0000-0000-0000-0000000000b1', null);
+        $child = new OU('00000000-0000-0000-0000-0000000000c1', $rootA);
+
+        static::assertTrue($rootA->getChildren()->contains($child));
+        static::assertFalse($rootB->getChildren()->contains($child));
+
+        $child->setParent($rootB);
+        static::assertFalse($rootA->getChildren()->contains($child));
+        static::assertTrue($rootB->getChildren()->contains($child));
+        static::assertCount(1, $rootB->getChildren());
+
+        $child->setParent($rootB);
+        static::assertCount(1, $rootB->getChildren());
+
+        $child->setParent(null);
+        static::assertFalse($rootB->getChildren()->contains($child));
+        static::assertNull($child->getParent());
+    }
+
     public function testInsertTwoRootsInOneFlushWithTreeRoot(): void
     {
         $ou1 = new OUWithRoot('00000000-0000-0000-0000-000000000001', null);

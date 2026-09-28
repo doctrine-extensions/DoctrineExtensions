@@ -91,10 +91,7 @@ class OU
     {
         $this->id = $id;
         $this->children = new ArrayCollection();
-        $this->parent = $parent;
-        if ($parent) {
-            $parent->children->add($this);
-        }
+        $this->setParent($parent);
     }
 
     public function getId(): string
@@ -105,6 +102,20 @@ class OU
     public function getParent(): ?self
     {
         return $this->parent;
+    }
+
+    public function setParent(?self $parent): void
+    {
+        if ($this->parent === $parent) {
+            return;
+        }
+        if (null !== $this->parent && $this->parent->children->contains($this)) {
+            $this->parent->children->removeElement($this);
+        }
+        $this->parent = $parent;
+        if (null !== $parent && !$parent->children->contains($this)) {
+            $parent->children->add($this);
+        }
     }
 
     public function getLeft(): int
