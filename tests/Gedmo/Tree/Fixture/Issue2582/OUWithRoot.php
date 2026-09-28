@@ -53,7 +53,7 @@ class OUWithRoot
     /**
      * @Gedmo\TreeParent()
      *
-     * @ORM\ManyToOne(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2582\OU", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2582\OUWithRoot", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
@@ -89,7 +89,7 @@ class OUWithRoot
     private int $right = 2;
 
     /**
-     * @ORM\OneToMany(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2582\OU", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="\Gedmo\Tests\Tree\Fixture\Issue2582\OUWithRoot", mappedBy="parent")
      * @ORM\OrderBy({"left" = "ASC"})
      *
      * @var Collection<int, self>
