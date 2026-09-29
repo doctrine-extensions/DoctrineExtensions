@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Introduced the `Revisionable` extension as a modern replacement to the `Loggable` extension (#2825)
+
 ### Fixed
 - SoftDeleteable: Resolve the event manager listeners from the object manager to support `doctrine/persistence` >= 4.0 and
   `doctrine/event-manager` >= 2.1

@@ -41,6 +41,7 @@ final class DoctrineExtensions
         $paths = [
             __DIR__.'/Translatable/Entity',
             __DIR__.'/Loggable/Entity',
+            __DIR__.'/Revisionable/Entity',
             __DIR__.'/Tree/Entity',
         ];
 
@@ -62,6 +63,7 @@ final class DoctrineExtensions
         $paths = [
             __DIR__.'/Translatable/Entity/MappedSuperclass',
             __DIR__.'/Loggable/Entity/MappedSuperclass',
+            __DIR__.'/Revisionable/Entity/MappedSuperclass',
             __DIR__.'/Tree/Entity/MappedSuperclass',
         ];
 
@@ -83,6 +85,7 @@ final class DoctrineExtensions
         $paths = [
             __DIR__.'/Translatable/Document',
             __DIR__.'/Loggable/Document',
+            __DIR__.'/Revisionable/Document',
         ];
 
         if (\PHP_VERSION_ID >= 80000) {
@@ -103,6 +106,7 @@ final class DoctrineExtensions
         $paths = [
             __DIR__.'/Translatable/Document/MappedSuperclass',
             __DIR__.'/Loggable/Document/MappedSuperclass',
+            __DIR__.'/Revisionable/Document/MappedSuperclass',
         ];
 
         if (\PHP_VERSION_ID >= 80000) {
