@@ -18,12 +18,14 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.22.2] - 2026-09-29
 ### Fixed
 - SoftDeleteable: Resolve the event manager listeners from the object manager to support `doctrine/persistence` >= 4.0 and
   `doctrine/event-manager` >= 2.1
-- Loggable: Fix PHPDoc template bounds to support Symfony TypeInfo (#3044)
-- Tree: Fix TreeObjectHydrator compatibility with ORM 3 when parent property is defined before children property in entity (#3041)
-- Tree: Fixed inserting multiple root nodes in one flush operation with the nested set strategy when root nodes are not persisted first (#2582)
+- Loggable: PHPDoc template bounds to support Symfony TypeInfo (#3044)
+- Tree: TreeObjectHydrator compatibility with ORM 3 when parent property is defined before children property in entity (#3041)
+- Tree: Inserting multiple root nodes in one flush operation with the nested set strategy when root nodes are not persisted first (#2582)
 
 ## [3.22.1] - 2026-08-01
 ### Changed
