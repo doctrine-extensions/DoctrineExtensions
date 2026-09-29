@@ -326,7 +326,7 @@ final class Issue2582Test extends BaseTestCaseORM
     }
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T>             $entityClass
      * @param list<array{string, string}> $orderBy
