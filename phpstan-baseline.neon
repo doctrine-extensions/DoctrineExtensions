@@ -919,10 +919,10 @@ parameters:
 			path: src/Tree/Strategy/AbstractMaterializedPath.php
 
 		-
-			message: '#^Call to function enum_exists\(\) with ''Doctrine\\\\Common\\\\Collections\\\\Criteria'' will always evaluate to false\.$#'
-			identifier: function.impossibleType
+			message: '#^Call to an undefined method Doctrine\\ORM\\EntityRepository\<object\>\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
-			path: src/Tree/Strategy/ORM/Nested.php
+			path: src/Tree/Strategy/ORM/Closure.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectManager\:\:getUnitOfWork\(\)\.$#'
