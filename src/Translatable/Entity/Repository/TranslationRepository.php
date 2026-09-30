@@ -226,6 +226,44 @@ class TranslationRepository extends EntityRepository
         return $result;
     }
 
+    public function removeTranslations($entity, $field = null, $locale = null)
+    {
+        $wrapped = new EntityWrapper($entity, $this->getEntityManager());
+        if ($wrapped->hasValidIdentifier()) {
+            $entityId = $wrapped->getIdentifier();
+            $config = $this
+                ->getTranslatableListener()
+                ->getConfiguration($this->getEntityManager(), $wrapped->getMetadata()->getName());
+
+            if (!$config) {
+                return;
+            }
+
+            $entityClass = $config['useObjectClass'];
+            $translationMeta = $this->getClassMetadata(); // table inheritance support
+
+            $translationClass = $config['translationClass'] ?? $translationMeta->rootEntityName;
+
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->delete()
+                ->from($translationClass, 'trans')
+                ->where('trans.foreignKey = :entityId', 'trans.objectClass = :entityClass')
+                ->setParameter('entityId', $entityId)
+                ->setParameter('entityClass', $entityClass);
+
+            if ($field) {
+                $qb->andWhere('trans.field = :field')
+                    ->setParameter('field', $field);
+            }
+            if ($locale) {
+                $qb->andWhere('trans.locale = :locale')
+                    ->setParameter('locale', $locale);
+            }
+
+            $qb->getQuery()->execute();
+        }
+    }
+
     /**
      * Get the currently used TranslatableListener
      *
