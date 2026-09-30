@@ -38,8 +38,6 @@ class CompanyInvalidFieldType
     private ?string $name = null;
 
     /**
-     * @var float|null
-     *
      * @Gedmo\Blameable(on="create")
      *
      * @ORM\Column(name="creator", type="float")
