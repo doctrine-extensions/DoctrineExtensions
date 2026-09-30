@@ -1,5 +1,4 @@
 .php-cs-fixer.cache
-bin
 vendor
 composer.lock
 coverage.xml
