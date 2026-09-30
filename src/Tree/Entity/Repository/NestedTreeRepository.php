@@ -1008,7 +1008,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         ];
         $options += $defaultOptions;
 
-        if (!$options['skipVerify'] && (true === $this->verify())) {
+        if (!$options['skipVerify'] && (true === $this->verify(['treeRootNode' => $options['treeRootNode']]))) {
             return;
         }
 
