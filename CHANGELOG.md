@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: `ClosureTreeRepository::rebuildClosure()` (used by `recover()`) compatibility with ORM 3 association mapping objects (#3074)
 
 ## [3.22.2] - 2026-09-29
 ### Fixed
