@@ -270,6 +270,25 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
+    public function testRecoverRebuildsMissingClosures(): void
+    {
+        $this->populate();
+
+        $repo = $this->em->getRepository(Category::class);
+
+        // Run twice to ensure the association mapping is not modified by the first rebuild
+        for ($i = 0; $i < 2; ++$i) {
+            $this->em->createQuery('DELETE FROM '.CategoryClosure::class.' c')->execute();
+
+            static::assertNotTrue($repo->verify());
+
+            $repo->recover();
+
+            static::assertTrue($repo->verify());
+            static::assertSame(15, $repo->childCount());
+        }
+    }
+
     // Utility Methods
 
     /**
