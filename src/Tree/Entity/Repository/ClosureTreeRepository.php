@@ -9,6 +9,8 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
+use Doctrine\ORM\Mapping\AssociationMapping;
+use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Gedmo\Exception\InvalidArgumentException;
@@ -630,16 +632,31 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @param array<string, mixed> $association
+     * @param array<string, mixed>|AssociationMapping $association
      *
      * @return string|null
      */
     protected function getJoinColumnFieldName($association)
     {
-        if (count($association['joinColumnFieldNames']) > 1) {
-            throw new \RuntimeException('More association on field '.$association['fieldName']);
+        if (is_array($association)) {
+            if (count($association['joinColumnFieldNames']) > 1) {
+                throw new \RuntimeException('More association on field '.$association['fieldName']);
+            }
+
+            return array_shift($association['joinColumnFieldNames']);
         }
 
-        return array_shift($association['joinColumnFieldNames']);
+        if ($association instanceof ToOneOwningSideMapping) {
+            if (count($association->joinColumnFieldNames) > 1) {
+                throw new \RuntimeException('More association on field '.$association->fieldName);
+            }
+
+            // Work on a copy to avoid modifying the mapping held by the class metadata
+            $joinColumnFieldNames = $association->joinColumnFieldNames;
+
+            return array_shift($joinColumnFieldNames);
+        }
+
+        throw new \RuntimeException('Unsupported mapping type '.gettype($association));
     }
 }
