@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Category;
 use Gedmo\Tests\Tree\Fixture\CategoryUuid;
@@ -24,6 +25,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class RepositoryTest extends BaseTestCaseORM
 {
+    use VerifyDeprecations;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -464,6 +467,19 @@ final class RepositoryTest extends BaseTestCaseORM
         static::assertSame('Fruits', $leafs[0]->getTitle());
         static::assertSame('Carrots', $leafs[1]->getTitle());
         static::assertSame('Potatoes', $leafs[2]->getTitle());
+    }
+
+    public function testSortDirectionDoesNotTriggerOrmDeprecation(): void
+    {
+        $this->expectNoDeprecationWithIdentifier('https://github.com/doctrine/orm/issues/11313');
+
+        $repo = $this->em->getRepository(Category::class);
+        $titles = static fn (array $nodes): array => array_map(static fn (Category $node): string => $node->getTitle(), $nodes);
+
+        static::assertSame(['Food', 'Sports'], $titles($repo->getRootNodes()));
+        static::assertSame(['Sports', 'Food'], $titles($repo->getRootNodes('title', 'desc')));
+        static::assertSame(['Vegitables', 'Fruits'], $titles($repo->getChildren($repo->findOneBy(['title' => 'Food']), true, 'title', 'DESC')));
+        static::assertSame(['Food', 'Vegitables', 'Carrots'], $titles($repo->getPath($repo->findOneBy(['title' => 'Carrots']))));
     }
 
     protected function getUsedEntityFixtures(): array

@@ -12,6 +12,7 @@ namespace Gedmo\Tree\Entity\Repository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tool\ORM\SortDirectionCompat;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 use Gedmo\Tree\Strategy;
@@ -48,7 +49,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             foreach ($sortByField as $key => $field) {
                 $fieldDirection = $direction[$key] ?? 'asc';
                 if ($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) {
-                    $qb->addOrderBy('node.'.$field, 'asc' === strtolower($fieldDirection) ? 'asc' : 'desc');
+                    $qb->addOrderBy('node.'.$field, SortDirectionCompat::convert($fieldDirection));
                 }
             }
         }
@@ -165,14 +166,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 foreach ($sortByField as $key => $field) {
                     $fieldDirection = is_array($direction) ? ($direction[$key] ?? 'asc') : $direction;
                     if (($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) && in_array(strtolower($fieldDirection), ['asc', 'desc'], true)) {
-                        $qb->addOrderBy('node.'.$field, $fieldDirection);
+                        $qb->addOrderBy('node.'.$field, SortDirectionCompat::convert($fieldDirection));
                     } else {
                         throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $field, $fieldDirection));
                     }
                 }
             } else {
                 if (($meta->hasField($sortByField) || $meta->isSingleValuedAssociation($sortByField)) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
-                    $qb->orderBy('node.'.$sortByField, $direction);
+                    $qb->orderBy('node.'.$sortByField, SortDirectionCompat::convert($direction));
                 } else {
                     throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $sortByField, $direction));
                 }
@@ -387,7 +388,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             ->from($config['closure'], 'c')
             ->innerJoin('c.descendant', 'node')
             ->leftJoin('node.parent', 'p')
-            ->addOrderBy($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL, 'asc');
+            ->addOrderBy($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL);
 
         if (null !== $node) {
             $q->where('c.ancestor = :node');
@@ -407,7 +408,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             && isset($options['childSort']['field'], $options['childSort']['dir'])) {
             $q->addOrderBy(
                 'node.'.$options['childSort']['field'],
-                'asc' === strtolower($options['childSort']['dir']) ? 'asc' : 'desc'
+                SortDirectionCompat::convert($options['childSort']['dir'])
             );
         }
 

@@ -18,6 +18,7 @@ use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tool\ORM\Repository\EntityRepositoryCompat;
+use Gedmo\Tool\ORM\SortDirectionCompat;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\Node;
 use Gedmo\Tree\Strategy;
@@ -64,11 +65,11 @@ class NestedTreeRepository extends AbstractTreeRepository
             foreach ($sortByField as $key => $field) {
                 $fieldDirection = $direction[$key] ?? 'asc';
                 if ($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) {
-                    $qb->addOrderBy('node.'.$field, 'asc' === strtolower($fieldDirection) ? 'asc' : 'desc');
+                    $qb->addOrderBy('node.'.$field, SortDirectionCompat::convert($fieldDirection));
                 }
             }
         } else {
-            $qb->orderBy('node.'.$config['left'], 'ASC');
+            $qb->orderBy('node.'.$config['left']);
         }
 
         return $qb;
@@ -124,7 +125,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
-            ->orderBy('node.'.$config['left'], 'ASC')
+            ->orderBy('node.'.$config['left'])
         ;
         if ($options['includeNode']) {
             $qb->where($qb->expr()->lte('node.'.$config['left'], $left))
@@ -281,19 +282,19 @@ class NestedTreeRepository extends AbstractTreeRepository
             }
         }
         if (!$sortByField) {
-            $qb->orderBy('node.'.$config['left'], 'ASC');
+            $qb->orderBy('node.'.$config['left']);
         } elseif (is_array($sortByField)) {
             foreach ($sortByField as $key => $field) {
                 $fieldDirection = is_array($direction) ? ($direction[$key] ?? 'asc') : $direction;
                 if (($meta->hasField($field) || $meta->isSingleValuedAssociation($field)) && in_array(strtolower($fieldDirection), ['asc', 'desc'], true)) {
-                    $qb->addOrderBy('node.'.$field, $fieldDirection);
+                    $qb->addOrderBy('node.'.$field, SortDirectionCompat::convert($fieldDirection));
                 } else {
                     throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $field, $fieldDirection));
                 }
             }
         } else {
             if (($meta->hasField($sortByField) || $meta->isSingleValuedAssociation($sortByField)) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
-                $qb->orderBy('node.'.$sortByField, $direction);
+                $qb->orderBy('node.'.$sortByField, SortDirectionCompat::convert($direction));
             } else {
                 throw new InvalidArgumentException(sprintf('Invalid sort options specified: field - %s, direction - %s', $sortByField, $direction));
             }
@@ -394,12 +395,12 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
         if (!$sortByField) {
             if (isset($config['root'])) {
-                $qb->addOrderBy('node.'.$config['root'], 'ASC');
+                $qb->addOrderBy('node.'.$config['root']);
             }
-            $qb->addOrderBy('node.'.$config['left'], 'ASC');
+            $qb->addOrderBy('node.'.$config['left']);
         } else {
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), ['asc', 'desc'], true)) {
-                $qb->orderBy('node.'.$sortByField, $direction);
+                $qb->orderBy('node.'.$sortByField, SortDirectionCompat::convert($direction));
             } else {
                 throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
@@ -473,7 +474,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $qb->expr()->gte('node.'.$config['left'], $left) :
                 $qb->expr()->gt('node.'.$config['left'], $left)
             )
-            ->orderBy("node.{$config['left']}", 'ASC')
+            ->orderBy("node.{$config['left']}")
         ;
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->getEntityManager());
@@ -553,7 +554,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $qb->expr()->lte('node.'.$config['left'], $left) :
                 $qb->expr()->lt('node.'.$config['left'], $left)
             )
-            ->orderBy("node.{$config['left']}", 'ASC')
+            ->orderBy("node.{$config['left']}")
         ;
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->getEntityManager());

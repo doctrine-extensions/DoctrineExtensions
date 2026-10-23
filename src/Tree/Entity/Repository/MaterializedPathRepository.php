@@ -11,6 +11,7 @@ namespace Gedmo\Tree\Entity\Repository;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Gedmo\Tool\ORM\SortDirectionCompat;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\Strategy;
 
@@ -120,7 +121,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $alias.'.'.$config['path'],
             $paths
         ));
-        $qb->orderBy($alias.'.'.$config['level'], 'ASC');
+        $qb->orderBy($alias.'.'.$config['level']);
 
         return $qb;
     }
@@ -210,7 +211,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         }
 
         $orderByField = null === $sortByField ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
-        $orderByDir = 'asc' === strtolower($direction) ? 'asc' : 'desc';
+        $orderByDir = SortDirectionCompat::convert($direction);
         $qb->orderBy($orderByField, $orderByDir);
 
         return $qb;

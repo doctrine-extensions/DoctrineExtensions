@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Closure\Category;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
@@ -32,6 +33,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 {
+    use VerifyDeprecations;
+
     /**
      * @var TreeListener
      */
@@ -94,6 +97,23 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         static::assertSame('Fruits', $path[1]->getTitle());
         static::assertSame('Berries', $path[2]->getTitle());
         static::assertSame('Strawberries', $path[3]->getTitle());
+    }
+
+    public function testSortDirectionDoesNotTriggerOrmDeprecation(): void
+    {
+        $this->populate();
+        $this->expectNoDeprecationWithIdentifier('https://github.com/doctrine/orm/issues/11313');
+
+        $repo = $this->em->getRepository(Category::class);
+        $food = $repo->findOneBy(['title' => 'Food']);
+        $titles = static fn (array $nodes): array => array_map(static fn (Category $node): string => $node->getTitle(), $nodes);
+
+        static::assertSame(['Sports', 'Food'], $titles($repo->getRootNodes('title', 'desc')));
+        static::assertSame(['Vegitables', 'Milk', 'Fruits'], $titles($repo->getChildren($food, true, 'title', 'desc')));
+        static::assertSame(['Vegitables', 'Milk', 'Fruits'], $titles($repo->getChildren($food, true, ['title'], ['desc'])));
+
+        $hierarchy = $repo->getNodesHierarchyQuery($food, false, ['childSort' => ['field' => 'title', 'dir' => 'desc']])->getArrayResult();
+        static::assertSame(['Vegitables', 'Milk', 'Fruits'], array_slice(array_map(static fn (array $row): string => $row[0]['descendant']['title'], $hierarchy), 0, 3));
     }
 
     public function testChildren(): void

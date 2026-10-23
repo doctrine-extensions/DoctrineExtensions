@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\MPCategory;
@@ -27,6 +28,8 @@ use Gedmo\Tree\TreeListener;
  */
 final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
+    use VerifyDeprecations;
+
     /** @var MaterializedPathRepository<MPCategory> */
     private MaterializedPathRepository $repo;
 
@@ -77,6 +80,16 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
         static::assertCount(1, $result);
         static::assertSame('Sports', $result[0]->getTitle());
+    }
+
+    public function testSortDirectionDoesNotTriggerOrmDeprecation(): void
+    {
+        $this->expectNoDeprecationWithIdentifier('https://github.com/doctrine/orm/issues/11313');
+
+        $titles = static fn (array $nodes): array => array_map(static fn (MPCategory $node): string => $node->getTitle(), $nodes);
+
+        static::assertSame(['Sports', 'Food', 'Drinks'], $titles($this->repo->getRootNodes('title', 'desc')));
+        static::assertSame(['Food', 'Vegitables', 'Carrots'], $titles($this->repo->getPath($this->repo->findOneBy(['title' => 'Carrots']))));
     }
 
     public function testGetChildren(): void

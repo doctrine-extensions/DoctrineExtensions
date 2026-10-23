@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: Deprecation triggered by `doctrine/orm` >= 3.7 when passing a sort direction string to `QueryBuilder::orderBy()` (#3070)
 
 ## [3.22.2] - 2026-09-29
 ### Fixed

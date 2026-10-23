@@ -70,7 +70,7 @@ class MaterializedPath extends AbstractMaterializedPath
             ->from($config['useObjectClass'], 'e')
             ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')))
             ->andWhere('e.'.$config['path'].' != :path')
-            ->orderBy('e.'.$config['path'], 'asc');      // This may save some calls to updateNode
+            ->orderBy('e.'.$config['path']);      // This may save some calls to updateNode
         $qb->setParameter('path', $path);
 
         return $qb->getQuery()->getResult();
