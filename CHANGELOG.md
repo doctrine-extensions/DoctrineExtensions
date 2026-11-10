@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Translatable: Load personal translations through the relation when the translations collection is not initialized
 
 ## [3.22.2] - 2026-09-29
 ### Fixed
