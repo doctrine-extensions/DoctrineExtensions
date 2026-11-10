@@ -61,15 +61,19 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 ;
                 if ($isRightCollection) {
                     $collection = $wrapped->getPropertyValue($assoc['fieldName']);
-                    foreach ($collection as $trans) {
-                        if ($trans->getLocale() === $locale) {
-                            $result[] = [
-                                'field' => $trans->getField(),
-                                'content' => $trans->getContent(),
-                            ];
+                    // ORM reports an uninitialized non-nullable typed collection as null.
+                    // Leave $found false so the relation query below can load the rows.
+                    if (is_iterable($collection)) {
+                        foreach ($collection as $trans) {
+                            if ($trans->getLocale() === $locale) {
+                                $result[] = [
+                                    'field' => $trans->getField(),
+                                    'content' => $trans->getContent(),
+                                ];
+                            }
                         }
+                        $found = true;
                     }
-                    $found = true;
 
                     break;
                 }
