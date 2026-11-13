@@ -166,6 +166,53 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertSame(11, $fruits->getRight());
     }
 
+    public function testPositionIsNotReusedOnLaterParentChange(): void
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(RootCategory::class);
+
+        $food = $repo->findOneBy(['title' => 'Food']);
+        $citrons = $repo->findOneBy(['title' => 'Citrons']);
+        $milk = $repo->findOneBy(['title' => 'Milk']);
+
+        $repo->persistAsNextSiblingOf($milk, $citrons);
+        $this->em->flush();
+
+        $milk->setParent($food);
+        $this->em->flush();
+
+        static::assertSame($food, $milk->getParent());
+        static::assertSame(2, $milk->getLevel());
+        static::assertSame(2, $milk->getLeft());
+        static::assertSame(3, $milk->getRight());
+        static::assertTrue($repo->verify());
+    }
+
+    public function testPositionIsNotReusedByMoveDown(): void
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(RootCategory::class);
+
+        $food = $repo->findOneBy(['title' => 'Food']);
+        $milk = $repo->findOneBy(['title' => 'Milk']);
+
+        $repo->persistAsFirstChildOf($milk, $food);
+        $this->em->flush();
+
+        $repo->moveDown($milk, 1);
+        $this->em->flush();
+        $this->em->clear();
+
+        $food = $repo->findOneBy(['title' => 'Food']);
+        $titles = array_map(
+            static fn (RootCategory $child): ?string => $child->getTitle(),
+            $repo->children($food, true)
+        );
+
+        static::assertSame(['Vegitables', 'Milk', 'Fruits', 'Meat'], $titles);
+        static::assertTrue($repo->verify());
+    }
+
     public function testTreeChildPositionMove(): void
     {
         $this->populate();

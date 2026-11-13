@@ -300,6 +300,9 @@ class Nested implements Strategy
         $oid = spl_object_id($node);
         if (isset($this->nodePositions[$oid])) {
             $position = $this->nodePositions[$oid];
+            // the position applies to one move only, a later move of the node (or of another object
+            // with the same reused object id) must not inherit it
+            unset($this->nodePositions[$oid]);
         }
         $level = $config['level_base'] ?? 0;
         $treeSize = $right - $left + 1;

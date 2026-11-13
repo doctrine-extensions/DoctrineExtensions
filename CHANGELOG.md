@@ -18,6 +18,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Tree: The position set by `persistAs*` repository methods is applied to one move only and no longer leaks into later moves (`moveUp()`/`moveDown()`, parent changes) of the node or of another node with a reused object id (#1606, #1239)
 
 ## [3.22.2] - 2026-09-29
 ### Fixed
