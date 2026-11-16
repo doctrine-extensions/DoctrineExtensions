@@ -187,7 +187,9 @@ optionally the mapping configuration, to your models. This trait is provided as 
 - `Gedmo\SoftDeleteable\Traits\SoftDeleteableDocument` adds a `$deletedAt` property with getters and setters
   and mapping annotations and attributes for the MongoDB ODM
 - `Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity` adds a `$deletedAt` property with getters and setters
-  and mapping annotations and attributes for the ORM
+  and mapping annotations and attributes for the ORM (deprecated, uses the mutable `datetime` type)
+- `Gedmo\SoftDeleteable\Traits\SoftDeleteableImmutableEntity` adds a `$deletedAt` property with getters and setters
+  using `\DateTimeImmutable`, and mapping annotations and attributes for the ORM with the `datetime_immutable` type
 
 ## Working with Filters
 

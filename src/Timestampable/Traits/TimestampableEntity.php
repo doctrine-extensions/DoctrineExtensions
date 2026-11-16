@@ -19,6 +19,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * This implementation provides a mapping configuration for the Doctrine ORM.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.23, use {@see TimestampableImmutableEntity} instead, as the mutable
+ *             "datetime" type is deprecated in doctrine/dbal.
  */
 trait TimestampableEntity
 {

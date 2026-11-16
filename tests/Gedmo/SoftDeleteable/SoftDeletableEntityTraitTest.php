@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\SoftDeleteable;
 
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UsingImmutableTrait;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UsingTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -38,5 +39,19 @@ final class SoftDeletableEntityTraitTest extends TestCase
         static::assertTrue($entity->isDeleted(), 'Is deleted is true when deleteAt is not equal to null');
         static::assertSame($entity, $entity->setDeletedAt(), 'Setting deletedAt to null undeletes object');
         static::assertFalse($entity->isDeleted(), 'isDeleted should now return false');
+    }
+
+    public function testGetSetDeletedAtImmutable(): void
+    {
+        $time = new \DateTimeImmutable();
+        $entity = new UsingImmutableTrait();
+
+        static::assertNull($entity->getDeletedAt());
+        static::assertFalse($entity->isDeleted());
+        static::assertSame($entity, $entity->setDeletedAt($time));
+        static::assertSame($time, $entity->getDeletedAt());
+        static::assertTrue($entity->isDeleted());
+        static::assertSame($entity, $entity->setDeletedAt());
+        static::assertFalse($entity->isDeleted());
     }
 }

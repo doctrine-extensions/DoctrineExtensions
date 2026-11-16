@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Timestampable\Fixture\UsingImmutableTrait;
 use Gedmo\Tests\Timestampable\Fixture\UsingTrait;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
@@ -52,10 +53,35 @@ final class TraitUsageTest extends BaseTestCaseORM
         static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedAt(new \DateTime()));
     }
 
+    public function testShouldTimestampUsingImmutableTrait(): void
+    {
+        $sport = new UsingImmutableTrait();
+        $sport->setTitle('Sport');
+
+        $this->em->persist($sport);
+        $this->em->flush();
+        $this->em->clear();
+
+        $found = $this->em->find(UsingImmutableTrait::class, $sport->getId());
+
+        static::assertInstanceOf(\DateTimeImmutable::class, $sport->getCreatedAt());
+        static::assertInstanceOf(\DateTimeImmutable::class, $sport->getUpdatedAt());
+        static::assertInstanceOf(\DateTimeImmutable::class, $found->getCreatedAt());
+        static::assertInstanceOf(\DateTimeImmutable::class, $found->getUpdatedAt());
+    }
+
+    public function testImmutableTraitMethodsShouldReturnObject(): void
+    {
+        $sport = new UsingImmutableTrait();
+        static::assertInstanceOf(UsingImmutableTrait::class, $sport->setCreatedAt(new \DateTimeImmutable()));
+        static::assertInstanceOf(UsingImmutableTrait::class, $sport->setUpdatedAt(new \DateTimeImmutable()));
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [
             UsingTrait::class,
+            UsingImmutableTrait::class,
         ];
     }
 }
