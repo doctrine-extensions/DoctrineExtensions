@@ -21,18 +21,16 @@ trait SoftDeleteableImmutableEntity
 {
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
-     *
-     * @var \DateTimeImmutable|null
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    protected $deletedAt;
+    protected ?\DateTimeImmutable $deletedAt = null;
 
     /**
      * Set or clear the deleted at timestamp.
      *
-     * @return self
+     * @return $this
      */
-    public function setDeletedAt(?\DateTimeImmutable $deletedAt = null)
+    public function setDeletedAt(?\DateTimeImmutable $deletedAt = null): self
     {
         $this->deletedAt = $deletedAt;
 
@@ -42,20 +40,16 @@ trait SoftDeleteableImmutableEntity
     /**
      * Get the deleted at timestamp value. Will return null if
      * the entity has not been soft deleted.
-     *
-     * @return \DateTimeImmutable|null
      */
-    public function getDeletedAt()
+    public function getDeletedAt(): ?\DateTimeImmutable
     {
         return $this->deletedAt;
     }
 
     /**
      * Check if the entity has been soft deleted.
-     *
-     * @return bool
      */
-    public function isDeleted()
+    public function isDeleted(): bool
     {
         return null !== $this->deletedAt;
     }

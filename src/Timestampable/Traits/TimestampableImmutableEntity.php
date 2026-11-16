@@ -21,33 +21,29 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait TimestampableImmutableEntity
 {
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @Gedmo\Timestampable(on="create")
      *
      * @ORM\Column(type="datetime_immutable")
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    protected $createdAt;
+    protected ?\DateTimeImmutable $createdAt = null;
 
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @Gedmo\Timestampable(on="update")
      *
      * @ORM\Column(type="datetime_immutable")
      */
     #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    protected $updatedAt;
+    protected ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * Sets createdAt.
      *
      * @return $this
      */
-    public function setCreatedAt(\DateTimeImmutable $createdAt)
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -56,10 +52,8 @@ trait TimestampableImmutableEntity
 
     /**
      * Returns createdAt.
-     *
-     * @return \DateTimeImmutable|null
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -69,7 +63,7 @@ trait TimestampableImmutableEntity
      *
      * @return $this
      */
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt)
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -78,10 +72,8 @@ trait TimestampableImmutableEntity
 
     /**
      * Returns updatedAt.
-     *
-     * @return \DateTimeImmutable|null
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
