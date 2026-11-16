@@ -18,6 +18,13 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Timestampable: `TimestampableImmutableEntity` trait using `datetime_immutable` columns (#3000)
+- SoftDeleteable: `SoftDeleteableImmutableEntity` trait using a `datetime_immutable` column (#3000)
+
+### Deprecated
+- Timestampable: `TimestampableEntity` trait, use `TimestampableImmutableEntity` instead
+- SoftDeleteable: `SoftDeleteableEntity` trait, use `SoftDeleteableImmutableEntity` instead
 
 ## [3.22.2] - 2026-09-29
 ### Fixed

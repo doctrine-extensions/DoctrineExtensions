@@ -141,7 +141,9 @@ provided as a convenience for a common configuration, for other use cases it is 
 - `Gedmo\Timestampable\Traits\TimestampableDocument` adds a `$createdAt` and `$updatedAt` property, with getters and setters
   and mapping annotations and attributes for the MongoDB ODM
 - `Gedmo\Timestampable\Traits\TimestampableEntity` adds a `$createdAt` and `$updatedAt` property, with getters and setters
-  and mapping annotations and attributes for the ORM
+  and mapping annotations and attributes for the ORM (deprecated, uses the mutable `datetime` type)
+- `Gedmo\Timestampable\Traits\TimestampableImmutableEntity` adds a `$createdAt` and `$updatedAt` property, with getters and setters
+  using `\DateTimeImmutable`, and mapping annotations and attributes for the ORM with the `datetime_immutable` type
 
 ## Logging Changes For Specific Actions
 

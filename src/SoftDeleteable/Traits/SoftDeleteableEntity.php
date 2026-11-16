@@ -19,6 +19,9 @@ use Doctrine\ORM\Mapping as ORM;
  * This implementation provides a mapping configuration for the Doctrine ORM.
  *
  * @author Wesley van Opdorp <wesley.van.opdorp@freshheads.com>
+ *
+ * @deprecated since gedmo/doctrine-extensions 3.23, use {@see SoftDeleteableImmutableEntity} instead, as the mutable
+ *             "datetime" type is deprecated in doctrine/dbal.
  */
 trait SoftDeleteableEntity
 {
