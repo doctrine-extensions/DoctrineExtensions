@@ -12,10 +12,12 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Tests\Translatable\Fixture\Comment;
+use Gedmo\Tests\Translatable\Fixture\PostLoadSkipOnLoadSpy;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
@@ -684,6 +686,129 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertTrue($this->translatableListener->isSkipOnLoad());
     }
 
+    /**
+     * @dataProvider provideObjectHydrationModes
+     *
+     * @param Query::HYDRATE_OBJECT|Query::HYDRATE_SIMPLEOBJECT $hydrationMode
+     */
+    public function testShouldSkipOnLoadDuringDeferredPostLoadEvents(int $hydrationMode): void
+    {
+        $this->populateMore();
+        $spy = $this->registerPostLoadSkipOnLoadSpy();
+        $dql = 'SELECT a FROM '.Article::class.' a ORDER BY a.id';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+
+        $this->translatableListener->setTranslatableLocale('lt_lt');
+        $this->translatableListener->setSkipOnLoad(false);
+
+        $result = $q->getResult($hydrationMode);
+
+        static::assertCount(4, $result);
+        static::assertSame([true, true, true, true], $spy->skipOnLoadStates);
+        static::assertFalse($this->translatableListener->isSkipOnLoad());
+    }
+
+    /**
+     * @dataProvider provideObjectHydrationModes
+     *
+     * @param Query::HYDRATE_OBJECT|Query::HYDRATE_SIMPLEOBJECT $hydrationMode
+     */
+    public function testShouldNotReloadTranslationsForMultipleHydratedEntities(int $hydrationMode): void
+    {
+        $this->populateMore();
+        $dql = 'SELECT a FROM '.Article::class.' a ORDER BY a.id';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+
+        $this->translatableListener->setTranslatableLocale('lt_lt');
+        $this->queryLogger->reset();
+
+        $result = $q->getResult($hydrationMode);
+
+        static::assertCount(1, $this->queryLogger->queries);
+        static::assertSame(
+            ['Maistas', 'Alfabetas', 'Moteris', 'Kopustai'],
+            array_map(static fn (Article $article): ?string => $article->getTitle(), $result)
+        );
+    }
+
+    public function testShouldNotReloadTranslationsForJoinedEntitiesOnObjectHydration(): void
+    {
+        $dql = 'SELECT a, c FROM '.Article::class.' a';
+        $dql .= ' LEFT JOIN a.comments c ORDER BY c.id ASC';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+
+        $this->translatableListener->setTranslatableLocale('lt_lt');
+        $this->queryLogger->reset();
+
+        $result = $q->getResult();
+
+        static::assertCount(1, $this->queryLogger->queries);
+        static::assertSame('Maistas', $result[0]->getTitle());
+        static::assertSame('geras', $result[0]->getComments()[0]->getSubject());
+        static::assertSame('blogas', $result[0]->getComments()[1]->getSubject());
+    }
+
+    public function testShouldNotReloadTranslationsOnIterableObjectHydration(): void
+    {
+        $this->populateMore();
+        $spy = $this->registerPostLoadSkipOnLoadSpy();
+        $dql = 'SELECT a FROM '.Article::class.' a ORDER BY a.id';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+
+        $this->translatableListener->setTranslatableLocale('lt_lt');
+        $this->translatableListener->setSkipOnLoad(false);
+        $this->queryLogger->reset();
+
+        $titles = [];
+        foreach ($q->toIterable() as $article) {
+            $titles[] = $article->getTitle();
+        }
+
+        static::assertCount(1, $this->queryLogger->queries);
+        static::assertSame(['Maistas', 'Alfabetas', 'Moteris', 'Kopustai'], $titles);
+        static::assertSame([true, true, true, true], $spy->skipOnLoadStates);
+        static::assertFalse($this->translatableListener->isSkipOnLoad());
+    }
+
+    /**
+     * @dataProvider provideObjectHydrationModes
+     *
+     * @param Query::HYDRATE_OBJECT|Query::HYDRATE_SIMPLEOBJECT $hydrationMode
+     */
+    public function testShouldRestoreSkipOnLoadWhenHydrationFails(int $hydrationMode): void
+    {
+        $spy = $this->registerPostLoadSkipOnLoadSpy();
+        $spy->exception = new \RuntimeException('postLoad failure');
+
+        $dql = 'SELECT a FROM '.Article::class.' a';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+
+        $this->translatableListener->setSkipOnLoad(false);
+
+        try {
+            $q->getResult($hydrationMode);
+            static::fail('Expected the postLoad listener to throw.');
+        } catch (\RuntimeException $e) {
+            static::assertSame($spy->exception, $e);
+        }
+
+        static::assertFalse($this->translatableListener->isSkipOnLoad());
+    }
+
+    /**
+     * @return iterable<string, array{Query::HYDRATE_OBJECT|Query::HYDRATE_SIMPLEOBJECT}>
+     */
+    public static function provideObjectHydrationModes(): iterable
+    {
+        yield 'object' => [Query::HYDRATE_OBJECT];
+        yield 'simple object' => [Query::HYDRATE_SIMPLEOBJECT];
+    }
+
     protected function getUsedEntityFixtures(): array
     {
         return [
@@ -691,6 +816,14 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             Translation::class,
             Comment::class,
         ];
+    }
+
+    private function registerPostLoadSkipOnLoadSpy(): PostLoadSkipOnLoadSpy
+    {
+        $spy = new PostLoadSkipOnLoadSpy($this->translatableListener);
+        $this->em->getEventManager()->addEventListener([Events::postLoad], $spy);
+
+        return $spy;
     }
 
     private function populateMore(): void
