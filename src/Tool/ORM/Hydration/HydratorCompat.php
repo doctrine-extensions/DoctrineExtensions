@@ -9,7 +9,9 @@
 
 namespace Gedmo\Tool\ORM\Hydration;
 
+use Doctrine\DBAL\Result;
 use Doctrine\ORM\Internal\Hydration\AbstractHydrator;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 // The methods we need the compat bridge for are protected, so we're using a public method for this check
 if ((new \ReflectionClass(AbstractHydrator::class))->getMethod('onClear')->hasReturnType()) {
@@ -23,6 +25,28 @@ if ((new \ReflectionClass(AbstractHydrator::class))->getMethod('onClear')->hasRe
      */
     trait HydratorCompat
     {
+        /**
+         * Hydrates all rows returned by the passed statement instance at once.
+         *
+         * @param array<string, mixed> $hints
+         */
+        public function hydrateAll(Result $stmt, ResultSetMapping $resultSetMapping, array $hints = []): mixed
+        {
+            return $this->doHydrateAllWithCompat($stmt, $resultSetMapping, $hints);
+        }
+
+        /**
+         * @param Result               $stmt
+         * @param ResultSetMapping     $resultSetMapping
+         * @param array<string, mixed> $hints
+         *
+         * @return mixed
+         */
+        protected function doHydrateAllWithCompat($stmt, $resultSetMapping, array $hints = [])
+        {
+            return parent::hydrateAll($stmt, $resultSetMapping, $hints);
+        }
+
         /**
          * Executes one-time preparation tasks, once each time hydration is started
          * through {@link hydrateAll} or {@link toIterable()}.
@@ -78,6 +102,32 @@ if ((new \ReflectionClass(AbstractHydrator::class))->getMethod('onClear')->hasRe
      */
     trait HydratorCompat
     {
+        /**
+         * Hydrates all rows returned by the passed statement instance at once.
+         *
+         * @param Result               $stmt
+         * @param ResultSetMapping     $resultSetMapping
+         * @param array<string, mixed> $hints
+         *
+         * @return mixed[]
+         */
+        public function hydrateAll($stmt, $resultSetMapping, array $hints = [])
+        {
+            return $this->doHydrateAllWithCompat($stmt, $resultSetMapping, $hints);
+        }
+
+        /**
+         * @param Result               $stmt
+         * @param ResultSetMapping     $resultSetMapping
+         * @param array<string, mixed> $hints
+         *
+         * @return mixed
+         */
+        protected function doHydrateAllWithCompat($stmt, $resultSetMapping, array $hints = [])
+        {
+            return parent::hydrateAll($stmt, $resultSetMapping, $hints);
+        }
+
         /**
          * Executes one-time preparation tasks, once each time hydration is started
          * through {@link hydrateAll} or {@link toIterable()}.
