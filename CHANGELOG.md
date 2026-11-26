@@ -18,6 +18,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Translatable: Skip re-translation in `postLoad` for entities hydrated through `TranslationWalker` with `doctrine/orm` >= 3.8,
+  which dispatches deferred `postLoad` events after hydrator cleanup
 
 ## [3.22.2] - 2026-09-29
 ### Fixed
