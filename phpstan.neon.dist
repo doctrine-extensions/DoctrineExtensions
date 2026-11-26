@@ -11,6 +11,9 @@ parameters:
     bootstrapFiles:
         - tests/bootstrap.php
     treatPhpDocTypesAsCertain: false
+    typeAliases:
+        # Declared on Doctrine\ORM\Mapping\ClassMetadata since ORM 3.8, but missing in the phpstan/phpstan-doctrine stub
+        IndexMapping: 'array{name?: string, columns?: list<string>, fields?: non-empty-list<string>, flags?: array<array-key, mixed>, options?: array<array-key, mixed>}'
     ignoreErrors:
         -
             identifier: trait.unused
@@ -25,6 +28,8 @@ parameters:
         - src/Tool/Logging/DBAL/QueryAnalyzer.php
         # Generates non-ignorable errors like " Parameter #1 $method (string) of method Gedmo\Tree\Entity\Repository\NestedTreeRepository::__call() is not contravariant with parameter #1 $method (mixed) of method Doctrine\ORM\EntityRepository::__call()."
         - src/Tool/ORM/Repository/EntityRepositoryCompat.php
+        # Only loaded with ORM 3 (PHP 8.1+), its native union types are required to keep the signatures compatible for userland subclasses
+        - src/Tool/ORM/Walker/SqlWalkerCompatForOrm3.php
         # Uses a tracking policy that was removed in ORM 3, PHPStan crashes on this file
         - tests/Gedmo/Sortable/Fixture/NotifyNode.php
         # Generates non-ignorable errors regarding covariance due to the internal compat layer

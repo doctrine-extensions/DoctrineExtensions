@@ -9,7 +9,9 @@
 
 namespace Gedmo\Translatable\Hydrator\ORM;
 
+use Doctrine\DBAL\Result;
 use Doctrine\ORM\Internal\Hydration\SimpleObjectHydrator as BaseSimpleObjectHydrator;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Tool\ORM\Hydration\EntityManagerRetriever;
 use Gedmo\Tool\ORM\Hydration\HydratorCompat;
@@ -37,6 +39,29 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
      * @see SimpleObjectHydrator::cleanup()
      */
     private ?bool $savedSkipOnLoad = null;
+
+    /**
+     * Keeps postLoad translation skipped until the whole hydration has completed,
+     * since deferred postLoad events may be dispatched after {@see cleanup()}.
+     *
+     * @param Result               $stmt
+     * @param ResultSetMapping     $resultSetMapping
+     * @param array<string, mixed> $hints
+     *
+     * @return mixed
+     */
+    protected function doHydrateAllWithCompat($stmt, $resultSetMapping, array $hints = [])
+    {
+        $listener = $this->getTranslatableListener();
+        $skipOnLoad = $listener->isSkipOnLoad();
+        $listener->setSkipOnLoad(true);
+
+        try {
+            return parent::hydrateAll($stmt, $resultSetMapping, $hints);
+        } finally {
+            $listener->setSkipOnLoad($skipOnLoad);
+        }
+    }
 
     protected function doPrepareWithCompat(): void
     {
