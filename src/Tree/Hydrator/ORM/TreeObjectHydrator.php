@@ -114,6 +114,9 @@ class TreeObjectHydrator extends ObjectHydrator
 
             if (null !== $parentProxy) {
                 $parentId = $this->getPropertyValue($parentProxy, $this->idField);
+                if (is_object($parentId) && method_exists($parentId, 'toString')) {
+                    $parentId = $parentId->toString();
+                }
             }
 
             $r[$parentId][] = $node;
@@ -132,6 +135,10 @@ class TreeObjectHydrator extends ObjectHydrator
     {
         foreach ($nodes as $node) {
             $nodeId = $this->getPropertyValue($node, $this->idField);
+            if (is_object($nodeId) && method_exists($nodeId, 'toString')) {
+                $nodeId = $nodeId->toString();
+            }
+
             $childrenCollection = $this->getPropertyValue($node, $this->childrenField);
 
             if (null === $childrenCollection) {
@@ -172,6 +179,9 @@ class TreeObjectHydrator extends ObjectHydrator
 
             if (null !== $parentProxy) {
                 $parentId = $this->getPropertyValue($parentProxy, $this->idField);
+                if (is_object($parentId) && method_exists($parentId, 'toString')) {
+                    $parentId = $parentId->toString();
+                }
             }
 
             if (self::NO_PARENT_ID === $parentId || !array_key_exists($parentId, $idHashmap)) {
@@ -199,6 +209,9 @@ class TreeObjectHydrator extends ObjectHydrator
 
         foreach ($nodes as $node) {
             $id = $this->getPropertyValue($node, $this->idField);
+            if (is_object($id) && method_exists($id, 'toString')) {
+                $id = $id->toString();
+            }
             $ids[$id] = true;
         }
 
